@@ -27,6 +27,6 @@ EnumsNET.NonGeneric.NonGenericFlagEnums static class for non-generic flag enum o
 .NET Framework 4.0 or greater
 
 ## Credits
-Inspired by Jon Skeet's [Unconstrained Melody] (https://code.google.com/p/unconstrained-melody)
+Inspired by Jon Skeet's [Unconstrained Melody] (https://github.com/jskeet/unconstrained-melody)
 
 Utilizes Simon Cropp's [Fody.ExtraConstraints] (https://github.com/Fody/ExtraConstraints)
