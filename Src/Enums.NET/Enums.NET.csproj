@@ -31,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Enums.NET.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ExtraConstraints, Version=1.10.7.0, Culture=neutral, PublicKeyToken=8b9afd7f380a7d64, processorArchitecture=MSIL">

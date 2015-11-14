@@ -175,6 +175,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid(Type enumType, sbyte value) => GetEnumsCache(enumType).IsValid(value);
 
 		/// <summary>
@@ -208,6 +209,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid(Type enumType, ushort value) => GetEnumsCache(enumType).IsValid(value);
 
 		/// <summary>
@@ -230,6 +232,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid(Type enumType, uint value) => GetEnumsCache(enumType).IsValid(value);
 
 		/// <summary>
@@ -252,6 +255,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid(Type enumType, ulong value) => GetEnumsCache(enumType).IsValid(value);
 		#endregion
 
@@ -302,6 +306,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined(Type enumType, sbyte value) => GetEnumsCache(enumType).IsDefined(value);
 
 		/// <summary>
@@ -335,6 +340,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined(Type enumType, ushort value) => GetEnumsCache(enumType).IsDefined(value);
 
 		/// <summary>
@@ -357,6 +363,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined(Type enumType, uint value) => GetEnumsCache(enumType).IsDefined(value);
 
 		/// <summary>
@@ -379,6 +386,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined(Type enumType, ulong value) => GetEnumsCache(enumType).IsDefined(value);
 		#endregion
 
@@ -392,6 +400,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, sbyte value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
 
 		/// <summary>
@@ -425,6 +434,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, ushort value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
 
 		/// <summary>
@@ -447,6 +457,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, uint value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
 
 		/// <summary>
@@ -469,6 +480,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, ulong value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
 		#endregion
 
@@ -505,6 +517,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnum(Type enumType, sbyte value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
 
 		/// <summary>
@@ -553,6 +566,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnum(Type enumType, ushort value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
 
 		/// <summary>
@@ -585,6 +599,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnum(Type enumType, uint value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
 
 		/// <summary>
@@ -617,6 +632,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnum(Type enumType, ulong value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
 
 		/// <summary>
@@ -647,6 +663,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnumOrDefault(Type enumType, sbyte value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
@@ -692,6 +709,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnumOrDefault(Type enumType, ushort value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
@@ -722,6 +740,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnumOrDefault(Type enumType, uint value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
@@ -752,6 +771,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static object ToEnumOrDefault(Type enumType, ulong value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
@@ -782,6 +802,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum(Type enumType, sbyte value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
 
 		/// <summary>
@@ -827,6 +848,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum(Type enumType, ushort value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
 
 		/// <summary>
@@ -857,6 +879,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum(Type enumType, uint value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
 
 		/// <summary>
@@ -887,6 +910,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum(Type enumType, ulong value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
 		#endregion
 
@@ -994,6 +1018,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="value"/> is invalid</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static sbyte ToSByte(Type enumType, object value) => GetEnumsCache(enumType).ToSByte(value);
 
 		/// <summary>
@@ -1036,6 +1061,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="value"/> is invalid</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static ushort ToUInt16(Type enumType, object value) => GetEnumsCache(enumType).ToUInt16(value);
 
 		/// <summary>
@@ -1064,6 +1090,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="value"/> is invalid</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static uint ToUInt32(Type enumType, object value) => GetEnumsCache(enumType).ToUInt32(value);
 
 		/// <summary>
@@ -1092,6 +1119,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="value"/> is invalid</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static ulong ToUInt64(Type enumType, object value) => GetEnumsCache(enumType).ToUInt64(value);
 		#endregion
 

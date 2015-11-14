@@ -20,10 +20,10 @@ namespace EnumsNET
 {
     internal struct InternalEnumMemberInfo<TEnum>
     {
-        private readonly Attribute[] _attributes;
-
         public readonly TEnum Value;
         public readonly string Name;
+
+        private readonly Attribute[] _attributes;
 
         public Attribute[] Attributes => Name != null ? _attributes ?? new Attribute[0] : null;
 
@@ -55,7 +55,7 @@ namespace EnumsNET
 
         public string GetDescriptionOrName() => Description ?? Name;
 
-        public string GetDescriptionOrName(Func<string, string> nameFormatter) => Name != null ? (Description ?? nameFormatter(Name)) : null;
+        public string GetDescriptionOrName(Func<string, string> nameFormatter) => Name != null ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
 
         public TAttribute GetAttribute<TAttribute>()
             where TAttribute : Attribute

@@ -224,6 +224,7 @@ namespace EnumsNET.Unsafe
 		/// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -266,6 +267,7 @@ namespace EnumsNET.Unsafe
 		/// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -294,6 +296,7 @@ namespace EnumsNET.Unsafe
 		/// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -322,6 +325,7 @@ namespace EnumsNET.Unsafe
 		/// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsValid<TEnum>(ulong value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -398,6 +402,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -440,6 +445,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -468,6 +474,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -496,6 +503,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsDefined<TEnum>(ulong value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -512,6 +520,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -554,6 +563,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -582,6 +592,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -610,6 +621,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(ulong value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -652,6 +664,7 @@ namespace EnumsNET.Unsafe
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnum<TEnum>(sbyte value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -709,6 +722,7 @@ namespace EnumsNET.Unsafe
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnum<TEnum>(ushort value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -747,6 +761,7 @@ namespace EnumsNET.Unsafe
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnum<TEnum>(uint value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -785,6 +800,7 @@ namespace EnumsNET.Unsafe
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnum<TEnum>(ulong value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -821,6 +837,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnumOrDefault<TEnum>(sbyte value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -875,6 +892,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnumOrDefault<TEnum>(ushort value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -911,6 +929,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnumOrDefault<TEnum>(uint value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -947,6 +966,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static TEnum ToEnumOrDefault<TEnum>(ulong value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -983,6 +1003,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum<TEnum>(sbyte value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1037,6 +1058,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum<TEnum>(ushort value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1073,6 +1095,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum<TEnum>(uint value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1109,6 +1132,7 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static bool TryToEnum<TEnum>(ulong value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1253,6 +1277,7 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static sbyte ToSByte<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1298,6 +1323,7 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static ushort ToUInt16<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1328,6 +1354,7 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static uint ToUInt32<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1358,6 +1385,7 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing</exception>
 		[Pure]
+		[CLSCompliant(false)]
 		public static ulong ToUInt64<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1575,6 +1603,22 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.GetAttributeSelect(name, selector, defaultValue);
+		}
+
+		[Pure]
+		public static bool TryGetAttributeSelect<TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
+			where TAttribute : Attribute
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.TryGetAttributeSelect(value, selector, out result);
+		}
+
+		[Pure]
+		public static bool TryGetAttributeSelect<TEnum, TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, out TResult result)
+			where TAttribute : Attribute
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.TryGetAttributeSelect(name, selector, out result);
 		}
 
 		/// <summary>

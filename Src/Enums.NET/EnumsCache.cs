@@ -35,6 +35,8 @@ namespace EnumsNET
 
 		public static readonly TEnum AllFlags;
 
+		internal static readonly TypeCode UnderlyingTypeCode;
+
 		public static readonly Func<TEnum, TEnum, bool> Equal;
 
 		[SuppressMessage("", "CS0108", Justification = "It's a static field")]
@@ -46,8 +48,6 @@ namespace EnumsNET
 
 		// Duplicate values are stored here with a key of the constant's name, is null if no duplicates
 		private static readonly Dictionary<string, ValueAndAttributes<TEnum>> _duplicateValues;
-
-		private static readonly TypeCode _underlyingTypeCode;
 
 		private static readonly TEnum _maxDefined;
 
@@ -183,7 +183,7 @@ namespace EnumsNET
 		{
 			get
 			{
-				switch (_underlyingTypeCode)
+				switch (UnderlyingTypeCode)
 				{
 					case TypeCode.Int32:
 						return typeof(int);
@@ -203,10 +203,12 @@ namespace EnumsNET
 						return typeof(ulong);
 				}
 				// Should never reach this
-				Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+				Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 				return null;
 			}
 		}
+
+		public static bool HasAnyDuplicateValues => _duplicateValues != null;
 		#endregion
 
 		// This static constructor caches the relevant enum information
@@ -215,7 +217,7 @@ namespace EnumsNET
 			var type = typeof(TEnum);
 			Debug.Assert(type.IsEnum && type.IsValueType);
 			var underlyingType = Enum.GetUnderlyingType(type);
-			_underlyingTypeCode = Type.GetTypeCode(underlyingType);
+			UnderlyingTypeCode = Type.GetTypeCode(underlyingType);
 			IsFlagEnum = type.IsDefined(typeof(FlagsAttribute), false);
 
 			var xParam = Expression.Parameter(type, "x");
@@ -327,7 +329,7 @@ namespace EnumsNET
 			}
 			_maxDefined = _valueMap.GetFirstAt(_valueMap.Count - 1);
 			_minDefined = _valueMap.GetFirstAt(0);
-			if (_underlyingTypeCode == TypeCode.UInt64)
+			if (UnderlyingTypeCode == TypeCode.UInt64)
 			{
 				IsContiguous = ToUInt64(_maxDefined) - ToUInt64(_minDefined) + 1UL == (ulong)_valueMap.Count;
 			}
@@ -364,8 +366,6 @@ namespace EnumsNET
 
 		public static string[] GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued)
 		{
-			Preconditions.NotNull(nameFormatter, nameof(nameFormatter));
-
 			return GetEnumMembersInValueOrder(uniqueValued).Select(info => info.GetDescriptionOrName(nameFormatter)).ToArray();
 		}
 
@@ -487,7 +487,7 @@ namespace EnumsNET
 		#region IsWithinUnderlyingTypesValueRange
 		public static bool IsWithinUnderlyingTypesValueRange(long value)
 		{
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return value >= int.MinValue && value <= int.MaxValue;
@@ -507,13 +507,13 @@ namespace EnumsNET
 					return value >= 0L;
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {EnumsCache<TypeCode>.AsString(_underlyingTypeCode)}");
+			Debug.Fail($"Unknown enum underlying type code of {EnumsCache<TypeCode>.AsString(UnderlyingTypeCode)}");
 			return false;
 		}
 
 		public static bool IsWithinUnderlyingTypesValueRange(ulong value)
 		{
-			return _underlyingTypeCode == TypeCode.UInt64 || (value <= long.MaxValue && IsWithinUnderlyingTypesValueRange((long)value));
+			return UnderlyingTypeCode == TypeCode.UInt64 || (value <= long.MaxValue && IsWithinUnderlyingTypesValueRange((long)value));
 		}
 		#endregion
 
@@ -850,7 +850,7 @@ namespace EnumsNET
 		private static string ToDecimalString(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return ((int)o).ToString("D");
@@ -870,14 +870,14 @@ namespace EnumsNET
 					return ((ulong)o).ToString("D");
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return null;
 		}
 
 		private static string ToHexadecimalString(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return ((int)o).ToString("X8");
@@ -897,14 +897,14 @@ namespace EnumsNET
 					return ((ulong)o).ToString("X16");
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return null;
 		}
 
 		public static object GetUnderlyingValue(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return (int)o;
@@ -924,14 +924,14 @@ namespace EnumsNET
 					return (ulong)o;
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return null;
 		}
 
 		public static sbyte ToSByte(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToSByte((int)o);
@@ -951,14 +951,14 @@ namespace EnumsNET
 					return Convert.ToSByte((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static byte ToByte(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToByte((int)o);
@@ -978,14 +978,14 @@ namespace EnumsNET
 					return Convert.ToByte((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static short ToInt16(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToInt16((int)o);
@@ -1005,14 +1005,14 @@ namespace EnumsNET
 					return Convert.ToInt16((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static ushort ToUInt16(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToUInt16((int)o);
@@ -1032,14 +1032,14 @@ namespace EnumsNET
 					return Convert.ToUInt16((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static int ToInt32(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return (int)o;
@@ -1059,14 +1059,14 @@ namespace EnumsNET
 					return Convert.ToInt32((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static uint ToUInt32(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToUInt32((int)o);
@@ -1086,14 +1086,14 @@ namespace EnumsNET
 					return Convert.ToUInt32((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static long ToInt64(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return (int)o;
@@ -1113,14 +1113,14 @@ namespace EnumsNET
 					return Convert.ToInt64((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 
 		public static ulong ToUInt64(TEnum value)
 		{
 			object o = value;
-			switch (_underlyingTypeCode)
+			switch (UnderlyingTypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToUInt64((int)o);
@@ -1140,7 +1140,7 @@ namespace EnumsNET
 					return (ulong)o;
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {_underlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
 			return 0;
 		}
 		#endregion
@@ -1178,8 +1178,6 @@ namespace EnumsNET
 
 		public static string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter)
 		{
-			Preconditions.NotNull(nameFormatter, nameof(nameFormatter));
-
 			return GetInternalEnumMemberInfo(value).GetDescriptionOrName(nameFormatter);
 		}
 
@@ -1190,8 +1188,6 @@ namespace EnumsNET
 
 		public static string GetDescriptionOrName(string name, Func<string, string> nameFormatter)
 		{
-			Preconditions.NotNull(nameFormatter, nameof(nameFormatter));
-
 			return GetInternalEnumMemberInfo(name).GetDescriptionOrName(nameFormatter);
 		}
 
@@ -1257,19 +1253,53 @@ namespace EnumsNET
 		public static TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
 			where TAttribute : Attribute
 		{
-			Preconditions.NotNull(selector, nameof(selector));
-
-			var attr = GetAttribute<TAttribute>(value);
-			return attr != null ? selector(attr) : defaultValue;
+			TResult result;
+			if (!TryGetAttributeSelect(value, selector, out result))
+			{
+				result = defaultValue;
+			}
+			return result;
 		}
 
 		public static TResult GetAttributeSelect<TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, TResult defaultValue)
 			where TAttribute : Attribute
 		{
+			TResult result;
+			if (!TryGetAttributeSelect(name, selector, out result))
+			{
+				result = defaultValue;
+			}
+			return result;
+		}
+
+		public static bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result)
+			where TAttribute : Attribute
+		{
+			Preconditions.NotNull(selector, nameof(selector));
+
+			var attr = GetAttribute<TAttribute>(value);
+			if (attr != null)
+			{
+				result = selector(attr);
+				return true;
+			}
+			result = default(TResult);
+			return false;
+		}
+
+		public static bool TryGetAttributeSelect<TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, out TResult result)
+			where TAttribute : Attribute
+		{
 			Preconditions.NotNull(selector, nameof(selector));
 
 			var attr = GetAttribute<TAttribute>(name);
-			return attr != null ? selector(attr) : defaultValue;
+			if (attr != null)
+			{
+				result = selector(attr);
+				return true;
+			}
+			result = default(TResult);
+			return false;
 		}
 
 		public static TAttribute[] GetAttributes<TAttribute>(TEnum value)
@@ -1409,7 +1439,7 @@ namespace EnumsNET
 
 		private static bool TryParseNumeric(string value, NumberStyles style, out TEnum result)
 		{
-			if (_underlyingTypeCode == TypeCode.UInt64)
+			if (UnderlyingTypeCode == TypeCode.UInt64)
 			{
 				ulong resultAsULong;
 				if (ulong.TryParse(value, style, null, out resultAsULong))
@@ -1510,10 +1540,7 @@ namespace EnumsNET
 
 		#region Flag Enum Operations
 		#region Main Methods
-		public static bool IsValidFlagCombination(TEnum value)
-		{
-			return Equal(_and(AllFlags, value), value);
-		}
+		public static bool IsValidFlagCombination(TEnum value) => Equal(_and(AllFlags, value), value);
 
 		public static string FormatAsFlags(TEnum value, EnumFormat[] formats) => FormatAsFlags(value, FlagEnums.DefaultDelimiter, formats);
 
@@ -1597,11 +1624,37 @@ namespace EnumsNET
 			return _and(value, flagMask);
 		}
 
+		public static TEnum CommonFlags(TEnum[] flags)
+		{
+			var flag = default(TEnum);
+			var flagsLength = flags?.Length ?? 0;
+			for (var i = 0; i < flagsLength; ++i)
+			{
+				var nextFlag = flags[i];
+				ValidateIsValidFlagCombination(nextFlag, nameof(flags) + " must contain all valid flag combinations");
+				flag = _and(flag, nextFlag);
+			}
+			return flag;
+		}
+
 		public static TEnum SetFlags(TEnum value, TEnum flagMask)
 		{
 			ValidateIsValidFlagCombination(value, nameof(value));
 			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
 			return _or(value, flagMask);
+		}
+
+		public static TEnum SetFlags(TEnum[] flags)
+		{
+			var flag = default(TEnum);
+			var flagsLength = flags?.Length ?? 0;
+			for (var i = 0; i < flagsLength; ++i)
+			{
+				var nextFlag = flags[i];
+				ValidateIsValidFlagCombination(nextFlag, nameof(flags) + " must contain all valid flag combinations");
+				flag = _or(flag, nextFlag);
+			}
+			return flag;
 		}
 
 		public static TEnum ClearFlags(TEnum value, TEnum flagMask)
@@ -1732,7 +1785,7 @@ namespace EnumsNET
 		#region Private Methods
 		private static TEnum[] InternalGetFlags(TEnum value)
 		{
-			var valueAsULong = _underlyingTypeCode == TypeCode.UInt64 ? (ulong)(object)value : (ulong)ToInt64(value);
+			var valueAsULong = UnderlyingTypeCode == TypeCode.UInt64 ? (ulong)(object)value : (ulong)ToInt64(value);
 			var values = new List<TEnum>();
 			for (var currentValue = 1UL; currentValue <= valueAsULong && currentValue != 0UL; currentValue <<= 1)
 			{
@@ -2059,7 +2112,11 @@ namespace EnumsNET
 
 		object IEnumsCache.CommonFlags(object value, object flagMask) => CommonFlags(ConvertToEnum(value, nameof(value)), ConvertToEnum(flagMask, nameof(flagMask)));
 
+		object IEnumsCache.CommonFlags(object[] flags) => CommonFlags(ConvertToEnumArray(flags, nameof(flags)));
+
 		object IEnumsCache.SetFlags(object value, object flagMask) => SetFlags(ConvertToEnum(value, nameof(value)), ConvertToEnum(flagMask, nameof(flagMask)));
+
+		object IEnumsCache.SetFlags(object[] flags) => SetFlags(ConvertToEnumArray(flags, nameof(flags)));
 
 		object IEnumsCache.ClearFlags(object value, object flagMask) => ClearFlags(ConvertToEnum(value, nameof(value)), ConvertToEnum(flagMask, nameof(flagMask)));
 		#endregion
@@ -2156,6 +2213,20 @@ namespace EnumsNET
 				return result;
 			}
 			throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", paramName);
+		}
+
+		private static TEnum[] ConvertToEnumArray(object[] values, string paramName)
+		{
+			TEnum[] enumValues = null;
+			if (values != null)
+			{
+				enumValues = new TEnum[values.Length];
+				for (var i = 0; i < values.Length; ++i)
+				{
+					enumValues[i] = ConvertToEnum(values[i], $"{paramName}[{i}]");
+				}
+			}
+			return enumValues;
 		}
 		#endregion
 		#endregion

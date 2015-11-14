@@ -204,7 +204,11 @@ namespace EnumsNET
 
 		object CommonFlags(object value, object flagMask);
 
+		object CommonFlags(object[] flags);
+
 		object SetFlags(object value, object flagMask);
+
+		object SetFlags(object[] flags);
 
 		object ClearFlags(object value, object flagMask);
 		#endregion

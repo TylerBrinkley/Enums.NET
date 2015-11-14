@@ -767,10 +767,7 @@ namespace EnumsNET
             return index >= 0 ? ReplaceSecondAt(index, second) : Add(first, second);
         }
 
-        public bool SetAt(int index, TFirst first, TSecond second)
-        {
-            return index == Count ? Add(first, second) : ReplaceAt(index, first, second);
-        }
+        public bool SetAt(int index, TFirst first, TSecond second) => index == Count ? Add(first, second) : ReplaceAt(index, first, second);
 
         public bool SetAt(int index, Pair<TFirst, TSecond> pair) => SetAt(index, pair.First, pair.Second);
 

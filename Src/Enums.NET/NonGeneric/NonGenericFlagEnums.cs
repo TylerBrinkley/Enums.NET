@@ -189,6 +189,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static object CommonFlags(Type enumType, object value, object flagMask) => NonGenericEnums.GetEnumsCache(enumType).CommonFlags(value, flagMask);
 
+		[Pure]
+		public static object CommonFlags(Type enumType, params object[] flags) => NonGenericEnums.GetEnumsCache(enumType).CommonFlags(flags);
+
 		/// <summary>
 		/// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> set. Equivalent to the bitwise "or" operation.
 		/// </summary>
@@ -204,6 +207,9 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
 		[Pure]
 		public static object SetFlags(Type enumType, object value, object flagMask) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(value, flagMask);
+
+		[Pure]
+		public static object SetFlags(Type enumType, params object[] flags) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(flags);
 
 		/// <summary>
 		/// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
