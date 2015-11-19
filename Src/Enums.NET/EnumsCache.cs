@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -35,12 +34,11 @@ namespace EnumsNET
 
 		public static readonly TEnum AllFlags;
 
-		internal static readonly TypeCode UnderlyingTypeCode;
+		public static readonly TypeCode UnderlyingTypeCode;
 
-		public static readonly Func<TEnum, TEnum, bool> Equal;
-
-		[SuppressMessage("", "CS0108", Justification = "It's a static field")]
-		public static readonly Func<TEnum, int> GetHashCode;
+		public static readonly Func<TEnum, TEnum, bool> EqualsMethod;
+		
+		public static readonly Func<TEnum, int> GetHashCodeMethod;
 
 		// The main collection of values, names, and attributes with ~O(1) retrieval on name or value
 		// If constant contains a DescriptionAttribute it will be the first in the attribute array
@@ -48,10 +46,6 @@ namespace EnumsNET
 
 		// Duplicate values are stored here with a key of the constant's name, is null if no duplicates
 		private static readonly Dictionary<string, ValueAndAttributes<TEnum>> _duplicateValues;
-
-		private static readonly TEnum _maxDefined;
-
-		private static readonly TEnum _minDefined;
 
 		private static readonly Func<TEnum, TEnum, TEnum> _and;
 
@@ -208,14 +202,16 @@ namespace EnumsNET
 			}
 		}
 
-		public static bool HasAnyDuplicateValues => _duplicateValues != null;
+		private static TEnum MaxDefined => _valueMap.GetFirstAt(_valueMap.Count - 1);
+
+		private static TEnum MinDefined => _valueMap.GetFirstAt(0);
 		#endregion
 
 		// This static constructor caches the relevant enum information
 		static EnumsCache()
 		{
 			var type = typeof(TEnum);
-			Debug.Assert(type.IsEnum && type.IsValueType);
+			Debug.Assert(type.IsEnum);
 			var underlyingType = Enum.GetUnderlyingType(type);
 			UnderlyingTypeCode = Type.GetTypeCode(underlyingType);
 			IsFlagEnum = type.IsDefined(typeof(FlagsAttribute), false);
@@ -224,9 +220,9 @@ namespace EnumsNET
 			var yParam = Expression.Parameter(type, "y");
 			var xParamConvert = Expression.Convert(xParam, underlyingType);
 			var yParamConvert = Expression.Convert(yParam, underlyingType);
-			Equal = Expression.Lambda<Func<TEnum, TEnum, bool>>(Expression.Equal(xParamConvert, yParamConvert), xParam, yParam).Compile();
+			EqualsMethod = Expression.Lambda<Func<TEnum, TEnum, bool>>(Expression.Equal(xParamConvert, yParamConvert), xParam, yParam).Compile();
 			_greaterThan = Expression.Lambda<Func<TEnum, TEnum, bool>>(Expression.GreaterThan(xParamConvert, yParamConvert), xParam, yParam).Compile();
-			GetHashCode = Expression.Lambda<Func<TEnum, int>>(Expression.Call(xParamConvert, underlyingType.GetMethod("GetHashCode")), xParam).Compile();
+			GetHashCodeMethod = Expression.Lambda<Func<TEnum, int>>(Expression.Call(xParamConvert, underlyingType.GetMethod("GetHashCode")), xParam).Compile();
 			_and = Expression.Lambda<Func<TEnum, TEnum, TEnum>>(Expression.Convert(Expression.And(xParamConvert, yParamConvert), type), xParam, yParam).Compile();
 			_or = Expression.Lambda<Func<TEnum, TEnum, TEnum>>(Expression.Convert(Expression.Or(xParamConvert, yParamConvert), type), xParam, yParam).Compile();
 			_xor = Expression.Lambda<Func<TEnum, TEnum, TEnum>>(Expression.Convert(Expression.ExclusiveOr(xParamConvert, yParamConvert), type), xParam, yParam).Compile();
@@ -316,26 +312,27 @@ namespace EnumsNET
 						AllFlags = _or(AllFlags, value);
 					}
 				}
-				else if (isMainDupe)
-				{
-					var nameAndAttributes = _valueMap.GetSecondAt(index);
-					_valueMap.ReplaceSecondAt(index, new NameAndAttributes(name, attributes));
-					duplicateValues.Add(nameAndAttributes.Name, new ValueAndAttributes<TEnum>(value, nameAndAttributes.Attributes));
-				}
 				else
 				{
+					if (isMainDupe)
+					{
+						var nameAndAttributes = _valueMap.GetSecondAt(index);
+						_valueMap.ReplaceSecondAt(index, new NameAndAttributes(name, attributes));
+						name = nameAndAttributes.Name;
+						attributes = nameAndAttributes.Attributes;
+					}
 					duplicateValues.Add(name, new ValueAndAttributes<TEnum>(value, attributes));
 				}
 			}
-			_maxDefined = _valueMap.GetFirstAt(_valueMap.Count - 1);
-			_minDefined = _valueMap.GetFirstAt(0);
+			var maxDefined = MaxDefined;
+			var minDefined = MinDefined;
 			if (UnderlyingTypeCode == TypeCode.UInt64)
 			{
-				IsContiguous = ToUInt64(_maxDefined) - ToUInt64(_minDefined) + 1UL == (ulong)_valueMap.Count;
+				IsContiguous = ToUInt64(maxDefined) - ToUInt64(minDefined) + 1UL == (ulong)_valueMap.Count;
 			}
 			else
 			{
-				IsContiguous = ToInt64(_maxDefined) - ToInt64(_minDefined) + 1L == _valueMap.Count;
+				IsContiguous = ToInt64(maxDefined) - ToInt64(minDefined) + 1L == _valueMap.Count;
 			}
 
 			if (duplicateValues.Count > 0)
@@ -356,18 +353,15 @@ namespace EnumsNET
 
 		public static EnumMemberInfo<TEnum>[] GetEnumMemberInfos(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.ToEnumMemberInfo()).ToArray();
 
-		public static string[] GetNames(bool uniqueValued) => (uniqueValued ? _valueMap.SecondItems.Select(nameAndAttr => nameAndAttr.Name) : GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Name)).ToArray();
+		public static string[] GetNames(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Name).ToArray();
 
-		public static TEnum[] GetValues(bool uniqueValued) => (uniqueValued ? _valueMap.FirstItems : GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Value)).ToArray();
+		public static TEnum[] GetValues(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Value).ToArray();
 
 		public static string[] GetDescriptions(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Description).ToArray();
 
 		public static string[] GetDescriptionsOrNames(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.GetDescriptionOrName()).ToArray();
 
-		public static string[] GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued)
-		{
-			return GetEnumMembersInValueOrder(uniqueValued).Select(info => info.GetDescriptionOrName(nameFormatter)).ToArray();
-		}
+		public static string[] GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.GetDescriptionOrName(nameFormatter)).ToArray();
 
 		public static string[] GetEnumMemberValues(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.EnumMemberValue).ToArray();
 
@@ -470,7 +464,7 @@ namespace EnumsNET
 			return TryToEnum(value, out result, false) && IsDefined(result);
 		}
 
-		public static bool IsDefined(TEnum value) => IsContiguous ? !(_greaterThan(_minDefined, value) || _greaterThan(value, _maxDefined)) : _valueMap.ContainsFirst(value);
+		public static bool IsDefined(TEnum value) => IsContiguous ? !(_greaterThan(MinDefined, value) || _greaterThan(value, MaxDefined)) : _valueMap.ContainsFirst(value);
 
 		public static bool IsDefined(string name, bool ignoreCase = false)
 		{
@@ -702,9 +696,13 @@ namespace EnumsNET
 
 		public static string AsString(TEnum value)
 		{
-			if (IsFlagEnum && IsValidFlagCombination(value))
+			if (IsFlagEnum)
 			{
-				return FormatAsFlags(value);
+				var str = FormatAsFlags(value);
+				if (str != null)
+				{
+					return str;
+				}
 			}
 			return Format(value, EnumFormat.Name, EnumFormat.DecimalValue);
 		}
@@ -790,6 +788,11 @@ namespace EnumsNET
 				return null;
 			}
 
+			return InternalFormat(info, format);
+		}
+
+		public static string InternalFormat(InternalEnumMemberInfo<TEnum> info, string format)
+		{
 			switch (format)
 			{
 				case "G":
@@ -812,7 +815,7 @@ namespace EnumsNET
 			return InternalFormat(value, GetInternalEnumMemberInfo(value), formats);
 		}
 
-		private static string InternalFormat(TEnum value, InternalEnumMemberInfo<TEnum> info, params EnumFormat[] formats)
+		public static string InternalFormat(TEnum value, InternalEnumMemberInfo<TEnum> info, params EnumFormat[] formats)
 		{
 			foreach (var format in formats)
 			{
@@ -1540,7 +1543,7 @@ namespace EnumsNET
 
 		#region Flag Enum Operations
 		#region Main Methods
-		public static bool IsValidFlagCombination(TEnum value) => Equal(_and(AllFlags, value), value);
+		public static bool IsValidFlagCombination(TEnum value) => EqualsMethod(_and(AllFlags, value), value);
 
 		public static string FormatAsFlags(TEnum value, EnumFormat[] formats) => FormatAsFlags(value, FlagEnums.DefaultDelimiter, formats);
 
@@ -1581,7 +1584,7 @@ namespace EnumsNET
 		public static bool HasAnyFlags(TEnum value)
 		{
 			ValidateIsValidFlagCombination(value, nameof(value));
-			return !Equal(value, default(TEnum));
+			return !EqualsMethod(value, default(TEnum));
 		}
 
 		public static bool HasAnyFlags(TEnum value, TEnum flagMask)
@@ -1594,14 +1597,14 @@ namespace EnumsNET
 		public static bool HasAllFlags(TEnum value)
 		{
 			ValidateIsValidFlagCombination(value, nameof(value));
-			return Equal(value, AllFlags);
+			return EqualsMethod(value, AllFlags);
 		}
 
 		public static bool HasAllFlags(TEnum value, TEnum flagMask)
 		{
 			ValidateIsValidFlagCombination(value, nameof(value));
 			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return Equal(_and(value, flagMask), flagMask);
+			return EqualsMethod(_and(value, flagMask), flagMask);
 		}
 
 		public static TEnum InvertFlags(TEnum value)
@@ -1800,7 +1803,7 @@ namespace EnumsNET
 
 		private static bool InternalHasAnyFlags(TEnum value, TEnum flagMask)
 		{
-			return !Equal(_and(value, flagMask), default(TEnum));
+			return !EqualsMethod(_and(value, flagMask), default(TEnum));
 		}
 
 		private static void ValidateIsValidFlagCombination(TEnum value, string paramName)

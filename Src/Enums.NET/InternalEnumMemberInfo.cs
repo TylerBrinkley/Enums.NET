@@ -46,7 +46,7 @@ namespace EnumsNET
         {
         }
 
-        private InternalEnumMemberInfo(TEnum value, string name, Attribute[] attributes)
+        public InternalEnumMemberInfo(TEnum value, string name, Attribute[] attributes)
         {
             Value = value;
             Name = name;

@@ -32,14 +32,14 @@ namespace EnumsNET
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
-		public bool Equals(TEnum x, TEnum y) => EnumsCache<TEnum>.Equal(x, y);
+		public bool Equals(TEnum x, TEnum y) => EnumsCache<TEnum>.EqualsMethod(x, y);
 
 		/// <summary>
 		/// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-		public int GetHashCode(TEnum obj) => EnumsCache<TEnum>.GetHashCode(obj);
+		public int GetHashCode(TEnum obj) => EnumsCache<TEnum>.GetHashCodeMethod(obj);
 
 		/// <summary>
 		/// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.

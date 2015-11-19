@@ -129,11 +129,11 @@ namespace EnumsNET
             return Enums.GetAttributes<TAttribute>(Attributes);
         }
 
-        public override string ToString() => EnumsCache<TEnum>.HasAnyDuplicateValues ? EnumsCache<TEnum>.AsString(Name) : EnumsCache<TEnum>.AsString(Value);
+        public override string ToString() => Name;
 
-        public string ToString(string format) => EnumsCache<TEnum>.HasAnyDuplicateValues ? EnumsCache<TEnum>.AsString(Name, format) : EnumsCache<TEnum>.AsString(Value, format);
+        public string ToString(string format) => EnumsCache<TEnum>.InternalFormat(ToInternalEnumMemberInfo(), format);
 
-        public string ToString(params EnumFormat[] formats) => EnumsCache<TEnum>.HasAnyDuplicateValues ? EnumsCache<TEnum>.AsString(Name, formats) : EnumsCache<TEnum>.AsString(Value, formats);
+        public string ToString(params EnumFormat[] formats) => EnumsCache<TEnum>.InternalFormat(Value, ToInternalEnumMemberInfo(), formats);
 
         public string AsString() => ToString();
 
@@ -141,9 +141,9 @@ namespace EnumsNET
 
         public string AsString(params EnumFormat[] formats) => ToString(formats);
 
-        public string Format(string format) => EnumsCache<TEnum>.HasAnyDuplicateValues ? EnumsCache<TEnum>.Format(Name, format) : EnumsCache<TEnum>.Format(Value, format);
+        public string Format(string format) => EnumsCache<TEnum>.InternalFormat(ToInternalEnumMemberInfo(), format);
 
-        public string Format(params EnumFormat[] formats) => EnumsCache<TEnum>.HasAnyDuplicateValues ? EnumsCache<TEnum>.Format(Name, formats) : EnumsCache<TEnum>.Format(Value, formats);
+        public string Format(params EnumFormat[] formats) => EnumsCache<TEnum>.InternalFormat(Value, ToInternalEnumMemberInfo(), formats);
 
         [CLSCompliant(false)]
         public sbyte ToSByte() => EnumsCache<TEnum>.ToSByte(Value);
@@ -164,6 +164,8 @@ namespace EnumsNET
 
         [CLSCompliant(false)]
         public ulong ToUInt64() => EnumsCache<TEnum>.ToUInt64(Value);
+
+        private InternalEnumMemberInfo<TEnum> ToInternalEnumMemberInfo() => new InternalEnumMemberInfo<TEnum>(Value, Name, Attributes);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
