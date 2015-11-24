@@ -171,19 +171,25 @@ namespace EnumsNET
 		[Pure]
 		public static TEnum CommonFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask) where TEnum : struct => EnumsCache<TEnum>.CommonFlags(value, flagMask);
 
-		[Pure]
-		public static TEnum CommonFlags<[EnumConstraint] TEnum>(params TEnum[] flags) where TEnum : struct => EnumsCache<TEnum>.CommonFlags(flags);
-
 		/// <summary>
-		/// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> set. Equivalent to the bitwise "or" operation.
+		/// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
 		/// </summary>
 		/// <typeparam name="TEnum"></typeparam>
-		/// <param name="value">Must be a valid flag combination.</param>
-		/// <param name="flagMask">Must be a valid flag combination.</param>
-		/// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> set.</returns>
-		/// <exception cref="ArgumentException"><paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+		/// <param name="flag0">Must be a valid flag combination.</param>
+		/// <param name="flag1">Must be a valid flag combination.</param>
+		/// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
+		/// <exception cref="ArgumentException"><paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
 		[Pure]
-		public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask) where TEnum : struct => EnumsCache<TEnum>.SetFlags(value, flagMask);
+		public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1) where TEnum : struct => EnumsCache<TEnum>.SetFlags(flag0, flag1);
+
+		[Pure]
+		public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2) where TEnum : struct => EnumsCache<TEnum>.SetFlags(flag0, flag1, flag2);
+
+		[Pure]
+		public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) where TEnum : struct => EnumsCache<TEnum>.SetFlags(flag0, flag1, flag2, flag3);
+
+		[Pure]
+		public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) where TEnum : struct => EnumsCache<TEnum>.SetFlags(flag0, flag1, flag2, flag3, flag4);
 
 		[Pure]
 		public static TEnum SetFlags<[EnumConstraint] TEnum>(params TEnum[] flags) where TEnum : struct => EnumsCache<TEnum>.SetFlags(flags);

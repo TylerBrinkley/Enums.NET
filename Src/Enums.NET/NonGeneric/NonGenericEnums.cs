@@ -960,15 +960,6 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static string AsString(Type enumType, object value, params EnumFormat[] formats) => GetEnumsCache(enumType).AsString(value, formats);
 
-		[Pure]
-		public static string AsString(Type enumType, string name) => GetEnumsCache(enumType).AsString(name);
-
-		[Pure]
-		public static string AsString(Type enumType, string name, string format) => GetEnumsCache(enumType).AsString(name, format);
-
-		[Pure]
-		public static string AsString(Type enumType, string name, params EnumFormat[] formats) => GetEnumsCache(enumType).AsString(name, formats);
-
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
 		/// </summary>
@@ -986,12 +977,6 @@ namespace EnumsNET.NonGeneric
 
 		[Pure]
 		public static string Format(Type enumType, object value, params EnumFormat[] formats) => GetEnumsCache(enumType).Format(value, formats);
-
-		[Pure]
-		public static string Format(Type enumType, string name, string format) => GetEnumsCache(enumType).Format(name, format);
-
-		[Pure]
-		public static string Format(Type enumType, string name, params EnumFormat[] formats) => GetEnumsCache(enumType).Format(name, formats);
 
 		/// <summary>
 		/// Returns an object with the enum's underlying value.
@@ -1124,6 +1109,15 @@ namespace EnumsNET.NonGeneric
 		#endregion
 
 		#region Defined Values Main Methods
+		[Pure]
+		public static IEnumMemberInfo GetEnumMemberInfo(Type enumType, object value) => GetEnumsCache(enumType).GetEnumMemberInfo(value);
+
+		[Pure]
+		public static IEnumMemberInfo GetEnumMemberInfo(Type enumType, string name) => GetEnumsCache(enumType).GetEnumMemberInfo(name);
+
+		[Pure]
+		public static IEnumMemberInfo GetEnumMemberInfo(Type enumType, string name, bool ignoreCase) => GetEnumsCache(enumType).GetEnumMemberInfo(name, ignoreCase);
+
 		/// <summary>
 		/// Retrieves the name of the constant in <paramref name="enumType"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
 		/// is not defined null is returned.
@@ -1154,32 +1148,13 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static string GetDescription(Type enumType, object value) => GetEnumsCache(enumType).GetDescription(value);
 
-		/// <summary>
-		/// Retrieves the description of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="name"></param>
-		/// <returns>Description from <see cref="DescriptionAttribute"/> if defined, else null</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is null</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
-		[Pure]
-		public static string GetDescription(Type enumType, string name) => GetEnumsCache(enumType).GetDescription(name);
-
 		[Pure]
 		public static string GetDescriptionOrName(Type enumType, object value) => GetEnumsCache(enumType).GetDescriptionOrName(value);
 
 		public static string GetDescriptionOrName(Type enumType, object value, Func<string, string> nameFormatter) => GetEnumsCache(enumType).GetDescriptionOrName(value, nameFormatter);
 
 		[Pure]
-		public static string GetDescriptionOrName(Type enumType, string name) => GetEnumsCache(enumType).GetDescriptionOrName(name);
-
-		public static string GetDescriptionOrName(Type enumType, string name, Func<string, string> nameFormatter) => GetEnumsCache(enumType).GetDescriptionOrName(name, nameFormatter);
-
-		[Pure]
 		public static string GetEnumMemberValue(Type enumType, object value) => GetEnumsCache(enumType).GetEnumMemberValue(value);
-
-		[Pure]
-		public static string GetEnumMemberValue(Type enumType, string name) => GetEnumsCache(enumType).GetEnumMemberValue(name);
 		#endregion
 
 		#region Attributes
@@ -1195,17 +1170,6 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="value"/> is invalid</exception>
 		[Pure]
 		public static Attribute[] GetAllAttributes(Type enumType, object value) => GetEnumsCache(enumType).GetAllAttributes(value);
-
-		/// <summary>
-		/// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="name"></param>
-		/// <returns><see cref="Attribute"/> array if name is defined, else null</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is null</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
-		[Pure]
-		public static Attribute[] GetAllAttributes(Type enumType, string name) => GetEnumsCache(enumType).GetAllAttributes(name);
 		#endregion
 
 		#region Parsing

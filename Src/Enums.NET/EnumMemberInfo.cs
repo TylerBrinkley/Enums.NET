@@ -23,7 +23,7 @@ namespace EnumsNET
     /// Class that provides efficient defined enum value operations
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public class EnumMemberInfo<TEnum> : IFormattable, IConvertible, IComparable, IComparable<TEnum>, IComparable<EnumMemberInfo<TEnum>>
+    public class EnumMemberInfo<TEnum> : IFormattable, IConvertible, IComparable, IComparable<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IEnumMemberInfo
     {
         /// <summary>
         /// The defined enum member's value
@@ -235,6 +235,8 @@ namespace EnumsNET
         int IComparable<TEnum>.CompareTo(TEnum other) => EnumsCache<TEnum>.Compare(Value, other);
 
         int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => other != null ? EnumsCache<TEnum>.Compare(Value, other.Value) : 1;
+
+        object IEnumMemberInfo.Value => Value;
         #endregion
     }
 }

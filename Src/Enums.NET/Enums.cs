@@ -889,15 +889,6 @@ namespace EnumsNET
 		[Pure]
 		public static string AsString<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.AsString(value, formats);
 
-		[Pure]
-		public static string AsString<[EnumConstraint] TEnum>(string name) where TEnum : struct => EnumsCache<TEnum>.AsString(name);
-
-		[Pure]
-		public static string AsString<[EnumConstraint] TEnum>(string name, string format) where TEnum : struct => EnumsCache<TEnum>.AsString(name, format);
-
-		[Pure]
-		public static string AsString<[EnumConstraint] TEnum>(string name, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.AsString(name, formats);
-
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
 		/// </summary>
@@ -911,12 +902,6 @@ namespace EnumsNET
 
 		[Pure]
 		public static string Format<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.Format(value, formats);
-
-		[Pure]
-		public static string Format<[EnumConstraint] TEnum>(string name, string format) where TEnum : struct => EnumsCache<TEnum>.Format(name, format);
-
-		[Pure]
-		public static string Format<[EnumConstraint] TEnum>(string name, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.Format(name, formats);
 
 		/// <summary>
 		/// Returns an object with the enum's underlying value.
@@ -1019,6 +1004,9 @@ namespace EnumsNET
 		[Pure]
 		public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(string name) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberInfo(name);
 
+		[Pure]
+		public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(string name, bool ignoreCase) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberInfo(name, ignoreCase);
+
 		/// <summary>
 		/// Retrieves the name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
 		/// is not defined null is returned.
@@ -1041,31 +1029,13 @@ namespace EnumsNET
 		[Pure]
 		public static string GetDescription<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetDescription(value);
 
-		/// <summary>
-		/// Retrieves the description of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="name"></param>
-		/// <returns>Description from <see cref="DescriptionAttribute"/> if defined, else null</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="name"/> is null</exception>
-		[Pure]
-		public static string GetDescription<[EnumConstraint] TEnum>(string name) where TEnum : struct => EnumsCache<TEnum>.GetDescription(name);
-
 		[Pure]
 		public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionOrName(value);
 
 		public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value, Func<string, string> nameFormatter) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionOrName(value, nameFormatter);
 
 		[Pure]
-		public static string GetDescriptionOrName<[EnumConstraint] TEnum>(string name) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionOrName(name);
-
-		public static string GetDescriptionOrName<[EnumConstraint] TEnum>(string name, Func<string, string> nameFormatter) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionOrName(name, nameFormatter);
-
-		[Pure]
 		public static string GetEnumMemberValue<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValue(value);
-
-		[Pure]
-		public static string GetEnumMemberValue<[EnumConstraint] TEnum>(string name) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValue(name);
 		#endregion
 
 		#region Attributes
@@ -1081,18 +1051,6 @@ namespace EnumsNET
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.HasAttribute<TAttribute>(value);
 
 		/// <summary>
-		/// Indicates if the enumerated constant with the specified <paramref name="name"/> has a <typeparamref name="TAttribute"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <param name="name"></param>
-		/// <returns>Indication if the enumerated constant with the specified <paramref name="name"/> has a <typeparamref name="TAttribute"/>.</returns>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static bool HasAttribute<[EnumConstraint] TEnum, TAttribute>(string name)
-			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.HasAttribute<TAttribute>(name);
-
-		/// <summary>
 		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
@@ -1102,18 +1060,6 @@ namespace EnumsNET
 		[Pure]
 		public static TAttribute GetAttribute<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttribute<TAttribute>(value);
-
-		/// <summary>
-		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <param name="name"></param>
-		/// <returns><typeparamref name="TAttribute"/> of the enumerated constant with the specified <paramref name="name"/> if defined and has attribute, else null</returns>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static TAttribute GetAttribute<[EnumConstraint] TEnum, TAttribute>(string name)
-			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttribute<TAttribute>(name);
 
 		/// <summary>
 		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>
@@ -1131,29 +1077,9 @@ namespace EnumsNET
 		public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributeSelect(value, selector, defaultValue);
 
-		/// <summary>
-		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="name"/>
-		/// and then applies the <paramref name="selector"/> else it returns <paramref name="defaultValue"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <typeparam name="TResult"></typeparam>
-		/// <param name="name"></param>
-		/// <param name="selector"></param>
-		/// <param name="defaultValue"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="name"/> or <paramref name="selector"/> is null</exception>
-		[Pure]
-		public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
-			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributeSelect(name, selector, defaultValue);
-
 		[Pure]
 		public static bool TryGetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.TryGetAttributeSelect(value, selector, out result);
-
-		[Pure]
-		public static bool TryGetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, out TResult result)
-			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.TryGetAttributeSelect(name, selector, out result);
 
 		/// <summary>
 		/// Retrieves an array of <typeparamref name="TAttribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
@@ -1167,18 +1093,6 @@ namespace EnumsNET
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributes<TAttribute>(value);
 
 		/// <summary>
-		/// Retrieves an array of <typeparamref name="TAttribute"/>'s of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <param name="name"></param>
-		/// <returns><typeparamref name="TAttribute"/> array if name is defined, else null</returns>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static TAttribute[] GetAttributes<[EnumConstraint] TEnum, TAttribute>(string name)
-			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributes<TAttribute>(name);
-
-		/// <summary>
 		/// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
@@ -1186,16 +1100,6 @@ namespace EnumsNET
 		/// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
 		[Pure]
 		public static Attribute[] GetAllAttributes<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetAllAttributes(value);
-
-		/// <summary>
-		/// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="name"></param>
-		/// <returns><see cref="Attribute"/> array if name is defined, else null</returns>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static Attribute[] GetAllAttributes<[EnumConstraint] TEnum>(string name) where TEnum : struct => EnumsCache<TEnum>.GetAllAttributes(name);
 		#endregion
 
 		#region Parsing

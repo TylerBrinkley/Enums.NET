@@ -37,7 +37,7 @@ namespace EnumsNET.Test
 			TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<int>());
 			TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<Enum>());
 			TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<string>());
-			Assert.AreEqual(ColorFlagEnum.All , UnsafeFlagEnums.GetAllFlags<ColorFlagEnum>());
+			Assert.AreEqual(ColorFlagEnum.All, UnsafeFlagEnums.GetAllFlags<ColorFlagEnum>());
 		}
 	}
 }

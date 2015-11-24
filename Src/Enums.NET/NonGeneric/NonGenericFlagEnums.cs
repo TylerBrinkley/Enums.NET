@@ -189,24 +189,30 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static object CommonFlags(Type enumType, object value, object flagMask) => NonGenericEnums.GetEnumsCache(enumType).CommonFlags(value, flagMask);
 
-		[Pure]
-		public static object CommonFlags(Type enumType, params object[] flags) => NonGenericEnums.GetEnumsCache(enumType).CommonFlags(flags);
-
 		/// <summary>
-		/// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> set. Equivalent to the bitwise "or" operation.
+		/// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
 		/// </summary>
 		/// <param name="enumType"></param>
-		/// <param name="value">Must be a valid flag combination.</param>
-		/// <param name="flagMask">Must be a valid flag combination.</param>
-		/// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> set.</returns>
+		/// <param name="flag0">Must be a valid flag combination.</param>
+		/// <param name="flag1">Must be a valid flag combination.</param>
+		/// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
 		/// -or-
-		/// <paramref name="value"/> is an invalid type
+		/// <paramref name="flag0"/> is an invalid type
 		/// -or-
-		/// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+		/// <paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
 		[Pure]
-		public static object SetFlags(Type enumType, object value, object flagMask) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(value, flagMask);
+		public static object SetFlags(Type enumType, object flag0, object flag1) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(flag0, flag1);
+
+		[Pure]
+		public static object SetFlags(Type enumType, object flag0, object flag1, object flag2) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(flag0, flag1, flag2);
+
+		[Pure]
+		public static object SetFlags(Type enumType, object flag0, object flag1, object flag2, object flag3) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(flag0, flag1, flag2, flag3);
+
+		[Pure]
+		public static object SetFlags(Type enumType, object flag0, object flag1, object flag2, object flag3, object flag4) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(flag0, flag1, flag2, flag3, flag4);
 
 		[Pure]
 		public static object SetFlags(Type enumType, params object[] flags) => NonGenericEnums.GetEnumsCache(enumType).SetFlags(flags);

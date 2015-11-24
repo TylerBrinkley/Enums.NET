@@ -18,86 +18,86 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EnumsNET.Test
 {
-    [TestClass]
-    public class FlagEnumsTest
-    {
-        #region "Properties"
-        [TestMethod]
-        public void IsFlagEnum_Test()
-        {
-            Assert.IsTrue(FlagEnums.IsFlagEnum<ColorFlagEnum>());
-            Assert.IsFalse(FlagEnums.IsFlagEnum<NonContiguousEnum>());
-        }
+	[TestClass]
+	public class FlagEnumsTest
+	{
+		#region "Properties"
+		[TestMethod]
+		public void IsFlagEnum_Test()
+		{
+			Assert.IsTrue(FlagEnums.IsFlagEnum<ColorFlagEnum>());
+			Assert.IsFalse(FlagEnums.IsFlagEnum<NonContiguousEnum>());
+		}
 
-        [TestMethod]
-        public void GetAllFlags_Test()
-        {
-            Assert.AreEqual(ColorFlagEnum.All, FlagEnums.GetAllFlags<ColorFlagEnum>());
-        }
-        #endregion
+		[TestMethod]
+		public void GetAllFlags_Test()
+		{
+			Assert.AreEqual(ColorFlagEnum.All, FlagEnums.GetAllFlags<ColorFlagEnum>());
+		}
+		#endregion
 
-        #region Extension Methods
-        [TestMethod]
-        public void IsValidFlagCombination_Test()
-        {
-            for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
-            {
-                if (i >= 0 && i <= 15)
-                {
-                    Assert.IsTrue(FlagEnums.IsValidFlagCombination((ColorFlagEnum)i));
-                }
-                else
-                {
-                    Assert.IsFalse(FlagEnums.IsValidFlagCombination((ColorFlagEnum)i));
-                }
-            }
-        }
+		#region Extension Methods
+		[TestMethod]
+		public void IsValidFlagCombination_Test()
+		{
+			for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
+			{
+				if (i >= 0 && i <= 15)
+				{
+					Assert.IsTrue(FlagEnums.IsValidFlagCombination((ColorFlagEnum)i));
+				}
+				else
+				{
+					Assert.IsFalse(FlagEnums.IsValidFlagCombination((ColorFlagEnum)i));
+				}
+			}
+		}
 
-        [TestMethod]
-        public void FormatAsFlags_ReturnsValidString_WhenUsingValidValue()
-        {
-            Assert.AreEqual("Black", ColorFlagEnum.Black.FormatAsFlags());
-            Assert.AreEqual("Red", ColorFlagEnum.Red.FormatAsFlags());
-            Assert.AreEqual("Green", ColorFlagEnum.Green.FormatAsFlags());
-            Assert.AreEqual("Blue", ColorFlagEnum.Blue.FormatAsFlags());
-            Assert.AreEqual("Red, Green", (ColorFlagEnum.Red | ColorFlagEnum.Green).FormatAsFlags());
-            Assert.AreEqual("Red, Blue", (ColorFlagEnum.Red | ColorFlagEnum.Blue).FormatAsFlags());
-            Assert.AreEqual("Green, Blue", (ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags());
-            Assert.AreEqual("Red, Green, Blue", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags());
-            Assert.AreEqual("UltraViolet", ColorFlagEnum.UltraViolet.FormatAsFlags());
-            Assert.AreEqual("All", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet).FormatAsFlags());
-        }
+		[TestMethod]
+		public void FormatAsFlags_ReturnsValidString_WhenUsingValidValue()
+		{
+			Assert.AreEqual("Black", ColorFlagEnum.Black.FormatAsFlags());
+			Assert.AreEqual("Red", ColorFlagEnum.Red.FormatAsFlags());
+			Assert.AreEqual("Green", ColorFlagEnum.Green.FormatAsFlags());
+			Assert.AreEqual("Blue", ColorFlagEnum.Blue.FormatAsFlags());
+			Assert.AreEqual("Red, Green", (ColorFlagEnum.Red | ColorFlagEnum.Green).FormatAsFlags());
+			Assert.AreEqual("Red, Blue", (ColorFlagEnum.Red | ColorFlagEnum.Blue).FormatAsFlags());
+			Assert.AreEqual("Green, Blue", (ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags());
+			Assert.AreEqual("Red, Green, Blue", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags());
+			Assert.AreEqual("UltraViolet", ColorFlagEnum.UltraViolet.FormatAsFlags());
+			Assert.AreEqual("All", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet).FormatAsFlags());
+		}
 
-        [TestMethod]
-        public void FormatAsFlags_ReturnsValidString_WhenUsingValidValueWithCustomDelimiter()
-        {
-            Assert.AreEqual("Black", ColorFlagEnum.Black.FormatAsFlags(" | "));
-            Assert.AreEqual("Red", ColorFlagEnum.Red.FormatAsFlags(" | "));
-            Assert.AreEqual("Green", ColorFlagEnum.Green.FormatAsFlags(" | "));
-            Assert.AreEqual("Blue", ColorFlagEnum.Blue.FormatAsFlags(" | "));
-            Assert.AreEqual("Red | Green", (ColorFlagEnum.Red | ColorFlagEnum.Green).FormatAsFlags(" | "));
-            Assert.AreEqual("Red | Blue", (ColorFlagEnum.Red | ColorFlagEnum.Blue).FormatAsFlags(" | "));
-            Assert.AreEqual("Green | Blue", (ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags(" | "));
-            Assert.AreEqual("Red | Green | Blue", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags(" | "));
-            Assert.AreEqual("UltraViolet", ColorFlagEnum.UltraViolet.FormatAsFlags(" | "));
-            Assert.AreEqual("All", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet).FormatAsFlags(" | "));
-        }
+		[TestMethod]
+		public void FormatAsFlags_ReturnsValidString_WhenUsingValidValueWithCustomDelimiter()
+		{
+			Assert.AreEqual("Black", ColorFlagEnum.Black.FormatAsFlags(" | "));
+			Assert.AreEqual("Red", ColorFlagEnum.Red.FormatAsFlags(" | "));
+			Assert.AreEqual("Green", ColorFlagEnum.Green.FormatAsFlags(" | "));
+			Assert.AreEqual("Blue", ColorFlagEnum.Blue.FormatAsFlags(" | "));
+			Assert.AreEqual("Red | Green", (ColorFlagEnum.Red | ColorFlagEnum.Green).FormatAsFlags(" | "));
+			Assert.AreEqual("Red | Blue", (ColorFlagEnum.Red | ColorFlagEnum.Blue).FormatAsFlags(" | "));
+			Assert.AreEqual("Green | Blue", (ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags(" | "));
+			Assert.AreEqual("Red | Green | Blue", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).FormatAsFlags(" | "));
+			Assert.AreEqual("UltraViolet", ColorFlagEnum.UltraViolet.FormatAsFlags(" | "));
+			Assert.AreEqual("All", (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet).FormatAsFlags(" | "));
+		}
 
-        [TestMethod]
-        public void FormatAsFlags_ReturnsNull_WhenUsingInvalidValue()
-        {
-            Assert.AreEqual(null, ((ColorFlagEnum)16).FormatAsFlags());
-        }
+		[TestMethod]
+		public void FormatAsFlags_ReturnsNull_WhenUsingInvalidValue()
+		{
+			Assert.AreEqual(null, ((ColorFlagEnum)16).FormatAsFlags());
+		}
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void FormatAsFlags_ThrowsArgumentNullException_WhenUsingValidValueWithNullDelimiter()
-        {
-            ColorFlagEnum.Red.FormatAsFlags((string)null);
-        }
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void FormatAsFlags_ThrowsArgumentNullException_WhenUsingValidValueWithNullDelimiter()
+		{
+			ColorFlagEnum.Red.FormatAsFlags((string)null);
+		}
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
 		public void FormatAsFlags_ThrowsArgumentException_WhenUsingValidValueWithEmptyDelimiter()
 		{
 			ColorFlagEnum.Red.FormatAsFlags(string.Empty);

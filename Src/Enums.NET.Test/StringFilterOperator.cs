@@ -54,7 +54,7 @@ namespace EnumsNET.Test
 	{
 		public StringFilterOperatorType Type { get; }
 
-        public StringFilterOperatorTypeAttribute(StringFilterOperatorType type)
+		public StringFilterOperatorTypeAttribute(StringFilterOperatorType type)
 		{
 			Type = type;
 		}

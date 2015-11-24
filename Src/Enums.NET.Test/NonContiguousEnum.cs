@@ -1,5 +1,4 @@
-﻿
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	// Non-contiguous example
 	public enum NonContiguousEnum : long

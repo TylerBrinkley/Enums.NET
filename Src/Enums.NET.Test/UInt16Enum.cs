@@ -1,6 +1,4 @@
-﻿// UInt16Enum.cs
-
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	public enum UInt16Enum : ushort
 	{

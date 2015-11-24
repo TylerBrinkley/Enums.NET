@@ -90,19 +90,9 @@ namespace EnumsNET
 
 		string AsString(object value, params EnumFormat[] formats);
 
-		string AsString(string name);
-
-		string AsString(string name, string format);
-
-		string AsString(string name, params EnumFormat[] formats);
-
 		string Format(object value, string format);
 
 		string Format(object value, params EnumFormat[] formats);
-
-		string Format(string name, string format);
-
-		string Format(string name, params EnumFormat[] formats);
 
 		object GetUnderlyingValue(object value);
 
@@ -124,29 +114,25 @@ namespace EnumsNET
 		#endregion
 
 		#region Defined Values Main Methods
+		IEnumMemberInfo GetEnumMemberInfo(object value);
+
+		IEnumMemberInfo GetEnumMemberInfo(string name);
+
+		IEnumMemberInfo GetEnumMemberInfo(string name, bool ignoreCase);
+
 		string GetName(object value);
 
 		string GetDescription(object value);
-
-		string GetDescription(string name);
 
 		string GetDescriptionOrName(object value);
 
 		string GetDescriptionOrName(object value, Func<string, string> nameFormatter);
 
-		string GetDescriptionOrName(string name);
-
-		string GetDescriptionOrName(string name, Func<string, string> nameFormatter);
-
 		string GetEnumMemberValue(object value);
-
-		string GetEnumMemberValue(string name);
 		#endregion
 
 		#region Attributes
 		Attribute[] GetAllAttributes(object value);
-
-		Attribute[] GetAllAttributes(string name);
 		#endregion
 
 		#region Parsing
@@ -204,9 +190,13 @@ namespace EnumsNET
 
 		object CommonFlags(object value, object flagMask);
 
-		object CommonFlags(object[] flags);
+		object SetFlags(object flag0, object flag1);
 
-		object SetFlags(object value, object flagMask);
+		object SetFlags(object flag0, object flag1, object flag2);
+
+		object SetFlags(object flag0, object flag1, object flag2, object flag3);
+
+		object SetFlags(object flag0, object flag1, object flag2, object flag3, object flag4);
 
 		object SetFlags(object[] flags);
 

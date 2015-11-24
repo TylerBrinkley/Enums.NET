@@ -58,7 +58,7 @@ namespace EnumsNET.Test
 	{
 		public NumericFilterOperatorType Type { get; }
 
-		public NumericFilterOperatorTypeAttribute(NumericFilterOperatorType type)
+        public NumericFilterOperatorTypeAttribute(NumericFilterOperatorType type)
 		{
 			Type = type;
 		}

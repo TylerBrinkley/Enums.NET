@@ -1,6 +1,4 @@
-﻿// SByteEnum.cs
-
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	public enum SByteEnum : sbyte
 	{

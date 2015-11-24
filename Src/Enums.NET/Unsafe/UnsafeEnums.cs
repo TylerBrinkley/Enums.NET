@@ -1195,27 +1195,6 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.AsString(value, formats);
 		}
 
-		[Pure]
-		public static string AsString<TEnum>(string name)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AsString(name);
-		}
-
-		[Pure]
-		public static string AsString<TEnum>(string name, string format)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AsString(name, format);
-		}
-
-		[Pure]
-		public static string AsString<TEnum>(string name, params EnumFormat[] formats)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AsString(name, formats);
-		}
-
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
 		/// </summary>
@@ -1238,20 +1217,6 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.Format(value, formats);
-		}
-
-		[Pure]
-		public static string Format<TEnum>(string name, string format)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(name, format);
-		}
-
-		[Pure]
-		public static string Format<TEnum>(string name, params EnumFormat[] formats)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(name, formats);
 		}
 
 		/// <summary>
@@ -1408,6 +1373,13 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.GetEnumMemberInfo(name);
 		}
 
+		[Pure]
+		public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(string name, bool ignoreCase)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.GetEnumMemberInfo(name, ignoreCase);
+		}
+
 		/// <summary>
 		/// Retrieves the name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
 		/// is not defined null is returned.
@@ -1440,21 +1412,6 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.GetDescription(value);
 		}
 
-		/// <summary>
-		/// Retrieves the description of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <param name="name"></param>
-		/// <returns>Description from <see cref="DescriptionAttribute"/> if defined, else null</returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		/// <exception cref="ArgumentNullException"><paramref name="name"/> is null</exception>
-		[Pure]
-		public static string GetDescription<TEnum>(string name)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescription(name);
-		}
-
 		[Pure]
 		public static string GetDescriptionOrName<TEnum>(TEnum value)
 		{
@@ -1469,30 +1426,10 @@ namespace EnumsNET.Unsafe
 		}
 
 		[Pure]
-		public static string GetDescriptionOrName<TEnum>(string name)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptionOrName(name);
-		}
-
-		public static string GetDescriptionOrName<TEnum>(string name, Func<string, string> nameFormatter)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptionOrName(name, nameFormatter);
-		}
-
-		[Pure]
 		public static string GetEnumMemberValue<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.GetEnumMemberValue(value);
-		}
-
-		[Pure]
-		public static string GetEnumMemberValue<TEnum>(string name)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberValue(name);
 		}
 		#endregion
 
@@ -1514,23 +1451,6 @@ namespace EnumsNET.Unsafe
 		}
 
 		/// <summary>
-		/// Indicates if the enumerated constant with the specified <paramref name="name"/> has a <typeparamref name="TAttribute"/>.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <param name="name"></param>
-		/// <returns>Indication if the enumerated constant with the specified <paramref name="name"/> has a <typeparamref name="TAttribute"/>.</returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static bool HasAttribute<TEnum, TAttribute>(string name)
-			where TAttribute : Attribute
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.HasAttribute<TAttribute>(name);
-		}
-
-		/// <summary>
 		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>.
 		/// </summary>
 		/// <typeparam name="TEnum"></typeparam>
@@ -1544,23 +1464,6 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.GetAttribute<TAttribute>(value);
-		}
-
-		/// <summary>
-		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <param name="name"></param>
-		/// <returns><typeparamref name="TAttribute"/> of the enumerated constant with the specified <paramref name="name"/> if defined and has attribute, else null</returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static TAttribute GetAttribute<TEnum, TAttribute>(string name)
-			where TAttribute : Attribute
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttribute<TAttribute>(name);
 		}
 
 		/// <summary>
@@ -1584,41 +1487,12 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.GetAttributeSelect(value, selector, defaultValue);
 		}
 
-		/// <summary>
-		/// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="name"/>
-		/// and then applies the <paramref name="selector"/> else it returns <paramref name="defaultValue"/>.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <typeparam name="TResult"></typeparam>
-		/// <param name="name"></param>
-		/// <param name="selector"></param>
-		/// <param name="defaultValue"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		/// <exception cref="ArgumentNullException"><paramref name="name"/> or <paramref name="selector"/> is null</exception>
-		[Pure]
-		public static TResult GetAttributeSelect<TEnum, TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
-			where TAttribute : Attribute
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttributeSelect(name, selector, defaultValue);
-		}
-
 		[Pure]
 		public static bool TryGetAttributeSelect<TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.TryGetAttributeSelect(value, selector, out result);
-		}
-
-		[Pure]
-		public static bool TryGetAttributeSelect<TEnum, TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, out TResult result)
-			where TAttribute : Attribute
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryGetAttributeSelect(name, selector, out result);
 		}
 
 		/// <summary>
@@ -1638,23 +1512,6 @@ namespace EnumsNET.Unsafe
 		}
 
 		/// <summary>
-		/// Retrieves an array of <typeparamref name="TAttribute"/>'s of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <typeparam name="TAttribute"></typeparam>
-		/// <param name="name"></param>
-		/// <returns><typeparamref name="TAttribute"/> array if name is defined, else null</returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static TAttribute[] GetAttributes<TEnum, TAttribute>(string name)
-			where TAttribute : Attribute
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttributes<TAttribute>(name);
-		}
-
-		/// <summary>
 		/// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
 		/// </summary>
 		/// <typeparam name="TEnum"></typeparam>
@@ -1666,21 +1523,6 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.GetAllAttributes(value);
-		}
-
-		/// <summary>
-		/// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="name"/>.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <param name="name"></param>
-		/// <returns><see cref="Attribute"/> array if name is defined, else null</returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		/// <exception cref="ArgumentNullException">name is null</exception>
-		[Pure]
-		public static Attribute[] GetAllAttributes<TEnum>(string name)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAllAttributes(name);
 		}
 		#endregion
 

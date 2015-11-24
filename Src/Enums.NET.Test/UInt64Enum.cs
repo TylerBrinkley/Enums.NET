@@ -1,6 +1,4 @@
-﻿// UInt64Enum.cs
-
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	public enum UInt64Enum : ulong
 	{

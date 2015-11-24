@@ -711,32 +711,6 @@ namespace EnumsNET
 
 		public static string AsString(TEnum value, string format) => string.IsNullOrEmpty(format) ? AsString(value) : Format(value, format);
 
-		public static string AsString(string name)
-		{
-			var info = GetInternalEnumMemberInfo(name);
-			if (info.Name == null)
-			{
-				return null;
-			}
-			if (IsFlagEnum && IsValidFlagCombination(info.Value))
-			{
-				return FormatAsFlags(info.Value);
-			}
-			return InternalFormat(info.Value, info, EnumFormat.Name, EnumFormat.DecimalValue);
-		}
-
-		public static string AsString(string name, params EnumFormat[] formats)
-		{
-			var info = GetInternalEnumMemberInfo(name);
-			if (info.Name == null)
-			{
-				return null;
-			}
-			return InternalFormat(info.Value, info, formats?.Length > 0 ? formats : new[] { EnumFormat.Name, EnumFormat.DecimalValue });
-		}
-
-		public static string AsString(string name, string format) => string.IsNullOrEmpty(format) ? AsString(name) : Format(name, format);
-
 		public static string Format(TEnum value, params EnumFormat[] formats)
 		{
 			Preconditions.NotNullOrEmpty(formats, nameof(formats));
@@ -764,31 +738,6 @@ namespace EnumsNET
 					return ToHexadecimalString(value);
 			}
 			throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
-		}
-
-		public static string Format(string name, params EnumFormat[] formats)
-		{
-			Preconditions.NotNullOrEmpty(formats, nameof(formats));
-
-			var info = GetInternalEnumMemberInfo(name);
-			if (info.Name == null)
-			{
-				return null;
-			}
-			return InternalFormat(info.Value, info, formats);
-		}
-
-		public static string Format(string name, string format)
-		{
-			Preconditions.NotNull(format, nameof(format));
-
-			var info = GetInternalEnumMemberInfo(name);
-			if (info.Name == null)
-			{
-				return null;
-			}
-
-			return InternalFormat(info, format);
 		}
 
 		public static string InternalFormat(InternalEnumMemberInfo<TEnum> info, string format)
@@ -1154,9 +1103,9 @@ namespace EnumsNET
 			return GetInternalEnumMemberInfo(value).ToEnumMemberInfo();
 		}
 
-		public static EnumMemberInfo<TEnum> GetEnumMemberInfo(string name)
+		public static EnumMemberInfo<TEnum> GetEnumMemberInfo(string name, bool ignoreCase = false)
 		{
-			return GetInternalEnumMemberInfo(name).ToEnumMemberInfo();
+			return GetInternalEnumMemberInfo(name, ignoreCase).ToEnumMemberInfo();
 		}
 
 		public static string GetName(TEnum value)
@@ -1169,11 +1118,6 @@ namespace EnumsNET
 			return GetInternalEnumMemberInfo(value).Description;
 		}
 
-		public static string GetDescription(string name)
-		{
-			return GetInternalEnumMemberInfo(name).Description;
-		}
-
 		public static string GetDescriptionOrName(TEnum value)
 		{
 			return GetInternalEnumMemberInfo(value).GetDescriptionOrName();
@@ -1184,24 +1128,9 @@ namespace EnumsNET
 			return GetInternalEnumMemberInfo(value).GetDescriptionOrName(nameFormatter);
 		}
 
-		public static string GetDescriptionOrName(string name)
-		{
-			return GetInternalEnumMemberInfo(name).GetDescriptionOrName();
-		}
-
-		public static string GetDescriptionOrName(string name, Func<string, string> nameFormatter)
-		{
-			return GetInternalEnumMemberInfo(name).GetDescriptionOrName(nameFormatter);
-		}
-
 		public static string GetEnumMemberValue(TEnum value)
 		{
 			return GetInternalEnumMemberInfo(value).EnumMemberValue;
-		}
-
-		public static string GetEnumMemberValue(string name)
-		{
-			return GetInternalEnumMemberInfo(name).EnumMemberValue;
 		}
 
 		private static InternalEnumMemberInfo<TEnum> GetInternalEnumMemberInfo(TEnum value)
@@ -1210,7 +1139,7 @@ namespace EnumsNET
 			return index >= 0 ? new InternalEnumMemberInfo<TEnum>(_valueMap.GetAt(index)) : new InternalEnumMemberInfo<TEnum>();
 		}
 
-		private static InternalEnumMemberInfo<TEnum> GetInternalEnumMemberInfo(string name)
+		private static InternalEnumMemberInfo<TEnum> GetInternalEnumMemberInfo(string name, bool ignoreCase)
 		{
 			Preconditions.NotNull(name, nameof(name));
 
@@ -1224,6 +1153,19 @@ namespace EnumsNET
 			{
 				return new InternalEnumMemberInfo<TEnum>(name, valueAndAttributes);
 			}
+			if (ignoreCase)
+			{
+				string actualName;
+				if (_ignoreCaseSet.Value.TryGetValue(name, out actualName))
+				{
+					index = _valueMap.IndexOfSecond(new NameAndAttributes(actualName));
+					if (index >= 0)
+					{
+						return new InternalEnumMemberInfo<TEnum>(_valueMap.GetAt(index));
+					}
+					return new InternalEnumMemberInfo<TEnum>(actualName, _duplicateValues[actualName]);
+				}
+			}
 			return new InternalEnumMemberInfo<TEnum>();
 		}
 		#endregion
@@ -1235,22 +1177,10 @@ namespace EnumsNET
 			return GetAttribute<TAttribute>(value) != null;
 		}
 
-		public static bool HasAttribute<TAttribute>(string name)
-			where TAttribute : Attribute
-		{
-			return GetAttribute<TAttribute>(name) != null;
-		}
-
 		public static TAttribute GetAttribute<TAttribute>(TEnum value)
 			where TAttribute : Attribute
 		{
 			return GetInternalEnumMemberInfo(value).GetAttribute<TAttribute>();
-		}
-
-		public static TAttribute GetAttribute<TAttribute>(string name)
-			where TAttribute : Attribute
-		{
-			return GetInternalEnumMemberInfo(name).GetAttribute<TAttribute>();
 		}
 
 		public static TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
@@ -1258,17 +1188,6 @@ namespace EnumsNET
 		{
 			TResult result;
 			if (!TryGetAttributeSelect(value, selector, out result))
-			{
-				result = defaultValue;
-			}
-			return result;
-		}
-
-		public static TResult GetAttributeSelect<TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, TResult defaultValue)
-			where TAttribute : Attribute
-		{
-			TResult result;
-			if (!TryGetAttributeSelect(name, selector, out result))
 			{
 				result = defaultValue;
 			}
@@ -1290,41 +1209,15 @@ namespace EnumsNET
 			return false;
 		}
 
-		public static bool TryGetAttributeSelect<TAttribute, TResult>(string name, Func<TAttribute, TResult> selector, out TResult result)
-			where TAttribute : Attribute
-		{
-			Preconditions.NotNull(selector, nameof(selector));
-
-			var attr = GetAttribute<TAttribute>(name);
-			if (attr != null)
-			{
-				result = selector(attr);
-				return true;
-			}
-			result = default(TResult);
-			return false;
-		}
-
 		public static TAttribute[] GetAttributes<TAttribute>(TEnum value)
 			where TAttribute : Attribute
 		{
 			return GetInternalEnumMemberInfo(value).GetAttributes<TAttribute>();
 		}
 
-		public static TAttribute[] GetAttributes<TAttribute>(string name)
-			where TAttribute : Attribute
-		{
-			return GetInternalEnumMemberInfo(name).GetAttributes<TAttribute>();
-		}
-
 		public static Attribute[] GetAllAttributes(TEnum value)
 		{
 			return GetInternalEnumMemberInfo(value).Attributes;
-		}
-
-		public static Attribute[] GetAllAttributes(string name)
-		{
-			return GetInternalEnumMemberInfo(name).Attributes;
 		}
 		#endregion
 
@@ -1627,24 +1520,38 @@ namespace EnumsNET
 			return _and(value, flagMask);
 		}
 
-		public static TEnum CommonFlags(TEnum[] flags)
+		public static TEnum SetFlags(TEnum flag0, TEnum flag1)
 		{
-			var flag = default(TEnum);
-			var flagsLength = flags?.Length ?? 0;
-			for (var i = 0; i < flagsLength; ++i)
-			{
-				var nextFlag = flags[i];
-				ValidateIsValidFlagCombination(nextFlag, nameof(flags) + " must contain all valid flag combinations");
-				flag = _and(flag, nextFlag);
-			}
-			return flag;
+			ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			return _or(flag0, flag1);
 		}
 
-		public static TEnum SetFlags(TEnum value, TEnum flagMask)
+		public static TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return _or(value, flagMask);
+			ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			ValidateIsValidFlagCombination(flag2, nameof(flag2));
+			return _or(_or(flag0, flag1), flag2);
+		}
+
+		public static TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
+		{
+			ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			ValidateIsValidFlagCombination(flag2, nameof(flag2));
+			ValidateIsValidFlagCombination(flag3, nameof(flag3));
+			return _or(_or(_or(flag0, flag1), flag2), flag3);
+		}
+
+		public static TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
+		{
+			ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			ValidateIsValidFlagCombination(flag2, nameof(flag2));
+			ValidateIsValidFlagCombination(flag3, nameof(flag3));
+			ValidateIsValidFlagCombination(flag4, nameof(flag4));
+			return _or(_or(_or(_or(flag0, flag1), flag2), flag3), flag4);
 		}
 
 		public static TEnum SetFlags(TEnum[] flags)
@@ -1941,23 +1848,21 @@ namespace EnumsNET
 		#region Main Methods
 		object IEnumsCache.Validate(object value, string paramName) => Validate(ConvertToEnum(value, nameof(value)), paramName);
 
+		IEnumMemberInfo IEnumsCache.GetEnumMemberInfo(object value) => GetEnumMemberInfo(ConvertToEnum(value, nameof(value)));
+
+		IEnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name) => GetEnumMemberInfo(name);
+
+		IEnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name, bool ignoreCase) => GetEnumMemberInfo(name, ignoreCase);
+
 		string IEnumsCache.GetName(object value) => GetName(ConvertToEnum(value, nameof(value)));
 
 		string IEnumsCache.GetDescription(object value) => GetDescription(ConvertToEnum(value, nameof(value)));
-
-		string IEnumsCache.GetDescription(string name) => GetDescription(name);
 
 		string IEnumsCache.GetDescriptionOrName(object value) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)));
 
 		string IEnumsCache.GetDescriptionOrName(object value, Func<string, string> nameFormatter) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)), nameFormatter);
 
-		string IEnumsCache.GetDescriptionOrName(string name) => GetDescriptionOrName(name);
-
-		string IEnumsCache.GetDescriptionOrName(string name, Func<string, string> nameFormatter) => GetDescriptionOrName(name, nameFormatter);
-
 		string IEnumsCache.GetEnumMemberValue(object value) => GetEnumMemberValue(ConvertToEnum(value, nameof(value)));
-
-		string IEnumsCache.GetEnumMemberValue(string name) => GetEnumMemberValue(name);
 
 		string IEnumsCache.AsString(object value) => AsString(ConvertToEnum(value, nameof(value)));
 
@@ -1965,19 +1870,9 @@ namespace EnumsNET
 
 		string IEnumsCache.AsString(object value, params EnumFormat[] formats) => AsString(ConvertToEnum(value, nameof(value)), formats);
 
-		string IEnumsCache.AsString(string name) => AsString(name);
-
-		string IEnumsCache.AsString(string name, string format) => AsString(name, format);
-
-		string IEnumsCache.AsString(string name, params EnumFormat[] formats) => AsString(name, formats);
-
 		string IEnumsCache.Format(object value, string format) => Format(ConvertToEnum(value, nameof(value)), format);
 
 		string IEnumsCache.Format(object value, params EnumFormat[] formats) => Format(ConvertToEnum(value, nameof(value)), formats);
-
-		string IEnumsCache.Format(string name, string format) => Format(name, format);
-
-		string IEnumsCache.Format(string name, params EnumFormat[] formats) => Format(name, formats);
 
 		object IEnumsCache.GetUnderlyingValue(object value) => GetUnderlyingValue(ConvertToEnum(value, nameof(value)));
 
@@ -2000,8 +1895,6 @@ namespace EnumsNET
 
 		#region Attributes
 		Attribute[] IEnumsCache.GetAllAttributes(object value) => GetAllAttributes(ConvertToEnum(value, nameof(value)));
-
-		Attribute[] IEnumsCache.GetAllAttributes(string name) => GetAllAttributes(name);
 		#endregion
 
 		#region Parsing
@@ -2115,9 +2008,13 @@ namespace EnumsNET
 
 		object IEnumsCache.CommonFlags(object value, object flagMask) => CommonFlags(ConvertToEnum(value, nameof(value)), ConvertToEnum(flagMask, nameof(flagMask)));
 
-		object IEnumsCache.CommonFlags(object[] flags) => CommonFlags(ConvertToEnumArray(flags, nameof(flags)));
+		object IEnumsCache.SetFlags(object flag0, object flag1) => SetFlags(ConvertToEnum(flag0, nameof(flag0)), ConvertToEnum(flag1, nameof(flag1)));
 
-		object IEnumsCache.SetFlags(object value, object flagMask) => SetFlags(ConvertToEnum(value, nameof(value)), ConvertToEnum(flagMask, nameof(flagMask)));
+		object IEnumsCache.SetFlags(object flag0, object flag1, object flag2) => SetFlags(ConvertToEnum(flag0, nameof(flag0)), ConvertToEnum(flag1, nameof(flag1)), ConvertToEnum(flag2, nameof(flag2)));
+
+		object IEnumsCache.SetFlags(object flag0, object flag1, object flag2, object flag3) => SetFlags(ConvertToEnum(flag0, nameof(flag0)), ConvertToEnum(flag1, nameof(flag1)), ConvertToEnum(flag2, nameof(flag2)), ConvertToEnum(flag3, nameof(flag3)));
+
+		object IEnumsCache.SetFlags(object flag0, object flag1, object flag2, object flag3, object flag4) => SetFlags(ConvertToEnum(flag0, nameof(flag0)), ConvertToEnum(flag1, nameof(flag1)), ConvertToEnum(flag2, nameof(flag2)), ConvertToEnum(flag3, nameof(flag3)), ConvertToEnum(flag4, nameof(flag4)));
 
 		object IEnumsCache.SetFlags(object[] flags) => SetFlags(ConvertToEnumArray(flags, nameof(flags)));
 

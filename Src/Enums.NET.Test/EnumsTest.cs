@@ -1,4 +1,4 @@
-﻿// Enums.NET
+﻿// NET
 // Copyright 2015 Tyler Brinkley. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static EnumsNET.Enums;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
 namespace EnumsNET.Test
@@ -26,23 +27,23 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void IsContiguous()
 		{
-			Assert.IsTrue(Enums.IsContiguous<DateFilterOperator>());
-			Assert.IsTrue(Enums.IsContiguous<ContiguousUInt64Enum>());
-			Assert.IsFalse(Enums.IsContiguous<NonContiguousEnum>());
-			Assert.IsFalse(Enums.IsContiguous<NonContiguousUInt64Enum>());
+			Assert.IsTrue(IsContiguous<DateFilterOperator>());
+			Assert.IsTrue(IsContiguous<ContiguousUInt64Enum>());
+			Assert.IsFalse(IsContiguous<NonContiguousEnum>());
+			Assert.IsFalse(IsContiguous<NonContiguousUInt64Enum>());
 		}
 
 		[TestMethod]
 		public void GetUnderlyingType()
 		{
-			Assert.AreEqual(typeof(sbyte), Enums.GetUnderlyingType<SByteEnum>());
-			Assert.AreEqual(typeof(byte), Enums.GetUnderlyingType<ByteEnum>());
-			Assert.AreEqual(typeof(short), Enums.GetUnderlyingType<Int16Enum>());
-			Assert.AreEqual(typeof(ushort), Enums.GetUnderlyingType<UInt16Enum>());
-			Assert.AreEqual(typeof(int), Enums.GetUnderlyingType<Int32Enum>());
-			Assert.AreEqual(typeof(uint), Enums.GetUnderlyingType<UInt32Enum>());
-			Assert.AreEqual(typeof(long), Enums.GetUnderlyingType<Int64Enum>());
-			Assert.AreEqual(typeof(ulong), Enums.GetUnderlyingType<UInt64Enum>());
+			Assert.AreEqual(typeof(sbyte), GetUnderlyingType<SByteEnum>());
+			Assert.AreEqual(typeof(byte), GetUnderlyingType<ByteEnum>());
+			Assert.AreEqual(typeof(short), GetUnderlyingType<Int16Enum>());
+			Assert.AreEqual(typeof(ushort), GetUnderlyingType<UInt16Enum>());
+			Assert.AreEqual(typeof(int), GetUnderlyingType<Int32Enum>());
+			Assert.AreEqual(typeof(uint), GetUnderlyingType<UInt32Enum>());
+			Assert.AreEqual(typeof(long), GetUnderlyingType<Int64Enum>());
+			Assert.AreEqual(typeof(ulong), GetUnderlyingType<UInt64Enum>());
 		}
 		#endregion
 
@@ -50,38 +51,38 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void GetDefinedCount()
 		{
-			Assert.AreEqual(0, Enums.GetDefinedCount<ByteEnum>());
-			Assert.AreEqual(38, Enums.GetDefinedCount<DateFilterOperator>());
-			Assert.AreEqual(6, Enums.GetDefinedCount<ColorFlagEnum>());
-			Assert.AreEqual(10, Enums.GetDefinedCount<NumericFilterOperator>());
+			Assert.AreEqual(0, GetDefinedCount<ByteEnum>());
+			Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>());
+			Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>());
+			Assert.AreEqual(10, GetDefinedCount<NumericFilterOperator>());
 		}
 
 		[TestMethod]
 		public void GetUniqueDefinedCount()
 		{
-			Assert.AreEqual(0, Enums.GetDefinedCount<ByteEnum>(true));
-			Assert.AreEqual(38, Enums.GetDefinedCount<DateFilterOperator>(true));
-			Assert.AreEqual(6, Enums.GetDefinedCount<ColorFlagEnum>(true));
-			Assert.AreEqual(8, Enums.GetDefinedCount<NumericFilterOperator>(true)); // Has 2 duplicates
+			Assert.AreEqual(0, GetDefinedCount<ByteEnum>(true));
+			Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>(true));
+			Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>(true));
+			Assert.AreEqual(8, GetDefinedCount<NumericFilterOperator>(true)); // Has 2 duplicates
 		}
 
 		[TestMethod]
 		public void GetNames()
 		{
-			TestHelper.ArraysAreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, Enums.GetNames<ColorFlagEnum>());
-			TestHelper.ArraysAreEqual(Enum.GetNames(typeof(DateFilterOperator)), Enums.GetNames<DateFilterOperator>());
-			TestHelper.ArraysAreEqual(new string[0], Enums.GetNames<ByteEnum>());
+			TestHelper.ArraysAreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, GetNames<ColorFlagEnum>());
+			TestHelper.ArraysAreEqual(Enum.GetNames(typeof(DateFilterOperator)), GetNames<DateFilterOperator>());
+			TestHelper.ArraysAreEqual(new string[0], GetNames<ByteEnum>());
 		}
 
 		[TestMethod]
 		public void GetValues()
 		{
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, Enums.GetValues<ColorFlagEnum>());
-			TestHelper.ArraysAreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), Enums.GetValues<DateFilterOperator>());
-			TestHelper.ArraysAreEqual(new ByteEnum[0], Enums.GetValues<ByteEnum>());
+			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>());
+			TestHelper.ArraysAreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>());
+			TestHelper.ArraysAreEqual(new ByteEnum[0], GetValues<ByteEnum>());
 
 			// Duplicate order check
-			var numericFilterOperators = Enums.GetValues<NumericFilterOperator>();
+			var numericFilterOperators = GetValues<NumericFilterOperator>();
 			for (var i = 1; i < numericFilterOperators.Length; ++i)
 			{
 				Assert.IsTrue(numericFilterOperators[i - 1] <= numericFilterOperators[i]);
@@ -91,31 +92,31 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void GetUniqueValues()
 		{
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, Enums.GetValues<ColorFlagEnum>(true));
-			TestHelper.ArraysAreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), Enums.GetValues<DateFilterOperator>(true));
-			TestHelper.ArraysAreEqual(new ByteEnum[0], Enums.GetValues<ByteEnum>(true));
-			TestHelper.ArraysAreEqual(new[] { NumericFilterOperator.Is, NumericFilterOperator.IsNot, NumericFilterOperator.GreaterThan, NumericFilterOperator.LessThan, NumericFilterOperator.GreaterThanOrEqual, NumericFilterOperator.NotGreaterThan, NumericFilterOperator.Between, NumericFilterOperator.NotBetween }, Enums.GetValues<NumericFilterOperator>(true));
+			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true));
+			TestHelper.ArraysAreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true));
+			TestHelper.ArraysAreEqual(new ByteEnum[0], GetValues<ByteEnum>(true));
+			TestHelper.ArraysAreEqual(new[] { NumericFilterOperator.Is, NumericFilterOperator.IsNot, NumericFilterOperator.GreaterThan, NumericFilterOperator.LessThan, NumericFilterOperator.GreaterThanOrEqual, NumericFilterOperator.NotGreaterThan, NumericFilterOperator.Between, NumericFilterOperator.NotBetween }, GetValues<NumericFilterOperator>(true));
 		}
 
 		[TestMethod]
 		public void GetDescriptions()
 		{
-			TestHelper.ArraysAreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, Enums.GetDescriptions<ColorFlagEnum>());
-			TestHelper.ArraysAreEqual(new string[0], Enums.GetDescriptions<ByteEnum>());
+			TestHelper.ArraysAreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetDescriptions<ColorFlagEnum>());
+			TestHelper.ArraysAreEqual(new string[0], GetDescriptions<ByteEnum>());
 		}
 
 		[TestMethod]
 		public void GetAllAttributes()
 		{
-			TestHelper.ArrayOfArraysAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, Enums.GetAllAttributes<ColorFlagEnum>());
-			TestHelper.ArrayOfArraysAreEqual(new Attribute[0][], Enums.GetAllAttributes<ByteEnum>());
+			TestHelper.ArrayOfArraysAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetAllAttributes<ColorFlagEnum>());
+			TestHelper.ArrayOfArraysAreEqual(new Attribute[0][], GetAllAttributes<ByteEnum>());
 		}
 
 		[TestMethod]
 		public void GetAttributes()
 		{
-			TestHelper.ArraysAreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, Enums.GetAttributes<ColorFlagEnum, DescriptionAttribute>());
-			TestHelper.ArraysAreEqual(new DescriptionAttribute[0], Enums.GetAttributes<ByteEnum, DescriptionAttribute>());
+			TestHelper.ArraysAreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetAttributes<ColorFlagEnum, DescriptionAttribute>());
+			TestHelper.ArraysAreEqual(new DescriptionAttribute[0], GetAttributes<ByteEnum, DescriptionAttribute>());
 		}
 		#endregion
 
@@ -261,37 +262,37 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void IsDefined_ReturnsValidResults_WhenUsingValidName()
 		{
-			Assert.IsTrue(Enums.IsDefined<ColorFlagEnum>("UltraViolet"));
+			Assert.IsTrue(IsDefined<ColorFlagEnum>("UltraViolet"));
 		}
 
 		[TestMethod]
 		public void IsDefined_ReturnsFalse_WhenUsingInvalidName()
 		{
-			Assert.IsFalse(Enums.IsDefined<ColorFlagEnum>("ulTrAvioLet"));
+			Assert.IsFalse(IsDefined<ColorFlagEnum>("ulTrAvioLet"));
 		}
 
 		[TestMethod]
 		public void IsDefined_ReturnsTrue_WhenUsingValidNameWhileIgnoringCase()
 		{
-			Assert.IsTrue(Enums.IsDefined<ColorFlagEnum>("ulTrAvioLet", true));
+			Assert.IsTrue(IsDefined<ColorFlagEnum>("ulTrAvioLet", true));
 		}
 
 		[TestMethod]
 		public void IsDefined_ReturnsTrue_WhenUsingValidNumber()
 		{
-			Assert.IsTrue(Enums.IsDefined<ColorFlagEnum>(1));
+			Assert.IsTrue(IsDefined<ColorFlagEnum>(1));
 		}
 
 		[TestMethod]
 		public void IsDefined_ReturnsTrue_WhenUsingUndefinedNumber()
 		{
-			Assert.IsFalse(Enums.IsDefined<ColorFlagEnum>(-1));
+			Assert.IsFalse(IsDefined<ColorFlagEnum>(-1));
 		}
 
 		[TestMethod]
 		public void IsDefined_ReturnsFalse_WhenUsingLargeNumber()
 		{
-			Assert.IsFalse(Enums.IsDefined<ColorFlagEnum>(128));
+			Assert.IsFalse(IsDefined<ColorFlagEnum>(128));
 		}
 		#endregion
 
@@ -299,169 +300,169 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingSByteOverload()
 		{
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(sbyte.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(sbyte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(sbyte.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(sbyte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(sbyte.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(sbyte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(sbyte.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(sbyte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(sbyte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(sbyte.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(sbyte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(sbyte.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(sbyte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(sbyte.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(sbyte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(sbyte.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(sbyte.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingByteOverload()
 		{
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(byte.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(byte.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(byte.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(byte.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(byte.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(byte.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(byte.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingShortOverload()
 		{
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(short.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(short.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(short.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(short.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(short.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(short.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(short.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(short.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(short.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(short.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(short.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(short.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(short.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(short.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(short.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(short.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(short.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(short.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(short.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(short.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(short.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(short.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(short.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(short.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(short.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(short.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(short.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(short.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(short.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(short.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(short.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(short.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingUShortOverload()
 		{
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(ushort.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(ushort.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(ushort.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(ushort.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(ushort.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(ushort.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(ushort.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(ushort.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(ushort.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(ushort.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(ushort.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(ushort.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ushort.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(ushort.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ushort.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(ushort.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ushort.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ushort.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingIntOverload()
 		{
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(int.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(int.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(int.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(int.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(int.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(int.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(int.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(int.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(int.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(int.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(int.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(int.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(int.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(int.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(int.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(int.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(int.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(int.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(int.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(int.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(int.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(int.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(int.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(int.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(int.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(int.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(int.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(int.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(int.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(int.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(int.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(int.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingUIntOverload()
 		{
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(uint.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(uint.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(uint.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(uint.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(uint.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(uint.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(uint.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(uint.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(uint.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(uint.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(uint.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(uint.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(uint.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(uint.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(uint.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(uint.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(uint.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(uint.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(uint.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingLongOverload()
 		{
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(long.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(long.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(long.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(long.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(long.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(long.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(long.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(long.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(long.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(long.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(long.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(long.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(long.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(long.MaxValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(long.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(long.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(long.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(long.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(long.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(long.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(long.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(long.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(long.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(long.MaxValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(long.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(long.MaxValue));
 		}
 
 		[TestMethod]
 		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingULongOverload()
 		{
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<SByteEnum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<ByteEnum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int16Enum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt16Enum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int32Enum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<UInt32Enum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(ulong.MinValue));
-			Assert.IsFalse(Enums.IsWithinUnderlyingTypesValueRange<Int64Enum>(ulong.MaxValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(ulong.MinValue));
-			Assert.IsTrue(Enums.IsWithinUnderlyingTypesValueRange<UInt64Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(ulong.MinValue));
+			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int64Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ulong.MinValue));
+			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ulong.MaxValue));
 		}
 		#endregion
 
@@ -469,162 +470,162 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void ToEnum_ReturnsValidValue_WhenUsingValidNumber()
 		{
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>((sbyte)1, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>((byte)1, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>((short)1, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>((ushort)1, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>(1, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>(1U, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>(1L, false));
-			Assert.AreEqual((SByteEnum)1, Enums.ToEnum<SByteEnum>(1UL, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>((sbyte)1, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>((byte)1, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>((short)1, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>((ushort)1, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>(1, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>(1U, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>(1L, false));
+			Assert.AreEqual((SByteEnum)1, ToEnum<SByteEnum>(1UL, false));
 
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>((sbyte)1, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>((byte)1, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>((short)1, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>((ushort)1, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>(1, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>(1U, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>(1L, false));
-			Assert.AreEqual((ByteEnum)1, Enums.ToEnum<ByteEnum>(1UL, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>((sbyte)1, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>((byte)1, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>((short)1, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>((ushort)1, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>(1, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>(1U, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>(1L, false));
+			Assert.AreEqual((ByteEnum)1, ToEnum<ByteEnum>(1UL, false));
 
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>((sbyte)1, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>((byte)1, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>((short)1, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>((ushort)1, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>(1, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>(1U, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>(1L, false));
-			Assert.AreEqual((Int16Enum)1, Enums.ToEnum<Int16Enum>(1UL, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>((sbyte)1, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>((byte)1, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>((short)1, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>((ushort)1, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>(1, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>(1U, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>(1L, false));
+			Assert.AreEqual((Int16Enum)1, ToEnum<Int16Enum>(1UL, false));
 
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>((sbyte)1, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>((byte)1, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>((short)1, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>((ushort)1, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>(1, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>(1U, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>(1L, false));
-			Assert.AreEqual((UInt16Enum)1, Enums.ToEnum<UInt16Enum>(1UL, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>((sbyte)1, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>((byte)1, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>((short)1, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>((ushort)1, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>(1, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>(1U, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>(1L, false));
+			Assert.AreEqual((UInt16Enum)1, ToEnum<UInt16Enum>(1UL, false));
 
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>((sbyte)1, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>((byte)1, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>((short)1, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>((ushort)1, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>(1, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>(1U, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>(1L, false));
-			Assert.AreEqual((Int32Enum)1, Enums.ToEnum<Int32Enum>(1UL, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>((sbyte)1, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>((byte)1, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>((short)1, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>((ushort)1, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>(1, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>(1U, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>(1L, false));
+			Assert.AreEqual((Int32Enum)1, ToEnum<Int32Enum>(1UL, false));
 
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>((sbyte)1, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>((byte)1, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>((short)1, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>((ushort)1, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>(1, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>(1U, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>(1L, false));
-			Assert.AreEqual((UInt32Enum)1, Enums.ToEnum<UInt32Enum>(1UL, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>((sbyte)1, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>((byte)1, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>((short)1, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>((ushort)1, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>(1, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>(1U, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>(1L, false));
+			Assert.AreEqual((UInt32Enum)1, ToEnum<UInt32Enum>(1UL, false));
 
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>((sbyte)1, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>((byte)1, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>((short)1, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>((ushort)1, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>(1, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>(1U, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>(1L, false));
-			Assert.AreEqual((Int64Enum)1, Enums.ToEnum<Int64Enum>(1UL, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>((sbyte)1, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>((byte)1, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>((short)1, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>((ushort)1, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>(1, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>(1U, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>(1L, false));
+			Assert.AreEqual((Int64Enum)1, ToEnum<Int64Enum>(1UL, false));
 
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>((sbyte)1, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>((byte)1, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>((short)1, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>((ushort)1, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>(1, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>(1U, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>(1L, false));
-			Assert.AreEqual((UInt64Enum)1, Enums.ToEnum<UInt64Enum>(1UL, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>((sbyte)1, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>((byte)1, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>((short)1, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>((ushort)1, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>(1, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>(1U, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>(1L, false));
+			Assert.AreEqual((UInt64Enum)1, ToEnum<UInt64Enum>(1UL, false));
 		}
 
 		[TestMethod]
 		public void ToEnum_ThrowsOverflowException_WhenUsingValuesOutsideValueRange()
 		{
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<SByteEnum>(byte.MaxValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<ByteEnum>(sbyte.MinValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<Int16Enum>(ushort.MaxValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<UInt16Enum>(short.MinValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<Int32Enum>(uint.MaxValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<UInt32Enum>(int.MinValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<Int64Enum>(ulong.MaxValue, false));
-			TestHelper.ExpectException<OverflowException>(() => Enums.ToEnum<UInt64Enum>(long.MinValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<SByteEnum>(byte.MaxValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<ByteEnum>(sbyte.MinValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<Int16Enum>(ushort.MaxValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<UInt16Enum>(short.MinValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<Int32Enum>(uint.MaxValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<UInt32Enum>(int.MinValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<Int64Enum>(ulong.MaxValue, false));
+			TestHelper.ExpectException<OverflowException>(() => ToEnum<UInt64Enum>(long.MinValue, false));
 		}
 
 		[TestMethod]
 		public void ToEnum_ThrowsArgumentException_WhenUsingInvalidValueAndCheckIsOn()
 		{
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<SByteEnum>(sbyte.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<ByteEnum>(byte.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<Int16Enum>(short.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<UInt16Enum>(ushort.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<Int32Enum>(int.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<UInt32Enum>(uint.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<Int64Enum>(long.MaxValue));
-			TestHelper.ExpectException<ArgumentException>(() => Enums.ToEnum<UInt64Enum>(ulong.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<SByteEnum>(sbyte.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<ByteEnum>(byte.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<Int16Enum>(short.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<UInt16Enum>(ushort.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<Int32Enum>(int.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<UInt32Enum>(uint.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<Int64Enum>(long.MaxValue));
+			TestHelper.ExpectException<ArgumentException>(() => ToEnum<UInt64Enum>(ulong.MaxValue));
 		}
 
 		[TestMethod]
 		public void ToEnumOrDefault_ReturnsValidResult_WhenUsingValidValue()
 		{
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault((sbyte)1, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault((byte)1, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault((short)1, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault((ushort)1, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault(1, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault(1U, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault(1L, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Red, Enums.ToEnumOrDefault(1UL, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault((sbyte)1, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault((byte)1, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault((short)1, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault((ushort)1, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault(1, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault(1U, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault(1L, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Red, ToEnumOrDefault(1UL, ColorFlagEnum.Blue));
 		}
 
 		[TestMethod]
 		public void ToEnumOrDefault_ReturnsDefaultValue_WhenUsingValueInRangeButNotValidButCheckIsOff()
 		{
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault((sbyte)16, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault((byte)16, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault((short)16, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault((ushort)16, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault(16, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault(16U, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault(16L, ColorFlagEnum.Blue, false));
-			Assert.AreEqual((ColorFlagEnum)16, Enums.ToEnumOrDefault(16UL, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault((sbyte)16, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault((byte)16, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault((short)16, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault((ushort)16, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault(16, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault(16U, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault(16L, ColorFlagEnum.Blue, false));
+			Assert.AreEqual((ColorFlagEnum)16, ToEnumOrDefault(16UL, ColorFlagEnum.Blue, false));
 		}
 
 		[TestMethod]
 		public void ToObjectOrDefault_ReturnsDefaultValue_WhenUsingValueInRangeButNotValid()
 		{
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((sbyte)16, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((byte)16, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((short)16, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((ushort)16, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(16, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(16U, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(16L, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(16UL, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((sbyte)16, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((byte)16, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((short)16, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((ushort)16, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(16, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(16U, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(16L, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(16UL, ColorFlagEnum.Blue));
 		}
 
 		[TestMethod]
 		public void ToEnumOrDefault_ReturnsDefaultValue_WhenUsingValueOutOfRange()
 		{
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((byte)128, ColorFlagEnum.Blue, false));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((short)128, ColorFlagEnum.Blue, false));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((ushort)128, ColorFlagEnum.Blue, false));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128, ColorFlagEnum.Blue, false));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128U, ColorFlagEnum.Blue, false));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128L, ColorFlagEnum.Blue, false));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128UL, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((byte)128, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((short)128, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((ushort)128, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128U, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128L, ColorFlagEnum.Blue, false));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128UL, ColorFlagEnum.Blue, false));
 
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((byte)128, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((short)128, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault((ushort)128, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128U, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128L, ColorFlagEnum.Blue));
-			Assert.AreEqual(ColorFlagEnum.Blue, Enums.ToEnumOrDefault(128UL, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((byte)128, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((short)128, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault((ushort)128, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128U, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128L, ColorFlagEnum.Blue));
+			Assert.AreEqual(ColorFlagEnum.Blue, ToEnumOrDefault(128UL, ColorFlagEnum.Blue));
 		}
 
 		[TestMethod]
@@ -632,154 +633,154 @@ namespace EnumsNET.Test
 		{
 			SByteEnum sbyteResult;
 			var sbyteValue = (SByteEnum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum((byte)1, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum((short)1, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum(1, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum(1, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum(1U, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum(1U, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum(1L, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum(1L, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out sbyteResult, false));
+			Assert.IsTrue(TryToEnum(1UL, out sbyteResult, false));
 			Assert.AreEqual(sbyteValue, sbyteResult);
 
 			ByteEnum byteResult;
 			var byteValue = (ByteEnum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out byteResult, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out byteResult, false));
+			Assert.IsTrue(TryToEnum((byte)1, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out byteResult, false));
+			Assert.IsTrue(TryToEnum((short)1, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out byteResult, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum(1, out byteResult, false));
+			Assert.IsTrue(TryToEnum(1, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum(1U, out byteResult, false));
+			Assert.IsTrue(TryToEnum(1U, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum(1L, out byteResult, false));
+			Assert.IsTrue(TryToEnum(1L, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out byteResult, false));
+			Assert.IsTrue(TryToEnum(1UL, out byteResult, false));
 			Assert.AreEqual(byteValue, byteResult);
 
 			Int16Enum int16Result;
 			var int16Value = (Int16Enum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out int16Result, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out int16Result, false));
+			Assert.IsTrue(TryToEnum((byte)1, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out int16Result, false));
+			Assert.IsTrue(TryToEnum((short)1, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out int16Result, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum(1, out int16Result, false));
+			Assert.IsTrue(TryToEnum(1, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum(1U, out int16Result, false));
+			Assert.IsTrue(TryToEnum(1U, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum(1L, out int16Result, false));
+			Assert.IsTrue(TryToEnum(1L, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out int16Result, false));
+			Assert.IsTrue(TryToEnum(1UL, out int16Result, false));
 			Assert.AreEqual(int16Value, int16Result);
 
 			UInt16Enum uint16Result;
 			var uint16Value = (UInt16Enum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out uint16Result, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out uint16Result, false));
+			Assert.IsTrue(TryToEnum((byte)1, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out uint16Result, false));
+			Assert.IsTrue(TryToEnum((short)1, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out uint16Result, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum(1, out uint16Result, false));
+			Assert.IsTrue(TryToEnum(1, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum(1U, out uint16Result, false));
+			Assert.IsTrue(TryToEnum(1U, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum(1L, out uint16Result, false));
+			Assert.IsTrue(TryToEnum(1L, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out uint16Result, false));
+			Assert.IsTrue(TryToEnum(1UL, out uint16Result, false));
 			Assert.AreEqual(uint16Value, uint16Result);
 
 			Int32Enum int32Result;
 			var int32Value = (Int32Enum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out int32Result, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out int32Result, false));
+			Assert.IsTrue(TryToEnum((byte)1, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out int32Result, false));
+			Assert.IsTrue(TryToEnum((short)1, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out int32Result, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum(1, out int32Result, false));
+			Assert.IsTrue(TryToEnum(1, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum(1U, out int32Result, false));
+			Assert.IsTrue(TryToEnum(1U, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum(1L, out int32Result, false));
+			Assert.IsTrue(TryToEnum(1L, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out int32Result, false));
+			Assert.IsTrue(TryToEnum(1UL, out int32Result, false));
 			Assert.AreEqual(int32Value, int32Result);
 
 			UInt32Enum uint32Result;
 			var uint32Value = (UInt32Enum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out uint32Result, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out uint32Result, false));
+			Assert.IsTrue(TryToEnum((byte)1, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out uint32Result, false));
+			Assert.IsTrue(TryToEnum((short)1, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out uint32Result, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum(1, out uint32Result, false));
+			Assert.IsTrue(TryToEnum(1, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum(1U, out uint32Result, false));
+			Assert.IsTrue(TryToEnum(1U, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum(1L, out uint32Result, false));
+			Assert.IsTrue(TryToEnum(1L, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out uint32Result, false));
+			Assert.IsTrue(TryToEnum(1UL, out uint32Result, false));
 			Assert.AreEqual(uint32Value, uint32Result);
 
 			Int64Enum int64Result;
 			var int64Value = (Int64Enum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out int64Result, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out int64Result, false));
+			Assert.IsTrue(TryToEnum((byte)1, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out int64Result, false));
+			Assert.IsTrue(TryToEnum((short)1, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out int64Result, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum(1, out int64Result, false));
+			Assert.IsTrue(TryToEnum(1, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum(1U, out int64Result, false));
+			Assert.IsTrue(TryToEnum(1U, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum(1L, out int64Result, false));
+			Assert.IsTrue(TryToEnum(1L, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out int64Result, false));
+			Assert.IsTrue(TryToEnum(1UL, out int64Result, false));
 			Assert.AreEqual(int64Value, int64Result);
 
 			UInt64Enum uint64Result;
 			var uint64Value = (UInt64Enum)1;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)1, out uint64Result, false));
+			Assert.IsTrue(TryToEnum((sbyte)1, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum((byte)1, out uint64Result, false));
+			Assert.IsTrue(TryToEnum((byte)1, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum((short)1, out uint64Result, false));
+			Assert.IsTrue(TryToEnum((short)1, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)1, out uint64Result, false));
+			Assert.IsTrue(TryToEnum((ushort)1, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum(1, out uint64Result, false));
+			Assert.IsTrue(TryToEnum(1, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum(1U, out uint64Result, false));
+			Assert.IsTrue(TryToEnum(1U, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum(1L, out uint64Result, false));
+			Assert.IsTrue(TryToEnum(1L, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
-			Assert.IsTrue(Enums.TryToEnum(1UL, out uint64Result, false));
+			Assert.IsTrue(TryToEnum(1UL, out uint64Result, false));
 			Assert.AreEqual(uint64Value, uint64Result);
 		}
 
@@ -787,21 +788,21 @@ namespace EnumsNET.Test
 		public void TryToEnum_ReturnsFalse_WhenUsingValueInRangeButNotValid()
 		{
 			ColorFlagEnum result;
-			Assert.IsFalse(Enums.TryToEnum((sbyte)16, out result));
+			Assert.IsFalse(TryToEnum((sbyte)16, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((byte)16, out result));
+			Assert.IsFalse(TryToEnum((byte)16, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((short)16, out result));
+			Assert.IsFalse(TryToEnum((short)16, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((ushort)16, out result));
+			Assert.IsFalse(TryToEnum((ushort)16, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(16, out result));
+			Assert.IsFalse(TryToEnum(16, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(16U, out result));
+			Assert.IsFalse(TryToEnum(16U, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(16L, out result));
+			Assert.IsFalse(TryToEnum(16L, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(16UL, out result));
+			Assert.IsFalse(TryToEnum(16UL, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
 		}
 
@@ -810,21 +811,21 @@ namespace EnumsNET.Test
 		{
 			ColorFlagEnum result;
 			var value = (ColorFlagEnum)16;
-			Assert.IsTrue(Enums.TryToEnum((sbyte)16, out result, false));
+			Assert.IsTrue(TryToEnum((sbyte)16, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum((byte)16, out result, false));
+			Assert.IsTrue(TryToEnum((byte)16, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum((short)16, out result, false));
+			Assert.IsTrue(TryToEnum((short)16, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum((ushort)16, out result, false));
+			Assert.IsTrue(TryToEnum((ushort)16, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum(16, out result, false));
+			Assert.IsTrue(TryToEnum(16, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum(16U, out result, false));
+			Assert.IsTrue(TryToEnum(16U, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum(16L, out result, false));
+			Assert.IsTrue(TryToEnum(16L, out result, false));
 			Assert.AreEqual(value, result);
-			Assert.IsTrue(Enums.TryToEnum(16UL, out result, false));
+			Assert.IsTrue(TryToEnum(16UL, out result, false));
 			Assert.AreEqual(value, result);
 		}
 
@@ -832,34 +833,34 @@ namespace EnumsNET.Test
 		public void TryToEnum_ReturnsFalse_WhenUsingValueOutOfRange()
 		{
 			ColorFlagEnum result;
-			Assert.IsFalse(Enums.TryToEnum((byte)128, out result, false));
+			Assert.IsFalse(TryToEnum((byte)128, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((short)128, out result, false));
+			Assert.IsFalse(TryToEnum((short)128, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((ushort)128, out result, false));
+			Assert.IsFalse(TryToEnum((ushort)128, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128, out result, false));
+			Assert.IsFalse(TryToEnum(128, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128U, out result, false));
+			Assert.IsFalse(TryToEnum(128U, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128L, out result, false));
+			Assert.IsFalse(TryToEnum(128L, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128UL, out result, false));
+			Assert.IsFalse(TryToEnum(128UL, out result, false));
 			Assert.AreEqual(default(ColorFlagEnum), result);
 
-			Assert.IsFalse(Enums.TryToEnum((byte)128, out result));
+			Assert.IsFalse(TryToEnum((byte)128, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((short)128, out result));
+			Assert.IsFalse(TryToEnum((short)128, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum((ushort)128, out result));
+			Assert.IsFalse(TryToEnum((ushort)128, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128, out result));
+			Assert.IsFalse(TryToEnum(128, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128U, out result));
+			Assert.IsFalse(TryToEnum(128U, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128L, out result));
+			Assert.IsFalse(TryToEnum(128L, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
-			Assert.IsFalse(Enums.TryToEnum(128UL, out result));
+			Assert.IsFalse(TryToEnum(128UL, out result));
 			Assert.AreEqual(default(ColorFlagEnum), result);
 		}
 		#endregion
@@ -954,19 +955,6 @@ namespace EnumsNET.Test
 			Assert.IsNull(ColorFlagEnum.Red.GetDescription());
 			Assert.IsNull(ColorFlagEnum.Green.GetDescription());
 			Assert.IsNull(ColorFlagEnum.Blue.GetDescription());
-		}
-
-		[TestMethod]
-		public void GetDescription_ReturnsValidResult_WhenUsingValidName()
-		{
-			Assert.AreEqual("Greater than or equal", Enums.GetDescription<NumericFilterOperator>("GreaterThanOrEqual"));
-			Assert.AreEqual("Not less than", Enums.GetDescription<NumericFilterOperator>("NotLessThan"));
-		}
-
-		[TestMethod]
-		public void GetDescription_ThrowsArgumentNullException_WhenUsingNullName()
-		{
-			TestHelper.ExpectException<ArgumentNullException>(() => Enums.GetDescription<NumericFilterOperator>(null));
 		}
 
 		[TestMethod]

@@ -1,6 +1,4 @@
-﻿// DateFilterOperator.cs
-
-using System;
+﻿using System;
 using System.ComponentModel;
 
 namespace EnumsNET.Test
@@ -101,7 +99,7 @@ namespace EnumsNET.Test
 	{
 		public DateFilterOperatorType Type { get; }
 
-        public DateFilterOperatorTypeAttribute(DateFilterOperatorType type)
+		public DateFilterOperatorTypeAttribute(DateFilterOperatorType type)
 		{
 			Type = type;
 		}

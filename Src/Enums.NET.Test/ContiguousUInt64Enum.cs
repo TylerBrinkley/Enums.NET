@@ -1,5 +1,4 @@
-﻿
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	// Contiguous UInt64 example with values past Int64.MaxValue
 	public enum ContiguousUInt64Enum : ulong

@@ -1,6 +1,4 @@
-﻿// ByteEnum.cs
-
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	public enum ByteEnum : byte
 	{

@@ -50,6 +50,7 @@
     <Compile Include="EnumsCache.cs" />
     <Compile Include="FlagEnums.cs" />
     <Compile Include="HashHelper.cs" />
+    <Compile Include="IEnumMemberInfo.cs" />
     <Compile Include="IEnumsCache.cs" />
     <Compile Include="InternalEnumComparer.cs" />
     <Compile Include="InternalEnumMemberInfo.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="NameAndAttributes.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
+    <Compile Include="NumericFilterOperator.cs" />
     <Compile Include="OrderedBiDirectionalDictionary.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

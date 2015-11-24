@@ -1,6 +1,4 @@
-﻿// Int32Enum.cs
-
-namespace EnumsNET.Test
+﻿namespace EnumsNET.Test
 {
 	public enum Int32Enum
 	{
