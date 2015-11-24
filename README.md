@@ -1,5 +1,5 @@
 # Enums.NET
-Enums.NET is an efficient type-safe .NET enum utility library which caches enums' names, values, and attributes and provides most capabilities as extension methods for ease of use.
+Enums.NET is an efficient type-safe .NET enum utility library which caches enums' names, values, and attributes and provides most capabilities as C# extension methods for ease of use.
 
 ## Supports
 Descriptions through the use of the DescriptionAttribute
@@ -9,6 +9,9 @@ Flag enums which are decorated with the FlagsAttribute
 Custom attribute retrieval
 
 Parsing
+
+## How Is It Type-Safe
+As you may know there is no way to constrain a type or method's generic type parameter to an Enum in C#. This is a limitation the C# compiler imposes, not a limitation of the CLR itself thus a valid .NET assembly can contain these constraints. How this library works is that the C# compiler can understand when this constraint is applied, it just can't express it. Utilizing Simon Cropp's Fody.ExtraConstraints, Enums.NET is able to automatically apply a post-processing step on build to the compiled assembly to add these constraints to the assembly, thus achieving type safety.
 
 ## Interface
 EnumsNET.Enums static class for type-safe standard enum operations, with most exposed as extension methods.
