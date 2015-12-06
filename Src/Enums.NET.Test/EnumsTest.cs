@@ -55,11 +55,7 @@ namespace EnumsNET.Test
 			Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>());
 			Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>());
 			Assert.AreEqual(10, GetDefinedCount<NumericFilterOperator>());
-		}
 
-		[TestMethod]
-		public void GetUniqueDefinedCount()
-		{
 			Assert.AreEqual(0, GetDefinedCount<ByteEnum>(true));
 			Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>(true));
 			Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>(true));

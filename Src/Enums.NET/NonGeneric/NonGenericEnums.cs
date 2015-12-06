@@ -80,6 +80,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static int GetDefinedCount(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetDefinedCount(uniqueValued);
 
+		[Pure]
+		public static EnumMemberInfo[] GetEnumMemberInfos(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetEnumMemberInfos(uniqueValued);
+
 		/// <summary>
 		/// Retrieves an array of <paramref name="enumType"/>'s defined constants' names in value order.
 		/// </summary>
@@ -1110,13 +1113,13 @@ namespace EnumsNET.NonGeneric
 
 		#region Defined Values Main Methods
 		[Pure]
-		public static IEnumMemberInfo GetEnumMemberInfo(Type enumType, object value) => GetEnumsCache(enumType).GetEnumMemberInfo(value);
+		public static EnumMemberInfo GetEnumMemberInfo(Type enumType, object value) => GetEnumsCache(enumType).GetEnumMemberInfo(value);
 
 		[Pure]
-		public static IEnumMemberInfo GetEnumMemberInfo(Type enumType, string name) => GetEnumsCache(enumType).GetEnumMemberInfo(name);
+		public static EnumMemberInfo GetEnumMemberInfo(Type enumType, string name) => GetEnumsCache(enumType).GetEnumMemberInfo(name);
 
 		[Pure]
-		public static IEnumMemberInfo GetEnumMemberInfo(Type enumType, string name, bool ignoreCase) => GetEnumsCache(enumType).GetEnumMemberInfo(name, ignoreCase);
+		public static EnumMemberInfo GetEnumMemberInfo(Type enumType, string name, bool ignoreCase) => GetEnumsCache(enumType).GetEnumMemberInfo(name, ignoreCase);
 
 		/// <summary>
 		/// Retrieves the name of the constant in <paramref name="enumType"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>

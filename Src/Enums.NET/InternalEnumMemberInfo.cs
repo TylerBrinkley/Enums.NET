@@ -18,57 +18,72 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TEnum>
-    {
-        public readonly TEnum Value;
-        public readonly string Name;
+	internal struct InternalEnumMemberInfo<TEnum>
+	{
+		public readonly TEnum Value;
+		public readonly string Name;
+		private readonly Attribute[] _attributes;
 
-        private readonly Attribute[] _attributes;
+		public Attribute[] Attributes
+		{
+			get
+			{
+				if (Name != null)
+				{
+					if (_attributes != null)
+					{
+						var attributes = new Attribute[_attributes.Length];
+						Array.Copy(_attributes, attributes, _attributes.Length);
+						return attributes;
+					}
+					return new Attribute[0];
+				}
+				return null;
+			}
+		}
 
-        public Attribute[] Attributes => Name != null ? _attributes ?? new Attribute[0] : null;
+		public string Description => _attributes != null ? Enums.GetDescription(_attributes) : null;
 
-        public string Description => _attributes != null ? Enums.GetDescription(_attributes) : null;
+		public string EnumMemberValue => _attributes != null ? Enums.GetEnumMemberValue(_attributes) : null;
 
-        public string EnumMemberValue => _attributes != null ? Enums.GetEnumMemberValue(_attributes) : null;
+		public InternalEnumMemberInfo(Pair<TEnum, NameAndAttributes> pair)
+			: this(pair.First, pair.Second.Name, pair.Second.Attributes)
+		{
+		}
 
-        public InternalEnumMemberInfo(Pair<TEnum, NameAndAttributes> pair)
-            : this(pair.First, pair.Second.Name, pair.Second.Attributes)
-        {
-        }
+		public InternalEnumMemberInfo(KeyValuePair<string, ValueAndAttributes<TEnum>> pair)
+			: this(pair.Key, pair.Value)
+		{
+		}
 
-        public InternalEnumMemberInfo(KeyValuePair<string, ValueAndAttributes<TEnum>> pair)
-            : this(pair.Key, pair.Value)
-        {
-        }
+		public InternalEnumMemberInfo(string name, ValueAndAttributes<TEnum> valueAndAttributes)
+			: this(valueAndAttributes.Value, name, valueAndAttributes.Attributes)
+		{
+		}
 
-        public InternalEnumMemberInfo(string name, ValueAndAttributes<TEnum> valueAndAttributes)
-            : this(valueAndAttributes.Value, name, valueAndAttributes.Attributes)
-        {
-        }
+		public InternalEnumMemberInfo(TEnum value, string name, Attribute[] attributes)
+		{
+			Value = value;
+			Name = name;
+			_attributes = attributes;
+		}
 
-        public InternalEnumMemberInfo(TEnum value, string name, Attribute[] attributes)
-        {
-            Value = value;
-            Name = name;
-            _attributes = attributes;
-        }
+		public string GetDescriptionOrName() => Description ?? Name;
 
-        public string GetDescriptionOrName() => Description ?? Name;
+		public string GetDescriptionOrName(Func<string, string> nameFormatter) => Name != null ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
 
-        public string GetDescriptionOrName(Func<string, string> nameFormatter) => Name != null ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
+		public TAttribute GetAttribute<TAttribute>()
+			where TAttribute : Attribute
+		{
+			return _attributes != null ? Enums.GetAttribute<TAttribute>(_attributes) : null;
+		}
 
-        public TAttribute GetAttribute<TAttribute>()
-            where TAttribute : Attribute
-        {
-            return _attributes != null ? Enums.GetAttribute<TAttribute>(_attributes) : null;
-        }
+		public TAttribute[] GetAttributes<TAttribute>()
+			where TAttribute : Attribute
+		{
+			return Name != null ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
+		}
 
-        public TAttribute[] GetAttributes<TAttribute>()
-            where TAttribute : Attribute
-        {
-            return Name != null ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
-        }
-
-        public EnumMemberInfo<TEnum> ToEnumMemberInfo() => Name != null ? new EnumMemberInfo<TEnum>(Value, Name, Attributes) : null;
-    }
+		public EnumMemberInfo<TEnum> ToEnumMemberInfo() => Name != null ? new EnumMemberInfo<TEnum>(Value, Name, Attributes) : null;
+	}
 }

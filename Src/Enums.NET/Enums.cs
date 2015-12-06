@@ -49,73 +49,103 @@ namespace EnumsNET
 
 		#region Type Methods
 		/// <summary>
-		/// Retrieves <typeparamref name="TEnum"/>'s count of defined constants.
+		/// Retrieves <typeparamref name="TEnum"/>'s members count.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="uniqueValued"></param>
-		/// <returns><typeparamref name="TEnum"/>'s count of defined constants.</returns>
+		/// <returns><typeparamref name="TEnum"/>'s members count.</returns>
 		[Pure]
 		public static int GetDefinedCount<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDefinedCount(uniqueValued);
 
+		/// <summary>
+		/// Retrieves in value order an array of info on <typeparamref name="TEnum"/>'s members.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="uniqueValued"></param>
+		/// <returns></returns>
 		[Pure]
 		public static EnumMemberInfo<TEnum>[] GetEnumMemberInfos<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberInfos(uniqueValued);
 
 		/// <summary>
-		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s defined constants' names.
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' names.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="uniqueValued"></param>
-		/// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' names in value order.</returns>
+		/// <returns>Array of <typeparamref name="TEnum"/>'s members' names in value order.</returns>
 		[Pure]
 		public static string[] GetNames<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetNames(uniqueValued);
 
 		/// <summary>
-		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s defined constants' values.
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' values.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="uniqueValued"></param>
-		/// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' values in value order.</returns>
+		/// <returns>Array of <typeparamref name="TEnum"/>'s members' values in value order.</returns>
 		[Pure]
 		public static TEnum[] GetValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetValues(uniqueValued);
 
 		/// <summary>
-		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s defined constants' <see cref="DescriptionAttribute.Description"/>s.
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <see cref="DescriptionAttribute.Description"/>s.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="uniqueValued"></param>
-		/// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' <see cref="DescriptionAttribute.Description"/>s in value order.</returns>
+		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <see cref="DescriptionAttribute.Description"/>s in value order.</returns>
 		[Pure]
 		public static string[] GetDescriptions<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptions(uniqueValued);
 
+		/// <summary>
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' descriptions else names.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="uniqueValued"></param>
+		/// <returns></returns>
 		[Pure]
 		public static string[] GetDescriptionsOrNames<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(uniqueValued);
 
+		/// <summary>
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' descriptions else names formatted
+		/// with <paramref name="nameFormatter"/>.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="nameFormatter"></param>
+		/// <param name="uniqueValued"></param>
+		/// <returns></returns>
 		public static string[] GetDescriptionsOrNames<[EnumConstraint] TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(nameFormatter, uniqueValued);
 
 		/// <summary>
-		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s defined constants' <see cref="EnumMemberAttribute.Value"/>s.
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <see cref="EnumMemberAttribute.Value"/>s.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="uniqueValued"></param>
-		/// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' <see cref="EnumMemberAttribute.Value"/>s in value order.</returns>
+		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <see cref="EnumMemberAttribute.Value"/>s in value order.</returns>
 		[Pure]
 		public static string[] GetEnumMemberValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValues(uniqueValued);
 
 		/// <summary>
-		/// Retrieves in value order an array of all of <typeparamref name="TEnum"/>'s defined constants' attributes.
+		/// Retrieves in value order an array of all of <typeparamref name="TEnum"/>'s members' attributes.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="uniqueValued"></param>
-		/// <returns>Array of all of <typeparamref name="TEnum"/>'s defined constants' attributes in value order.</returns>
+		/// <returns>Array of all of <typeparamref name="TEnum"/>'s members' attributes in value order.</returns>
 		[Pure]
 		public static Attribute[][] GetAllAttributes<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetAllAttributes(uniqueValued);
 
 		/// <summary>
-		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s defined constants' <typeparamref name="TAttribute"/>.
+		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <typeparamref name="TAttribute"/>s.
+		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <typeparam name="TAttribute"></typeparam>
-		/// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' <typeparamref name="TAttribute"/> in value order.</returns>
+		/// <param name="uniqueValued"></param>
+		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <typeparamref name="TAttribute"/> in value order.</returns>
 		[Pure]
 		public static TAttribute[] GetAttributes<[EnumConstraint] TEnum, TAttribute>(bool uniqueValued = false)
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributes<TAttribute>(uniqueValued);
@@ -881,11 +911,17 @@ namespace EnumsNET
 		/// <param name="value"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="format"/> is null</exception>
 		/// <exception cref="FormatException"><paramref name="format"/> is an invalid value</exception>
 		[Pure]
 		public static string AsString<[EnumConstraint] TEnum>(this TEnum value, string format) where TEnum : struct => EnumsCache<TEnum>.AsString(value, format);
 
+		/// <summary>
+		/// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="value"></param>
+		/// <param name="formats"></param>
+		/// <returns></returns>
 		[Pure]
 		public static string AsString<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.AsString(value, formats);
 
@@ -896,10 +932,20 @@ namespace EnumsNET
 		/// <param name="value"></param>
 		/// <param name="format"></param>
 		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="format"/> is null.</exception>
 		/// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
 		[Pure]
 		public static string Format<[EnumConstraint] TEnum>(this TEnum value, string format) where TEnum : struct => EnumsCache<TEnum>.Format(value, format);
 
+		/// <summary>
+		/// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="value"></param>
+		/// <param name="formats"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="formats"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="formats"/> is empty.</exception>
 		[Pure]
 		public static string Format<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.Format(value, formats);
 
@@ -913,7 +959,7 @@ namespace EnumsNET
 		public static object GetUnderlyingValue<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetUnderlyingValue(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to an <see cref="sbyte"/>.
+		/// Converts <paramref name="value"/> to an <see cref="sbyte"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -924,7 +970,7 @@ namespace EnumsNET
 		public static sbyte ToSByte<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToSByte(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to a <see cref="byte"/>.
+		/// Converts <paramref name="value"/> to a <see cref="byte"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -934,7 +980,7 @@ namespace EnumsNET
 		public static byte ToByte<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToByte(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to an <see cref="short"/>.
+		/// Converts <paramref name="value"/> to an <see cref="short"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -944,7 +990,7 @@ namespace EnumsNET
 		public static short ToInt16<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToInt16(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to a <see cref="ushort"/>.
+		/// Converts <paramref name="value"/> to a <see cref="ushort"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -955,7 +1001,7 @@ namespace EnumsNET
 		public static ushort ToUInt16<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToUInt16(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to an <see cref="int"/>.
+		/// Converts <paramref name="value"/> to an <see cref="int"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -965,7 +1011,7 @@ namespace EnumsNET
 		public static int ToInt32<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToInt32(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to a <see cref="uint"/>.
+		/// Converts <paramref name="value"/> to a <see cref="uint"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -976,7 +1022,7 @@ namespace EnumsNET
 		public static uint ToUInt32<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToUInt32(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to an <see cref="long"/>.
+		/// Converts <paramref name="value"/> to an <see cref="long"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>
@@ -986,7 +1032,7 @@ namespace EnumsNET
 		public static long ToInt64<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToInt64(value);
 
 		/// <summary>
-		/// Tries to convert <paramref name="value"/> to a <see cref="ulong"/>.
+		/// Converts <paramref name="value"/> to a <see cref="ulong"/>.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
 		/// <param name="value"></param>

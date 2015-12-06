@@ -16,21 +16,23 @@ namespace EnumsNET
 
 		#region Standard Enum Operations
 		#region Type Methods
-		int GetDefinedCount(bool uniqueDefined);
+		int GetDefinedCount(bool uniqueValued);
 
-		string[] GetNames(bool uniqueDefined);
+		string[] GetNames(bool uniqueValued);
 
-		object[] GetValues(bool uniqueDefined);
+		object[] GetValues(bool uniqueValued);
 
-		string[] GetDescriptions(bool uniqueDefined);
+		string[] GetDescriptions(bool uniqueValued);
 
-		string[] GetEnumMemberValues(bool uniqueDefined);
+		string[] GetEnumMemberValues(bool uniqueValued);
 
-		Attribute[][] GetAllAttributes(bool uniqueDefined);
+		Attribute[][] GetAllAttributes(bool uniqueValued);
 
-		string[] GetDescriptionsOrNames(bool uniqueDefined);
+		string[] GetDescriptionsOrNames(bool uniqueValued);
 
-		string[] GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueDefined);
+		string[] GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued);
+
+		EnumMemberInfo[] GetEnumMemberInfos(bool uniqueValued);
 
 		int Compare(object x, object y);
 		#endregion
@@ -114,11 +116,11 @@ namespace EnumsNET
 		#endregion
 
 		#region Defined Values Main Methods
-		IEnumMemberInfo GetEnumMemberInfo(object value);
+		EnumMemberInfo GetEnumMemberInfo(object value);
 
-		IEnumMemberInfo GetEnumMemberInfo(string name);
+		EnumMemberInfo GetEnumMemberInfo(string name);
 
-		IEnumMemberInfo GetEnumMemberInfo(string name, bool ignoreCase);
+		EnumMemberInfo GetEnumMemberInfo(string name, bool ignoreCase);
 
 		string GetName(object value);
 

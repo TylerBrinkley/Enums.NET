@@ -1740,6 +1740,8 @@ namespace EnumsNET
 		#region Type Methods
 		int IEnumsCache.GetDefinedCount(bool uniqueValued) => GetDefinedCount(uniqueValued);
 
+		EnumMemberInfo[] IEnumsCache.GetEnumMemberInfos(bool uniqueValued) => GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo(info)).ToArray();
+
 		string[] IEnumsCache.GetNames(bool uniqueValued) => GetNames(uniqueValued);
 
 		object[] IEnumsCache.GetValues(bool uniqueValued) => GetValues(uniqueValued).Select(value => (object)value).ToArray();
@@ -1848,11 +1850,23 @@ namespace EnumsNET
 		#region Main Methods
 		object IEnumsCache.Validate(object value, string paramName) => Validate(ConvertToEnum(value, nameof(value)), paramName);
 
-		IEnumMemberInfo IEnumsCache.GetEnumMemberInfo(object value) => GetEnumMemberInfo(ConvertToEnum(value, nameof(value)));
+		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(object value)
+		{
+			var info = GetEnumMemberInfo(ConvertToEnum(value, nameof(value)));
+			return info != null ? new EnumMemberInfo(info) : null;
+		}
 
-		IEnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name) => GetEnumMemberInfo(name);
+		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name)
+		{
+			var info = GetEnumMemberInfo(name);
+			return info != null ? new EnumMemberInfo(info) : null;
+		}
 
-		IEnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name, bool ignoreCase) => GetEnumMemberInfo(name, ignoreCase);
+		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name, bool ignoreCase)
+		{
+			var info = GetEnumMemberInfo(name, ignoreCase);
+			return info != null ? new EnumMemberInfo(info) : null;
+		}
 
 		string IEnumsCache.GetName(object value) => GetName(ConvertToEnum(value, nameof(value)));
 
