@@ -29,6 +29,8 @@ namespace EnumsNET
 	/// </summary>
 	public static class Enums
 	{
+		internal static readonly EnumFormat[] DefaultParseFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
+
 		#region "Properties"
 		/// <summary>
 		/// Indicates if <typeparamref name="TEnum"/> is contiguous.
@@ -45,6 +47,9 @@ namespace EnumsNET
 		/// <returns>The underlying type of <typeparamref name="TEnum"/>.</returns>
 		[Pure]
 		public static Type GetUnderlyingType<[EnumConstraint] TEnum>() where TEnum : struct => EnumsCache<TEnum>.UnderlyingType;
+
+		[Pure]
+		public static TypeCode GetUnderlyingTypeCode<[EnumConstraint] TEnum>() where TEnum : struct => EnumsCache<TEnum>.UnderlyingTypeCode;
 		#endregion
 
 		#region Type Methods
@@ -1165,6 +1170,21 @@ namespace EnumsNET
 		public static TEnum Parse<[EnumConstraint] TEnum>(string value) where TEnum : struct => EnumsCache<TEnum>.Parse(value);
 
 		/// <summary>
+		/// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value"></param>
+		/// <param name="parseFormatOrder"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space.
+		/// -or-
+		/// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+		[Pure]
+		public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.Parse(value, parseFormatOrder);
+
+		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
 		/// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
 		/// </summary>
@@ -1179,21 +1199,6 @@ namespace EnumsNET
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
 		[Pure]
 		public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase) where TEnum : struct => EnumsCache<TEnum>.Parse(value, ignoreCase);
-
-		/// <summary>
-		/// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value"></param>
-		/// <param name="parseFormatOrder"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space.
-		/// -or-
-		/// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
-		[Pure]
-		public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.Parse(value, parseFormatOrder);
 
 		/// <summary>
 		/// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -1224,6 +1229,18 @@ namespace EnumsNET
 		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum) where TEnum : struct => EnumsCache<TEnum>.ParseOrDefault(value, defaultEnum);
 
 		/// <summary>
+		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
+		/// but if it fails returns the specified default enumerated value.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value"></param>
+		/// <param name="defaultEnum"></param>
+		/// <param name="parseFormatOrder"></param>
+		/// <returns></returns>
+		[Pure]
+		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseOrDefault(value, defaultEnum, parseFormatOrder);
+
+		/// <summary>
 		/// Tries to convert the string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object but if it fails returns the specified default enumerated value.
 		/// A parameter specifies whether the operation is case-insensitive.
@@ -1235,18 +1252,6 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum) where TEnum : struct => EnumsCache<TEnum>.ParseOrDefault(value, ignoreCase, defaultEnum);
-
-		/// <summary>
-		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
-		/// but if it fails returns the specified default enumerated value.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value"></param>
-		/// <param name="defaultEnum"></param>
-		/// <param name="parseFormatOrder"></param>
-		/// <returns></returns>
-		[Pure]
-		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseOrDefault(value, defaultEnum, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1273,6 +1278,18 @@ namespace EnumsNET
 		public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result) where TEnum : struct => EnumsCache<TEnum>.TryParse(value, out result);
 
 		/// <summary>
+		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+		/// The return value indicates whether the conversion succeeded.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value"></param>
+		/// <param name="result"></param>
+		/// <param name="parseFormatOrder"></param>
+		/// <returns></returns>
+		[Pure]
+		public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.TryParse(value, out result, parseFormatOrder);
+
+		/// <summary>
 		/// Tries to convert the string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
 		/// A parameter specifies whether the operation is case-insensitive.
@@ -1284,18 +1301,6 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result) where TEnum : struct => EnumsCache<TEnum>.TryParse(value, ignoreCase, out result);
-
-		/// <summary>
-		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-		/// The return value indicates whether the conversion succeeded.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value"></param>
-		/// <param name="result"></param>
-		/// <param name="parseFormatOrder"></param>
-		/// <returns></returns>
-		[Pure]
-		public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.TryParse(value, out result, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.

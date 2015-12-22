@@ -416,7 +416,7 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void FlagEnumsParse_ThrowsArgumentNullException_WhenUsingNullDelimiter()
 		{
-			TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.Parse<ColorFlagEnum>("Red", null));
+			TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.Parse<ColorFlagEnum>("Red", (string)null));
 		}
 
 		[TestMethod]

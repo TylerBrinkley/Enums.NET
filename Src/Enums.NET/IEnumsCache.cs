@@ -9,6 +9,8 @@ namespace EnumsNET
 
 		Type UnderlyingType { get; }
 
+		TypeCode UnderlyingTypeCode { get; }
+
 		bool IsFlagEnum { get; }
 
 		object AllFlags { get; }
@@ -140,27 +142,27 @@ namespace EnumsNET
 		#region Parsing
 		object Parse(string value);
 
+		object Parse(string value, EnumFormat[] parseFormatOrder);
+
 		object Parse(string value, bool ignoreCase);
 
-		object Parse(string value, params EnumFormat[] parseOrder);
-
-		object Parse(string value, bool ignoreCase, params EnumFormat[] parseOrder);
+		object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
 
 		object ParseOrDefault(string value, object defaultEnum);
 
+		object ParseOrDefault(string value, object defaultEnum, EnumFormat[] parseFormatOrder);
+
 		object ParseOrDefault(string value, bool ignoreCase, object defaultEnum);
 
-		object ParseOrDefault(string value, object defaultEnum, params EnumFormat[] parseOrder);
-
-		object ParseOrDefault(string value, bool ignoreCase, object defaultEnum, params EnumFormat[] parseOrder);
+		object ParseOrDefault(string value, bool ignoreCase, object defaultEnum, EnumFormat[] parseFormatOrder);
 
 		bool TryParse(string value, out object result);
 
+		bool TryParse(string value, out object result, EnumFormat[] parseFormatOrder);
+
 		bool TryParse(string value, bool ignoreCase, out object result);
 
-		bool TryParse(string value, out object result, params EnumFormat[] parseOrder);
-
-		bool TryParse(string value, bool ignoreCase, out object result, params EnumFormat[] parseOrder);
+		bool TryParse(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder);
 		#endregion
 		#endregion
 
@@ -208,27 +210,51 @@ namespace EnumsNET
 		#region Parsing
 		object ParseFlags(string value);
 
+		object ParseFlags(string value, EnumFormat[] parseFormatOrder);
+
 		object ParseFlags(string value, bool ignoreCase);
+
+		object ParseFlags(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
 
 		object ParseFlags(string value, string delimiter);
 
+		object ParseFlags(string value, string delimiter, EnumFormat[] parseFormatOrder);
+
 		object ParseFlags(string value, bool ignoreCase, string delimiter);
+
+		object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
 
 		object ParseFlagsOrDefault(string value, object defaultEnum);
 
+		object ParseFlagsOrDefault(string value, object defaultEnum, EnumFormat[] parseFormatOrder);
+
 		object ParseFlagsOrDefault(string value, bool ignoreCase, object defaultEnum);
+
+		object ParseFlagsOrDefault(string value, bool ignoreCase, object defaultEnum, EnumFormat[] parseFormatOrder);
 
 		object ParseFlagsOrDefault(string value, string delimiter, object defaultEnum);
 
+		object ParseFlagsOrDefault(string value, string delimiter, object defaultEnum, EnumFormat[] parseFormatOrder);
+
 		object ParseFlagsOrDefault(string value, bool ignoreCase, string delimiter, object defaultEnum);
+
+		object ParseFlagsOrDefault(string value, bool ignoreCase, string delimiter, object defaultEnum, EnumFormat[] parseFormatOrder);
 
 		bool TryParseFlags(string value, out object result);
 
+		bool TryParseFlags(string value, out object result, EnumFormat[] parseFormatOrder);
+
 		bool TryParseFlags(string value, bool ignoreCase, out object result);
+
+		bool TryParseFlags(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder);
 
 		bool TryParseFlags(string value, string delimiter, out object result);
 
+		bool TryParseFlags(string value, string delimiter, out object result, EnumFormat[] parseFormatOrder);
+
 		bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result);
+
+		bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] parseFormatOrder);
 		#endregion
 		#endregion
 	}

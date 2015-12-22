@@ -1222,11 +1222,13 @@ namespace EnumsNET
 		#endregion
 
 		#region Parsing
-		public static TEnum Parse(string value, bool ignoreCase = false) => Parse(value, ignoreCase, null);
+		public static TEnum Parse(string value) => Parse(value, false, null);
 
-		public static TEnum Parse(string value, params EnumFormat[] parseFormatOrder) => Parse(value, false, parseFormatOrder);
+		public static TEnum Parse(string value, EnumFormat[] parseFormatOrder) => Parse(value, false, parseFormatOrder);
 
-		public static TEnum Parse(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
+		public static TEnum Parse(string value, bool ignoreCase) => Parse(value, ignoreCase, null);
+
+		public static TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder)
 		{
 			Preconditions.NotNull(value, nameof(value));
 
@@ -1239,7 +1241,7 @@ namespace EnumsNET
 
 			if (!(parseFormatOrder?.Length > 0))
 			{
-				parseFormatOrder = new[] { EnumFormat.Name, EnumFormat.DecimalValue };
+				parseFormatOrder = Enums.DefaultParseFormatOrder;
 			}
 
 			if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder))
@@ -1255,11 +1257,11 @@ namespace EnumsNET
 
 		public static TEnum ParseOrDefault(string value, TEnum defaultEnum) => ParseOrDefault(value, false, defaultEnum, null);
 
-		public static TEnum ParseOrDefault(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, defaultEnum, parseFormatOrder);
+		public static TEnum ParseOrDefault(string value, TEnum defaultEnum, EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, defaultEnum, parseFormatOrder);
 
 		public static TEnum ParseOrDefault(string value, bool ignoreCase, TEnum defaultEnum) => ParseOrDefault(value, ignoreCase, defaultEnum, null);
 
-		public static TEnum ParseOrDefault(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+		public static TEnum ParseOrDefault(string value, bool ignoreCase, TEnum defaultEnum, EnumFormat[] parseFormatOrder)
 		{
 			TEnum result;
 			if (!TryParse(value, ignoreCase, out result, parseFormatOrder))
@@ -1271,11 +1273,11 @@ namespace EnumsNET
 
 		public static bool TryParse(string value, out TEnum result) => TryParse(value, false, out result, null);
 
+		public static bool TryParse(string value, out TEnum result, EnumFormat[] parseFormatOrder) => TryParse(value, false, out result, parseFormatOrder);
+
 		public static bool TryParse(string value, bool ignoreCase, out TEnum result) => TryParse(value, ignoreCase, out result, null);
 
-		public static bool TryParse(string value, out TEnum result, params EnumFormat[] parseFormatOrder) => TryParse(value, false, out result, parseFormatOrder);
-
-		public static bool TryParse(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
+		public static bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
 		{
 			if (value != null)
 			{
@@ -1287,7 +1289,7 @@ namespace EnumsNET
 
 				if (!(parseFormatOrder?.Length > 0))
 				{
-					parseFormatOrder = new[] { EnumFormat.Name, EnumFormat.DecimalValue };
+					parseFormatOrder = Enums.DefaultParseFormatOrder;
 				}
 
 				return InternalTryParse(value, ignoreCase, out result, parseFormatOrder);
@@ -1451,7 +1453,7 @@ namespace EnumsNET
 
 			if (!(formats?.Length > 0))
 			{
-				formats = new[] { EnumFormat.Name, EnumFormat.DecimalValue };
+				formats = Enums.DefaultParseFormatOrder;
 			}
 
 			TEnum[] flags;
@@ -1576,9 +1578,11 @@ namespace EnumsNET
 		#endregion
 
 		#region Parsing
+		public static TEnum ParseFlags(string value) => ParseFlags(value, false, FlagEnums.DefaultDelimiter, null);
+
 		public static TEnum ParseFlags(string value, EnumFormat[] parseFormatOrder) => ParseFlags(value, false, FlagEnums.DefaultDelimiter, parseFormatOrder);
 
-		public static TEnum ParseFlags(string value, bool ignoreCase = false) => ParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, null);
+		public static TEnum ParseFlags(string value, bool ignoreCase) => ParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, null);
 
 		public static TEnum ParseFlags(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, parseFormatOrder);
 
@@ -1602,7 +1606,7 @@ namespace EnumsNET
 
 			if (!(parseFormatOrder?.Length > 0))
 			{
-				parseFormatOrder = new[] { EnumFormat.Name, EnumFormat.DecimalValue };
+				parseFormatOrder = Enums.DefaultParseFormatOrder;
 			}
 
 			var result = default(TEnum);
@@ -1630,31 +1634,47 @@ namespace EnumsNET
 			return result;
 		}
 
-		public static TEnum ParseFlagsOrDefault(string value, TEnum defaultEnum) => ParseFlagsOrDefault(value, false, FlagEnums.DefaultDelimiter, defaultEnum);
+		public static TEnum ParseFlagsOrDefault(string value, TEnum defaultEnum) => ParseFlagsOrDefault(value, false, FlagEnums.DefaultDelimiter, defaultEnum, null);
 
-		public static TEnum ParseFlagsOrDefault(string value, bool ignoreCase, TEnum defaultEnum) => ParseFlagsOrDefault(value, ignoreCase, FlagEnums.DefaultDelimiter, defaultEnum);
+		public static TEnum ParseFlagsOrDefault(string value, TEnum defaultEnum, EnumFormat[] parseFormatOrder) => ParseFlagsOrDefault(value, false, FlagEnums.DefaultDelimiter, defaultEnum, parseFormatOrder);
 
-		public static TEnum ParseFlagsOrDefault(string value, string delimiter, TEnum defaultEnum) => ParseFlagsOrDefault(value, false, delimiter, defaultEnum);
+		public static TEnum ParseFlagsOrDefault(string value, bool ignoreCase, TEnum defaultEnum) => ParseFlagsOrDefault(value, ignoreCase, FlagEnums.DefaultDelimiter, defaultEnum, null);
 
-		public static TEnum ParseFlagsOrDefault(string value, bool ignoreCase, string delimiter, TEnum defaultEnum)
+		public static TEnum ParseFlagsOrDefault(string value, bool ignoreCase, TEnum defaultEnum, EnumFormat[] parseFormatOrder) => ParseFlagsOrDefault(value, ignoreCase, FlagEnums.DefaultDelimiter, defaultEnum, parseFormatOrder);
+
+		public static TEnum ParseFlagsOrDefault(string value, string delimiter, TEnum defaultEnum) => ParseFlagsOrDefault(value, false, delimiter, defaultEnum, null);
+
+		public static TEnum ParseFlagsOrDefault(string value, string delimiter, TEnum defaultEnum, EnumFormat[] parseFormatOrder) => ParseFlagsOrDefault(value, false, delimiter, defaultEnum, parseFormatOrder);
+
+		public static TEnum ParseFlagsOrDefault(string value, bool ignoreCase, string delimiter, TEnum defaultEnum) => ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum, null);
+
+		public static TEnum ParseFlagsOrDefault(string value, bool ignoreCase, string delimiter, TEnum defaultEnum, EnumFormat[] parseFormatOrder)
 		{
 			ValidateIsValidFlagCombination(defaultEnum, nameof(defaultEnum));
 
 			TEnum enumValue;
-			if (!TryParseFlags(value, ignoreCase, delimiter, out enumValue))
+			if (!TryParseFlags(value, ignoreCase, delimiter, out enumValue, parseFormatOrder))
 			{
 				enumValue = defaultEnum;
 			}
 			return enumValue;
 		}
 
-		public static bool TryParseFlags(string value, out TEnum result) => TryParseFlags(value, false, FlagEnums.DefaultDelimiter, out result);
+		public static bool TryParseFlags(string value, out TEnum result) => TryParseFlags(value, false, FlagEnums.DefaultDelimiter, out result, null);
 
-		public static bool TryParseFlags(string value, bool ignoreCase, out TEnum result) => TryParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, out result);
+		public static bool TryParseFlags(string value, out TEnum result, EnumFormat[] parseFormatOrder) => TryParseFlags(value, false, FlagEnums.DefaultDelimiter, out result, parseFormatOrder);
 
-		public static bool TryParseFlags(string value, string delimiter, out TEnum result) => TryParseFlags(value, false, delimiter, out result);
+		public static bool TryParseFlags(string value, bool ignoreCase, out TEnum result) => TryParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, out result, null);
 
-		public static bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
+		public static bool TryParseFlags(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder) => TryParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, out result, parseFormatOrder);
+
+		public static bool TryParseFlags(string value, string delimiter, out TEnum result) => TryParseFlags(value, false, delimiter, out result, null);
+
+		public static bool TryParseFlags(string value, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder) => TryParseFlags(value, false, delimiter, out result, parseFormatOrder);
+
+		public static bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result) => TryParseFlags(value, ignoreCase, delimiter, out result, null);
+
+		public static bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder)
 		{
 			Preconditions.NotNullOrEmpty(delimiter, nameof(delimiter));
 
@@ -1673,7 +1693,7 @@ namespace EnumsNET
 
 			if (!(parseFormatOrder?.Length > 0))
 			{
-				parseFormatOrder = new[] { EnumFormat.Name, EnumFormat.DecimalValue };
+				parseFormatOrder = Enums.DefaultParseFormatOrder;
 			}
 
 			result = default(TEnum);
@@ -1730,6 +1750,8 @@ namespace EnumsNET
 		bool IEnumsCache.IsContiguous => IsContiguous;
 
 		Type IEnumsCache.UnderlyingType => UnderlyingType;
+
+		TypeCode IEnumsCache.UnderlyingTypeCode => UnderlyingTypeCode;
 
 		bool IEnumsCache.IsFlagEnum => IsFlagEnum;
 
@@ -1914,16 +1936,26 @@ namespace EnumsNET
 		#region Parsing
 		object IEnumsCache.Parse(string value) => Parse(value);
 
+		object IEnumsCache.Parse(string value, EnumFormat[] parseFormatOrder) => Parse(value, parseFormatOrder);
+
 		object IEnumsCache.Parse(string value, bool ignoreCase) => Parse(value, ignoreCase);
 
-		object IEnumsCache.Parse(string value, params EnumFormat[] parseOrder) => Parse(value, parseOrder);
-
-		object IEnumsCache.Parse(string value, bool ignoreCase, params EnumFormat[] parseOrder) => Parse(value, ignoreCase, parseOrder);
+		object IEnumsCache.Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => Parse(value, ignoreCase, parseFormatOrder);
 
 		object IEnumsCache.ParseOrDefault(string value, object defaultEnum)
 		{
 			object result;
 			if (!((IEnumsCache)this).TryParse(value, out result))
+			{
+				result = defaultEnum;
+			}
+			return result;
+		}
+
+		object IEnumsCache.ParseOrDefault(string value, object defaultEnum, EnumFormat[] parseFormatOrder)
+		{
+			object result;
+			if (!((IEnumsCache)this).TryParse(value, out result, parseFormatOrder))
 			{
 				result = defaultEnum;
 			}
@@ -1940,20 +1972,10 @@ namespace EnumsNET
 			return result;
 		}
 
-		object IEnumsCache.ParseOrDefault(string value, object defaultEnum, params EnumFormat[] parseOrder)
+		object IEnumsCache.ParseOrDefault(string value, bool ignoreCase, object defaultEnum, EnumFormat[] parseFormatOrder)
 		{
 			object result;
-			if (!((IEnumsCache)this).TryParse(value, out result, parseOrder))
-			{
-				result = defaultEnum;
-			}
-			return result;
-		}
-
-		object IEnumsCache.ParseOrDefault(string value, bool ignoreCase, object defaultEnum, params EnumFormat[] parseOrder)
-		{
-			object result;
-			if (!((IEnumsCache)this).TryParse(value, ignoreCase, out result, parseOrder))
+			if (!((IEnumsCache)this).TryParse(value, ignoreCase, out result, parseFormatOrder))
 			{
 				result = defaultEnum;
 			}
@@ -1968,6 +1990,14 @@ namespace EnumsNET
 			return success;
 		}
 
+		bool IEnumsCache.TryParse(string value, out object result, EnumFormat[] parseFormatOrder)
+		{
+			TEnum resultAsTEnum;
+			var success = TryParse(value, out resultAsTEnum, parseFormatOrder);
+			result = resultAsTEnum;
+			return success;
+		}
+
 		bool IEnumsCache.TryParse(string value, bool ignoreCase, out object result)
 		{
 			TEnum resultAsTEnum;
@@ -1976,18 +2006,10 @@ namespace EnumsNET
 			return success;
 		}
 
-		bool IEnumsCache.TryParse(string value, out object result, params EnumFormat[] parseOrder)
+		bool IEnumsCache.TryParse(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder)
 		{
 			TEnum resultAsTEnum;
-			var success = TryParse(value, out resultAsTEnum, parseOrder);
-			result = resultAsTEnum;
-			return success;
-		}
-
-		bool IEnumsCache.TryParse(string value, bool ignoreCase, out object result, params EnumFormat[] parseOrder)
-		{
-			TEnum resultAsTEnum;
-			var success = TryParse(value, ignoreCase, out resultAsTEnum, parseOrder);
+			var success = TryParse(value, ignoreCase, out resultAsTEnum, parseFormatOrder);
 			result = resultAsTEnum;
 			return success;
 		}
@@ -2038,16 +2060,34 @@ namespace EnumsNET
 		#region Parsing
 		object IEnumsCache.ParseFlags(string value) => ParseFlags(value);
 
+		object IEnumsCache.ParseFlags(string value, EnumFormat[] parseFormatOrder) => ParseFlags(value, parseFormatOrder);
+
 		object IEnumsCache.ParseFlags(string value, bool ignoreCase) => ParseFlags(value, ignoreCase);
+
+		object IEnumsCache.ParseFlags(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, parseFormatOrder);
 
 		object IEnumsCache.ParseFlags(string value, string delimiter) => ParseFlags(value, delimiter);
 
+		object IEnumsCache.ParseFlags(string value, string delimiter, EnumFormat[] parseFormatOrder) => ParseFlags(value, delimiter, parseFormatOrder);
+
 		object IEnumsCache.ParseFlags(string value, bool ignoreCase, string delimiter) => ParseFlags(value, ignoreCase, delimiter);
+
+		object IEnumsCache.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
 
 		object IEnumsCache.ParseFlagsOrDefault(string value, object defaultEnum)
 		{
 			object result;
 			if (!((IEnumsCache)this).TryParseFlags(value, out result))
+			{
+				result = defaultEnum;
+			}
+			return result;
+		}
+
+		object IEnumsCache.ParseFlagsOrDefault(string value, object defaultEnum, EnumFormat[] parseFormatOrder)
+		{
+			object result;
+			if (!((IEnumsCache)this).TryParseFlags(value, out result, parseFormatOrder))
 			{
 				result = defaultEnum;
 			}
@@ -2064,10 +2104,30 @@ namespace EnumsNET
 			return result;
 		}
 
+		object IEnumsCache.ParseFlagsOrDefault(string value, bool ignoreCase, object defaultEnum, EnumFormat[] parseFormatOrder)
+		{
+			object result;
+			if (!((IEnumsCache)this).TryParseFlags(value, ignoreCase, out result, parseFormatOrder))
+			{
+				result = defaultEnum;
+			}
+			return result;
+		}
+
 		object IEnumsCache.ParseFlagsOrDefault(string value, string delimiter, object defaultEnum)
 		{
 			object result;
 			if (!((IEnumsCache)this).TryParseFlags(value, delimiter, out result))
+			{
+				result = defaultEnum;
+			}
+			return result;
+		}
+
+		object IEnumsCache.ParseFlagsOrDefault(string value, string delimiter, object defaultEnum, EnumFormat[] parseFormatOrder)
+		{
+			object result;
+			if (!((IEnumsCache)this).TryParseFlags(value, delimiter, out result, parseFormatOrder))
 			{
 				result = defaultEnum;
 			}
@@ -2084,10 +2144,28 @@ namespace EnumsNET
 			return result;
 		}
 
+		object IEnumsCache.ParseFlagsOrDefault(string value, bool ignoreCase, string delimiter, object defaultEnum, EnumFormat[] parseFormatOrder)
+		{
+			object result;
+			if (!((IEnumsCache)this).TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder))
+			{
+				result = defaultEnum;
+			}
+			return result;
+		}
+
 		bool IEnumsCache.TryParseFlags(string value, out object result)
 		{
 			TEnum resultAtTEnum;
 			var success = TryParseFlags(value, out resultAtTEnum);
+			result = resultAtTEnum;
+			return success;
+		}
+
+		bool IEnumsCache.TryParseFlags(string value, out object result, EnumFormat[] parseFormatOrder)
+		{
+			TEnum resultAtTEnum;
+			var success = TryParseFlags(value, out resultAtTEnum, parseFormatOrder);
 			result = resultAtTEnum;
 			return success;
 		}
@@ -2100,6 +2178,14 @@ namespace EnumsNET
 			return success;
 		}
 
+		bool IEnumsCache.TryParseFlags(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder)
+		{
+			TEnum resultAtTEnum;
+			var success = TryParseFlags(value, ignoreCase, out resultAtTEnum, parseFormatOrder);
+			result = resultAtTEnum;
+			return success;
+		}
+
 		bool IEnumsCache.TryParseFlags(string value, string delimiter, out object result)
 		{
 			TEnum resultAtTEnum;
@@ -2108,10 +2194,26 @@ namespace EnumsNET
 			return success;
 		}
 
+		bool IEnumsCache.TryParseFlags(string value, string delimiter, out object result, EnumFormat[] parseFormatOrder)
+		{
+			TEnum resultAtTEnum;
+			var success = TryParseFlags(value, delimiter, out resultAtTEnum, parseFormatOrder);
+			result = resultAtTEnum;
+			return success;
+		}
+
 		bool IEnumsCache.TryParseFlags(string value, bool ignoreCase, string delimiter, out object result)
 		{
 			TEnum resultAtTEnum;
 			var success = TryParseFlags(value, ignoreCase, delimiter, out resultAtTEnum);
+			result = resultAtTEnum;
+			return success;
+		}
+
+		bool IEnumsCache.TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] parseFormatOrder)
+		{
+			TEnum resultAtTEnum;
+			var success = TryParseFlags(value, ignoreCase, delimiter, out resultAtTEnum, parseFormatOrder);
 			result = resultAtTEnum;
 			return success;
 		}

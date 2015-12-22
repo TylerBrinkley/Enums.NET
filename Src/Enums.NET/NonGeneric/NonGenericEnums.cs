@@ -66,6 +66,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		public static Type GetUnderlyingType(Type enumType) => GetEnumsCache(enumType).UnderlyingType;
+
+		[Pure]
+		public static TypeCode GetUnderlyingTypeCode(Type enumType) => GetEnumsCache(enumType).UnderlyingTypeCode;
 		#endregion
 
 		#region Type Methods
@@ -1194,6 +1197,23 @@ namespace EnumsNET.NonGeneric
 		public static object Parse(Type enumType, string value) => GetEnumsCache(enumType).Parse(value);
 
 		/// <summary>
+		/// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+		/// </summary>
+		/// <param name="enumType"></param>
+		/// <param name="value"></param>
+		/// <param name="parseFormatOrder"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+		/// -or-
+		/// <paramref name="value"/> is either an empty string or only contains white space.
+		/// -or-
+		/// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
+		[Pure]
+		public static object Parse(Type enumType, string value, params EnumFormat[] parseFormatOrder) => GetEnumsCache(enumType).Parse(value, parseFormatOrder);
+
+		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
 		/// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
 		/// </summary>
@@ -1210,23 +1230,6 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
 		[Pure]
 		public static object Parse(Type enumType, string value, bool ignoreCase) => GetEnumsCache(enumType).Parse(value, ignoreCase);
-
-		/// <summary>
-		/// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="value"></param>
-		/// <param name="parseFormatOrder"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-		/// -or-
-		/// <paramref name="value"/> is either an empty string or only contains white space.
-		/// -or-
-		/// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
-		[Pure]
-		public static object Parse(Type enumType, string value, params EnumFormat[] parseFormatOrder) => GetEnumsCache(enumType).Parse(value, parseFormatOrder);
 
 		/// <summary>
 		/// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -1261,21 +1264,6 @@ namespace EnumsNET.NonGeneric
 		public static object ParseOrDefault(Type enumType, string value, object defaultEnum = null) => GetEnumsCache(enumType).ParseOrDefault(value, defaultEnum);
 
 		/// <summary>
-		/// Tries to convert the string representation of the name or numeric value of one or more enumerated
-		/// constants to an equivalent enumerated object but if it fails returns the specified default enumerated value.
-		/// A parameter specifies whether the operation is case-insensitive.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="value"></param>
-		/// <param name="ignoreCase"></param>
-		/// <param name="defaultEnum"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
-		[Pure]
-		public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum = null) => GetEnumsCache(enumType).ParseOrDefault(value, ignoreCase, defaultEnum);
-
-		/// <summary>
 		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
 		/// but if it fails returns the specified default enumerated value.
 		/// </summary>
@@ -1289,6 +1277,21 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static object ParseOrDefault(Type enumType, string value, object defaultEnum, params EnumFormat[] parseFormatOrder) => GetEnumsCache(enumType).ParseOrDefault(value, defaultEnum, parseFormatOrder);
 
+		/// <summary>
+		/// Tries to convert the string representation of the name or numeric value of one or more enumerated
+		/// constants to an equivalent enumerated object but if it fails returns the specified default enumerated value.
+		/// A parameter specifies whether the operation is case-insensitive.
+		/// </summary>
+		/// <param name="enumType"></param>
+		/// <param name="value"></param>
+		/// <param name="ignoreCase"></param>
+		/// <param name="defaultEnum"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+		[Pure]
+		public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum = null) => GetEnumsCache(enumType).ParseOrDefault(value, ignoreCase, defaultEnum);
+		
 		/// <summary>
 		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
 		/// but if it fails returns the specified default enumerated value. A parameter specifies whether the operation is case-insensitive.
@@ -1318,6 +1321,20 @@ namespace EnumsNET.NonGeneric
 		public static bool TryParse(Type enumType, string value, out object result) => GetEnumsCache(enumType).TryParse(value, out result);
 
 		/// <summary>
+		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+		/// The return value indicates whether the conversion succeeded.
+		/// </summary>
+		/// <param name="enumType"></param>
+		/// <param name="value"></param>
+		/// <param name="result"></param>
+		/// <param name="parseFormatOrder"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+		[Pure]
+		public static bool TryParse(Type enumType, string value, out object result, params EnumFormat[] parseFormatOrder) => GetEnumsCache(enumType).TryParse(value, out result, parseFormatOrder);
+
+		/// <summary>
 		/// Tries to convert the string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
 		/// A parameter specifies whether the operation is case-insensitive.
@@ -1331,20 +1348,6 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result) => GetEnumsCache(enumType).TryParse(value, ignoreCase, out result);
-
-		/// <summary>
-		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-		/// The return value indicates whether the conversion succeeded.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="value"></param>
-		/// <param name="result"></param>
-		/// <param name="parseFormatOrder"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
-		[Pure]
-		public static bool TryParse(Type enumType, string value, out object result, params EnumFormat[] parseFormatOrder) => GetEnumsCache(enumType).TryParse(value, out result, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.

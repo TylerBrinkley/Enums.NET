@@ -82,6 +82,13 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.FormatAsFlags(value);
 		}
 
+		[Pure]
+		public static string FormatAsFlags<TEnum>(TEnum value, params EnumFormat[] formats)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.FormatAsFlags(value, formats);
+		}
+
 		/// <summary>
 		/// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
 		/// </summary>
@@ -99,13 +106,6 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.FormatAsFlags(value, delimiter);
-		}
-
-		[Pure]
-		public static string FormatAsFlags<TEnum>(TEnum value, params EnumFormat[] formats)
-		{
-			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.FormatAsFlags(value, formats);
 		}
 
 		[Pure]
@@ -332,6 +332,13 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.ParseFlags(value);
 		}
 
+		[Pure]
+		public static TEnum Parse<TEnum>(string value, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlags(value, parseFormatOrder);
+		}
+
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
 		/// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
@@ -352,6 +359,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase);
+		}
+
+		[Pure]
+		public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -376,6 +390,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.ParseFlags(value, delimiter);
+		}
+
+		[Pure]
+		public static TEnum Parse<TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlags(value, delimiter, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -404,6 +425,13 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase, delimiter);
 		}
 
+		[Pure]
+		public static TEnum Parse<TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+		}
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
@@ -418,6 +446,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, defaultEnum);
+		}
+
+		[Pure]
+		public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -436,6 +471,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, defaultEnum);
+		}
+
+		[Pure]
+		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -457,6 +499,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, delimiter, defaultEnum);
+		}
+
+		[Pure]
+		public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, delimiter, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -481,6 +530,13 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum);
 		}
 
+		[Pure]
+		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum, parseFormatOrder);
+		}
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
@@ -495,6 +551,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.TryParseFlags(value, out result);
+		}
+
+		[Pure]
+		public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.TryParseFlags(value, out result, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -513,6 +576,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, out result);
+		}
+
+		[Pure]
+		public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, out result, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -536,6 +606,13 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.TryParseFlags(value, delimiter, out result);
 		}
 
+		[Pure]
+		public static bool TryParse<TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.TryParseFlags(value, delimiter, out result, parseFormatOrder);
+		}
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
@@ -556,6 +633,13 @@ namespace EnumsNET.Unsafe
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, delimiter, out result);
+		}
+
+		[Pure]
+		public static bool TryParse<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
+		{
+			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
 		}
 		#endregion
 	}

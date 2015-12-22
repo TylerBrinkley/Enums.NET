@@ -252,6 +252,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static object Parse(Type enumType, string value) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value);
 
+		[Pure]
+		public static object Parse(Type enumType, string value, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, parseFormatOrder);
+
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
 		/// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
@@ -269,6 +272,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
 		[Pure]
 		public static object Parse(Type enumType, string value, bool ignoreCase) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, ignoreCase);
+
+		[Pure]
+		public static object Parse(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, ignoreCase, parseFormatOrder);
 
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
@@ -289,6 +295,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
 		[Pure]
 		public static object Parse(Type enumType, string value, string delimiter) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, delimiter);
+
+		[Pure]
+		public static object Parse(Type enumType, string value, string delimiter, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, delimiter, parseFormatOrder);
 
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
@@ -312,6 +321,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static object Parse(Type enumType, string value, bool ignoreCase, string delimiter) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, ignoreCase, delimiter);
 
+		[Pure]
+		public static object Parse(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
@@ -324,6 +336,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		public static object ParseOrDefault(Type enumType, string value, object defaultEnum) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, defaultEnum);
+
+		[Pure]
+		public static object ParseOrDefault(Type enumType, string value, object defaultEnum, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, defaultEnum, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -339,6 +354,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, ignoreCase, defaultEnum);
+
+		[Pure]
+		public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -356,6 +374,9 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="delimiter"/> is an empty string.</exception>
 		[Pure]
 		public static object ParseOrDefault(Type enumType, string value, string delimiter, object defaultEnum) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, delimiter, defaultEnum);
+
+		[Pure]
+		public static object ParseOrDefault(Type enumType, string value, string delimiter, object defaultEnum, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, delimiter, defaultEnum, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -375,6 +396,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, string delimiter, object defaultEnum) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum);
 
+		[Pure]
+		public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, string delimiter, object defaultEnum, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum, parseFormatOrder);
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
@@ -387,6 +411,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		public static bool TryParse(Type enumType, string value, out object result) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, out result);
+
+		[Pure]
+		public static bool TryParse(Type enumType, string value, out object result, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, out result, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -402,6 +429,9 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, ignoreCase, out result);
+
+		[Pure]
+		public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, ignoreCase, out result, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -420,6 +450,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		public static bool TryParse(Type enumType, string value, string delimiter, out object result) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, delimiter, out result);
 
+		[Pure]
+		public static bool TryParse(Type enumType, string value, string delimiter, out object result, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, delimiter, out result, parseFormatOrder);
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
@@ -437,6 +470,9 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="delimiter"/> is an empty string.</exception>
 		[Pure]
 		public static bool TryParse(Type enumType, string value, bool ignoreCase, string delimiter, out object result) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, ignoreCase, delimiter, out result);
+
+		[Pure]
+		public static bool TryParse(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder) => NonGenericEnums.GetEnumsCache(enumType).TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
 		#endregion
 	}
 }

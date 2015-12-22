@@ -67,6 +67,9 @@ namespace EnumsNET
 		[Pure]
 		public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.FormatAsFlags(value);
 
+		[Pure]
+		public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.FormatAsFlags(value, formats);
+
 		/// <summary>
 		/// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
 		/// </summary>
@@ -79,9 +82,6 @@ namespace EnumsNET
 		/// <exception cref="ArgumentException"><paramref name="delimiter"/> is empty.</exception>
 		[Pure]
 		public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter) where TEnum : struct => EnumsCache<TEnum>.FormatAsFlags(value, delimiter);
-
-		[Pure]
-		public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.FormatAsFlags(value, formats);
 
 		[Pure]
 		public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter, params EnumFormat[] formats) where TEnum : struct => EnumsCache<TEnum>.FormatAsFlags(value, delimiter, formats);
@@ -222,6 +222,9 @@ namespace EnumsNET
 		[Pure]
 		public static TEnum Parse<[EnumConstraint] TEnum>(string value) where TEnum : struct => EnumsCache<TEnum>.ParseFlags(value);
 
+		[Pure]
+		public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlags(value, parseFormatOrder);
+
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
 		/// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
@@ -237,6 +240,9 @@ namespace EnumsNET
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
 		[Pure]
 		public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase) where TEnum : struct => EnumsCache<TEnum>.ParseFlags(value, ignoreCase);
+
+		[Pure]
+		public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlags(value, ignoreCase, parseFormatOrder);
 
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
@@ -255,6 +261,9 @@ namespace EnumsNET
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
 		[Pure]
 		public static TEnum Parse<[EnumConstraint] TEnum>(string value, string delimiter) where TEnum : struct => EnumsCache<TEnum>.ParseFlags(value, delimiter);
+
+		[Pure]
+		public static TEnum Parse<[EnumConstraint] TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlags(value, delimiter, parseFormatOrder);
 
 		/// <summary>
 		/// Converts the string representation of the name or numeric value of one or more enumerated constants
@@ -290,6 +299,9 @@ namespace EnumsNET
 		[Pure]
 		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, defaultEnum);
 
+		[Pure]
+		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, defaultEnum, parseFormatOrder);
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
@@ -302,6 +314,9 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, defaultEnum);
+
+		[Pure]
+		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -317,6 +332,9 @@ namespace EnumsNET
 		/// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
 		[Pure]
 		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultEnum) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, delimiter, defaultEnum);
+
+		[Pure]
+		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, delimiter, defaultEnum, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -334,6 +352,9 @@ namespace EnumsNET
 		[Pure]
 		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum);
 
+		[Pure]
+		public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum, parseFormatOrder);
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
@@ -344,6 +365,9 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, out result);
+
+		[Pure]
+		public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, out result, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -357,6 +381,9 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, out result);
+
+		[Pure]
+		public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, out result, parseFormatOrder);
 
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -373,6 +400,9 @@ namespace EnumsNET
 		[Pure]
 		public static bool TryParse<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, delimiter, out result);
 
+		[Pure]
+		public static bool TryParse<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, delimiter, out result, parseFormatOrder);
+
 		/// <summary>
 		/// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
 		/// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
@@ -388,6 +418,9 @@ namespace EnumsNET
 		/// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
 		[Pure]
 		public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, delimiter, out result);
+
+		[Pure]
+		public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
 		#endregion
 	}
 }
