@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 
 namespace EnumsNET
 {
@@ -40,7 +41,7 @@ namespace EnumsNET
 		TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
 		TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute;
 		bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
-		TAttribute[] GetAttributes<TAttribute>() where TAttribute : Attribute;
+		IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute;
 		sbyte ToSByte();
 		byte ToByte();
 		short ToInt16();

@@ -28,17 +28,15 @@ namespace EnumsNET
 		{
 			get
 			{
-				if (Name != null)
+				if (Name == null)
 				{
-					if (_attributes != null)
-					{
-						var attributes = new Attribute[_attributes.Length];
-						Array.Copy(_attributes, attributes, _attributes.Length);
-						return attributes;
-					}
-					return new Attribute[0];
+					return null;
 				}
-				return null;
+				if (_attributes == null)
+				{
+					return Enums.ZeroLengthAttributes;
+				}
+				return _attributes.Copy();
 			}
 		}
 
@@ -52,7 +50,7 @@ namespace EnumsNET
 		}
 
 		public InternalEnumMemberInfo(KeyValuePair<string, ValueAndAttributes<TEnum>> pair)
-			: this(pair.Key, pair.Value)
+			: this(pair.Value.Value, pair.Key, pair.Value.Attributes)
 		{
 		}
 
@@ -78,12 +76,12 @@ namespace EnumsNET
 			return _attributes != null ? Enums.GetAttribute<TAttribute>(_attributes) : null;
 		}
 
-		public TAttribute[] GetAttributes<TAttribute>()
+		public IEnumerable<TAttribute> GetAttributes<TAttribute>()
 			where TAttribute : Attribute
 		{
 			return Name != null ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
 		}
 
-		public EnumMemberInfo<TEnum> ToEnumMemberInfo() => Name != null ? new EnumMemberInfo<TEnum>(Value, Name, Attributes) : null;
+		public EnumMemberInfo<TEnum> ToEnumMemberInfo() => Name != null ? new EnumMemberInfo<TEnum>(Value, Name, _attributes) : null;
 	}
 }

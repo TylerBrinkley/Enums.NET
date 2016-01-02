@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EnumsNET
 {
@@ -20,21 +21,21 @@ namespace EnumsNET
 		#region Type Methods
 		int GetDefinedCount(bool uniqueValued);
 
-		string[] GetNames(bool uniqueValued);
+		IEnumerable<string> GetNames(bool uniqueValued);
 
-		object[] GetValues(bool uniqueValued);
+		IEnumerable<object> GetValues(bool uniqueValued);
 
-		string[] GetDescriptions(bool uniqueValued);
+		IEnumerable<string> GetDescriptions(bool uniqueValued);
 
-		string[] GetEnumMemberValues(bool uniqueValued);
+		IEnumerable<string> GetEnumMemberValues(bool uniqueValued);
 
-		Attribute[][] GetAllAttributes(bool uniqueValued);
+		IEnumerable<Attribute[]> GetAllAttributes(bool uniqueValued);
 
-		string[] GetDescriptionsOrNames(bool uniqueValued);
+		IEnumerable<string> GetDescriptionsOrNames(bool uniqueValued);
 
-		string[] GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued);
+		IEnumerable<string> GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued);
 
-		EnumMemberInfo[] GetEnumMemberInfos(bool uniqueValued);
+		IEnumerable<EnumMemberInfo> GetEnumMemberInfos(bool uniqueValued);
 
 		int Compare(object x, object y);
 		#endregion
@@ -66,23 +67,23 @@ namespace EnumsNET
 		#endregion
 
 		#region ToEnum
-		object ToEnum(object value, bool validate);
+		object ToObject(object value, bool validate);
 
-		object ToEnum(long value, bool validate);
+		object ToObject(long value, bool validate);
 
-		object ToEnum(ulong value, bool validate);
+		object ToObject(ulong value, bool validate);
 
-		object ToEnumOrDefault(object value, object defaultEnum, bool validate);
+		object ToObjectOrDefault(object value, object defaultEnum, bool validate);
 
-		object ToEnumOrDefault(long value, object defaultEnum, bool validate);
+		object ToObjectOrDefault(long value, object defaultEnum, bool validate);
 
-		object ToEnumOrDefault(ulong value, object defaultEnum, bool validate);
+		object ToObjectOrDefault(ulong value, object defaultEnum, bool validate);
 
-		bool TryToEnum(object value, out object result, bool validate);
+		bool TryToObject(object value, out object result, bool validate);
 
-		bool TryToEnum(long value, out object result, bool validate);
+		bool TryToObject(long value, out object result, bool validate);
 
-		bool TryToEnum(ulong value, out object result, bool validate);
+		bool TryToObject(ulong value, out object result, bool validate);
 		#endregion
 
 		#region All Values Main Methods

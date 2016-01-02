@@ -31,6 +31,8 @@ namespace EnumsNET
 	{
 		internal static readonly EnumFormat[] DefaultParseFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
 
+		internal static readonly Attribute[] ZeroLengthAttributes = new Attribute[0];
+
 		#region "Properties"
 		/// <summary>
 		/// Indicates if <typeparamref name="TEnum"/> is contiguous.
@@ -71,7 +73,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns></returns>
 		[Pure]
-		public static EnumMemberInfo<TEnum>[] GetEnumMemberInfos<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberInfos(uniqueValued);
+		public static IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberInfos(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' names.
@@ -81,7 +83,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns>Array of <typeparamref name="TEnum"/>'s members' names in value order.</returns>
 		[Pure]
-		public static string[] GetNames<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetNames(uniqueValued);
+		public static IEnumerable<string> GetNames<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetNames(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' values.
@@ -91,7 +93,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns>Array of <typeparamref name="TEnum"/>'s members' values in value order.</returns>
 		[Pure]
-		public static TEnum[] GetValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetValues(uniqueValued);
+		public static IEnumerable<TEnum> GetValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetValues(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <see cref="DescriptionAttribute.Description"/>s.
@@ -101,7 +103,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <see cref="DescriptionAttribute.Description"/>s in value order.</returns>
 		[Pure]
-		public static string[] GetDescriptions<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptions(uniqueValued);
+		public static IEnumerable<string> GetDescriptions<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptions(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' descriptions else names.
@@ -111,7 +113,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns></returns>
 		[Pure]
-		public static string[] GetDescriptionsOrNames<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(uniqueValued);
+		public static IEnumerable<string> GetDescriptionsOrNames<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' descriptions else names formatted
@@ -122,7 +124,7 @@ namespace EnumsNET
 		/// <param name="nameFormatter"></param>
 		/// <param name="uniqueValued"></param>
 		/// <returns></returns>
-		public static string[] GetDescriptionsOrNames<[EnumConstraint] TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(nameFormatter, uniqueValued);
+		public static IEnumerable<string> GetDescriptionsOrNames<[EnumConstraint] TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(nameFormatter, uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <see cref="EnumMemberAttribute.Value"/>s.
@@ -132,7 +134,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <see cref="EnumMemberAttribute.Value"/>s in value order.</returns>
 		[Pure]
-		public static string[] GetEnumMemberValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValues(uniqueValued);
+		public static IEnumerable<string> GetEnumMemberValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValues(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of all of <typeparamref name="TEnum"/>'s members' attributes.
@@ -141,7 +143,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns>Array of all of <typeparamref name="TEnum"/>'s members' attributes in value order.</returns>
 		[Pure]
-		public static Attribute[][] GetAllAttributes<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetAllAttributes(uniqueValued);
+		public static IEnumerable<Attribute[]> GetAllAttributes<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetAllAttributes(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <typeparamref name="TAttribute"/>s.
@@ -152,7 +154,7 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <typeparamref name="TAttribute"/> in value order.</returns>
 		[Pure]
-		public static TAttribute[] GetAttributes<[EnumConstraint] TEnum, TAttribute>(bool uniqueValued = false)
+		public static IEnumerable<TAttribute> GetAttributes<[EnumConstraint] TEnum, TAttribute>(bool uniqueValued = false)
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributes<TAttribute>(uniqueValued);
 
 		/// <summary>
@@ -516,7 +518,7 @@ namespace EnumsNET
 		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(ulong value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
 		#endregion
 
-		#region ToEnum
+		#region ToObject
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that the result is within the
 		/// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
@@ -531,7 +533,7 @@ namespace EnumsNET
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(object value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(object value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -545,7 +547,7 @@ namespace EnumsNET
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(sbyte value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(sbyte value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -558,7 +560,7 @@ namespace EnumsNET
 		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(byte value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(byte value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -571,34 +573,7 @@ namespace EnumsNET
 		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(short value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
-
-		/// <summary>
-		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
-		/// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value">Value to convert.</param>
-		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
-		/// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
-		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-		[Pure]
-		[CLSCompliant(false)]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(ushort value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
-
-		/// <summary>
-		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
-		/// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value">Value to convert.</param>
-		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
-		/// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
-		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-		[Pure]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(int value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(short value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -612,7 +587,7 @@ namespace EnumsNET
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(uint value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(ushort value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -625,7 +600,7 @@ namespace EnumsNET
 		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(long value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(int value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -639,7 +614,34 @@ namespace EnumsNET
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnum<[EnumConstraint] TEnum>(ulong value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnum(value, validate);
+		public static TEnum ToObject<[EnumConstraint] TEnum>(uint value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
+
+		/// <summary>
+		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
+		/// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value">Value to convert.</param>
+		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+		/// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
+		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+		[Pure]
+		public static TEnum ToObject<[EnumConstraint] TEnum>(long value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
+
+		/// <summary>
+		/// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
+		/// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value">Value to convert.</param>
+		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+		/// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
+		/// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+		[Pure]
+		[CLSCompliant(false)]
+		public static TEnum ToObject<[EnumConstraint] TEnum>(ulong value, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObject(value, validate);
 
 		/// <summary>
 		/// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that the <paramref name="value"/> is within the
@@ -653,7 +655,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(object value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(object value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -667,7 +669,7 @@ namespace EnumsNET
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(sbyte value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(sbyte value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -680,7 +682,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(byte value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(byte value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -693,7 +695,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(short value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(short value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -707,7 +709,7 @@ namespace EnumsNET
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(ushort value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ushort value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -720,7 +722,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(int value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(int value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -734,7 +736,7 @@ namespace EnumsNET
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(uint value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(uint value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -747,7 +749,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(long value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(long value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -761,7 +763,7 @@ namespace EnumsNET
 		/// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static TEnum ToEnumOrDefault<[EnumConstraint] TEnum>(ulong value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToEnumOrDefault(value, defaultEnum, validate);
+		public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ulong value, TEnum defaultEnum, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
 		
 		// TODO: Check documentation from here to the end
 
@@ -777,7 +779,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns></returns>
 		[Pure]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(object value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(object value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -791,7 +793,7 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(sbyte value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(sbyte value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -804,7 +806,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns></returns>
 		[Pure]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(byte value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(byte value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -817,7 +819,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns></returns>
 		[Pure]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(short value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(short value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -831,7 +833,7 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(ushort value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(ushort value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -844,7 +846,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns></returns>
 		[Pure]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(int value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(int value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -858,7 +860,7 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(uint value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(uint value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -871,7 +873,7 @@ namespace EnumsNET
 		/// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
 		/// <returns></returns>
 		[Pure]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(long value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(long value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -885,7 +887,7 @@ namespace EnumsNET
 		/// <returns></returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum<[EnumConstraint] TEnum>(ulong value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToEnum(value, out result, validate);
+		public static bool TryToObject<[EnumConstraint] TEnum>(ulong value, out TEnum result, bool validate = true) where TEnum : struct => EnumsCache<TEnum>.TryToObject(value, out result, validate);
 		#endregion
 
 		#region All Values Main Methods
@@ -1140,7 +1142,7 @@ namespace EnumsNET
 		/// <param name="value"></param>
 		/// <returns><typeparamref name="TAttribute"/> array</returns>
 		[Pure]
-		public static TAttribute[] GetAttributes<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
+		public static IEnumerable<TAttribute> GetAttributes<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
 			where TAttribute : Attribute where TEnum : struct => EnumsCache<TEnum>.GetAttributes<TAttribute>(value);
 
 		/// <summary>
@@ -1341,19 +1343,17 @@ namespace EnumsNET
 			return null;
 		}
 
-		internal static TAttribute[] GetAttributes<TAttribute>(Attribute[] attributes)
+		internal static IEnumerable<TAttribute> GetAttributes<TAttribute>(Attribute[] attributes)
 			where TAttribute : Attribute
 		{
-			var attributesWanted = new List<TAttribute>();
 			foreach (var attribute in attributes)
 			{
 				var castedAttr = attribute as TAttribute;
 				if (castedAttr != null)
 				{
-					attributesWanted.Add(castedAttr);
+					yield return castedAttr;
 				}
 			}
-			return attributesWanted.ToArray();
 		}
 
 		internal static bool IsNumeric(string value) => char.IsDigit(value[0]) || value[0] == '-' || value[0] == '+';

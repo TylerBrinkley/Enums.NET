@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Reflection;
@@ -84,7 +85,7 @@ namespace EnumsNET.NonGeneric
 		public static int GetDefinedCount(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetDefinedCount(uniqueValued);
 
 		[Pure]
-		public static EnumMemberInfo[] GetEnumMemberInfos(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetEnumMemberInfos(uniqueValued);
+		public static IEnumerable<EnumMemberInfo> GetEnumMemberInfos(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetEnumMemberInfos(uniqueValued);
 
 		/// <summary>
 		/// Retrieves an array of <paramref name="enumType"/>'s defined constants' names in value order.
@@ -95,7 +96,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static string[] GetNames(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetNames(uniqueValued);
+		public static IEnumerable<string> GetNames(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetNames(uniqueValued);
 
 		/// <summary>
 		/// Retrieves an array of <paramref name="enumType"/> defined constants' values in value order.
@@ -106,7 +107,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static object[] GetValues(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetValues(uniqueValued);
+		public static IEnumerable<object> GetValues(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetValues(uniqueValued);
 
 		/// <summary>
 		/// Retrieves an array of <paramref name="enumType"/> defined constants' descriptions in value order. Descriptions are taken from the <see cref="DescriptionAttribute"/>.
@@ -117,15 +118,15 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static string[] GetDescriptions(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptions(uniqueValued);
+		public static IEnumerable<string> GetDescriptions(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptions(uniqueValued);
 
 		[Pure]
-		public static string[] GetDescriptionsOrNames(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptionsOrNames(uniqueValued);
+		public static IEnumerable<string> GetDescriptionsOrNames(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptionsOrNames(uniqueValued);
 
-		public static string[] GetDescriptionsOrNames(Type enumType, Func<string, string> nameFormatter, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+		public static IEnumerable<string> GetDescriptionsOrNames(Type enumType, Func<string, string> nameFormatter, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptionsOrNames(nameFormatter, uniqueValued);
 
 		[Pure]
-		public static string[] GetEnumMemberValues(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetEnumMemberValues(uniqueValued);
+		public static IEnumerable<string> GetEnumMemberValues(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetEnumMemberValues(uniqueValued);
 
 		/// <summary>
 		/// Retrieves an array of all of <paramref name="enumType"/>'s defined constants' attributes in value order.
@@ -136,7 +137,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static Attribute[][] GetAllAttributes(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetAllAttributes(uniqueValued);
+		public static IEnumerable<Attribute[]> GetAllAttributes(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetAllAttributes(uniqueValued);
 
 		/// <summary>
 		/// Returns -1 if <paramref name="x"/> is less than <paramref name="y"/> and returns 0 if <paramref name="x"/> equals <paramref name="y"/>
@@ -490,7 +491,7 @@ namespace EnumsNET.NonGeneric
 		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, ulong value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
 		#endregion
 
-		#region ToEnum
+		#region ToObject
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
 		/// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
@@ -507,7 +508,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
-		public static object ToEnum(Type enumType, object value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, object value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -524,7 +525,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnum(Type enumType, sbyte value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, sbyte value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -540,7 +541,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
-		public static object ToEnum(Type enumType, byte value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, byte value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -556,7 +557,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
-		public static object ToEnum(Type enumType, short value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, short value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -573,7 +574,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnum(Type enumType, ushort value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, ushort value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -589,7 +590,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
-		public static object ToEnum(Type enumType, int value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, int value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -606,7 +607,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnum(Type enumType, uint value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, uint value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -622,7 +623,7 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
-		public static object ToEnum(Type enumType, long value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, long value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -639,7 +640,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnum(Type enumType, ulong value, bool validate = true) => GetEnumsCache(enumType).ToEnum(value, validate);
+		public static object ToObject(Type enumType, ulong value, bool validate = true) => GetEnumsCache(enumType).ToObject(value, validate);
 
 		/// <summary>
 		/// Tries to converts the specified <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -654,7 +655,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static object ToEnumOrDefault(Type enumType, object value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, object value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -670,7 +671,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnumOrDefault(Type enumType, sbyte value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, sbyte value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -685,7 +686,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static object ToEnumOrDefault(Type enumType, byte value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, byte value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -700,7 +701,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static object ToEnumOrDefault(Type enumType, short value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, short value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -716,7 +717,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnumOrDefault(Type enumType, ushort value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, ushort value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -731,7 +732,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static object ToEnumOrDefault(Type enumType, int value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, int value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -747,7 +748,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnumOrDefault(Type enumType, uint value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, uint value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -762,7 +763,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static object ToEnumOrDefault(Type enumType, long value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, long value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -778,7 +779,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static object ToEnumOrDefault(Type enumType, ulong value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToEnumOrDefault(value, defaultEnum, validate);
+		public static object ToObjectOrDefault(Type enumType, ulong value, object defaultEnum = null, bool validate = true) => GetEnumsCache(enumType).ToObjectOrDefault(value, defaultEnum, validate);
 
 		/// <summary>
 		/// Tries to converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
@@ -793,7 +794,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool TryToEnum(Type enumType, object value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, object value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -809,7 +810,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum(Type enumType, sbyte value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, sbyte value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -824,7 +825,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool TryToEnum(Type enumType, byte value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, byte value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -839,7 +840,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool TryToEnum(Type enumType, short value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, short value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -855,7 +856,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum(Type enumType, ushort value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, ushort value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -870,7 +871,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool TryToEnum(Type enumType, int value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, int value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -886,7 +887,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum(Type enumType, uint value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, uint value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -901,7 +902,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool TryToEnum(Type enumType, long value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, long value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 
 		/// <summary>
 		/// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -917,7 +918,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool TryToEnum(Type enumType, ulong value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToEnum(value, out result, validate);
+		public static bool TryToObject(Type enumType, ulong value, out object result, bool validate = true) => GetEnumsCache(enumType).TryToObject(value, out result, validate);
 		#endregion
 
 		#region All Values Main Methods

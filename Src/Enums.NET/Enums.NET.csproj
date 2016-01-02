@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumComparer.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumMemberInfo.cs" />
     <Compile Include="Enums.cs" />

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -68,7 +69,7 @@ namespace EnumsNET
 
 		public bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute => _enumMemberInfo.TryGetAttributeSelect(selector, out result);
 
-		public TAttribute[] GetAttributes<TAttribute>() where TAttribute : Attribute => _enumMemberInfo.GetAttributes<TAttribute>();
+		public IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute => _enumMemberInfo.GetAttributes<TAttribute>();
 
 		[CLSCompliant(false)]
 		public sbyte ToSByte() => _enumMemberInfo.ToSByte();
@@ -139,6 +140,8 @@ namespace EnumsNET
 	/// <typeparam name="TEnum"></typeparam>
 	public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo, IComparable<TEnum>, IComparable<EnumMemberInfo<TEnum>>
 	{
+		private Attribute[] _attributes;
+
 		/// <summary>
 		/// The defined enum member's value
 		/// </summary>
@@ -152,17 +155,17 @@ namespace EnumsNET
 		/// <summary>
 		/// The defined enum member's attributes
 		/// </summary>
-		public Attribute[] Attributes { get; }
+		public Attribute[] Attributes => _attributes.Copy();
 
 		/// <summary>
 		/// The defined enum member's <see cref="DescriptionAttribute.Description"/> if applied else null.
 		/// </summary>
-		public string Description => Enums.GetDescription(Attributes);
+		public string Description => Enums.GetDescription(_attributes);
 
 		/// <summary>
 		/// The defined enum member's <see cref="EnumMemberAttribute.Value"/> if applied else null.
 		/// </summary>
-		public string EnumMemberValue => Enums.GetEnumMemberValue(Attributes);
+		public string EnumMemberValue => Enums.GetEnumMemberValue(_attributes);
 
 		/// <summary>
 		/// The defined enum member's underlying integer value
@@ -173,7 +176,7 @@ namespace EnumsNET
 		{
 			Value = value;
 			Name = name;
-			Attributes = attributes;
+			_attributes = attributes ?? Enums.ZeroLengthAttributes;
 		}
 
 		/// <summary>
@@ -211,7 +214,7 @@ namespace EnumsNET
 		public TAttribute GetAttribute<TAttribute>()
 			where TAttribute : Attribute
 		{
-			return Enums.GetAttribute<TAttribute>(Attributes);
+			return Enums.GetAttribute<TAttribute>(_attributes);
 		}
 
 		/// <summary>
@@ -266,10 +269,10 @@ namespace EnumsNET
 		/// </summary>
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <returns></returns>
-		public TAttribute[] GetAttributes<TAttribute>()
+		public IEnumerable<TAttribute> GetAttributes<TAttribute>()
 			where TAttribute : Attribute
 		{
-			return Enums.GetAttributes<TAttribute>(Attributes);
+			return Enums.GetAttributes<TAttribute>(_attributes);
 		}
 
 		public override string ToString() => Name;
@@ -308,7 +311,7 @@ namespace EnumsNET
 		[CLSCompliant(false)]
 		public ulong ToUInt64() => EnumsCache<TEnum>.ToUInt64(Value);
 
-		private InternalEnumMemberInfo<TEnum> ToInternalEnumMemberInfo() => new InternalEnumMemberInfo<TEnum>(Value, Name, Attributes);
+		private InternalEnumMemberInfo<TEnum> ToInternalEnumMemberInfo() => new InternalEnumMemberInfo<TEnum>(Value, Name, _attributes);
 
 		#region Explicit Interface Implementation
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
