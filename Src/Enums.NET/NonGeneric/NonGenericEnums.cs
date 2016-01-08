@@ -69,7 +69,7 @@ namespace EnumsNET.NonGeneric
 		public static Type GetUnderlyingType(Type enumType) => GetEnumsCache(enumType).UnderlyingType;
 
 		[Pure]
-		public static TypeCode GetUnderlyingTypeCode(Type enumType) => GetEnumsCache(enumType).UnderlyingTypeCode;
+		public static TypeCode GetTypeCode(Type enumType) => GetEnumsCache(enumType).TypeCode;
 		#endregion
 
 		#region Type Methods
@@ -155,6 +155,9 @@ namespace EnumsNET.NonGeneric
 		/// <paramref name="y"/> is not or cannot be converted to enum of <paramref name="enumType"/></exception>
 		[Pure]
 		public static int Compare(Type enumType, object x, object y) => GetEnumsCache(enumType).Compare(x, y);
+
+		[Pure]
+		public static bool Equals(Type enumType, object x, object y) => GetEnumsCache(enumType).Equals(x, y);
 		#endregion
 
 		#region IsValid
@@ -397,7 +400,7 @@ namespace EnumsNET.NonGeneric
 		public static bool IsDefined(Type enumType, ulong value) => GetEnumsCache(enumType).IsDefined(value);
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
+		#region IsInValueRange
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
 		/// </summary>
@@ -408,7 +411,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, sbyte value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange(Type enumType, sbyte value) => GetEnumsCache(enumType).IsInValueRange(value);
 
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
@@ -419,7 +422,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, byte value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange(Type enumType, byte value) => GetEnumsCache(enumType).IsInValueRange(value);
 
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
@@ -430,30 +433,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, short value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
-
-		/// <summary>
-		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
-		[Pure]
-		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, ushort value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
-
-		/// <summary>
-		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-		/// </summary>
-		/// <param name="enumType"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
-		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
-		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, int value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange(Type enumType, short value) => GetEnumsCache(enumType).IsInValueRange(value);
 
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
@@ -465,7 +445,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, uint value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange(Type enumType, ushort value) => GetEnumsCache(enumType).IsInValueRange(value);
 
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
@@ -476,7 +456,7 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, long value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange(Type enumType, int value) => GetEnumsCache(enumType).IsInValueRange(value);
 
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
@@ -488,7 +468,30 @@ namespace EnumsNET.NonGeneric
 		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange(Type enumType, ulong value) => GetEnumsCache(enumType).IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange(Type enumType, uint value) => GetEnumsCache(enumType).IsInValueRange(value);
+
+		/// <summary>
+		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
+		/// </summary>
+		/// <param name="enumType"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+		[Pure]
+		public static bool IsInValueRange(Type enumType, long value) => GetEnumsCache(enumType).IsInValueRange(value);
+
+		/// <summary>
+		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
+		/// </summary>
+		/// <param name="enumType"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+		/// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+		[Pure]
+		[CLSCompliant(false)]
+		public static bool IsInValueRange(Type enumType, ulong value) => GetEnumsCache(enumType).IsInValueRange(value);
 		#endregion
 
 		#region ToObject
@@ -1113,6 +1116,9 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		[CLSCompliant(false)]
 		public static ulong ToUInt64(Type enumType, object value) => GetEnumsCache(enumType).ToUInt64(value);
+
+		[Pure]
+		public static int GetHashCode(Type enumType, object value) => GetEnumsCache(enumType).GetHashCode(value);
 		#endregion
 
 		#region Defined Values Main Methods

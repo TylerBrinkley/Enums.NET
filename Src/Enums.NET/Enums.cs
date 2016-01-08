@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
-
 using ExtraConstraints;
 
 namespace EnumsNET
@@ -31,7 +30,7 @@ namespace EnumsNET
 	{
 		internal static readonly EnumFormat[] DefaultParseFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
 
-		internal static readonly Attribute[] ZeroLengthAttributes = new Attribute[0];
+		internal static readonly Attribute[] ZeroLengthAttributes = { };
 
 		#region "Properties"
 		/// <summary>
@@ -51,7 +50,7 @@ namespace EnumsNET
 		public static Type GetUnderlyingType<[EnumConstraint] TEnum>() where TEnum : struct => EnumsCache<TEnum>.UnderlyingType;
 
 		[Pure]
-		public static TypeCode GetUnderlyingTypeCode<[EnumConstraint] TEnum>() where TEnum : struct => EnumsCache<TEnum>.UnderlyingTypeCode;
+		public static TypeCode GetTypeCode<[EnumConstraint] TEnum>() where TEnum : struct => EnumsCache<TEnum>.TypeCode;
 		#endregion
 
 		#region Type Methods
@@ -167,6 +166,9 @@ namespace EnumsNET
 		/// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
 		[Pure]
 		public static int Compare<[EnumConstraint] TEnum>(TEnum x, TEnum y) where TEnum : struct => EnumsCache<TEnum>.Compare(x, y);
+
+		[Pure]
+		public static bool Equals<[EnumConstraint] TEnum>(TEnum x, TEnum y) where TEnum : struct => EnumsCache<TEnum>.EqualsMethod(x, y);
 		#endregion
 
 		#region IsValid
@@ -440,7 +442,7 @@ namespace EnumsNET
 		public static bool IsDefined<[EnumConstraint] TEnum>(ulong value) where TEnum : struct => EnumsCache<TEnum>.IsDefined(value);
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
+		#region IsInValueRange
 		/// <summary>
 		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
 		/// </summary>
@@ -449,7 +451,7 @@ namespace EnumsNET
 		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(sbyte value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(sbyte value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
 
 		/// <summary>
 		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -458,7 +460,7 @@ namespace EnumsNET
 		/// <param name="value"></param>
 		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(byte value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(byte value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
 
 		/// <summary>
 		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -467,26 +469,7 @@ namespace EnumsNET
 		/// <param name="value"></param>
 		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(short value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
-
-		/// <summary>
-		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value"></param>
-		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
-		[Pure]
-		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(ushort value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
-
-		/// <summary>
-		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="value"></param>
-		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
-		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(int value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(short value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
 
 		/// <summary>
 		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -496,7 +479,7 @@ namespace EnumsNET
 		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(uint value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(ushort value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
 
 		/// <summary>
 		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -505,7 +488,7 @@ namespace EnumsNET
 		/// <param name="value"></param>
 		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(long value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(int value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
 
 		/// <summary>
 		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -515,7 +498,26 @@ namespace EnumsNET
 		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<[EnumConstraint] TEnum>(ulong value) where TEnum : struct => EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(uint value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
+
+		/// <summary>
+		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value"></param>
+		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
+		[Pure]
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(long value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
+
+		/// <summary>
+		/// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
+		/// </summary>
+		/// <typeparam name="TEnum">The enum type.</typeparam>
+		/// <param name="value"></param>
+		/// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
+		[Pure]
+		[CLSCompliant(false)]
+		public static bool IsInValueRange<[EnumConstraint] TEnum>(ulong value) where TEnum : struct => EnumsCache<TEnum>.IsInValueRange(value);
 		#endregion
 
 		#region ToObject
@@ -1048,6 +1050,9 @@ namespace EnumsNET
 		[Pure]
 		[CLSCompliant(false)]
 		public static ulong ToUInt64<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.ToUInt64(value);
+
+		[Pure]
+		public static int GetHashCode<[EnumConstraint] TEnum>(TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetHashCodeMethod(value);
 		#endregion
 
 		#region Defined Values Main Methods

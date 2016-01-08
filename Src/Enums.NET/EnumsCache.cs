@@ -34,7 +34,7 @@ namespace EnumsNET
 
 		public static readonly TEnum AllFlags;
 
-		public static readonly TypeCode UnderlyingTypeCode;
+		public static readonly TypeCode TypeCode;
 
 		public static readonly Func<TEnum, TEnum, bool> EqualsMethod;
 		
@@ -177,7 +177,7 @@ namespace EnumsNET
 		{
 			get
 			{
-				switch (UnderlyingTypeCode)
+				switch (TypeCode)
 				{
 					case TypeCode.Int32:
 						return typeof(int);
@@ -197,7 +197,7 @@ namespace EnumsNET
 						return typeof(ulong);
 				}
 				// Should never reach this
-				Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+				Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 				return null;
 			}
 		}
@@ -213,7 +213,7 @@ namespace EnumsNET
 			var type = typeof(TEnum);
 			Debug.Assert(type.IsEnum);
 			var underlyingType = Enum.GetUnderlyingType(type);
-			UnderlyingTypeCode = Type.GetTypeCode(underlyingType);
+			TypeCode = Type.GetTypeCode(underlyingType);
 			IsFlagEnum = type.IsDefined(typeof(FlagsAttribute), false);
 
 			var xParam = Expression.Parameter(type, "x");
@@ -326,7 +326,7 @@ namespace EnumsNET
 			}
 			var maxDefined = MaxDefined;
 			var minDefined = MinDefined;
-			if (UnderlyingTypeCode == TypeCode.UInt64)
+			if (TypeCode == TypeCode.UInt64)
 			{
 				IsContiguous = ToUInt64(maxDefined) - ToUInt64(minDefined) + 1UL == (ulong)_valueMap.Count;
 			}
@@ -452,9 +452,9 @@ namespace EnumsNET
 
 		public static bool IsValid(TEnum value) => IsFlagEnum ? IsValidFlagCombination(value) : IsDefined(value);
 
-		public static bool IsValid(long value) => IsWithinUnderlyingTypesValueRange(value) && IsValid(InternalToObject(value));
+		public static bool IsValid(long value) => IsInValueRange(value) && IsValid(InternalToObject(value));
 
-		public static bool IsValid(ulong value) => IsWithinUnderlyingTypesValueRange(value) && IsValid(InternalToObject(value));
+		public static bool IsValid(ulong value) => IsInValueRange(value) && IsValid(InternalToObject(value));
 		#endregion
 
 		#region IsDefined
@@ -473,15 +473,15 @@ namespace EnumsNET
 			return _valueMap.ContainsSecond(new NameAndAttributes(name)) || (_duplicateValues?.ContainsKey(name) ?? false) || (ignoreCase && _ignoreCaseSet.Value.ContainsKey(name));
 		}
 
-		public static bool IsDefined(long value) => IsWithinUnderlyingTypesValueRange(value) && IsDefined(InternalToObject(value));
+		public static bool IsDefined(long value) => IsInValueRange(value) && IsDefined(InternalToObject(value));
 
-		public static bool IsDefined(ulong value) => IsWithinUnderlyingTypesValueRange(value) && IsDefined(InternalToObject(value));
+		public static bool IsDefined(ulong value) => IsInValueRange(value) && IsDefined(InternalToObject(value));
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
-		public static bool IsWithinUnderlyingTypesValueRange(long value)
+		#region IsInValueRange
+		public static bool IsInValueRange(long value)
 		{
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return value >= int.MinValue && value <= int.MaxValue;
@@ -501,13 +501,13 @@ namespace EnumsNET
 					return value >= 0L;
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {EnumsCache<TypeCode>.AsString(UnderlyingTypeCode)}");
+			Debug.Fail($"Unknown enum underlying type code of {EnumsCache<TypeCode>.AsString(TypeCode)}");
 			return false;
 		}
 
-		public static bool IsWithinUnderlyingTypesValueRange(ulong value)
+		public static bool IsInValueRange(ulong value)
 		{
-			return UnderlyingTypeCode == TypeCode.UInt64 || (value <= long.MaxValue && IsWithinUnderlyingTypesValueRange((long)value));
+			return TypeCode == TypeCode.UInt64 || (value <= long.MaxValue && IsInValueRange((long)value));
 		}
 		#endregion
 
@@ -653,7 +653,7 @@ namespace EnumsNET
 
 		public static bool TryToObject(long value, out TEnum result, bool validate = true)
 		{
-			if (IsWithinUnderlyingTypesValueRange(value))
+			if (IsInValueRange(value))
 			{
 				result = InternalToObject(value);
 				if (!validate || IsValid(result))
@@ -667,7 +667,7 @@ namespace EnumsNET
 
 		public static bool TryToObject(ulong value, out TEnum result, bool validate = true)
 		{
-			if (IsWithinUnderlyingTypesValueRange(value))
+			if (IsInValueRange(value))
 			{
 				result = InternalToObject(value);
 				if (!validate || IsValid(result))
@@ -802,7 +802,7 @@ namespace EnumsNET
 		private static string ToDecimalString(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return ((int)o).ToString("D");
@@ -822,14 +822,14 @@ namespace EnumsNET
 					return ((ulong)o).ToString("D");
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return null;
 		}
 
 		private static string ToHexadecimalString(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return ((int)o).ToString("X8");
@@ -849,14 +849,14 @@ namespace EnumsNET
 					return ((ulong)o).ToString("X16");
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return null;
 		}
 
 		public static object GetUnderlyingValue(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return (int)o;
@@ -876,14 +876,14 @@ namespace EnumsNET
 					return (ulong)o;
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return null;
 		}
 
 		public static sbyte ToSByte(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToSByte((int)o);
@@ -903,14 +903,14 @@ namespace EnumsNET
 					return Convert.ToSByte((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static byte ToByte(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToByte((int)o);
@@ -930,14 +930,14 @@ namespace EnumsNET
 					return Convert.ToByte((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static short ToInt16(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToInt16((int)o);
@@ -957,14 +957,14 @@ namespace EnumsNET
 					return Convert.ToInt16((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static ushort ToUInt16(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToUInt16((int)o);
@@ -984,14 +984,14 @@ namespace EnumsNET
 					return Convert.ToUInt16((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static int ToInt32(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return (int)o;
@@ -1011,14 +1011,14 @@ namespace EnumsNET
 					return Convert.ToInt32((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static uint ToUInt32(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToUInt32((int)o);
@@ -1038,14 +1038,14 @@ namespace EnumsNET
 					return Convert.ToUInt32((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static long ToInt64(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return (int)o;
@@ -1065,14 +1065,14 @@ namespace EnumsNET
 					return Convert.ToInt64((ulong)o);
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 
 		public static ulong ToUInt64(TEnum value)
 		{
 			object o = value;
-			switch (UnderlyingTypeCode)
+			switch (TypeCode)
 			{
 				case TypeCode.Int32:
 					return Convert.ToUInt64((int)o);
@@ -1092,7 +1092,7 @@ namespace EnumsNET
 					return (ulong)o;
 			}
 			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {UnderlyingTypeCode.AsString()}");
+			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
 			return 0;
 		}
 		#endregion
@@ -1337,7 +1337,7 @@ namespace EnumsNET
 
 		private static bool TryParseNumeric(string value, NumberStyles style, out TEnum result)
 		{
-			if (UnderlyingTypeCode == TypeCode.UInt64)
+			if (TypeCode == TypeCode.UInt64)
 			{
 				ulong resultAsULong;
 				if (ulong.TryParse(value, style, null, out resultAsULong))
@@ -1349,7 +1349,7 @@ namespace EnumsNET
 			else
 			{
 				long resultAsLong;
-				if (long.TryParse(value, style, null, out resultAsLong) && IsWithinUnderlyingTypesValueRange(resultAsLong))
+				if (long.TryParse(value, style, null, out resultAsLong) && IsInValueRange(resultAsLong))
 				{
 					result = InternalToObject(resultAsLong);
 					return true;
@@ -1420,7 +1420,7 @@ namespace EnumsNET
 		#region Overflow Methods
 		private static void ValidateForOverflow(ulong value)
 		{
-			if (!IsWithinUnderlyingTypesValueRange(value))
+			if (!IsInValueRange(value))
 			{
 				throw Enums.GetOverflowException();
 			}
@@ -1428,7 +1428,7 @@ namespace EnumsNET
 
 		private static void ValidateForOverflow(long value)
 		{
-			if (!IsWithinUnderlyingTypesValueRange(value))
+			if (!IsInValueRange(value))
 			{
 				throw Enums.GetOverflowException();
 			}
@@ -1710,7 +1710,7 @@ namespace EnumsNET
 		#region Private Methods
 		private static TEnum[] InternalGetFlags(TEnum value)
 		{
-			var valueAsULong = UnderlyingTypeCode == TypeCode.UInt64 ? (ulong)(object)value : (ulong)ToInt64(value);
+			var valueAsULong = TypeCode == TypeCode.UInt64 ? (ulong)(object)value : (ulong)ToInt64(value);
 			var values = new List<TEnum>();
 			for (var currentValue = 1UL; currentValue <= valueAsULong && currentValue != 0UL; currentValue <<= 1)
 			{
@@ -1746,7 +1746,7 @@ namespace EnumsNET
 
 		Type IEnumsCache.UnderlyingType => UnderlyingType;
 
-		TypeCode IEnumsCache.UnderlyingTypeCode => UnderlyingTypeCode;
+		TypeCode IEnumsCache.TypeCode => TypeCode;
 
 		bool IEnumsCache.IsFlagEnum => IsFlagEnum;
 
@@ -1774,6 +1774,8 @@ namespace EnumsNET
 		IEnumerable<Attribute[]> IEnumsCache.GetAllAttributes(bool uniqueValued) => GetAllAttributes(uniqueValued);
 
 		int IEnumsCache.Compare(object x, object y) => Compare(ConvertToEnum(x, nameof(x)), ConvertToEnum(y, nameof(y)));
+
+		bool IEnumsCache.Equals(object x, object y) => EqualsMethod(ConvertToEnum(x, nameof(x)), ConvertToEnum(y, nameof(y)));
 		#endregion
 
 		#region IsValid
@@ -1796,10 +1798,10 @@ namespace EnumsNET
 		bool IEnumsCache.IsDefined(ulong value) => IsDefined(value);
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
-		bool IEnumsCache.IsWithinUnderlyingTypesValueRange(long value) => IsWithinUnderlyingTypesValueRange(value);
+		#region IsInValueRange
+		bool IEnumsCache.IsInValueRange(long value) => IsInValueRange(value);
 
-		bool IEnumsCache.IsWithinUnderlyingTypesValueRange(ulong value) => IsWithinUnderlyingTypesValueRange(value);
+		bool IEnumsCache.IsInValueRange(ulong value) => IsInValueRange(value);
 		#endregion
 
 		#region ToObject
@@ -1922,6 +1924,8 @@ namespace EnumsNET
 		long IEnumsCache.ToInt64(object value) => ToInt64(ConvertToEnum(value, nameof(value)));
 
 		ulong IEnumsCache.ToUInt64(object value) => ToUInt64(ConvertToEnum(value, nameof(value)));
+
+		int IEnumsCache.GetHashCode(object value) => GetHashCodeMethod(ConvertToEnum(value, nameof(value)));
 		#endregion
 
 		#region Attributes

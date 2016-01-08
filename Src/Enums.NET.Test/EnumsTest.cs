@@ -46,6 +46,19 @@ namespace EnumsNET.Test
 			Assert.AreEqual(typeof(long), GetUnderlyingType<Int64Enum>());
 			Assert.AreEqual(typeof(ulong), GetUnderlyingType<UInt64Enum>());
 		}
+
+		[TestMethod]
+		public void GetUnderlyingTypeCode()
+		{
+			Assert.AreEqual(TypeCode.SByte, GetTypeCode<SByteEnum>());
+			Assert.AreEqual(TypeCode.Byte, GetTypeCode<ByteEnum>());
+			Assert.AreEqual(TypeCode.Int16, GetTypeCode<Int16Enum>());
+			Assert.AreEqual(TypeCode.UInt16, GetTypeCode<UInt16Enum>());
+			Assert.AreEqual(TypeCode.Int32, GetTypeCode<Int32Enum>());
+			Assert.AreEqual(TypeCode.UInt32, GetTypeCode<UInt32Enum>());
+			Assert.AreEqual(TypeCode.Int64, GetTypeCode<Int64Enum>());
+			Assert.AreEqual(TypeCode.UInt64, GetTypeCode<UInt64Enum>());
+		}
 		#endregion
 
 		#region Type Methods
@@ -61,6 +74,32 @@ namespace EnumsNET.Test
 			Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>(true));
 			Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>(true));
 			Assert.AreEqual(8, GetDefinedCount<NumericFilterOperator>(true)); // Has 2 duplicates
+		}
+
+		[TestMethod]
+		public void GetEnumMemberInfos()
+		{
+			Assert.AreEqual(0, GetEnumMemberInfos<ByteEnum>().Count());
+			Assert.AreEqual(38, GetEnumMemberInfos<DateFilterOperator>().Count());
+			Assert.AreEqual(6, GetEnumMemberInfos<ColorFlagEnum>().Count());
+			Assert.AreEqual(10, GetEnumMemberInfos<NumericFilterOperator>().Count());
+
+			Assert.AreEqual(0, GetEnumMemberInfos<ByteEnum>(true).Count());
+			Assert.AreEqual(38, GetEnumMemberInfos<DateFilterOperator>(true).Count());
+			Assert.AreEqual(6, GetEnumMemberInfos<ColorFlagEnum>(true).Count());
+			Assert.AreEqual(8, GetEnumMemberInfos<NumericFilterOperator>(true).Count()); // Has 2 duplicates
+
+			var enumMemberInfos = GetEnumMemberInfos<ColorFlagEnum>().ToList();
+			var info = enumMemberInfos[0];
+			Assert.AreEqual(ColorFlagEnum.Black, info.Value);
+		}
+
+		public void AssertEnumMemberInfoIsCorrect<TEnum>(EnumMemberInfo<TEnum> info, TEnum value, string name, params Attribute[] attributes)
+		{
+			Assert.IsNotNull(info);
+			Assert.AreEqual(value, info.Value);
+			Assert.AreEqual(name, info.Name);
+			
 		}
 
 		[TestMethod]
@@ -293,173 +332,173 @@ namespace EnumsNET.Test
 		}
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
+		#region IsInValueRange
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingSByteOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingSByteOverload()
 		{
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(sbyte.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(sbyte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(sbyte.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(sbyte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(sbyte.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(sbyte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(sbyte.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(sbyte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(sbyte.MaxValue));
+			Assert.IsTrue(IsInValueRange<SByteEnum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<SByteEnum>(sbyte.MaxValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<ByteEnum>(sbyte.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(sbyte.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(sbyte.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(sbyte.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt32Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(sbyte.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(sbyte.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt64Enum>(sbyte.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(sbyte.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingByteOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingByteOverload()
 		{
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(byte.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(byte.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(byte.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<SByteEnum>(byte.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<ByteEnum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<ByteEnum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(byte.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(byte.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(byte.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingShortOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingShortOverload()
 		{
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(short.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(short.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(short.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(short.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(short.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(short.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(short.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(short.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(short.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(short.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(short.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(short.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(short.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(short.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(short.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(short.MaxValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(short.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(short.MaxValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(short.MinValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(short.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(short.MinValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(short.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(short.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(short.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(short.MinValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(short.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt32Enum>(short.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(short.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(short.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(short.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt64Enum>(short.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(short.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingUShortOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingUShortOverload()
 		{
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(ushort.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(ushort.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(ushort.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ushort.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(ushort.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ushort.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(ushort.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(ushort.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ushort.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<SByteEnum>(ushort.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<ByteEnum>(ushort.MinValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(ushort.MinValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(ushort.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(ushort.MinValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(ushort.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(ushort.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(ushort.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(ushort.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(ushort.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingIntOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingIntOverload()
 		{
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(int.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(int.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(int.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(int.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(int.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(int.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(int.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(int.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(int.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(int.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(int.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(int.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(int.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(int.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(int.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(int.MaxValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(int.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(int.MaxValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(int.MinValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(int.MaxValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(int.MinValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(int.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(int.MinValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(int.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(int.MinValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(int.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt32Enum>(int.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(int.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(int.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(int.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt64Enum>(int.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(int.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingUIntOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingUIntOverload()
 		{
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(uint.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(uint.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(uint.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(uint.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(uint.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(uint.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(uint.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(uint.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(uint.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<SByteEnum>(uint.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<ByteEnum>(uint.MinValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(uint.MinValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(uint.MinValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(uint.MinValue));
+			Assert.IsFalse(IsInValueRange<Int32Enum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(uint.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(uint.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(uint.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(uint.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(uint.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingLongOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingLongOverload()
 		{
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(long.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(long.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(long.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(long.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(long.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(long.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(long.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(long.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(long.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(long.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(long.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(long.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(long.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(long.MaxValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt64Enum>(long.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(long.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(long.MinValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(long.MinValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(long.MinValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<Int32Enum>(long.MinValue));
+			Assert.IsFalse(IsInValueRange<Int32Enum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt32Enum>(long.MinValue));
+			Assert.IsFalse(IsInValueRange<UInt32Enum>(long.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(long.MinValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(long.MaxValue));
+			Assert.IsFalse(IsInValueRange<UInt64Enum>(long.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(long.MaxValue));
 		}
 
 		[TestMethod]
-		public void IsWithinUnderlyingTypesValueRange_ReturnsValidResults_WhenUsingULongOverload()
+		public void IsInValueRange_ReturnsValidResults_WhenUsingULongOverload()
 		{
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<SByteEnum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<SByteEnum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<ByteEnum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<ByteEnum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int16Enum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int16Enum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt16Enum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int32Enum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int32Enum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<UInt32Enum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<Int64Enum>(ulong.MinValue));
-			Assert.IsFalse(IsWithinUnderlyingTypesValueRange<Int64Enum>(ulong.MaxValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ulong.MinValue));
-			Assert.IsTrue(IsWithinUnderlyingTypesValueRange<UInt64Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<SByteEnum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<SByteEnum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<ByteEnum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<ByteEnum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int16Enum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<Int16Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt16Enum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<UInt16Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int32Enum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<Int32Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt32Enum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<UInt32Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<Int64Enum>(ulong.MinValue));
+			Assert.IsFalse(IsInValueRange<Int64Enum>(ulong.MaxValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(ulong.MinValue));
+			Assert.IsTrue(IsInValueRange<UInt64Enum>(ulong.MaxValue));
 		}
 		#endregion
 

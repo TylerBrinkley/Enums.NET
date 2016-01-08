@@ -54,10 +54,10 @@ namespace EnumsNET.Unsafe
 		}
 
 		[Pure]
-		public static TypeCode GetUnderlyingTypeCode<TEnum>()
+		public static TypeCode GetTypeCode<TEnum>()
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.UnderlyingTypeCode;
+			return EnumsCache<TEnum>.TypeCode;
 		}
 		#endregion
 
@@ -189,6 +189,13 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.Compare(x, y);
+		}
+
+		[Pure]
+		public static bool Equals<TEnum>(TEnum x, TEnum y)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.EqualsMethod(x, y);
 		}
 		#endregion
 
@@ -519,7 +526,7 @@ namespace EnumsNET.Unsafe
 		}
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
+		#region IsInValueRange
 		/// <summary>
 		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
 		/// </summary>
@@ -529,10 +536,10 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(sbyte value)
+		public static bool IsInValueRange<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+			return EnumsCache<TEnum>.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -543,10 +550,10 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(byte value)
+		public static bool IsInValueRange<TEnum>(byte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+			return EnumsCache<TEnum>.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -557,39 +564,10 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(short value)
+		public static bool IsInValueRange<TEnum>(short value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
-		}
-
-		/// <summary>
-		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		[Pure]
-		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(ushort value)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
-		}
-
-		/// <summary>
-		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-		/// </summary>
-		/// <typeparam name="TEnum"></typeparam>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(int value)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+			return EnumsCache<TEnum>.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -601,10 +579,10 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(uint value)
+		public static bool IsInValueRange<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+			return EnumsCache<TEnum>.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -615,10 +593,10 @@ namespace EnumsNET.Unsafe
 		/// <returns></returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(long value)
+		public static bool IsInValueRange<TEnum>(int value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+			return EnumsCache<TEnum>.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -630,10 +608,39 @@ namespace EnumsNET.Unsafe
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
 		[CLSCompliant(false)]
-		public static bool IsWithinUnderlyingTypesValueRange<TEnum>(ulong value)
+		public static bool IsInValueRange<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsWithinUnderlyingTypesValueRange(value);
+			return EnumsCache<TEnum>.IsInValueRange(value);
+		}
+
+		/// <summary>
+		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+		[Pure]
+		public static bool IsInValueRange<TEnum>(long value)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.IsInValueRange(value);
+		}
+
+		/// <summary>
+		/// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
+		/// </summary>
+		/// <typeparam name="TEnum"></typeparam>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+		[Pure]
+		[CLSCompliant(false)]
+		public static bool IsInValueRange<TEnum>(ulong value)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.IsInValueRange(value);
 		}
 		#endregion
 
@@ -1363,6 +1370,13 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.ToUInt64(value);
+		}
+
+		[Pure]
+		public static int GetHashCode<TEnum>(TEnum value)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.GetHashCodeMethod(value);
 		}
 		#endregion
 

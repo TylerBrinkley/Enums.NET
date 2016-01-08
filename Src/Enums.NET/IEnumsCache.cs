@@ -10,7 +10,7 @@ namespace EnumsNET
 
 		Type UnderlyingType { get; }
 
-		TypeCode UnderlyingTypeCode { get; }
+		TypeCode TypeCode { get; }
 
 		bool IsFlagEnum { get; }
 
@@ -38,6 +38,8 @@ namespace EnumsNET
 		IEnumerable<EnumMemberInfo> GetEnumMemberInfos(bool uniqueValued);
 
 		int Compare(object x, object y);
+
+		bool Equals(object x, object y);
 		#endregion
 
 		#region IsValid
@@ -60,10 +62,10 @@ namespace EnumsNET
 		bool IsDefined(ulong value);
 		#endregion
 
-		#region IsWithinUnderlyingTypesValueRange
-		bool IsWithinUnderlyingTypesValueRange(long value);
+		#region IsInValueRange
+		bool IsInValueRange(long value);
 
-		bool IsWithinUnderlyingTypesValueRange(ulong value);
+		bool IsInValueRange(ulong value);
 		#endregion
 
 		#region ToEnum
@@ -116,6 +118,8 @@ namespace EnumsNET
 		long ToInt64(object value);
 
 		ulong ToUInt64(object value);
+
+		int GetHashCode(object value);
 		#endregion
 
 		#region Defined Values Main Methods

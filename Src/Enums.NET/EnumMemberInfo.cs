@@ -316,7 +316,7 @@ namespace EnumsNET
 		#region Explicit Interface Implementation
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
-		TypeCode IConvertible.GetTypeCode() => EnumsCache<TEnum>.UnderlyingTypeCode;
+		TypeCode IConvertible.GetTypeCode() => EnumsCache<TEnum>.TypeCode;
 
 		bool IConvertible.ToBoolean(IFormatProvider provider) => Convert.ToBoolean(UnderlyingValue);
 
