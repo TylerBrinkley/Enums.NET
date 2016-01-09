@@ -55,121 +55,15 @@ namespace EnumsNET
 
 		private static readonly Func<TEnum, TEnum, bool> _greaterThan;
 
-		// Enables case insensitive parsing, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static readonly Lazy<Dictionary<string, string>> _ignoreCaseSet = new Lazy<Dictionary<string, string>>(InitializeIgnoreCaseSet);
+		private static Dictionary<string, string> _ignoreCaseSet;
 
-		// Enables parsing by description, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static readonly Lazy<Dictionary<string, string>> _descriptionNameMap = new Lazy<Dictionary<string, string>>(InitializeDescriptionNameMap);
+		private static Dictionary<string, string> _descriptionNameMap;
 
-		// Enables case insensitive parsing by description, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static readonly Lazy<Dictionary<string, string>> _descriptionIgnoreCase = new Lazy<Dictionary<string, string>>(InitializeDescriptionIgnoreCase);
+		private static Dictionary<string, string> _descriptionIgnoreCase;
 
-		// Enables parsing by EnumMemberValue, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static readonly Lazy<Dictionary<string, string>> _enumMemberValues = new Lazy<Dictionary<string, string>>(InitializeEnumMemberValues);
+		private static Dictionary<string, string> _enumMemberValues;
 
-		// Enables case insensitive parsing by EnumMemberValue, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static readonly Lazy<Dictionary<string, string>> _enumMemberValuesIgnoreCase = new Lazy<Dictionary<string, string>>(InitializeEnumMemberValuesIgnoreCase);
-
-		private static Dictionary<string, string> InitializeIgnoreCaseSet()
-		{
-			var ignoreCaseSet = new Dictionary<string, string>(GetDefinedCount(false), StringComparer.OrdinalIgnoreCase);
-			foreach (var nameAndAttributes in _valueMap.SecondItems)
-			{
-				ignoreCaseSet.Add(nameAndAttributes.Name, nameAndAttributes.Name);
-			}
-			if (_duplicateValues != null)
-			{
-				foreach (var name in _duplicateValues.Keys)
-				{
-					ignoreCaseSet.Add(name, name);
-				}
-			}
-			return ignoreCaseSet;
-		}
-
-		private static Dictionary<string, string> InitializeDescriptionNameMap()
-		{
-			var descriptionNameMap = new Dictionary<string, string>();
-			foreach (var pair in _valueMap)
-			{
-				var description = new InternalEnumMemberInfo<TEnum>(pair).Description;
-				if (description != null && !descriptionNameMap.ContainsKey(description))
-				{
-					descriptionNameMap.Add(description, pair.Second.Name);
-				}
-			}
-			if (_duplicateValues != null)
-			{
-				foreach (var pair in _duplicateValues)
-				{
-					var description = new InternalEnumMemberInfo<TEnum>(pair).Description;
-					if (description != null && !descriptionNameMap.ContainsKey(description))
-					{
-						descriptionNameMap.Add(description, pair.Key);
-					}
-				}
-			}
-
-			// Reduces memory usage
-			return new Dictionary<string, string>(descriptionNameMap);
-		}
-
-		private static Dictionary<string, string> InitializeDescriptionIgnoreCase()
-		{
-			var descriptionIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-			foreach (var pair in _descriptionNameMap.Value)
-			{
-				if (!descriptionIgnoreCase.ContainsKey(pair.Key))
-				{
-					descriptionIgnoreCase.Add(pair.Key, pair.Value);
-				}
-			}
-
-			// Reduces memory usage
-			return new Dictionary<string, string>(descriptionIgnoreCase, StringComparer.OrdinalIgnoreCase);
-		}
-
-		private static Dictionary<string, string> InitializeEnumMemberValues()
-		{
-			var enumMemberValues = new Dictionary<string, string>();
-			foreach (var pair in _valueMap)
-			{
-				var enumMemberValue = new InternalEnumMemberInfo<TEnum>(pair).EnumMemberValue;
-				if (enumMemberValue != null && !enumMemberValues.ContainsKey(enumMemberValue))
-				{
-					enumMemberValues.Add(enumMemberValue, pair.Second.Name);
-				}
-			}
-			if (_duplicateValues != null)
-			{
-				foreach (var pair in _duplicateValues)
-				{
-					var enumMemberValue = new InternalEnumMemberInfo<TEnum>(pair).EnumMemberValue;
-					if (enumMemberValue != null && !enumMemberValues.ContainsKey(enumMemberValue))
-					{
-						enumMemberValues.Add(enumMemberValue, pair.Key);
-					}
-				}
-			}
-
-			// Reduces memory usage
-			return new Dictionary<string, string>(enumMemberValues);
-		}
-
-		private static Dictionary<string, string> InitializeEnumMemberValuesIgnoreCase()
-		{
-			var enumMemberValuesIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-			foreach (var pair in _enumMemberValues.Value)
-			{
-				if (!enumMemberValuesIgnoreCase.ContainsKey(pair.Key))
-				{
-					enumMemberValuesIgnoreCase.Add(pair.Key, pair.Value);
-				}
-			}
-
-			// Reduces memory usage
-			return new Dictionary<string, string>(enumMemberValuesIgnoreCase, StringComparer.OrdinalIgnoreCase);
-		}
+		private static Dictionary<string, string> _enumMemberValuesIgnoreCase;
 		#endregion
 
 		#region Properties
@@ -205,6 +99,147 @@ namespace EnumsNET
 		private static TEnum MaxDefined => _valueMap.GetFirstAt(_valueMap.Count - 1);
 
 		private static TEnum MinDefined => _valueMap.GetFirstAt(0);
+
+		// Enables case insensitive parsing, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
+		private static Dictionary<string, string> IgnoreCaseSet
+		{
+			get
+			{
+				if (_ignoreCaseSet == null)
+				{
+					var ignoreCaseSet = new Dictionary<string, string>(GetDefinedCount(false), StringComparer.OrdinalIgnoreCase);
+					foreach (var nameAndAttributes in _valueMap.SecondItems)
+					{
+						ignoreCaseSet.Add(nameAndAttributes.Name, nameAndAttributes.Name);
+					}
+					if (_duplicateValues != null)
+					{
+						foreach (var name in _duplicateValues.Keys)
+						{
+							ignoreCaseSet.Add(name, name);
+						}
+					}
+					_ignoreCaseSet = ignoreCaseSet;
+				}
+				return _ignoreCaseSet;
+			}
+		}
+
+		// Enables parsing by description, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
+		private static Dictionary<string, string> DescriptionNameMap
+		{
+			get
+			{
+				if (_descriptionNameMap == null)
+				{
+					var descriptionNameMap = new Dictionary<string, string>();
+					foreach (var pair in _valueMap)
+					{
+						var description = new InternalEnumMemberInfo<TEnum>(pair).Description;
+						if (description != null && !descriptionNameMap.ContainsKey(description))
+						{
+							descriptionNameMap.Add(description, pair.Second.Name);
+						}
+					}
+					if (_duplicateValues != null)
+					{
+						foreach (var pair in _duplicateValues)
+						{
+							var description = new InternalEnumMemberInfo<TEnum>(pair).Description;
+							if (description != null && !descriptionNameMap.ContainsKey(description))
+							{
+								descriptionNameMap.Add(description, pair.Key);
+							}
+						}
+					}
+
+					// Reduces memory usage
+					_descriptionNameMap = new Dictionary<string, string>(descriptionNameMap);
+				}
+				return _descriptionNameMap;
+			}
+		}
+
+		// Enables case insensitive parsing by description, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
+		private static Dictionary<string, string> DescriptionIgnoreCase
+		{
+			get
+			{
+				if (_descriptionIgnoreCase == null)
+				{
+					var descriptionIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+					foreach (var pair in DescriptionNameMap)
+					{
+						if (!descriptionIgnoreCase.ContainsKey(pair.Key))
+						{
+							descriptionIgnoreCase.Add(pair.Key, pair.Value);
+						}
+					}
+
+					// Reduces memory usage
+					_descriptionIgnoreCase = new Dictionary<string, string>(descriptionIgnoreCase, StringComparer.OrdinalIgnoreCase);
+				}
+				return _descriptionIgnoreCase;
+			}
+		}
+
+		// Enables parsing by EnumMemberValue, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
+		private static Dictionary<string, string> EnumMemberValues
+		{
+			get
+			{
+				if (_enumMemberValues == null)
+				{
+					var enumMemberValues = new Dictionary<string, string>();
+					foreach (var pair in _valueMap)
+					{
+						var enumMemberValue = new InternalEnumMemberInfo<TEnum>(pair).EnumMemberValue;
+						if (enumMemberValue != null && !enumMemberValues.ContainsKey(enumMemberValue))
+						{
+							enumMemberValues.Add(enumMemberValue, pair.Second.Name);
+						}
+					}
+					if (_duplicateValues != null)
+					{
+						foreach (var pair in _duplicateValues)
+						{
+							var enumMemberValue = new InternalEnumMemberInfo<TEnum>(pair).EnumMemberValue;
+							if (enumMemberValue != null && !enumMemberValues.ContainsKey(enumMemberValue))
+							{
+								enumMemberValues.Add(enumMemberValue, pair.Key);
+							}
+						}
+					}
+
+					// Reduces memory usage
+					_enumMemberValues = new Dictionary<string, string>(enumMemberValues);
+				}
+				return _enumMemberValues;
+			}
+		}
+
+		// Enables case insensitive parsing by EnumMemberValue, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
+		private static Dictionary<string, string> EnumMemberValuesIgnoreCase
+		{
+			get
+			{
+				if (_enumMemberValuesIgnoreCase == null)
+				{
+					var enumMemberValuesIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+					foreach (var pair in EnumMemberValues)
+					{
+						if (!enumMemberValuesIgnoreCase.ContainsKey(pair.Key))
+						{
+							enumMemberValuesIgnoreCase.Add(pair.Key, pair.Value);
+						}
+					}
+
+					// Reduces memory usage
+					_enumMemberValuesIgnoreCase = new Dictionary<string, string>(enumMemberValuesIgnoreCase, StringComparer.OrdinalIgnoreCase);
+				}
+				return _enumMemberValuesIgnoreCase;
+			}
+		}
 		#endregion
 
 		// This static constructor caches the relevant enum information
@@ -470,7 +505,7 @@ namespace EnumsNET
 		{
 			Preconditions.NotNull(name, nameof(name));
 
-			return _valueMap.ContainsSecond(new NameAndAttributes(name)) || (_duplicateValues?.ContainsKey(name) ?? false) || (ignoreCase && _ignoreCaseSet.Value.ContainsKey(name));
+			return _valueMap.ContainsSecond(new NameAndAttributes(name)) || (_duplicateValues?.ContainsKey(name) ?? false) || (ignoreCase && IgnoreCaseSet.ContainsKey(name));
 		}
 
 		public static bool IsDefined(long value) => IsInValueRange(value) && IsDefined(InternalToObject(value));
@@ -1156,7 +1191,7 @@ namespace EnumsNET
 			if (ignoreCase)
 			{
 				string actualName;
-				if (_ignoreCaseSet.Value.TryGetValue(name, out actualName))
+				if (IgnoreCaseSet.TryGetValue(name, out actualName))
 				{
 					index = _valueMap.IndexOfSecond(new NameAndAttributes(actualName));
 					if (index >= 0)
@@ -1374,7 +1409,7 @@ namespace EnumsNET
 			if (ignoreCase)
 			{
 				string name;
-				if (_ignoreCaseSet.Value.TryGetValue(value, out name))
+				if (IgnoreCaseSet.TryGetValue(value, out name))
 				{
 					if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
 					{
@@ -1389,7 +1424,7 @@ namespace EnumsNET
 		private static bool TryParseDescription(string description, bool ignoreCase, out TEnum result)
 		{
 			string name;
-			if (_descriptionNameMap.Value.TryGetValue(description, out name) || (ignoreCase && _descriptionIgnoreCase.Value.TryGetValue(description, out name)))
+			if (DescriptionNameMap.TryGetValue(description, out name) || (ignoreCase && DescriptionIgnoreCase.TryGetValue(description, out name)))
 			{
 				if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
 				{
@@ -1404,7 +1439,7 @@ namespace EnumsNET
 		private static bool TryParseEnumMemberValue(string enumMemberValue, bool ignoreCase, out TEnum result)
 		{
 			string name;
-			if (_enumMemberValues.Value.TryGetValue(enumMemberValue, out name) || (ignoreCase && _enumMemberValuesIgnoreCase.Value.TryGetValue(enumMemberValue, out name)))
+			if (EnumMemberValues.TryGetValue(enumMemberValue, out name) || (ignoreCase && EnumMemberValuesIgnoreCase.TryGetValue(enumMemberValue, out name)))
 			{
 				if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
 				{
@@ -1866,36 +1901,8 @@ namespace EnumsNET
 		}
 		#endregion
 
-		#region Main Methods
+		#region All Values Main Methods
 		object IEnumsCache.Validate(object value, string paramName) => Validate(ConvertToEnum(value, nameof(value)), paramName);
-
-		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(object value)
-		{
-			var info = GetEnumMemberInfo(ConvertToEnum(value, nameof(value)));
-			return info != null ? new EnumMemberInfo(info) : null;
-		}
-
-		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name)
-		{
-			var info = GetEnumMemberInfo(name);
-			return info != null ? new EnumMemberInfo(info) : null;
-		}
-
-		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name, bool ignoreCase)
-		{
-			var info = GetEnumMemberInfo(name, ignoreCase);
-			return info != null ? new EnumMemberInfo(info) : null;
-		}
-
-		string IEnumsCache.GetName(object value) => GetName(ConvertToEnum(value, nameof(value)));
-
-		string IEnumsCache.GetDescription(object value) => GetDescription(ConvertToEnum(value, nameof(value)));
-
-		string IEnumsCache.GetDescriptionOrName(object value) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)));
-
-		string IEnumsCache.GetDescriptionOrName(object value, Func<string, string> nameFormatter) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)), nameFormatter);
-
-		string IEnumsCache.GetEnumMemberValue(object value) => GetEnumMemberValue(ConvertToEnum(value, nameof(value)));
 
 		string IEnumsCache.AsString(object value) => AsString(ConvertToEnum(value, nameof(value)));
 
@@ -1924,8 +1931,36 @@ namespace EnumsNET
 		long IEnumsCache.ToInt64(object value) => ToInt64(ConvertToEnum(value, nameof(value)));
 
 		ulong IEnumsCache.ToUInt64(object value) => ToUInt64(ConvertToEnum(value, nameof(value)));
+		#endregion
 
-		int IEnumsCache.GetHashCode(object value) => GetHashCodeMethod(ConvertToEnum(value, nameof(value)));
+		#region Defined Values Main Methods
+		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(object value)
+		{
+			var info = GetEnumMemberInfo(ConvertToEnum(value, nameof(value)));
+			return info != null ? new EnumMemberInfo(info) : null;
+		}
+
+		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name)
+		{
+			var info = GetEnumMemberInfo(name);
+			return info != null ? new EnumMemberInfo(info) : null;
+		}
+
+		EnumMemberInfo IEnumsCache.GetEnumMemberInfo(string name, bool ignoreCase)
+		{
+			var info = GetEnumMemberInfo(name, ignoreCase);
+			return info != null ? new EnumMemberInfo(info) : null;
+		}
+
+		string IEnumsCache.GetName(object value) => GetName(ConvertToEnum(value, nameof(value)));
+
+		string IEnumsCache.GetDescription(object value) => GetDescription(ConvertToEnum(value, nameof(value)));
+
+		string IEnumsCache.GetDescriptionOrName(object value) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)));
+
+		string IEnumsCache.GetDescriptionOrName(object value, Func<string, string> nameFormatter) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)), nameFormatter);
+
+		string IEnumsCache.GetEnumMemberValue(object value) => GetEnumMemberValue(ConvertToEnum(value, nameof(value)));
 		#endregion
 
 		#region Attributes

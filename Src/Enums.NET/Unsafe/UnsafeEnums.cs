@@ -28,10 +28,10 @@ namespace EnumsNET.Unsafe
 	{
 		#region "Properties"
 		/// <summary>
-		/// Indicates if <typeparamref name="TEnum"/> is contiguous.
+		/// Indicates if <typeparamref name="TEnum"/>'s defined values are contiguous.
 		/// </summary>
 		/// <typeparam name="TEnum"></typeparam>
-		/// <returns>Indication if <typeparamref name="TEnum"/> is contiguous.</returns>
+		/// <returns>Indication if <typeparamref name="TEnum"/>'s defined values are contiguous.</returns>
 		/// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
 		[Pure]
 		public static bool IsContiguous<TEnum>()

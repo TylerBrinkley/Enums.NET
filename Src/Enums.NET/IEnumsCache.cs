@@ -118,8 +118,6 @@ namespace EnumsNET
 		long ToInt64(object value);
 
 		ulong ToUInt64(object value);
-
-		int GetHashCode(object value);
 		#endregion
 
 		#region Defined Values Main Methods

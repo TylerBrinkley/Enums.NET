@@ -34,10 +34,10 @@ namespace EnumsNET
 
 		#region "Properties"
 		/// <summary>
-		/// Indicates if <typeparamref name="TEnum"/> is contiguous.
+		/// Indicates if <typeparamref name="TEnum"/>'s defined values are contiguous.
 		/// </summary>
 		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <returns>Indication if <typeparamref name="TEnum"/> is contiguous.</returns>
+		/// <returns>Indication if <typeparamref name="TEnum"/>'s defined values are contiguous.</returns>
 		[Pure]
 		public static bool IsContiguous<[EnumConstraint] TEnum>() where TEnum : struct => EnumsCache<TEnum>.IsContiguous;
 

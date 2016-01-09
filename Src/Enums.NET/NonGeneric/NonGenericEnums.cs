@@ -23,7 +23,7 @@ using System.Reflection;
 namespace EnumsNET.NonGeneric
 {
 	/// <summary>
-	/// A non-generic implementation of the static class <see cref="Enums"/>, similar to .NET's built-in <see cref="Enum"/> class.
+	/// A non-generic implementation of the static class <see cref="Enums"/>, sort of a superset of .NET's built-in <see cref="Enum"/> class.
 	/// When the type is known at compile-time the <see cref="Enums"/> class should be used instead, to provide type safety and to avoid boxing.
 	/// </summary>
 	public static class NonGenericEnums
@@ -1116,9 +1116,6 @@ namespace EnumsNET.NonGeneric
 		[Pure]
 		[CLSCompliant(false)]
 		public static ulong ToUInt64(Type enumType, object value) => GetEnumsCache(enumType).ToUInt64(value);
-
-		[Pure]
-		public static int GetHashCode(Type enumType, object value) => GetEnumsCache(enumType).GetHashCode(value);
 		#endregion
 
 		#region Defined Values Main Methods
