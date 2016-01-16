@@ -27,8 +27,6 @@ namespace EnumsNET
 
 		IEnumerable<string> GetDescriptions(bool uniqueValued);
 
-		IEnumerable<string> GetEnumMemberValues(bool uniqueValued);
-
 		IEnumerable<Attribute[]> GetAllAttributes(bool uniqueValued);
 
 		IEnumerable<string> GetDescriptionsOrNames(bool uniqueValued);
@@ -95,11 +93,21 @@ namespace EnumsNET
 
 		string AsString(object value, string format);
 
-		string AsString(object value, params EnumFormat[] formats);
+		string AsString(object value, EnumFormat[] formats);
 
 		string Format(object value, string format);
 
-		string Format(object value, params EnumFormat[] formats);
+		string Format(object value, EnumFormat format);
+
+		string Format(object value, EnumFormat format0, EnumFormat format1);
+
+		string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
+
+		string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3);
+
+		string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4);
+
+		string Format(object value, EnumFormat[] formats);
 
 		object GetUnderlyingValue(object value);
 
@@ -134,8 +142,6 @@ namespace EnumsNET
 		string GetDescriptionOrName(object value);
 
 		string GetDescriptionOrName(object value, Func<string, string> nameFormatter);
-
-		string GetEnumMemberValue(object value);
 		#endregion
 
 		#region Attributes

@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace EnumsNET
 {
@@ -38,10 +37,6 @@ namespace EnumsNET
 		/// <summary>
 		/// Enum is represented by its <see cref="DescriptionAttribute.Description"/>
 		/// </summary>
-		Description,
-		/// <summary>
-		/// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>
-		/// </summary>
-		EnumMemberValue
+		Description
 	}
 }

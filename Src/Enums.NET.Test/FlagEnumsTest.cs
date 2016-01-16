@@ -106,16 +106,16 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void GetFlags_ReturnsValidArray_WhenUsingValidValue()
 		{
-			TestHelper.ArraysAreEqual(new ColorFlagEnum[0], ColorFlagEnum.Black.GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Red }, ColorFlagEnum.Red.GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Green }, ColorFlagEnum.Green.GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Blue }, ColorFlagEnum.Blue.GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green }, (ColorFlagEnum.Red | ColorFlagEnum.Green).GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Blue }, (ColorFlagEnum.Red | ColorFlagEnum.Blue).GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Green, ColorFlagEnum.Blue }, (ColorFlagEnum.Green | ColorFlagEnum.Blue).GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue }, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.UltraViolet }, ColorFlagEnum.UltraViolet.GetFlags());
-			TestHelper.ArraysAreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet }, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet).GetFlags());
+			CollectionAssert.AreEqual(new ColorFlagEnum[0], ColorFlagEnum.Black.GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red }, ColorFlagEnum.Red.GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Green }, ColorFlagEnum.Green.GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Blue }, ColorFlagEnum.Blue.GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green }, (ColorFlagEnum.Red | ColorFlagEnum.Green).GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Blue }, (ColorFlagEnum.Red | ColorFlagEnum.Blue).GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Green, ColorFlagEnum.Blue }, (ColorFlagEnum.Green | ColorFlagEnum.Blue).GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue }, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.UltraViolet }, ColorFlagEnum.UltraViolet.GetFlags());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet }, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet).GetFlags());
 		}
 
 		[TestMethod]

@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,11 +23,33 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace EnumsNET
 {
-	internal class EnumsCache<TEnum> : IEnumsCache
+	internal sealed class EnumsCache<TEnum> : IEnumsCache
 	{
+		private static int _lastCustomEnumFormatIndex = -1;
+
+		private static List<Func<IEnumMemberInfo<TEnum>, string>> _customEnumFormatters;
+		
+		public static EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo<TEnum>, string> formatter)
+		{
+			var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
+			if (index == 0)
+			{
+				_customEnumFormatters = new List<Func<IEnumMemberInfo<TEnum>, string>>();
+			}
+			else
+			{
+				while (_customEnumFormatters.Count < index)
+				{
+				}
+			}
+			_customEnumFormatters.Insert(index, formatter);
+			return Enums.ToObject<EnumFormat>(index + Enums.StartingGenericCustomEnumFormatValue, false);
+		}
+
 		#region Fields
 		public static readonly bool IsFlagEnum;
 
@@ -57,13 +80,7 @@ namespace EnumsNET
 
 		private static Dictionary<string, string> _ignoreCaseSet;
 
-		private static Dictionary<string, string> _descriptionNameMap;
-
-		private static Dictionary<string, string> _descriptionIgnoreCase;
-
-		private static Dictionary<string, string> _enumMemberValues;
-
-		private static Dictionary<string, string> _enumMemberValuesIgnoreCase;
+		private static ConcurrentDictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
 		#endregion
 
 		#region Properties
@@ -124,122 +141,6 @@ namespace EnumsNET
 				return _ignoreCaseSet;
 			}
 		}
-
-		// Enables parsing by description, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static Dictionary<string, string> DescriptionNameMap
-		{
-			get
-			{
-				if (_descriptionNameMap == null)
-				{
-					var descriptionNameMap = new Dictionary<string, string>();
-					foreach (var pair in _valueMap)
-					{
-						var description = new InternalEnumMemberInfo<TEnum>(pair).Description;
-						if (description != null && !descriptionNameMap.ContainsKey(description))
-						{
-							descriptionNameMap.Add(description, pair.Second.Name);
-						}
-					}
-					if (_duplicateValues != null)
-					{
-						foreach (var pair in _duplicateValues)
-						{
-							var description = new InternalEnumMemberInfo<TEnum>(pair).Description;
-							if (description != null && !descriptionNameMap.ContainsKey(description))
-							{
-								descriptionNameMap.Add(description, pair.Key);
-							}
-						}
-					}
-
-					// Reduces memory usage
-					_descriptionNameMap = new Dictionary<string, string>(descriptionNameMap);
-				}
-				return _descriptionNameMap;
-			}
-		}
-
-		// Enables case insensitive parsing by description, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static Dictionary<string, string> DescriptionIgnoreCase
-		{
-			get
-			{
-				if (_descriptionIgnoreCase == null)
-				{
-					var descriptionIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-					foreach (var pair in DescriptionNameMap)
-					{
-						if (!descriptionIgnoreCase.ContainsKey(pair.Key))
-						{
-							descriptionIgnoreCase.Add(pair.Key, pair.Value);
-						}
-					}
-
-					// Reduces memory usage
-					_descriptionIgnoreCase = new Dictionary<string, string>(descriptionIgnoreCase, StringComparer.OrdinalIgnoreCase);
-				}
-				return _descriptionIgnoreCase;
-			}
-		}
-
-		// Enables parsing by EnumMemberValue, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static Dictionary<string, string> EnumMemberValues
-		{
-			get
-			{
-				if (_enumMemberValues == null)
-				{
-					var enumMemberValues = new Dictionary<string, string>();
-					foreach (var pair in _valueMap)
-					{
-						var enumMemberValue = new InternalEnumMemberInfo<TEnum>(pair).EnumMemberValue;
-						if (enumMemberValue != null && !enumMemberValues.ContainsKey(enumMemberValue))
-						{
-							enumMemberValues.Add(enumMemberValue, pair.Second.Name);
-						}
-					}
-					if (_duplicateValues != null)
-					{
-						foreach (var pair in _duplicateValues)
-						{
-							var enumMemberValue = new InternalEnumMemberInfo<TEnum>(pair).EnumMemberValue;
-							if (enumMemberValue != null && !enumMemberValues.ContainsKey(enumMemberValue))
-							{
-								enumMemberValues.Add(enumMemberValue, pair.Key);
-							}
-						}
-					}
-
-					// Reduces memory usage
-					_enumMemberValues = new Dictionary<string, string>(enumMemberValues);
-				}
-				return _enumMemberValues;
-			}
-		}
-
-		// Enables case insensitive parsing by EnumMemberValue, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe
-		private static Dictionary<string, string> EnumMemberValuesIgnoreCase
-		{
-			get
-			{
-				if (_enumMemberValuesIgnoreCase == null)
-				{
-					var enumMemberValuesIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-					foreach (var pair in EnumMemberValues)
-					{
-						if (!enumMemberValuesIgnoreCase.ContainsKey(pair.Key))
-						{
-							enumMemberValuesIgnoreCase.Add(pair.Key, pair.Value);
-						}
-					}
-
-					// Reduces memory usage
-					_enumMemberValuesIgnoreCase = new Dictionary<string, string>(enumMemberValuesIgnoreCase, StringComparer.OrdinalIgnoreCase);
-				}
-				return _enumMemberValuesIgnoreCase;
-			}
-		}
 		#endregion
 
 		// This static constructor caches the relevant enum information
@@ -282,7 +183,6 @@ namespace EnumsNET
 				if (attributes.Length > 0)
 				{
 					var descriptionFound = false;
-					var enumMemberFound = false;
 					for (var i = 0; i < attributes.Length; ++i)
 					{
 						if (!descriptionFound)
@@ -296,25 +196,7 @@ namespace EnumsNET
 								}
 								attributes[0] = descAttr;
 								descriptionFound = true;
-								if (enumMemberFound && isMainDupe)
-								{
-									break;
-								}
-							}
-						}
-						if (!enumMemberFound)
-						{
-							var enumMemberAttr = attributes[i] as EnumMemberAttribute;
-							if (enumMemberAttr != null)
-							{
-								var endIndex = descriptionFound ? 1 : 0;
-								for (var j = i; j > endIndex; --j)
-								{
-									attributes[j] = attributes[j - 1];
-								}
-								attributes[endIndex] = enumMemberAttr;
-								enumMemberFound = true;
-								if (descriptionFound && isMainDupe)
+								if (isMainDupe)
 								{
 									break;
 								}
@@ -323,7 +205,7 @@ namespace EnumsNET
 						if (!isMainDupe && (attributes[i] as MainDuplicateAttribute) != null)
 						{
 							isMainDupe = true;
-							if (descriptionFound && enumMemberFound)
+							if (descriptionFound)
 							{
 								break;
 							}
@@ -398,7 +280,7 @@ namespace EnumsNET
 
 		public static IEnumerable<string> GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.GetDescriptionOrName(nameFormatter));
 
-		public static IEnumerable<string> GetEnumMemberValues(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.EnumMemberValue);
+		public static IEnumerable<string> GetFormattedValues(EnumFormat[] formats, bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Format(formats));
 
 		public static IEnumerable<Attribute[]> GetAllAttributes(bool uniqueValued) => GetEnumMembersInValueOrder(uniqueValued).Select(info => info.Attributes);
 
@@ -739,14 +621,24 @@ namespace EnumsNET
 					return str;
 				}
 			}
-			return Format(value, EnumFormat.Name, EnumFormat.DecimalValue);
+			return Format(value, Enums.DefaultParseFormatOrder);
 		}
 
-		public static string AsString(TEnum value, params EnumFormat[] formats) => formats?.Length > 0 ? InternalFormat(value, formats) : AsString(value);
+		public static string AsString(TEnum value, EnumFormat[] formats) => formats?.Length > 0 ? InternalFormat(value, formats) : AsString(value);
 
 		public static string AsString(TEnum value, string format) => string.IsNullOrEmpty(format) ? AsString(value) : Format(value, format);
 
-		public static string Format(TEnum value, params EnumFormat[] formats)
+		public static string Format(TEnum value, EnumFormat format) => InternalFormat(value, GetInternalEnumMemberInfo(value), format);
+
+		public static string Format(TEnum value, EnumFormat format0, EnumFormat format1) => InternalFormat(value, GetInternalEnumMemberInfo(value), format0, format1);
+
+		public static string Format(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(value, GetInternalEnumMemberInfo(value), format0, format1, format2);
+
+		public static string Format(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => InternalFormat(value, GetInternalEnumMemberInfo(value), format0, format1, format2, format3);
+
+		public static string Format(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => InternalFormat(value, GetInternalEnumMemberInfo(value), format0, format1, format2, format3, format4);
+
+		public static string Format(TEnum value, EnumFormat[] formats)
 		{
 			Preconditions.NotNullOrEmpty(formats, nameof(formats));
 
@@ -775,7 +667,7 @@ namespace EnumsNET
 			throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
 		}
 
-		public static string InternalFormat(InternalEnumMemberInfo<TEnum> info, string format)
+		public static string InternalFormat(IEnumMemberInfo<TEnum> info, string format)
 		{
 			switch (format)
 			{
@@ -783,7 +675,7 @@ namespace EnumsNET
 				case "g":
 				case "F":
 				case "f":
-					return InternalFormat(info.Value, info, EnumFormat.Name, EnumFormat.DecimalValue);
+					return InternalFormat(info.Value, info, Enums.DefaultParseFormatOrder);
 				case "D":
 				case "d":
 					return ToDecimalString(info.Value);
@@ -794,41 +686,69 @@ namespace EnumsNET
 			throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
 		}
 
-		private static string InternalFormat(TEnum value, params EnumFormat[] formats)
+		private static string InternalFormat(TEnum value, EnumFormat[] formats)
 		{
 			return InternalFormat(value, GetInternalEnumMemberInfo(value), formats);
 		}
 
-		public static string InternalFormat(TEnum value, InternalEnumMemberInfo<TEnum> info, params EnumFormat[] formats)
+		public static string InternalFormat(TEnum value, IEnumMemberInfo<TEnum> info, EnumFormat format)
+		{
+			switch (format)
+			{
+				case EnumFormat.DecimalValue:
+					return ToDecimalString(value);
+				case EnumFormat.HexadecimalValue:
+					return ToHexadecimalString(value);
+				case EnumFormat.Name:
+					return info.Name;
+				case EnumFormat.Description:
+					return info.Description;
+				default:
+					var index = Enums.ToInt32(format) - Enums.StartingCustomEnumFormatValue;
+					if (index >= 0 && index < Enums.CustomEnumFormatters?.Count)
+					{
+						return Enums.CustomEnumFormatters[index](info);
+					}
+					else
+					{
+						index -= Enums.StartingGenericCustomEnumFormatValue - Enums.StartingCustomEnumFormatValue;
+						if (index >= 0 && index < _customEnumFormatters?.Count)
+						{
+							return _customEnumFormatters[index](info);
+						}
+					}
+					return null;
+			}
+		}
+
+		public static string InternalFormat(TEnum value, IEnumMemberInfo<TEnum> info, EnumFormat format0, EnumFormat format1)
+		{
+			return InternalFormat(value, info, format0) ?? InternalFormat(value, info, format1);
+		}
+
+		public static string InternalFormat(TEnum value, IEnumMemberInfo<TEnum> info, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+		{
+			return InternalFormat(value, info, format0) ?? InternalFormat(value, info, format1) ?? InternalFormat(value, info, format2);
+		}
+
+		public static string InternalFormat(TEnum value, IEnumMemberInfo<TEnum> info, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
+		{
+			return InternalFormat(value, info, format0) ?? InternalFormat(value, info, format1) ?? InternalFormat(value, info, format2) ?? InternalFormat(value, info, format3);
+		}
+
+		public static string InternalFormat(TEnum value, IEnumMemberInfo<TEnum> info, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
+		{
+			return InternalFormat(value, info, format0) ?? InternalFormat(value, info, format1) ?? InternalFormat(value, info, format2) ?? InternalFormat(value, info, format3) ?? InternalFormat(value, info, format4);
+		}
+
+		public static string InternalFormat(TEnum value, IEnumMemberInfo<TEnum> info, EnumFormat[] formats)
 		{
 			foreach (var format in formats)
 			{
-				switch (format)
+				var formattedValue = InternalFormat(value, info, format);
+				if (formattedValue != null)
 				{
-					case EnumFormat.DecimalValue:
-						return ToDecimalString(value);
-					case EnumFormat.HexadecimalValue:
-						return ToHexadecimalString(value);
-					case EnumFormat.Name:
-						if (info.Name != null)
-						{
-							return info.Name;
-						}
-						break;
-					case EnumFormat.Description:
-						var description = info.Description;
-						if (description != null)
-						{
-							return description;
-						}
-						break;
-					case EnumFormat.EnumMemberValue:
-						var enumMemberValue = info.EnumMemberValue;
-						if (enumMemberValue != null)
-						{
-							return enumMemberValue;
-						}
-						break;
+					return formattedValue;
 				}
 			}
 			return null;
@@ -1163,11 +1083,6 @@ namespace EnumsNET
 			return GetInternalEnumMemberInfo(value).GetDescriptionOrName(nameFormatter);
 		}
 
-		public static string GetEnumMemberValue(TEnum value)
-		{
-			return GetInternalEnumMemberInfo(value).EnumMemberValue;
-		}
-
 		private static InternalEnumMemberInfo<TEnum> GetInternalEnumMemberInfo(TEnum value)
 		{
 			var index = _valueMap.IndexOfFirst(value);
@@ -1209,7 +1124,7 @@ namespace EnumsNET
 		public static bool HasAttribute<TAttribute>(TEnum value)
 			where TAttribute : Attribute
 		{
-			return GetAttribute<TAttribute>(value) != null;
+			return GetInternalEnumMemberInfo(value).HasAttribute<TAttribute>();
 		}
 
 		public static TAttribute GetAttribute<TAttribute>(TEnum value)
@@ -1221,27 +1136,13 @@ namespace EnumsNET
 		public static TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
 			where TAttribute : Attribute
 		{
-			TResult result;
-			if (!TryGetAttributeSelect(value, selector, out result))
-			{
-				result = defaultValue;
-			}
-			return result;
+			return GetInternalEnumMemberInfo(value).GetAttributeSelect(selector, defaultValue);
 		}
 
 		public static bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result)
 			where TAttribute : Attribute
 		{
-			Preconditions.NotNull(selector, nameof(selector));
-
-			var attr = GetAttribute<TAttribute>(value);
-			if (attr != null)
-			{
-				result = selector(attr);
-				return true;
-			}
-			result = default(TResult);
-			return false;
+			return GetInternalEnumMemberInfo(value).TryGetAttributeSelect(selector, out result);
 		}
 
 		public static IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value)
@@ -1335,13 +1236,13 @@ namespace EnumsNET
 
 		private static bool InternalTryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
 		{
-			foreach (var parseFormat in parseFormatOrder)
+			foreach (var format in parseFormatOrder)
 			{
-				switch (parseFormat)
+				switch (format)
 				{
 					case EnumFormat.DecimalValue:
 					case EnumFormat.HexadecimalValue:
-						if (TryParseNumeric(value, parseFormat == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, out result))
+						if (TryParseNumeric(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, out result))
 						{
 							return true;
 						}
@@ -1352,16 +1253,46 @@ namespace EnumsNET
 							return true;
 						}
 						break;
-					case EnumFormat.Description:
-						if (TryParseDescription(value, ignoreCase, out result))
+					default:
+						EnumParser parser = null;
+						if (_customEnumFormatParsers?.TryGetValue(format, out parser) != true)
 						{
-							return true;
+							switch (format)
+							{
+								case EnumFormat.Description:
+									parser = new EnumParser(Enums.DescriptionEnumFormatter);
+									break;
+								default:
+									var index = Enums.ToInt32(format) - Enums.StartingCustomEnumFormatValue;
+									if (index >= 0 && index < Enums.CustomEnumFormatters?.Count)
+									{
+										parser = new EnumParser(Enums.CustomEnumFormatters[index]);
+									}
+									else
+									{
+										index -= Enums.StartingGenericCustomEnumFormatValue - Enums.StartingCustomEnumFormatValue;
+										if (index >= 0 && index < _customEnumFormatters?.Count)
+										{
+											parser = new EnumParser(_customEnumFormatters[index]);
+										}
+									}
+									break;
+							}
+							if (parser != null)
+							{
+								if (_customEnumFormatParsers == null)
+								{
+									Interlocked.CompareExchange(ref _customEnumFormatParsers, new ConcurrentDictionary<EnumFormat, EnumParser>(), null);
+								}
+								_customEnumFormatParsers.TryAdd(format, parser);
+							}
 						}
-						break;
-					case EnumFormat.EnumMemberValue:
-						if (TryParseEnumMemberValue(value, ignoreCase, out result))
+						if (parser != null)
 						{
-							return true;
+							if (parser.TryParse(value, ignoreCase, out result))
+							{
+								return true;
+							}
 						}
 						break;
 				}
@@ -1418,36 +1349,6 @@ namespace EnumsNET
 					return true;
 				}
 			}
-			return false;
-		}
-
-		private static bool TryParseDescription(string description, bool ignoreCase, out TEnum result)
-		{
-			string name;
-			if (DescriptionNameMap.TryGetValue(description, out name) || (ignoreCase && DescriptionIgnoreCase.TryGetValue(description, out name)))
-			{
-				if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
-				{
-					result = _duplicateValues[name].Value;
-				}
-				return true;
-			}
-			result = default(TEnum);
-			return false;
-		}
-
-		private static bool TryParseEnumMemberValue(string enumMemberValue, bool ignoreCase, out TEnum result)
-		{
-			string name;
-			if (EnumMemberValues.TryGetValue(enumMemberValue, out name) || (ignoreCase && EnumMemberValuesIgnoreCase.TryGetValue(enumMemberValue, out name)))
-			{
-				if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
-				{
-					result = _duplicateValues[name].Value;
-				}
-				return true;
-			}
-			result = default(TEnum);
 			return false;
 		}
 		#endregion
@@ -1775,6 +1676,78 @@ namespace EnumsNET
 
 		private EnumsCache() { }
 
+		#region Nested Types
+		internal class EnumParser
+		{
+			private readonly Dictionary<string, string> _formatNameMap;
+			private Dictionary<string, string> _formatIgnoreCase;
+
+			private Dictionary<string, string> FormatIgnoreCase
+			{
+				get
+				{
+					if (_formatIgnoreCase == null)
+					{
+						var formatIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+						foreach (var pair in _formatNameMap)
+						{
+							if (!formatIgnoreCase.ContainsKey(pair.Key))
+							{
+								formatIgnoreCase.Add(pair.Key, pair.Value);
+							}
+						}
+
+						// Reduces memory usage
+						_formatIgnoreCase = new Dictionary<string, string>(formatIgnoreCase, StringComparer.OrdinalIgnoreCase);
+					}
+					return _formatIgnoreCase;
+				}
+			}
+
+			public EnumParser(Func<IEnumMemberInfo<TEnum>, string> enumFormatter)
+			{
+				var formatNameMap = new Dictionary<string, string>();
+				foreach (var pair in _valueMap)
+				{
+					var format = enumFormatter(new InternalEnumMemberInfo<TEnum>(pair));
+					if (format != null && !formatNameMap.ContainsKey(format))
+					{
+						formatNameMap.Add(format, pair.Second.Name);
+					}
+				}
+				if (_duplicateValues != null)
+				{
+					foreach (var pair in _duplicateValues)
+					{
+						var format = enumFormatter(new InternalEnumMemberInfo<TEnum>(pair));
+						if (format != null && !formatNameMap.ContainsKey(format))
+						{
+							formatNameMap.Add(format, pair.Key);
+						}
+					}
+				}
+
+				// Reduces memory usage
+				_formatNameMap = new Dictionary<string, string>(formatNameMap);
+			}
+
+			internal bool TryParse(string format, bool ignoreCase, out TEnum result)
+			{
+				string name;
+				if (_formatNameMap.TryGetValue(format, out name) || (ignoreCase && FormatIgnoreCase.TryGetValue(format, out name)))
+				{
+					if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
+					{
+						result = _duplicateValues[name].Value;
+					}
+					return true;
+				}
+				result = default(TEnum);
+				return false;
+			}
+		}
+		#endregion
+
 		#region IEnumsCache Implementation
 		#region Properties
 		bool IEnumsCache.IsContiguous => IsContiguous;
@@ -1803,8 +1776,6 @@ namespace EnumsNET
 		IEnumerable<string> IEnumsCache.GetDescriptionsOrNames(bool uniqueValued) => GetDescriptionsOrNames(uniqueValued);
 
 		IEnumerable<string> IEnumsCache.GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued) => GetDescriptionsOrNames(nameFormatter, uniqueValued);
-
-		IEnumerable<string> IEnumsCache.GetEnumMemberValues(bool uniqueValued) => GetEnumMemberValues(uniqueValued);
 
 		IEnumerable<Attribute[]> IEnumsCache.GetAllAttributes(bool uniqueValued) => GetAllAttributes(uniqueValued);
 
@@ -1908,11 +1879,21 @@ namespace EnumsNET
 
 		string IEnumsCache.AsString(object value, string format) => AsString(ConvertToEnum(value, nameof(value)), format);
 
-		string IEnumsCache.AsString(object value, params EnumFormat[] formats) => AsString(ConvertToEnum(value, nameof(value)), formats);
+		string IEnumsCache.AsString(object value, EnumFormat[] formats) => AsString(ConvertToEnum(value, nameof(value)), formats);
 
 		string IEnumsCache.Format(object value, string format) => Format(ConvertToEnum(value, nameof(value)), format);
 
-		string IEnumsCache.Format(object value, params EnumFormat[] formats) => Format(ConvertToEnum(value, nameof(value)), formats);
+		string IEnumsCache.Format(object value, EnumFormat format) => Format(ConvertToEnum(value, nameof(value)), format);
+
+		string IEnumsCache.Format(object value, EnumFormat format0, EnumFormat format1) => Format(ConvertToEnum(value, nameof(value)), format0, format1);
+
+		string IEnumsCache.Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Format(ConvertToEnum(value, nameof(value)), format0, format1, format2);
+
+		string IEnumsCache.Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => Format(ConvertToEnum(value, nameof(value)), format0, format1, format2, format3);
+
+		string IEnumsCache.Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => Format(ConvertToEnum(value, nameof(value)), format0, format1, format2, format3, format4);
+
+		string IEnumsCache.Format(object value, EnumFormat[] formats) => Format(ConvertToEnum(value, nameof(value)), formats);
 
 		object IEnumsCache.GetUnderlyingValue(object value) => GetUnderlyingValue(ConvertToEnum(value, nameof(value)));
 
@@ -1959,8 +1940,6 @@ namespace EnumsNET
 		string IEnumsCache.GetDescriptionOrName(object value) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)));
 
 		string IEnumsCache.GetDescriptionOrName(object value, Func<string, string> nameFormatter) => GetDescriptionOrName(ConvertToEnum(value, nameof(value)), nameFormatter);
-
-		string IEnumsCache.GetEnumMemberValue(object value) => GetEnumMemberValue(ConvertToEnum(value, nameof(value)));
 		#endregion
 
 		#region Attributes

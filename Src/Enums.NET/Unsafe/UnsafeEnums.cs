@@ -138,13 +138,6 @@ namespace EnumsNET.Unsafe
 			return EnumsCache<TEnum>.GetDescriptionsOrNames(nameFormatter, uniqueValued);
 		}
 
-		[Pure]
-		public static IEnumerable<string> GetEnumMemberValues<TEnum>(bool uniqueValued = false)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberValues(uniqueValued);
-		}
-
 		/// <summary>
 		/// Retrieves an array of all of <typeparamref name="TEnum"/>'s defined constants' attributes in value order.
 		/// </summary>
@@ -1228,6 +1221,41 @@ namespace EnumsNET.Unsafe
 		}
 
 		[Pure]
+		public static string Format<TEnum>(TEnum value, EnumFormat format)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.Format(value, format);
+		}
+
+		[Pure]
+		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.Format(value, format0, format1);
+		}
+
+		[Pure]
+		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.Format(value, format0, format1, format2);
+		}
+
+		[Pure]
+		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.Format(value, format0, format1, format2, format3);
+		}
+
+		[Pure]
+		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.Format(value, format0, format1, format2, format3, format4);
+		}
+
+		[Pure]
 		public static string Format<TEnum>(TEnum value, params EnumFormat[] formats)
 		{
 			VerifyTypeIsEnum<TEnum>();
@@ -1445,13 +1473,6 @@ namespace EnumsNET.Unsafe
 		{
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.GetDescriptionOrName(value, nameFormatter);
-		}
-
-		[Pure]
-		public static string GetEnumMemberValue<TEnum>(TEnum value)
-		{
-			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberValue(value);
 		}
 		#endregion
 

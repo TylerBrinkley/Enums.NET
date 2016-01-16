@@ -6,7 +6,7 @@
     <ProjectGuid>{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Enums.NET.Test</RootNamespace>
+    <RootNamespace>EnumsNET.Test</RootNamespace>
     <AssemblyName>Enums.NET.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -39,6 +39,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -57,6 +58,7 @@
     <Compile Include="ColorFlagEnum.cs" />
     <Compile Include="ContiguousUInt64Enum.cs" />
     <Compile Include="DateFilterOperator.cs" />
+    <Compile Include="EnumMemberAttributeEnum.cs" />
     <Compile Include="EnumsTest.cs" />
     <Compile Include="FlagEnumsTest.cs" />
     <Compile Include="Int16Enum.cs" />

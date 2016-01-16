@@ -40,7 +40,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumComparer.cs" />
@@ -51,6 +50,7 @@
     <Compile Include="EnumsCache.cs" />
     <Compile Include="FlagEnums.cs" />
     <Compile Include="HashHelper.cs" />
+    <Compile Include="IClsEnumMemberInfo.cs" />
     <Compile Include="IEnumMemberInfo.cs" />
     <Compile Include="IEnumsCache.cs" />
     <Compile Include="InternalEnumComparer.cs" />

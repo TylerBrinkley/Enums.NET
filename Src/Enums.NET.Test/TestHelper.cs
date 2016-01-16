@@ -19,34 +19,6 @@ namespace EnumsNET.Test
 			}
 		}
 
-		public static void ArraysAreEqual<T>(T[] array1, T[] array2)
-		{
-			if (array1 == null || array2 == null)
-			{
-				Assert.AreEqual(array1, array2);
-			}
-			Assert.AreEqual(array1.Length, array2.Length);
-
-			for (var i = 0; i < array1.Length; ++i)
-			{
-				Assert.AreEqual(array1[i], array2[i]);
-			}
-		}
-
-		public static void ArrayOfArraysAreEqual<T>(T[][] array1, T[][] array2)
-		{
-			if (array1 == null || array2 == null)
-			{
-				Assert.AreEqual(array1, array2);
-			}
-			Assert.AreEqual(array1.Length, array2.Length);
-
-			for (var i = 0; i < array1.Length; ++i)
-			{
-				ArraysAreEqual(array1[i], array2[i]);
-			}
-		}
-
 		public static void EnumerablesAreEqual<T>(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2)
 		{
 			if (enumerable1 == null || enumerable2 == null)

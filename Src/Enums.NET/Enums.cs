@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
+using System.Threading;
 using ExtraConstraints;
 
 namespace EnumsNET
@@ -28,9 +29,42 @@ namespace EnumsNET
 	/// </summary>
 	public static class Enums
 	{
+		internal const int StartingCustomEnumFormatValue = 100;
+
+		internal const int StartingGenericCustomEnumFormatValue = 200;
+
+		private static int _lastCustomEnumFormatIndex = -1;
+
+		internal static List<Func<IEnumMemberInfo, string>> CustomEnumFormatters;
+
 		internal static readonly EnumFormat[] DefaultParseFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
 
 		internal static readonly Attribute[] ZeroLengthAttributes = { };
+
+		public static EnumFormat RegisterCustomEnumFormat(Func<IClsEnumMemberInfo, string> formatter) => RegisterCustomEnumFormat((Func<IEnumMemberInfo, string>)formatter);
+
+		[CLSCompliant(false)]
+		public static EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo, string> formatter)
+		{
+			var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
+			if (index == 0)
+			{
+				CustomEnumFormatters = new List<Func<IEnumMemberInfo, string>>();
+			}
+			else
+			{
+				while (CustomEnumFormatters.Count < index)
+				{
+				}
+			}
+			CustomEnumFormatters.Insert(index, formatter);
+			return ToObject<EnumFormat>(index + StartingCustomEnumFormatValue, false);
+		}
+
+		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IClsEnumMemberInfo<TEnum>, string> formatter) => EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+
+		[CLSCompliant(false)]
+		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IEnumMemberInfo<TEnum>, string> formatter) => EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
 
 		#region "Properties"
 		/// <summary>
@@ -124,16 +158,6 @@ namespace EnumsNET
 		/// <param name="uniqueValued"></param>
 		/// <returns></returns>
 		public static IEnumerable<string> GetDescriptionsOrNames<[EnumConstraint] TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-
-		/// <summary>
-		/// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' <see cref="EnumMemberAttribute.Value"/>s.
-		/// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
-		/// </summary>
-		/// <typeparam name="TEnum">The enum type.</typeparam>
-		/// <param name="uniqueValued"></param>
-		/// <returns>Array of <typeparamref name="TEnum"/>'s members' <see cref="EnumMemberAttribute.Value"/>s in value order.</returns>
-		[Pure]
-		public static IEnumerable<string> GetEnumMemberValues<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValues(uniqueValued);
 
 		/// <summary>
 		/// Retrieves in value order an array of all of <typeparamref name="TEnum"/>'s members' attributes.
@@ -946,6 +970,21 @@ namespace EnumsNET
 		[Pure]
 		public static string Format<[EnumConstraint] TEnum>(this TEnum value, string format) where TEnum : struct => EnumsCache<TEnum>.Format(value, format);
 
+		[Pure]
+		public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format) where TEnum : struct => EnumsCache<TEnum>.Format(value, format);
+
+		[Pure]
+		public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1) where TEnum : struct => EnumsCache<TEnum>.Format(value, format0, format1);
+
+		[Pure]
+		public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) where TEnum : struct => EnumsCache<TEnum>.Format(value, format0, format1, format2);
+
+		[Pure]
+		public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) where TEnum : struct => EnumsCache<TEnum>.Format(value, format0, format1, format2, format3);
+
+		[Pure]
+		public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) where TEnum : struct => EnumsCache<TEnum>.Format(value, format0, format1, format2, format3, format4);
+
 		/// <summary>
 		/// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
 		/// </summary>
@@ -1091,9 +1130,6 @@ namespace EnumsNET
 		public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionOrName(value);
 
 		public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value, Func<string, string> nameFormatter) where TEnum : struct => EnumsCache<TEnum>.GetDescriptionOrName(value, nameFormatter);
-
-		[Pure]
-		public static string GetEnumMemberValue<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => EnumsCache<TEnum>.GetEnumMemberValue(value);
 		#endregion
 
 		#region Attributes
@@ -1324,14 +1360,11 @@ namespace EnumsNET
 		#endregion
 
 		#region Internal Methods
+		internal static string DescriptionEnumFormatter(IEnumMemberInfo info) => info.Description;
+
 		internal static string GetDescription(Attribute[] attributes)
 		{
 			return attributes.Length > 0 ? (attributes[0] as DescriptionAttribute)?.Description : null;
-		}
-
-		internal static string GetEnumMemberValue(Attribute[] attributes)
-		{
-			return attributes.Length > 0 ? (attributes[0] as EnumMemberAttribute ?? (attributes.Length > 1 ? attributes[1] as EnumMemberAttribute : null))?.Value : null;
 		}
 
 		internal static TAttribute GetAttribute<TAttribute>(Attribute[] attributes)

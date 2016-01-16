@@ -15,6 +15,7 @@
 
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EnumsNET.Enums;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
@@ -48,7 +49,7 @@ namespace EnumsNET.Test
 		}
 
 		[TestMethod]
-		public void GetUnderlyingTypeCode()
+		public void GetTypeCode()
 		{
 			Assert.AreEqual(TypeCode.SByte, GetTypeCode<SByteEnum>());
 			Assert.AreEqual(TypeCode.Byte, GetTypeCode<ByteEnum>());
@@ -90,8 +91,12 @@ namespace EnumsNET.Test
 			Assert.AreEqual(8, GetEnumMemberInfos<NumericFilterOperator>(true).Count()); // Has 2 duplicates
 
 			var enumMemberInfos = GetEnumMemberInfos<ColorFlagEnum>().ToList();
-			var info = enumMemberInfos[0];
-			Assert.AreEqual(ColorFlagEnum.Black, info.Value);
+			AssertEnumMemberInfoIsCorrect(enumMemberInfos[0], ColorFlagEnum.Black, "Black");
+			AssertEnumMemberInfoIsCorrect(enumMemberInfos[1], ColorFlagEnum.Red, "Red");
+			AssertEnumMemberInfoIsCorrect(enumMemberInfos[2], ColorFlagEnum.Green, "Green");
+			AssertEnumMemberInfoIsCorrect(enumMemberInfos[3], ColorFlagEnum.Blue, "Blue");
+			AssertEnumMemberInfoIsCorrect(enumMemberInfos[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
+			AssertEnumMemberInfoIsCorrect(enumMemberInfos[5], ColorFlagEnum.All, "All");
 		}
 
 		public void AssertEnumMemberInfoIsCorrect<TEnum>(EnumMemberInfo<TEnum> info, TEnum value, string name, params Attribute[] attributes)
@@ -99,23 +104,23 @@ namespace EnumsNET.Test
 			Assert.IsNotNull(info);
 			Assert.AreEqual(value, info.Value);
 			Assert.AreEqual(name, info.Name);
-			
+			CollectionAssert.AreEquivalent(attributes, info.Attributes);
 		}
 
 		[TestMethod]
 		public void GetNames()
 		{
-			TestHelper.EnumerablesAreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, GetNames<ColorFlagEnum>());
-			TestHelper.EnumerablesAreEqual(Enum.GetNames(typeof(DateFilterOperator)), GetNames<DateFilterOperator>());
-			TestHelper.EnumerablesAreEqual(new string[0], GetNames<ByteEnum>());
+			CollectionAssert.AreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, GetNames<ColorFlagEnum>().ToArray());
+			CollectionAssert.AreEqual(Enum.GetNames(typeof(DateFilterOperator)), GetNames<DateFilterOperator>().ToArray());
+			CollectionAssert.AreEqual(new string[0], GetNames<ByteEnum>().ToArray());
 		}
 
 		[TestMethod]
 		public void GetValues()
 		{
-			TestHelper.EnumerablesAreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>());
-			TestHelper.EnumerablesAreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>());
-			TestHelper.EnumerablesAreEqual(new ByteEnum[0], GetValues<ByteEnum>());
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>().ToArray());
+			CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>().ToArray());
+			CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>().ToArray());
 
 			// Duplicate order check
 			var numericFilterOperators = GetValues<NumericFilterOperator>().ToArray();
@@ -128,17 +133,17 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void GetValues_UniqueValued()
 		{
-			TestHelper.EnumerablesAreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true));
-			TestHelper.EnumerablesAreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true));
-			TestHelper.EnumerablesAreEqual(new ByteEnum[0], GetValues<ByteEnum>(true));
-			TestHelper.EnumerablesAreEqual(new[] { NumericFilterOperator.Is, NumericFilterOperator.IsNot, NumericFilterOperator.GreaterThan, NumericFilterOperator.LessThan, NumericFilterOperator.GreaterThanOrEqual, NumericFilterOperator.NotGreaterThan, NumericFilterOperator.Between, NumericFilterOperator.NotBetween }, GetValues<NumericFilterOperator>(true));
+			CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true).ToArray());
+			CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true).ToArray());
+			CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(true).ToArray());
+			CollectionAssert.AreEqual(new[] { NumericFilterOperator.Is, NumericFilterOperator.IsNot, NumericFilterOperator.GreaterThan, NumericFilterOperator.LessThan, NumericFilterOperator.GreaterThanOrEqual, NumericFilterOperator.NotGreaterThan, NumericFilterOperator.Between, NumericFilterOperator.NotBetween }, GetValues<NumericFilterOperator>(true).ToArray());
 		}
 
 		[TestMethod]
 		public void GetDescriptions()
 		{
-			TestHelper.EnumerablesAreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetDescriptions<ColorFlagEnum>());
-			TestHelper.EnumerablesAreEqual(new string[0], GetDescriptions<ByteEnum>());
+			CollectionAssert.AreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetDescriptions<ColorFlagEnum>().ToArray());
+			CollectionAssert.AreEqual(new string[0], GetDescriptions<ByteEnum>().ToArray());
 		}
 
 		[TestMethod]
@@ -151,8 +156,8 @@ namespace EnumsNET.Test
 		[TestMethod]
 		public void GetAttributes()
 		{
-			TestHelper.EnumerablesAreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetAttributes<ColorFlagEnum, DescriptionAttribute>());
-			TestHelper.EnumerablesAreEqual(new DescriptionAttribute[0], GetAttributes<ByteEnum, DescriptionAttribute>());
+			CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetAttributes<ColorFlagEnum, DescriptionAttribute>().ToArray());
+			CollectionAssert.AreEqual(new DescriptionAttribute[0], GetAttributes<ByteEnum, DescriptionAttribute>().ToArray());
 		}
 		#endregion
 
@@ -901,7 +906,7 @@ namespace EnumsNET.Test
 		}
 		#endregion
 
-		#region Main Methods
+		#region All Values Main Methods
 		[TestMethod]
 		public void Validate()
 		{
@@ -954,43 +959,6 @@ namespace EnumsNET.Test
 			NumericFilterOperator.NotBetween.Validate("paramName");
 			TestHelper.ExpectException<ArgumentException>(() => (NumericFilterOperator.Is - 1).Validate("paramName"));
 			TestHelper.ExpectException<ArgumentException>(() => (NumericFilterOperator.NotBetween + 1).Validate("paramName"));
-		}
-
-		[TestMethod]
-		public void GetName()
-		{
-			for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
-			{
-				var value = (ColorFlagEnum)i;
-				Assert.AreEqual(Enum.GetName(typeof(ColorFlagEnum), value), value.GetName());
-			}
-
-			for (int i = short.MinValue; i <= short.MaxValue; ++i)
-			{
-				var value = (DateFilterOperator)i;
-				Assert.AreEqual(Enum.GetName(typeof(DateFilterOperator), value), value.GetName());
-			}
-
-			// Check for main duplicates
-			Assert.AreEqual("GreaterThanOrEqual", NumericFilterOperator.GreaterThanOrEqual.GetName());
-			Assert.AreEqual("GreaterThanOrEqual", NumericFilterOperator.NotLessThan.GetName());
-			Assert.AreEqual("NotGreaterThan", NumericFilterOperator.LessThanOrEqual.GetName());
-			Assert.AreEqual("NotGreaterThan", NumericFilterOperator.NotGreaterThan.GetName());
-		}
-
-		[TestMethod]
-		public void GetDescription_ReturnsDescription_WhenUsingValidValueWithDescription()
-		{
-			Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetDescription());
-		}
-
-		[TestMethod]
-		public void GetDescription_ReturnsNull_WhenUsingValidValueWithoutDescription()
-		{
-			Assert.IsNull(ColorFlagEnum.Black.GetDescription());
-			Assert.IsNull(ColorFlagEnum.Red.GetDescription());
-			Assert.IsNull(ColorFlagEnum.Green.GetDescription());
-			Assert.IsNull(ColorFlagEnum.Blue.GetDescription());
 		}
 
 		[TestMethod]
@@ -1076,9 +1044,55 @@ namespace EnumsNET.Test
 		}
 
 		[TestMethod]
+		public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
+		{
+			var customFormat = RegisterCustomEnumFormat((IClsEnumMemberInfo info) => info.GetAttribute<EnumMemberAttribute>().Value);
+			Assert.AreEqual("a", EnumMemberAttributeEnum.A.Format(customFormat));
+		}
+
+		[TestMethod]
 		public void GetUnderlyingValue_ReturnsExpected_OnAny()
 		{
 			Assert.AreEqual(2, NumericFilterOperator.GreaterThan.GetUnderlyingValue());
+		}
+		#endregion
+
+		#region Defined Values Main Methods
+		[TestMethod]
+		public void GetName()
+		{
+			for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
+			{
+				var value = (ColorFlagEnum)i;
+				Assert.AreEqual(Enum.GetName(typeof(ColorFlagEnum), value), value.GetName());
+			}
+
+			for (int i = short.MinValue; i <= short.MaxValue; ++i)
+			{
+				var value = (DateFilterOperator)i;
+				Assert.AreEqual(Enum.GetName(typeof(DateFilterOperator), value), value.GetName());
+			}
+
+			// Check for main duplicates
+			Assert.AreEqual("GreaterThanOrEqual", NumericFilterOperator.GreaterThanOrEqual.GetName());
+			Assert.AreEqual("GreaterThanOrEqual", NumericFilterOperator.NotLessThan.GetName());
+			Assert.AreEqual("NotGreaterThan", NumericFilterOperator.LessThanOrEqual.GetName());
+			Assert.AreEqual("NotGreaterThan", NumericFilterOperator.NotGreaterThan.GetName());
+		}
+
+		[TestMethod]
+		public void GetDescription_ReturnsDescription_WhenUsingValidValueWithDescription()
+		{
+			Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetDescription());
+		}
+
+		[TestMethod]
+		public void GetDescription_ReturnsNull_WhenUsingValidValueWithoutDescription()
+		{
+			Assert.IsNull(ColorFlagEnum.Black.GetDescription());
+			Assert.IsNull(ColorFlagEnum.Red.GetDescription());
+			Assert.IsNull(ColorFlagEnum.Green.GetDescription());
+			Assert.IsNull(ColorFlagEnum.Blue.GetDescription());
 		}
 		#endregion
 

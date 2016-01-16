@@ -32,8 +32,6 @@ namespace EnumsNET
 
 		public string Description => _enumMemberInfo.Description;
 
-		public string EnumMemberValue => _enumMemberInfo.EnumMemberValue;
-
 		public object UnderlyingValue => _enumMemberInfo.UnderlyingValue;
 
 		internal EnumMemberInfo(IEnumMemberInfo enumMemberInfo)
@@ -58,6 +56,16 @@ namespace EnumsNET
 		public string AsString(params EnumFormat[] formats) => _enumMemberInfo.AsString(formats);
 
 		public string Format(string format) => _enumMemberInfo.Format(format);
+
+		public string Format(EnumFormat format) => _enumMemberInfo.Format(format);
+
+		public string Format(EnumFormat format0, EnumFormat format1) => _enumMemberInfo.Format(format0, format1);
+
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumMemberInfo.Format(format0, format1, format2);
+
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => _enumMemberInfo.Format(format0, format1, format2, format3);
+
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _enumMemberInfo.Format(format0, format1, format2, format3, format4);
 
 		public string Format(params EnumFormat[] formats) => _enumMemberInfo.Format(formats);
 
@@ -131,6 +139,8 @@ namespace EnumsNET
 		int IComparable.CompareTo(object obj) => _enumMemberInfo.CompareTo((obj as EnumMemberInfo)?.Value ?? obj);
 
 		int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _enumMemberInfo.CompareTo(other?.Value);
+
+		bool IClsEnumMemberInfo.IsDefined => _enumMemberInfo.IsDefined;
 		#endregion
 	}
 
@@ -138,7 +148,7 @@ namespace EnumsNET
 	/// Class that provides efficient defined enum member operations
 	/// </summary>
 	/// <typeparam name="TEnum"></typeparam>
-	public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo, IComparable<TEnum>, IComparable<EnumMemberInfo<TEnum>>
+	public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>
 	{
 		private Attribute[] _attributes;
 
@@ -161,11 +171,6 @@ namespace EnumsNET
 		/// The defined enum member's <see cref="DescriptionAttribute.Description"/> if applied else null.
 		/// </summary>
 		public string Description => Enums.GetDescription(_attributes);
-
-		/// <summary>
-		/// The defined enum member's <see cref="EnumMemberAttribute.Value"/> if applied else null.
-		/// </summary>
-		public string EnumMemberValue => Enums.GetEnumMemberValue(_attributes);
 
 		/// <summary>
 		/// The defined enum member's underlying integer value
@@ -277,9 +282,9 @@ namespace EnumsNET
 
 		public override string ToString() => Name;
 
-		public string ToString(string format) => EnumsCache<TEnum>.InternalFormat(ToInternalEnumMemberInfo(), format);
+		public string ToString(string format) => EnumsCache<TEnum>.InternalFormat(this, format);
 
-		public string ToString(params EnumFormat[] formats) => EnumsCache<TEnum>.InternalFormat(Value, ToInternalEnumMemberInfo(), formats);
+		public string ToString(params EnumFormat[] formats) => EnumsCache<TEnum>.InternalFormat(Value, this, formats);
 
 		public string AsString() => ToString();
 
@@ -287,9 +292,19 @@ namespace EnumsNET
 
 		public string AsString(params EnumFormat[] formats) => ToString(formats);
 
-		public string Format(string format) => EnumsCache<TEnum>.InternalFormat(ToInternalEnumMemberInfo(), format);
+		public string Format(string format) => EnumsCache<TEnum>.InternalFormat(this, format);
 
-		public string Format(params EnumFormat[] formats) => EnumsCache<TEnum>.InternalFormat(Value, ToInternalEnumMemberInfo(), formats);
+		public string Format(EnumFormat format) => EnumsCache<TEnum>.InternalFormat(Value, this, format);
+
+		public string Format(EnumFormat format0, EnumFormat format1) => EnumsCache<TEnum>.InternalFormat(Value, this, format0, format1);
+
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => EnumsCache<TEnum>.InternalFormat(Value, this, format0, format1, format2);
+
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => EnumsCache<TEnum>.InternalFormat(Value, this, format0, format1, format2, format3);
+
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => EnumsCache<TEnum>.InternalFormat(Value, this, format0, format1, format2, format3, format4);
+
+		public string Format(params EnumFormat[] formats) => EnumsCache<TEnum>.InternalFormat(Value, this, formats);
 
 		[CLSCompliant(false)]
 		public sbyte ToSByte() => EnumsCache<TEnum>.ToSByte(Value);
@@ -310,8 +325,6 @@ namespace EnumsNET
 
 		[CLSCompliant(false)]
 		public ulong ToUInt64() => EnumsCache<TEnum>.ToUInt64(Value);
-
-		private InternalEnumMemberInfo<TEnum> ToInternalEnumMemberInfo() => new InternalEnumMemberInfo<TEnum>(Value, Name, _attributes);
 
 		#region Explicit Interface Implementation
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
@@ -382,7 +395,9 @@ namespace EnumsNET
 
 		int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => other != null ? EnumsCache<TEnum>.Compare(Value, other.Value) : 1;
 
-		object IEnumMemberInfo.Value => Value;
+		bool IClsEnumMemberInfo.IsDefined => true;
+
+		object IClsEnumMemberInfo.Value => Value;
 		#endregion
 	}
 }

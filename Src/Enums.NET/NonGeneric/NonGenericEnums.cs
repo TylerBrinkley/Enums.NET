@@ -125,9 +125,6 @@ namespace EnumsNET.NonGeneric
 
 		public static IEnumerable<string> GetDescriptionsOrNames(Type enumType, Func<string, string> nameFormatter, bool uniqueValued = false) => GetEnumsCache(enumType).GetDescriptionsOrNames(nameFormatter, uniqueValued);
 
-		[Pure]
-		public static IEnumerable<string> GetEnumMemberValues(Type enumType, bool uniqueValued = false) => GetEnumsCache(enumType).GetEnumMemberValues(uniqueValued);
-
 		/// <summary>
 		/// Retrieves an array of all of <paramref name="enumType"/>'s defined constants' attributes in value order.
 		/// </summary>
@@ -986,6 +983,21 @@ namespace EnumsNET.NonGeneric
 		public static string Format(Type enumType, object value, string format) => GetEnumsCache(enumType).Format(value, format);
 
 		[Pure]
+		public static string Format(Type enumType, object value, EnumFormat format) => GetEnumsCache(enumType).Format(value, format);
+
+		[Pure]
+		public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1) => GetEnumsCache(enumType).Format(value, format0, format1);
+
+		[Pure]
+		public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetEnumsCache(enumType).Format(value, format0, format1, format2);
+
+		[Pure]
+		public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => GetEnumsCache(enumType).Format(value, format0, format1, format2, format3);
+
+		[Pure]
+		public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => GetEnumsCache(enumType).Format(value, format0, format1, format2, format3, format4);
+
+		[Pure]
 		public static string Format(Type enumType, object value, params EnumFormat[] formats) => GetEnumsCache(enumType).Format(value, formats);
 
 		/// <summary>
@@ -1162,9 +1174,6 @@ namespace EnumsNET.NonGeneric
 		public static string GetDescriptionOrName(Type enumType, object value) => GetEnumsCache(enumType).GetDescriptionOrName(value);
 
 		public static string GetDescriptionOrName(Type enumType, object value, Func<string, string> nameFormatter) => GetEnumsCache(enumType).GetDescriptionOrName(value, nameFormatter);
-
-		[Pure]
-		public static string GetEnumMemberValue(Type enumType, object value) => GetEnumsCache(enumType).GetEnumMemberValue(value);
 		#endregion
 
 		#region Attributes
