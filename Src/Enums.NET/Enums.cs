@@ -53,7 +53,7 @@ namespace EnumsNET
 			}
 			else
 			{
-				while (CustomEnumFormatters.Count < index)
+				while (CustomEnumFormatters == null || CustomEnumFormatters.Count < index)
 				{
 				}
 			}

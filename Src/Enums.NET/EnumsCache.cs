@@ -42,7 +42,7 @@ namespace EnumsNET
 			}
 			else
 			{
-				while (_customEnumFormatters.Count < index)
+				while (_customEnumFormatters == null || _customEnumFormatters.Count < index)
 				{
 				}
 			}
