@@ -190,6 +190,21 @@ namespace EnumsNET.Unsafe
 			VerifyTypeIsEnum<TEnum>();
 			return EnumsCache<TEnum>.EqualsMethod(x, y);
 		}
+
+		[Pure]
+		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IClsEnumMemberInfo<TEnum>, string> formatter)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+		}
+
+		[CLSCompliant(false)]
+		[Pure]
+		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IEnumMemberInfo<TEnum>, string> formatter)
+		{
+			VerifyTypeIsEnum<TEnum>();
+			return EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+		}
 		#endregion
 
 		#region IsValid

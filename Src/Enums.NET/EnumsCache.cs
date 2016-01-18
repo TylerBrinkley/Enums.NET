@@ -29,27 +29,6 @@ namespace EnumsNET
 {
 	internal sealed class EnumsCache<TEnum> : IEnumsCache
 	{
-		private static int _lastCustomEnumFormatIndex = -1;
-
-		private static List<Func<IEnumMemberInfo<TEnum>, string>> _customEnumFormatters;
-		
-		public static EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo<TEnum>, string> formatter)
-		{
-			var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
-			if (index == 0)
-			{
-				_customEnumFormatters = new List<Func<IEnumMemberInfo<TEnum>, string>>();
-			}
-			else
-			{
-				while (_customEnumFormatters == null || _customEnumFormatters.Count < index)
-				{
-				}
-			}
-			_customEnumFormatters.Insert(index, formatter);
-			return Enums.ToObject<EnumFormat>(index + Enums.StartingGenericCustomEnumFormatValue, false);
-		}
-
 		#region Fields
 		public static readonly bool IsFlagEnum;
 
@@ -79,6 +58,10 @@ namespace EnumsNET
 		private static readonly Func<TEnum, TEnum, bool> _greaterThan;
 
 		private static Dictionary<string, string> _ignoreCaseSet;
+
+		private static int _lastCustomEnumFormatIndex = -1;
+
+		private static List<Func<IEnumMemberInfo<TEnum>, string>> _customEnumFormatters;
 
 		private static ConcurrentDictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
 		#endregion
@@ -301,6 +284,23 @@ namespace EnumsNET
 				return -1;
 			}
 			return 0;
+		}
+
+		public static EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo<TEnum>, string> formatter)
+		{
+			var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
+			if (index == 0)
+			{
+				_customEnumFormatters = new List<Func<IEnumMemberInfo<TEnum>, string>>();
+			}
+			else
+			{
+				while (_customEnumFormatters == null || _customEnumFormatters.Count < index)
+				{
+				}
+			}
+			_customEnumFormatters.Insert(index, formatter);
+			return Enums.ToObject<EnumFormat>(index + Enums.StartingGenericCustomEnumFormatValue, false);
 		}
 
 		private static IEnumerable<InternalEnumMemberInfo<TEnum>> GetEnumMembersInValueOrder(bool uniqueValued)
@@ -1782,6 +1782,8 @@ namespace EnumsNET
 		int IEnumsCache.Compare(object x, object y) => Compare(ConvertToEnum(x, nameof(x)), ConvertToEnum(y, nameof(y)));
 
 		bool IEnumsCache.Equals(object x, object y) => EqualsMethod(ConvertToEnum(x, nameof(x)), ConvertToEnum(y, nameof(y)));
+
+		EnumFormat IEnumsCache.RegisterCustomEnumFormat(Func<IEnumMemberInfo, string> formatter) => RegisterCustomEnumFormat(formatter);
 		#endregion
 
 		#region IsValid

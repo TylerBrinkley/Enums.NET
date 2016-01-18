@@ -38,6 +38,8 @@ namespace EnumsNET
 		int Compare(object x, object y);
 
 		bool Equals(object x, object y);
+
+		EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo, string> formatter);
 		#endregion
 
 		#region IsValid

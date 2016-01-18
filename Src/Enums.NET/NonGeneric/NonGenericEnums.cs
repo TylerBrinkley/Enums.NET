@@ -155,6 +155,13 @@ namespace EnumsNET.NonGeneric
 
 		[Pure]
 		public static bool Equals(Type enumType, object x, object y) => GetEnumsCache(enumType).Equals(x, y);
+
+		[Pure]
+		public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<IClsEnumMemberInfo, string> formatter) => GetEnumsCache(enumType).RegisterCustomEnumFormat(formatter);
+
+		[CLSCompliant(false)]
+		[Pure]
+		public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<IEnumMemberInfo, string> formatter) => GetEnumsCache(enumType).RegisterCustomEnumFormat(formatter);
 		#endregion
 
 		#region IsValid

@@ -61,10 +61,10 @@ namespace EnumsNET
 			return ToObject<EnumFormat>(index + StartingCustomEnumFormatValue, false);
 		}
 
-		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IClsEnumMemberInfo<TEnum>, string> formatter) => EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+		public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<IClsEnumMemberInfo<TEnum>, string> formatter) where TEnum : struct => EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
 
 		[CLSCompliant(false)]
-		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IEnumMemberInfo<TEnum>, string> formatter) => EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+		public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<IEnumMemberInfo<TEnum>, string> formatter) where TEnum : struct => EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
 
 		#region "Properties"
 		/// <summary>
