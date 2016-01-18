@@ -34,7 +34,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsFlagEnum<TEnum>()
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsFlagEnum;
+			return Enums<TEnum>.Cache.IsFlagEnum;
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum GetAllFlags<TEnum>()
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AllFlags;
+			return Enums<TEnum>.Cache.AllFlags;
 		}
 		#endregion
 
@@ -63,7 +63,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValidFlagCombination<TEnum>(TEnum value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValidFlagCombination(value);
+			return Enums<TEnum>.Cache.IsValidFlagCombination(value);
 		}
 
 		/// <summary>
@@ -79,14 +79,14 @@ namespace EnumsNET.Unsafe
 		public static string FormatAsFlags<TEnum>(TEnum value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.FormatAsFlags(value);
+			return Enums<TEnum>.Cache.FormatAsFlags(value);
 		}
 
 		[Pure]
 		public static string FormatAsFlags<TEnum>(TEnum value, params EnumFormat[] formats)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.FormatAsFlags(value, formats);
+			return Enums<TEnum>.Cache.FormatAsFlags(value, formats);
 		}
 
 		/// <summary>
@@ -105,14 +105,14 @@ namespace EnumsNET.Unsafe
 		public static string FormatAsFlags<TEnum>(TEnum value, string delimiter)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.FormatAsFlags(value, delimiter);
+			return Enums<TEnum>.Cache.FormatAsFlags(value, delimiter);
 		}
 
 		[Pure]
 		public static string FormatAsFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formats)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.FormatAsFlags(value, delimiter, formats);
+			return Enums<TEnum>.Cache.FormatAsFlags(value, delimiter, formats);
 		}
 
 		/// <summary>
@@ -128,7 +128,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum[] GetFlags<TEnum>(TEnum value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetFlags(value);
+			return Enums<TEnum>.Cache.GetFlags(value);
 		}
 
 		/// <summary>
@@ -144,7 +144,7 @@ namespace EnumsNET.Unsafe
 		public static bool HasAnyFlags<TEnum>(TEnum value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.HasAnyFlags(value);
+			return Enums<TEnum>.Cache.HasAnyFlags(value);
 		}
 
 		/// <summary>
@@ -161,7 +161,7 @@ namespace EnumsNET.Unsafe
 		public static bool HasAnyFlags<TEnum>(TEnum value, TEnum flagMask)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.HasAnyFlags(value, flagMask);
+			return Enums<TEnum>.Cache.HasAnyFlags(value, flagMask);
 		}
 
 		/// <summary>
@@ -177,7 +177,7 @@ namespace EnumsNET.Unsafe
 		public static bool HasAllFlags<TEnum>(TEnum value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.HasAllFlags(value);
+			return Enums<TEnum>.Cache.HasAllFlags(value);
 		}
 
 		/// <summary>
@@ -194,7 +194,7 @@ namespace EnumsNET.Unsafe
 		public static bool HasAllFlags<TEnum>(TEnum value, TEnum flagMask)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.HasAllFlags(value, flagMask);
+			return Enums<TEnum>.Cache.HasAllFlags(value, flagMask);
 		}
 
 		/// <summary>
@@ -210,7 +210,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum InvertFlags<TEnum>(TEnum value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.InvertFlags(value);
+			return Enums<TEnum>.Cache.InvertFlags(value);
 		}
 
 		/// <summary>
@@ -227,7 +227,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum InvertFlags<TEnum>(TEnum value, TEnum flagMask)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.InvertFlags(value, flagMask);
+			return Enums<TEnum>.Cache.InvertFlags(value, flagMask);
 		}
 
 		/// <summary>
@@ -244,7 +244,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum CommonFlags<TEnum>(TEnum value, TEnum flagMask)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.CommonFlags(value, flagMask);
+			return Enums<TEnum>.Cache.CommonFlags(value, flagMask);
 		}
 
 		/// <summary>
@@ -261,35 +261,35 @@ namespace EnumsNET.Unsafe
 		public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.SetFlags(flag0, flag1);
+			return Enums<TEnum>.Cache.SetFlags(flag0, flag1);
 		}
 
 		[Pure]
 		public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.SetFlags(flag0, flag1, flag2);
+			return Enums<TEnum>.Cache.SetFlags(flag0, flag1, flag2);
 		}
 
 		[Pure]
 		public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.SetFlags(flag0, flag1, flag2, flag3);
+			return Enums<TEnum>.Cache.SetFlags(flag0, flag1, flag2, flag3);
 		}
 
 		[Pure]
 		public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.SetFlags(flag0, flag1, flag2, flag3, flag4);
+			return Enums<TEnum>.Cache.SetFlags(flag0, flag1, flag2, flag3, flag4);
 		}
 
 		[Pure]
 		public static TEnum SetFlags<TEnum>(params TEnum[] flags)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.SetFlags(flags);
+			return Enums<TEnum>.Cache.SetFlags(flags);
 		}
 
 		/// <summary>
@@ -306,7 +306,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ClearFlags<TEnum>(TEnum value, TEnum flagMask)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ClearFlags(value, flagMask);
+			return Enums<TEnum>.Cache.ClearFlags(value, flagMask);
 		}
 		#endregion
 
@@ -329,14 +329,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value);
+			return Enums<TEnum>.Cache.ParseFlags(value);
 		}
 
 		[Pure]
 		public static TEnum Parse<TEnum>(string value, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlags(value, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -358,14 +358,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase);
+			return Enums<TEnum>.Cache.ParseFlags(value, ignoreCase);
 		}
 
 		[Pure]
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlags(value, ignoreCase, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -389,14 +389,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value, string delimiter)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, delimiter);
+			return Enums<TEnum>.Cache.ParseFlags(value, delimiter);
 		}
 
 		[Pure]
 		public static TEnum Parse<TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, delimiter, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlags(value, delimiter, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -422,14 +422,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase, string delimiter)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase, delimiter);
+			return Enums<TEnum>.Cache.ParseFlags(value, ignoreCase, delimiter);
 		}
 
 		[Pure]
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -445,14 +445,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, defaultEnum);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, defaultEnum);
 		}
 
 		[Pure]
 		public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, defaultEnum, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -470,14 +470,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, defaultEnum);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, ignoreCase, defaultEnum);
 		}
 
 		[Pure]
 		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -498,14 +498,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultEnum)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, delimiter, defaultEnum);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, delimiter, defaultEnum);
 		}
 
 		[Pure]
 		public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, delimiter, defaultEnum, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, delimiter, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -527,14 +527,14 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum);
 		}
 
 		[Pure]
 		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseFlagsOrDefault(value, ignoreCase, delimiter, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -550,14 +550,14 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, out TEnum result)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, out result);
+			return Enums<TEnum>.Cache.TryParseFlags(value, out result);
 		}
 
 		[Pure]
 		public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, out result, parseFormatOrder);
+			return Enums<TEnum>.Cache.TryParseFlags(value, out result, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -575,14 +575,14 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, out result);
+			return Enums<TEnum>.Cache.TryParseFlags(value, ignoreCase, out result);
 		}
 
 		[Pure]
 		public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, out result, parseFormatOrder);
+			return Enums<TEnum>.Cache.TryParseFlags(value, ignoreCase, out result, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -603,14 +603,14 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, string delimiter, out TEnum result)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, delimiter, out result);
+			return Enums<TEnum>.Cache.TryParseFlags(value, delimiter, out result);
 		}
 
 		[Pure]
 		public static bool TryParse<TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, delimiter, out result, parseFormatOrder);
+			return Enums<TEnum>.Cache.TryParseFlags(value, delimiter, out result, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -632,14 +632,14 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, delimiter, out result);
+			return Enums<TEnum>.Cache.TryParseFlags(value, ignoreCase, delimiter, out result);
 		}
 
 		[Pure]
 		public static bool TryParse<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
 		{
 			UnsafeEnums.VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
+			return Enums<TEnum>.Cache.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
 		}
 		#endregion
 	}

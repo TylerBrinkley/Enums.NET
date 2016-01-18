@@ -41,7 +41,7 @@ namespace EnumsNET.NonGeneric
 			IEnumsCache enumsCache;
 			if (!_enumsCacheDictionary.TryGetValue(enumType, out enumsCache))
 			{
-				enumsCache = (IEnumsCache)typeof(EnumsCache<>).MakeGenericType(enumType).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new Type[0], null).Invoke(null);
+				enumsCache = (IEnumsCache)typeof(Enums<>).MakeGenericType(enumType).GetField("Cache", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public).GetValue(null);
 				_enumsCacheDictionary.TryAdd(enumType, enumsCache);
 			}
 			return enumsCache;

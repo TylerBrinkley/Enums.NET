@@ -37,7 +37,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsContiguous<TEnum>()
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsContiguous;
+			return Enums<TEnum>.Cache.IsContiguous;
 		}
 
 		/// <summary>
@@ -50,14 +50,14 @@ namespace EnumsNET.Unsafe
 		public static Type GetUnderlyingType<TEnum>()
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.UnderlyingType;
+			return Enums<TEnum>.Cache.UnderlyingType;
 		}
 
 		[Pure]
 		public static TypeCode GetTypeCode<TEnum>()
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TypeCode;
+			return Enums<TEnum>.Cache.TypeCode;
 		}
 		#endregion
 
@@ -73,14 +73,14 @@ namespace EnumsNET.Unsafe
 		public static int GetDefinedCount<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDefinedCount(uniqueValued);
+			return Enums<TEnum>.Cache.GetDefinedCount(uniqueValued);
 		}
 
 		[Pure]
 		public static IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberInfos(uniqueValued);
+			return Enums<TEnum>.Cache.GetEnumMemberInfos(uniqueValued);
 		}
 
 		/// <summary>
@@ -94,7 +94,7 @@ namespace EnumsNET.Unsafe
 		public static IEnumerable<string> GetNames<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetNames(uniqueValued);
+			return Enums<TEnum>.Cache.GetNames(uniqueValued);
 		}
 
 		/// <summary>
@@ -108,7 +108,7 @@ namespace EnumsNET.Unsafe
 		public static IEnumerable<TEnum> GetValues<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetValues(uniqueValued);
+			return Enums<TEnum>.Cache.GetValues(uniqueValued);
 		}
 
 		/// <summary>
@@ -122,20 +122,20 @@ namespace EnumsNET.Unsafe
 		public static IEnumerable<string> GetDescriptions<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptions(uniqueValued);
+			return Enums<TEnum>.Cache.GetDescriptions(uniqueValued);
 		}
 
 		[Pure]
 		public static IEnumerable<string> GetDescriptionsOrNames<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptionsOrNames(uniqueValued);
+			return Enums<TEnum>.Cache.GetDescriptionsOrNames(uniqueValued);
 		}
 
 		public static IEnumerable<string> GetDescriptionsOrNames<TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptionsOrNames(nameFormatter, uniqueValued);
+			return Enums<TEnum>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
 		}
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace EnumsNET.Unsafe
 		public static IEnumerable<Attribute[]> GetAllAttributes<TEnum>(bool uniqueValued = false)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAllAttributes(uniqueValued);
+			return Enums<TEnum>.Cache.GetAllAttributes(uniqueValued);
 		}
 
 		/// <summary>
@@ -165,7 +165,7 @@ namespace EnumsNET.Unsafe
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttributes<TAttribute>(uniqueValued);
+			return Enums<TEnum>.Cache.GetAttributes<TAttribute>(uniqueValued);
 		}
 
 		/// <summary>
@@ -181,21 +181,21 @@ namespace EnumsNET.Unsafe
 		public static int Compare<TEnum>(TEnum x, TEnum y)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Compare(x, y);
+			return Enums<TEnum>.Cache.Compare(x, y);
 		}
 
 		[Pure]
 		public static bool Equals<TEnum>(TEnum x, TEnum y)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.EqualsMethod(x, y);
+			return Enums<TEnum>.Cache.Equals(x, y);
 		}
 
 		[Pure]
 		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IClsEnumMemberInfo<TEnum>, string> formatter)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+			return Enums<TEnum>.Cache.RegisterCustomEnumFormat(formatter);
 		}
 
 		[CLSCompliant(false)]
@@ -203,7 +203,7 @@ namespace EnumsNET.Unsafe
 		public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IEnumMemberInfo<TEnum>, string> formatter)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.RegisterCustomEnumFormat(formatter);
+			return Enums<TEnum>.Cache.RegisterCustomEnumFormat(formatter);
 		}
 		#endregion
 
@@ -220,7 +220,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(object value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -236,7 +236,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -251,7 +251,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -265,7 +265,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(byte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -279,7 +279,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(short value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -294,7 +294,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -308,7 +308,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(int value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -323,7 +323,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -337,7 +337,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(long value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 
 		/// <summary>
@@ -352,7 +352,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsValid<TEnum>(ulong value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsValid(value);
+			return Enums<TEnum>.Cache.IsValid(value);
 		}
 		#endregion
 
@@ -368,7 +368,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(object value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -382,7 +382,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -397,7 +397,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(string name)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(name);
+			return Enums<TEnum>.Cache.IsDefined(name);
 		}
 
 		/// <summary>
@@ -414,7 +414,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(string name, bool ignoreCase)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(name, ignoreCase);
+			return Enums<TEnum>.Cache.IsDefined(name, ignoreCase);
 		}
 
 		/// <summary>
@@ -429,7 +429,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -443,7 +443,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(byte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -457,7 +457,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(short value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -472,7 +472,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -486,7 +486,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(int value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -501,7 +501,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -515,7 +515,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(long value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 
 		/// <summary>
@@ -530,7 +530,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsDefined<TEnum>(ulong value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsDefined(value);
+			return Enums<TEnum>.Cache.IsDefined(value);
 		}
 		#endregion
 
@@ -547,7 +547,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(sbyte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -561,7 +561,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(byte value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -575,7 +575,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(short value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -590,7 +590,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(ushort value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -604,7 +604,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(int value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -619,7 +619,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(uint value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -633,7 +633,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(long value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 
 		/// <summary>
@@ -648,7 +648,7 @@ namespace EnumsNET.Unsafe
 		public static bool IsInValueRange<TEnum>(ulong value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.IsInValueRange(value);
+			return Enums<TEnum>.Cache.IsInValueRange(value);
 		}
 		#endregion
 
@@ -671,7 +671,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(object value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -691,7 +691,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(sbyte value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -710,7 +710,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(byte value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -729,7 +729,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(short value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -749,7 +749,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(ushort value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -768,7 +768,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(int value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -788,7 +788,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(uint value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -807,7 +807,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(long value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -827,7 +827,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObject<TEnum>(ulong value, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObject(value, validate);
+			return Enums<TEnum>.Cache.ToObject(value, validate);
 		}
 
 		/// <summary>
@@ -845,7 +845,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -864,7 +864,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -882,7 +882,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -900,7 +900,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -919,7 +919,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -937,7 +937,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -956,7 +956,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -974,7 +974,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -993,7 +993,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultEnum, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToObjectOrDefault(value, defaultEnum, validate);
+			return Enums<TEnum>.Cache.ToObjectOrDefault(value, defaultEnum, validate);
 		}
 
 		/// <summary>
@@ -1011,7 +1011,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1030,7 +1030,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(sbyte value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1048,7 +1048,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(byte value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1066,7 +1066,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(short value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1085,7 +1085,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(ushort value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1103,7 +1103,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(int value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1122,7 +1122,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(uint value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1140,7 +1140,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 
 		/// <summary>
@@ -1159,7 +1159,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate = true)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryToObject(value, out result, validate);
+			return Enums<TEnum>.Cache.TryToObject(value, out result, validate);
 		}
 		#endregion
 
@@ -1178,7 +1178,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum Validate<TEnum>(TEnum value, string paramName)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Validate(value, paramName);
+			return Enums<TEnum>.Cache.Validate(value, paramName);
 		}
 
 		/// <summary>
@@ -1192,7 +1192,7 @@ namespace EnumsNET.Unsafe
 		public static string AsString<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AsString(value);
+			return Enums<TEnum>.Cache.AsString(value);
 		}
 
 		/// <summary>
@@ -1208,14 +1208,14 @@ namespace EnumsNET.Unsafe
 		public static string AsString<TEnum>(TEnum value, string format)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AsString(value, format);
+			return Enums<TEnum>.Cache.AsString(value, format);
 		}
 
 		[Pure]
 		public static string AsString<TEnum>(TEnum value, params EnumFormat[] formats)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.AsString(value, formats);
+			return Enums<TEnum>.Cache.AsString(value, formats);
 		}
 
 		/// <summary>
@@ -1232,49 +1232,49 @@ namespace EnumsNET.Unsafe
 		public static string Format<TEnum>(TEnum value, string format)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, format);
+			return Enums<TEnum>.Cache.Format(value, format);
 		}
 
 		[Pure]
 		public static string Format<TEnum>(TEnum value, EnumFormat format)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, format);
+			return Enums<TEnum>.Cache.Format(value, format);
 		}
 
 		[Pure]
 		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, format0, format1);
+			return Enums<TEnum>.Cache.Format(value, format0, format1);
 		}
 
 		[Pure]
 		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, format0, format1, format2);
+			return Enums<TEnum>.Cache.Format(value, format0, format1, format2);
 		}
 
 		[Pure]
 		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, format0, format1, format2, format3);
+			return Enums<TEnum>.Cache.Format(value, format0, format1, format2, format3);
 		}
 
 		[Pure]
 		public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, format0, format1, format2, format3, format4);
+			return Enums<TEnum>.Cache.Format(value, format0, format1, format2, format3, format4);
 		}
 
 		[Pure]
 		public static string Format<TEnum>(TEnum value, params EnumFormat[] formats)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Format(value, formats);
+			return Enums<TEnum>.Cache.Format(value, formats);
 		}
 
 		/// <summary>
@@ -1288,7 +1288,7 @@ namespace EnumsNET.Unsafe
 		public static object GetUnderlyingValue<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetUnderlyingValue(value);
+			return Enums<TEnum>.Cache.GetUnderlyingValue(value);
 		}
 
 		/// <summary>
@@ -1304,7 +1304,7 @@ namespace EnumsNET.Unsafe
 		public static sbyte ToSByte<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToSByte(value);
+			return Enums<TEnum>.Cache.ToSByte(value);
 		}
 
 		/// <summary>
@@ -1319,7 +1319,7 @@ namespace EnumsNET.Unsafe
 		public static byte ToByte<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToByte(value);
+			return Enums<TEnum>.Cache.ToByte(value);
 		}
 
 		/// <summary>
@@ -1334,7 +1334,7 @@ namespace EnumsNET.Unsafe
 		public static short ToInt16<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToInt16(value);
+			return Enums<TEnum>.Cache.ToInt16(value);
 		}
 
 		/// <summary>
@@ -1350,7 +1350,7 @@ namespace EnumsNET.Unsafe
 		public static ushort ToUInt16<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToUInt16(value);
+			return Enums<TEnum>.Cache.ToUInt16(value);
 		}
 
 		/// <summary>
@@ -1365,7 +1365,7 @@ namespace EnumsNET.Unsafe
 		public static int ToInt32<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToInt32(value);
+			return Enums<TEnum>.Cache.ToInt32(value);
 		}
 
 		/// <summary>
@@ -1381,7 +1381,7 @@ namespace EnumsNET.Unsafe
 		public static uint ToUInt32<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToUInt32(value);
+			return Enums<TEnum>.Cache.ToUInt32(value);
 		}
 
 		/// <summary>
@@ -1396,7 +1396,7 @@ namespace EnumsNET.Unsafe
 		public static long ToInt64<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToInt64(value);
+			return Enums<TEnum>.Cache.ToInt64(value);
 		}
 
 		/// <summary>
@@ -1412,14 +1412,14 @@ namespace EnumsNET.Unsafe
 		public static ulong ToUInt64<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ToUInt64(value);
+			return Enums<TEnum>.Cache.ToUInt64(value);
 		}
 
 		[Pure]
 		public static int GetHashCode<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetHashCodeMethod(value);
+			return Enums<TEnum>.Cache.GetHashCode(value);
 		}
 		#endregion
 
@@ -1428,21 +1428,21 @@ namespace EnumsNET.Unsafe
 		public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberInfo(value);
+			return Enums<TEnum>.Cache.GetEnumMemberInfo(value);
 		}
 
 		[Pure]
 		public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(string name)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberInfo(name);
+			return Enums<TEnum>.Cache.GetEnumMemberInfo(name);
 		}
 
 		[Pure]
 		public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(string name, bool ignoreCase)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetEnumMemberInfo(name, ignoreCase);
+			return Enums<TEnum>.Cache.GetEnumMemberInfo(name, ignoreCase);
 		}
 
 		/// <summary>
@@ -1458,7 +1458,7 @@ namespace EnumsNET.Unsafe
 		public static string GetName<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetName(value);
+			return Enums<TEnum>.Cache.GetName(value);
 		}
 
 		/// <summary>
@@ -1474,20 +1474,20 @@ namespace EnumsNET.Unsafe
 		public static string GetDescription<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescription(value);
+			return Enums<TEnum>.Cache.GetDescription(value);
 		}
 
 		[Pure]
 		public static string GetDescriptionOrName<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptionOrName(value);
+			return Enums<TEnum>.Cache.GetDescriptionOrName(value);
 		}
 
 		public static string GetDescriptionOrName<TEnum>(TEnum value, Func<string, string> nameFormatter)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetDescriptionOrName(value, nameFormatter);
+			return Enums<TEnum>.Cache.GetDescriptionOrName(value, nameFormatter);
 		}
 		#endregion
 
@@ -1505,7 +1505,7 @@ namespace EnumsNET.Unsafe
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.HasAttribute<TAttribute>(value);
+			return Enums<TEnum>.Cache.HasAttribute<TAttribute>(value);
 		}
 
 		/// <summary>
@@ -1521,7 +1521,7 @@ namespace EnumsNET.Unsafe
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttribute<TAttribute>(value);
+			return Enums<TEnum>.Cache.GetAttribute<TAttribute>(value);
 		}
 
 		/// <summary>
@@ -1542,7 +1542,7 @@ namespace EnumsNET.Unsafe
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttributeSelect(value, selector, defaultValue);
+			return Enums<TEnum>.Cache.GetAttributeSelect(value, selector, defaultValue);
 		}
 
 		[Pure]
@@ -1550,7 +1550,7 @@ namespace EnumsNET.Unsafe
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryGetAttributeSelect(value, selector, out result);
+			return Enums<TEnum>.Cache.TryGetAttributeSelect(value, selector, out result);
 		}
 
 		/// <summary>
@@ -1566,7 +1566,7 @@ namespace EnumsNET.Unsafe
 			where TAttribute : Attribute
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAttributes<TAttribute>(value);
+			return Enums<TEnum>.Cache.GetAttributes<TAttribute>(value);
 		}
 
 		/// <summary>
@@ -1580,7 +1580,7 @@ namespace EnumsNET.Unsafe
 		public static Attribute[] GetAllAttributes<TEnum>(TEnum value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.GetAllAttributes(value);
+			return Enums<TEnum>.Cache.GetAllAttributes(value);
 		}
 		#endregion
 
@@ -1603,7 +1603,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Parse(value);
+			return Enums<TEnum>.Cache.Parse(value);
 		}
 
 		/// <summary>
@@ -1624,7 +1624,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value, params EnumFormat[] parseFormatOrder)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Parse(value, parseFormatOrder);
+			return Enums<TEnum>.Cache.Parse(value, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -1646,7 +1646,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Parse(value, ignoreCase);
+			return Enums<TEnum>.Cache.Parse(value, ignoreCase);
 		}
 
 		/// <summary>
@@ -1669,7 +1669,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.Parse(value, ignoreCase, parseFormatOrder);
+			return Enums<TEnum>.Cache.Parse(value, ignoreCase, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -1685,7 +1685,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseOrDefault(value, defaultEnum);
+			return Enums<TEnum>.Cache.ParseOrDefault(value, defaultEnum);
 		}
 
 		/// <summary>
@@ -1702,7 +1702,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseOrDefault(value, defaultEnum, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseOrDefault(value, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -1720,7 +1720,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseOrDefault(value, ignoreCase, defaultEnum);
+			return Enums<TEnum>.Cache.ParseOrDefault(value, ignoreCase, defaultEnum);
 		}
 
 		/// <summary>
@@ -1738,7 +1738,7 @@ namespace EnumsNET.Unsafe
 		public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.ParseOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
+			return Enums<TEnum>.Cache.ParseOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -1754,7 +1754,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, out TEnum result)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParse(value, out result);
+			return Enums<TEnum>.Cache.TryParse(value, out result);
 		}
 
 		/// <summary>
@@ -1771,7 +1771,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParse(value, out result, parseFormatOrder);
+			return Enums<TEnum>.Cache.TryParse(value, out result, parseFormatOrder);
 		}
 
 		/// <summary>
@@ -1789,7 +1789,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParse(value, ignoreCase, out result);
+			return Enums<TEnum>.Cache.TryParse(value, ignoreCase, out result);
 		}
 
 		/// <summary>
@@ -1807,7 +1807,7 @@ namespace EnumsNET.Unsafe
 		public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
 		{
 			VerifyTypeIsEnum<TEnum>();
-			return EnumsCache<TEnum>.TryParse(value, ignoreCase, out result, parseFormatOrder);
+			return Enums<TEnum>.Cache.TryParse(value, ignoreCase, out result, parseFormatOrder);
 		}
 		#endregion
 

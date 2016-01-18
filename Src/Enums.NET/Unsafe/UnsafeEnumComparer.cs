@@ -38,14 +38,14 @@ namespace EnumsNET.Unsafe
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
-		public bool Equals(TEnum x, TEnum y) => EnumsCache<TEnum>.EqualsMethod(x, y);
+		public bool Equals(TEnum x, TEnum y) => Enums<TEnum>.Cache.Equals(x, y);
 
 		/// <summary>
 		/// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-		public int GetHashCode(TEnum obj) => EnumsCache<TEnum>.GetHashCodeMethod(obj);
+		public int GetHashCode(TEnum obj) => Enums<TEnum>.Cache.GetHashCode(obj);
 
 		/// <summary>
 		/// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
@@ -53,7 +53,7 @@ namespace EnumsNET.Unsafe
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int Compare(TEnum x, TEnum y) => EnumsCache<TEnum>.Compare(x, y);
+		public int Compare(TEnum x, TEnum y) => Enums<TEnum>.Cache.Compare(x, y);
 
 		#region Explicit Interface Implementation
 		bool IEqualityComparer.Equals(object x, object y)
