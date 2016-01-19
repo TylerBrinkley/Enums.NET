@@ -1050,7 +1050,7 @@ namespace EnumsNET
                     var firstBucket = GetFirstBucket(entry.FirstHashCode);
                     entry.FirstBucketNext = _firstBuckets[firstBucket] - 1;
                     _firstBuckets[firstBucket] = i + 1;
-                    var secondBucket = GetSecondBucket(entry.SecondBucketNext);
+                    var secondBucket = GetSecondBucket(entry.SecondHashCode);
                     entry.SecondBucketNext = _secondBuckets[secondBucket] - 1;
                     _secondBuckets[secondBucket] = i + 1;
                     // assign to new array

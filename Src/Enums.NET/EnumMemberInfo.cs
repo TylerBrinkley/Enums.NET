@@ -150,7 +150,7 @@ namespace EnumsNET
 	/// <typeparam name="TEnum"></typeparam>
 	public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>
 	{
-		private Attribute[] _attributes;
+		private readonly Attribute[] _attributes;
 
 		/// <summary>
 		/// The defined enum member's value

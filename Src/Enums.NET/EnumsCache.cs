@@ -20,9 +20,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading;
 
 namespace EnumsNET
@@ -188,6 +186,7 @@ namespace EnumsNET
 				IsContiguous = ToInt64(maxDefined) - ToInt64(minDefined) + 1L == _valueMap.Count;
 			}
 
+			_valueMap.TrimExcess();
 			if (duplicateValues.Count > 0)
 			{
 				// Makes sure is in increasing order, due to no removals
