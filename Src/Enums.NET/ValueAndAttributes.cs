@@ -17,13 +17,13 @@ using System;
 
 namespace EnumsNET
 {
-	internal struct ValueAndAttributes<TEnum>
+	internal struct ValueAndAttributes<TInt>
 	{
-		public readonly TEnum Value;
+		public readonly TInt Value;
 		// Guaranteed to be either null or not empty
 		public readonly Attribute[] Attributes;
 
-		public ValueAndAttributes(TEnum value, Attribute[] attributes)
+		public ValueAndAttributes(TInt value, Attribute[] attributes)
 		{
 			Value = value;
 			Attributes = attributes?.Length > 0 ? attributes : null;

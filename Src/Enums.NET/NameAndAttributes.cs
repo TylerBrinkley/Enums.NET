@@ -31,7 +31,7 @@ namespace EnumsNET
 
 		public override int GetHashCode() => Name.GetHashCode();
 
-		public override bool Equals(object obj) => obj is NameAndAttributes ? Equals((NameAndAttributes)obj) : false;
+		public override bool Equals(object obj) => obj is NameAndAttributes && Equals((NameAndAttributes)obj);
 
 		// Is case sensitive
 		public bool Equals(NameAndAttributes other) => Name == other.Name;

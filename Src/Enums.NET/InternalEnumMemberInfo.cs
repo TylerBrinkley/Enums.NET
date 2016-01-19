@@ -30,7 +30,7 @@ namespace EnumsNET
 		{
 			get
 			{
-				if (Name == null)
+				if (!IsDefined)
 				{
 					return null;
 				}
@@ -57,7 +57,7 @@ namespace EnumsNET
 
 		public string GetDescriptionOrName() => Description ?? Name;
 
-		public string GetDescriptionOrName(Func<string, string> nameFormatter) => Name != null ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
+		public string GetDescriptionOrName(Func<string, string> nameFormatter) => IsDefined ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
 
 		public bool HasAttribute<TAttribute>()
 			where TAttribute : Attribute
@@ -74,7 +74,7 @@ namespace EnumsNET
 		public IEnumerable<TAttribute> GetAttributes<TAttribute>()
 			where TAttribute : Attribute
 		{
-			return Name != null ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
+			return IsDefined ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
 		}
 
 		public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
@@ -103,7 +103,7 @@ namespace EnumsNET
 			return false;
 		}
 
-		public EnumMemberInfo<TEnum> ToEnumMemberInfo() => Name != null ? new EnumMemberInfo<TEnum>(Value, Name, _attributes) : null;
+		public EnumMemberInfo<TEnum> ToEnumMemberInfo() => IsDefined ? new EnumMemberInfo<TEnum>(Value, Name, _attributes) : null;
 
 		public override string ToString() => Name;
 

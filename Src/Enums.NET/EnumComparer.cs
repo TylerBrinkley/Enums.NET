@@ -50,32 +50,11 @@ namespace EnumsNET
 		public int Compare(TEnum x, TEnum y) => Enums<TEnum>.Cache.Compare(x, y);
 
 		#region Explicit Interface Implementation
-		bool IEqualityComparer.Equals(object x, object y)
-		{
-			if (x is TEnum && y is TEnum)
-			{
-				return Equals((TEnum)x, (TEnum)y);
-			}
-			return false;
-		}
+		bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && Equals((TEnum)x, (TEnum)y);
 
-		int IEqualityComparer.GetHashCode(object obj)
-		{
-			if (obj is TEnum)
-			{
-				return GetHashCode((TEnum)obj);
-			}
-			return 0;
-		}
+		int IEqualityComparer.GetHashCode(object obj) => obj is TEnum ? GetHashCode((TEnum)obj) : 0;
 
-		int IComparer.Compare(object x, object y)
-		{
-			if (x is TEnum && y is TEnum)
-			{
-				return Compare((TEnum)x, (TEnum)y);
-			}
-			return 0;
-		}
+		int IComparer.Compare(object x, object y) => (x is TEnum && y is TEnum) ? Compare((TEnum)x, (TEnum)y) : 0;
 		#endregion
 	}
 }

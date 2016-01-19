@@ -240,12 +240,14 @@ namespace EnumsNET
 			return 0;
 		}
 
-		public bool Equals(TEnum x, TEnum y) => IntegralOperators<TInt>.Equals(_toInt(x), _toInt(y));
+		public bool Equals(TEnum x, TEnum y) => IntegralOperators<TInt>.Equal(_toInt(x), _toInt(y));
 
 		public int GetHashCode(TEnum value) => _toInt(value).GetHashCode();
 
 		public EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo<TEnum>, string> formatter)
 		{
+			Preconditions.NotNull(formatter, nameof(formatter));
+
 			var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
 			if (index == 0)
 			{
@@ -257,7 +259,7 @@ namespace EnumsNET
 				{
 				}
 			}
-			_customEnumFormatters.Insert(index, formatter);
+			_customEnumFormatters.Add(formatter);
 			return Enums.ToObject<EnumFormat>(index + Enums.StartingGenericCustomEnumFormatValue, false);
 		}
 
@@ -265,11 +267,7 @@ namespace EnumsNET
 		{
 			if (uniqueValued)
 			{
-				return _valueMap.Select(pair =>
-				{
-					var second = pair.Second;
-					return new InternalEnumMemberInfo<TEnum>(_toEnum(pair.First), second.Name, second.Attributes);
-				});
+				return _valueMap.Select(pair => new InternalEnumMemberInfo<TEnum>(_toEnum(pair.First), pair.Second.Name, pair.Second.Attributes));
 			}
 			else
 			{
@@ -352,7 +350,15 @@ namespace EnumsNET
 		public bool IsDefined(TEnum value)
 		{
 			var valueAsInt = _toInt(value);
-			return IsContiguous ? !(IntegralOperators<TInt>.GreaterThan(MinDefined, valueAsInt) || IntegralOperators<TInt>.GreaterThan(valueAsInt, MaxDefined)) : _valueMap.ContainsFirst(valueAsInt);
+			if (IsContiguous)
+			{
+				var greaterThan = IntegralOperators<TInt>.GreaterThan;
+				return !(greaterThan(MinDefined, valueAsInt) || greaterThan(valueAsInt, MaxDefined));
+			}
+			else
+			{
+				return _valueMap.ContainsFirst(valueAsInt);
+			}
 		}
 
 		public bool IsDefined(string name, bool ignoreCase = false)
@@ -705,9 +711,9 @@ namespace EnumsNET
 			return null;
 		}
 
-		private string ToDecimalString(TEnum value) => IntegralOperators<TInt>.ToString(_toInt(value), "D");
+		private string ToDecimalString(TEnum value) => IntegralOperators<TInt>.ToStringFormat(_toInt(value), "D");
 
-		private string ToHexadecimalString(TEnum value) => IntegralOperators<TInt>.ToString(_toInt(value), IntegralOperators<TInt>.HexFormatString);
+		private string ToHexadecimalString(TEnum value) => IntegralOperators<TInt>.ToStringFormat(_toInt(value), IntegralOperators<TInt>.HexFormatString);
 
 		public object GetUnderlyingValue(TEnum value) => _toInt(value);
 
@@ -781,7 +787,7 @@ namespace EnumsNET
 			if (index >= 0)
 			{
 				var pair = _valueMap.GetAt(index);
-				return new InternalEnumMemberInfo<TEnum>(_toEnum(pair.First), pair.Second.Name, pair.Second.Attributes);
+				return new InternalEnumMemberInfo<TEnum>(_toEnum(pair.First), name, pair.Second.Attributes);
 			}
 			ValueAndAttributes<TInt> valueAndAttributes;
 			if (_duplicateValues != null && _duplicateValues.TryGetValue(name, out valueAndAttributes))
@@ -797,7 +803,7 @@ namespace EnumsNET
 					if (index >= 0)
 					{
 						var pair = _valueMap.GetAt(index);
-						return new InternalEnumMemberInfo<TEnum>(_toEnum(pair.First), pair.Second.Name, pair.Second.Attributes);
+						return new InternalEnumMemberInfo<TEnum>(_toEnum(pair.First), actualName, pair.Second.Attributes);
 					}
 					valueAndAttributes = _duplicateValues[actualName];
 					return new InternalEnumMemberInfo<TEnum>(_toEnum(valueAndAttributes.Value), actualName, valueAndAttributes.Attributes);
@@ -952,7 +958,7 @@ namespace EnumsNET
 						break;
 					default:
 						EnumParser parser = null;
-						if (_customEnumFormatParsers?.TryGetValue(format, out parser) != true)
+						if (_customEnumFormatParsers == null || !_customEnumFormatParsers.TryGetValue(format, out parser))
 						{
 							switch (format)
 							{
@@ -1029,10 +1035,7 @@ namespace EnumsNET
 		#region Main Methods
 		public bool IsValidFlagCombination(TEnum value) => IsValidFlagCombination(_toInt(value));
 
-		private bool IsValidFlagCombination(TInt value)
-		{
-			return IntegralOperators<TInt>.Equals(IntegralOperators<TInt>.And(_allFlags, value), value);
-		}
+		private bool IsValidFlagCombination(TInt value) => IntegralOperators<TInt>.Equal(IntegralOperators<TInt>.And(_allFlags, value), value);
 
 		public string FormatAsFlags(TEnum value) => FormatAsFlags(value, FlagEnums.DefaultDelimiter, Enums.DefaultParseFormatOrder);
 
@@ -1075,7 +1078,7 @@ namespace EnumsNET
 		public bool HasAnyFlags(TEnum value)
 		{
 			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
-			return !IntegralOperators<TInt>.Equals(valueAsInt, default(TInt));
+			return !IntegralOperators<TInt>.Equal(valueAsInt, default(TInt));
 		}
 
 		public bool HasAnyFlags(TEnum value, TEnum flagMask)
@@ -1088,14 +1091,14 @@ namespace EnumsNET
 		public bool HasAllFlags(TEnum value)
 		{
 			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
-			return IntegralOperators<TInt>.Equals(valueAsInt, _allFlags);
+			return IntegralOperators<TInt>.Equal(valueAsInt, _allFlags);
 		}
 
 		public bool HasAllFlags(TEnum value, TEnum flagMask)
 		{
 			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
 			var flagMaskAsInt = ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return IntegralOperators<TInt>.Equals(IntegralOperators<TInt>.And(valueAsInt, flagMaskAsInt), flagMaskAsInt);
+			return IntegralOperators<TInt>.Equal(IntegralOperators<TInt>.And(valueAsInt, flagMaskAsInt), flagMaskAsInt);
 		}
 
 		public TEnum InvertFlags(TEnum value)
@@ -1216,14 +1219,14 @@ namespace EnumsNET
 			foreach (var indValue in split)
 			{
 				var trimmedIndValue = indValue.Trim();
-				TInt indValueAsTEnum;
-				if (InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsTEnum, parseFormatOrder))
+				TInt indValueAsInt;
+				if (InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsInt, parseFormatOrder))
 				{
-					if (!IsValidFlagCombination(indValueAsTEnum))
+					if (!IsValidFlagCombination(indValueAsInt))
 					{
 						throw new ArgumentException("All individual enum values within value must be valid");
 					}
-					result = or(result, indValueAsTEnum);
+					result = or(result, indValueAsInt);
 				}
 				else
 				{
@@ -1304,13 +1307,13 @@ namespace EnumsNET
 			foreach (var indValue in split)
 			{
 				var trimmedIndValue = indValue.Trim();
-				TInt indValueAsTEnum;
-				if (!InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsTEnum, parseFormatOrder) || !IsValidFlagCombination(indValueAsTEnum))
+				TInt indValueAsInt;
+				if (!InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsInt, parseFormatOrder) || !IsValidFlagCombination(indValueAsInt))
 				{
 					result = default(TEnum);
 					return false;
 				}
-				resultAsInt = or(resultAsInt, indValueAsTEnum);
+				resultAsInt = or(resultAsInt, indValueAsInt);
 			}
 			result = _toEnum(resultAsInt);
 			return true;
@@ -1320,14 +1323,14 @@ namespace EnumsNET
 		#region Private Methods
 		private List<TInt> InternalGetFlags(TInt value)
 		{
-			var valueAsULong = TypeCode == TypeCode.UInt64 ? IntegralOperators<TInt>.ToUInt64(value) : (ulong)IntegralOperators<TInt>.ToInt64(value);
+			var valueAsUInt64 = TypeCode == TypeCode.UInt64 ? IntegralOperators<TInt>.ToUInt64(value) : (ulong)IntegralOperators<TInt>.ToInt64(value);
 			var values = new List<TInt>();
-			for (var currentValue = 1UL; currentValue <= valueAsULong && currentValue != 0UL; currentValue <<= 1)
+			for (var currentValue = 1UL; currentValue <= valueAsUInt64 && currentValue != 0UL; currentValue <<= 1)
 			{
-				var currentValueAsTEnum = IntegralOperators<TInt>.FromUInt64(currentValue);
-				if (IsValidFlagCombination(currentValueAsTEnum) && InternalHasAnyFlags(value, currentValueAsTEnum))
+				var currentValueAsInt = IntegralOperators<TInt>.FromUInt64(currentValue);
+				if (IsValidFlagCombination(currentValueAsInt) && InternalHasAnyFlags(value, currentValueAsInt))
 				{
-					values.Add(currentValueAsTEnum);
+					values.Add(currentValueAsInt);
 				}
 			}
 			return values;
@@ -1335,7 +1338,7 @@ namespace EnumsNET
 
 		private bool InternalHasAnyFlags(TInt value, TInt flagMask)
 		{
-			return !IntegralOperators<TInt>.Equals(IntegralOperators<TInt>.And(value, flagMask), default(TInt));
+			return !IntegralOperators<TInt>.Equal(IntegralOperators<TInt>.And(value, flagMask), default(TInt));
 		}
 
 		private TInt ValidateIsValidFlagCombination(TEnum value, string paramName)
@@ -1351,7 +1354,7 @@ namespace EnumsNET
 		#endregion
 
 		#region Nested Types
-		internal class EnumParser
+		internal sealed class EnumParser
 		{
 			private readonly Dictionary<string, string> _formatNameMap;
 			private Dictionary<string, string> _formatIgnoreCase;
@@ -1861,11 +1864,11 @@ namespace EnumsNET
 		private TEnum ConvertToEnum(object value, string paramName)
 		{
 			TEnum result;
-			if (TryToObject(value, out result, false))
+			if (!TryToObject(value, out result, false))
 			{
-				return result;
+				throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", paramName);
 			}
-			throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", paramName);
+			return result;
 		}
 
 		private TEnum[] ConvertToEnumArray(object[] values, string paramName)

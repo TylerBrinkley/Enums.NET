@@ -19,7 +19,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
 using System.Threading;
 using ExtraConstraints;
 
@@ -48,6 +47,8 @@ namespace EnumsNET
 		[CLSCompliant(false)]
 		public static EnumFormat RegisterCustomEnumFormat(Func<IEnumMemberInfo, string> formatter)
 		{
+			Preconditions.NotNull(formatter, nameof(formatter));
+
 			var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
 			if (index == 0)
 			{
@@ -59,7 +60,7 @@ namespace EnumsNET
 				{
 				}
 			}
-			CustomEnumFormatters.Insert(index, formatter);
+			CustomEnumFormatters.Add(formatter);
 			return ToObject<EnumFormat>(index + StartingCustomEnumFormatValue, false);
 		}
 
