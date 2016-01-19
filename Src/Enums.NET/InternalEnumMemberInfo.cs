@@ -48,21 +48,6 @@ namespace EnumsNET
 
 		public bool IsDefined => Name != null;
 
-		public InternalEnumMemberInfo(Pair<TEnum, NameAndAttributes> pair)
-			: this(pair.First, pair.Second.Name, pair.Second.Attributes)
-		{
-		}
-
-		public InternalEnumMemberInfo(KeyValuePair<string, ValueAndAttributes<TEnum>> pair)
-			: this(pair.Value.Value, pair.Key, pair.Value.Attributes)
-		{
-		}
-
-		public InternalEnumMemberInfo(string name, ValueAndAttributes<TEnum> valueAndAttributes)
-			: this(valueAndAttributes.Value, name, valueAndAttributes.Attributes)
-		{
-		}
-
 		public InternalEnumMemberInfo(TEnum value, string name, Attribute[] attributes)
 		{
 			Value = value;

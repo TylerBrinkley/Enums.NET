@@ -41,16 +41,6 @@ namespace EnumsNET
 
 		private static Func<TInt, TEnum> _toEnum;
 
-		private readonly Func<TInt, TInt, bool> _equals;
-
-		private readonly Func<TInt, TInt, bool> _greaterThan;
-
-		private readonly Func<TInt, TInt, TInt> _and;
-
-		private readonly Func<TInt, TInt, TInt> _or;
-
-		private readonly Func<TInt, TInt, TInt> _xor;
-
 		private readonly TInt _allFlags;
 
 		private Dictionary<string, string> _ignoreCaseSet;
@@ -103,21 +93,14 @@ namespace EnumsNET
 		}
 		#endregion
 
-		// This constructor caches the relevant enum information
-		public EnumsCache(Func<TEnum, TInt> toInt, Func<TInt, TEnum> toEnum, Func<TInt, TInt, bool> equals, Func<TInt, TInt, bool> greaterThan, Func<TInt, TInt, TInt> and, Func<TInt, TInt, TInt> or, Func<TInt, TInt, TInt> xor, Func<TInt, bool> isPowerOfTwo)
+		public EnumsCache(Func<TEnum, TInt> toInt, Func<TInt, TEnum> toEnum)
 		{
 			_toInt = toInt;
 			_toEnum = toEnum;
-			_equals = equals;
-			_greaterThan = greaterThan;
-			_and = and;
-			_or = or;
-			_xor = xor;
 
 			var type = typeof(TEnum);
 			Debug.Assert(type.IsEnum);
-			var underlyingType = Enum.GetUnderlyingType(type);
-			TypeCode = Type.GetTypeCode(underlyingType);
+			TypeCode = Type.GetTypeCode(UnderlyingType);
 			IsFlagEnum = type.IsDefined(typeof(FlagsAttribute), false);
 
 			var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
@@ -171,15 +154,15 @@ namespace EnumsNET
 					for (index = _valueMap.Count; index > 0; --index)
 					{
 						var mapValue = _valueMap.GetFirstAt(index - 1);
-						if (!_greaterThan(mapValue, value))
+						if (!IntegralOperators<TInt>.GreaterThan(mapValue, value))
 						{
 							break;
 						}
 					}
 					_valueMap.Insert(index, value, new NameAndAttributes(name, attributes));
-					if (isPowerOfTwo(value))
+					if (IntegralOperators<TInt>.IsPowerOfTwo(value))
 					{
-						_allFlags = _or(_allFlags, value);
+						_allFlags = IntegralOperators<TInt>.Or(_allFlags, value);
 					}
 				}
 				else
@@ -247,18 +230,18 @@ namespace EnumsNET
 		{
 			var xAsInt = _toInt(x);
 			var yAsInt = _toInt(y);
-			if (_greaterThan(xAsInt, yAsInt))
+			if (IntegralOperators<TInt>.GreaterThan(xAsInt, yAsInt))
 			{
 				return 1;
 			}
-			if (_greaterThan(yAsInt, xAsInt))
+			if (IntegralOperators<TInt>.GreaterThan(yAsInt, xAsInt))
 			{
 				return -1;
 			}
 			return 0;
 		}
 
-		public bool Equals(TEnum x, TEnum y) => _equals(_toInt(x), _toInt(y));
+		public bool Equals(TEnum x, TEnum y) => IntegralOperators<TInt>.Equals(_toInt(x), _toInt(y));
 
 		public int GetHashCode(TEnum value) => _toInt(value).GetHashCode();
 
@@ -311,7 +294,7 @@ namespace EnumsNET
 						TInt value;
 						string name;
 						Attribute[] attributes;
-						if (dupeIsActive && (!mainIsActive || _greaterThan(mainPair.First, dupePair.Value.Value)))
+						if (dupeIsActive && (!mainIsActive || IntegralOperators<TInt>.GreaterThan(mainPair.First, dupePair.Value.Value)))
 						{
 							value = dupePair.Value.Value;
 							name = dupePair.Key;
@@ -370,7 +353,7 @@ namespace EnumsNET
 		public bool IsDefined(TEnum value)
 		{
 			var valueAsInt = _toInt(value);
-			return IsContiguous ? !(_greaterThan(MinDefined, valueAsInt) || _greaterThan(valueAsInt, MaxDefined)) : _valueMap.ContainsFirst(valueAsInt);
+			return IsContiguous ? !(IntegralOperators<TInt>.GreaterThan(MinDefined, valueAsInt) || IntegralOperators<TInt>.GreaterThan(valueAsInt, MaxDefined)) : _valueMap.ContainsFirst(valueAsInt);
 		}
 
 		public bool IsDefined(string name, bool ignoreCase = false)
@@ -386,36 +369,9 @@ namespace EnumsNET
 		#endregion
 
 		#region IsInValueRange
-		public bool IsInValueRange(long value)
-		{
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return value >= int.MinValue && value <= int.MaxValue;
-				case TypeCode.UInt32:
-					return value >= uint.MinValue && value <= uint.MaxValue;
-				case TypeCode.SByte:
-					return value >= sbyte.MinValue && value <= sbyte.MaxValue;
-				case TypeCode.Byte:
-					return value >= byte.MinValue && value <= byte.MaxValue;
-				case TypeCode.Int16:
-					return value >= short.MinValue && value <= short.MaxValue;
-				case TypeCode.UInt16:
-					return value >= ushort.MinValue && value <= ushort.MaxValue;
-				case TypeCode.Int64:
-					return true;
-				case TypeCode.UInt64:
-					return value >= 0L;
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {Enums.AsString(TypeCode)}");
-			return false;
-		}
+		public bool IsInValueRange(long value) => IntegralOperators<TInt>.Int64IsInValueRange(value);
 
-		public bool IsInValueRange(ulong value)
-		{
-			return TypeCode == TypeCode.UInt64 || (value <= long.MaxValue && IsInValueRange((long)value));
-		}
+		public bool IsInValueRange(ulong value) => IntegralOperators<TInt>.UInt64IsInValueRange(value);
 		#endregion
 
 		#region ToObject
@@ -464,7 +420,10 @@ namespace EnumsNET
 
 		public TEnum ToObject(long value, bool validate = true)
 		{
-			ValidateForOverflow(value);
+			if (!IsInValueRange(value))
+			{
+				throw Enums.GetOverflowException();
+			}
 
 			var result = InternalToObject(value);
 			if (validate)
@@ -476,7 +435,10 @@ namespace EnumsNET
 
 		public TEnum ToObject(ulong value, bool validate = true)
 		{
-			ValidateForOverflow(value);
+			if (!IsInValueRange(value))
+			{
+				throw Enums.GetOverflowException();
+			}
 
 			var result = InternalToObject(value);
 			if (validate)
@@ -586,9 +548,9 @@ namespace EnumsNET
 			return false;
 		}
 
-		private TEnum InternalToObject(long value) => (TEnum)Enum.ToObject(typeof(TEnum), value);
+		private TEnum InternalToObject(long value) => _toEnum(IntegralOperators<TInt>.FromInt64(value));
 
-		private TEnum InternalToObject(ulong value) => (TEnum)Enum.ToObject(typeof(TEnum), value);
+		private TEnum InternalToObject(ulong value) => _toEnum(IntegralOperators<TInt>.FromUInt64(value));
 		#endregion
 
 		#region All Values Main Methods
@@ -632,7 +594,7 @@ namespace EnumsNET
 		{
 			Preconditions.NotNullOrEmpty(formats, nameof(formats));
 
-			return InternalFormat(value, formats);
+			return InternalFormat(value, GetInternalEnumMemberInfo(value), formats);
 		}
 
 		public string Format(TEnum value, string format)
@@ -744,302 +706,27 @@ namespace EnumsNET
 			return null;
 		}
 
-		private string ToDecimalString(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return ((int)o).ToString("D");
-				case TypeCode.UInt32:
-					return ((uint)o).ToString("D");
-				case TypeCode.SByte:
-					return ((sbyte)o).ToString("D");
-				case TypeCode.Byte:
-					return ((byte)o).ToString("D");
-				case TypeCode.Int16:
-					return ((short)o).ToString("D");
-				case TypeCode.UInt16:
-					return ((ushort)o).ToString("D");
-				case TypeCode.Int64:
-					return ((long)o).ToString("D");
-				case TypeCode.UInt64:
-					return ((ulong)o).ToString("D");
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return null;
-		}
+		private string ToDecimalString(TEnum value) => IntegralOperators<TInt>.ToString(_toInt(value), "D");
 
-		private string ToHexadecimalString(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return ((int)o).ToString("X8");
-				case TypeCode.UInt32:
-					return ((uint)o).ToString("X8");
-				case TypeCode.SByte:
-					return ((sbyte)o).ToString("X2");
-				case TypeCode.Byte:
-					return ((byte)o).ToString("X2");
-				case TypeCode.Int16:
-					return ((short)o).ToString("X4");
-				case TypeCode.UInt16:
-					return ((ushort)o).ToString("X4");
-				case TypeCode.Int64:
-					return ((long)o).ToString("X16");
-				case TypeCode.UInt64:
-					return ((ulong)o).ToString("X16");
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return null;
-		}
+		private string ToHexadecimalString(TEnum value) => IntegralOperators<TInt>.ToString(_toInt(value), IntegralOperators<TInt>.HexFormatString);
 
-		public object GetUnderlyingValue(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return (int)o;
-				case TypeCode.UInt32:
-					return (uint)o;
-				case TypeCode.SByte:
-					return (sbyte)o;
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return (short)o;
-				case TypeCode.UInt16:
-					return (ushort)o;
-				case TypeCode.Int64:
-					return (long)o;
-				case TypeCode.UInt64:
-					return (ulong)o;
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return null;
-		}
+		public object GetUnderlyingValue(TEnum value) => _toInt(value);
 
-		public sbyte ToSByte(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return Convert.ToSByte((int)o);
-				case TypeCode.UInt32:
-					return Convert.ToSByte((uint)o);
-				case TypeCode.SByte:
-					return (sbyte)o;
-				case TypeCode.Byte:
-					return Convert.ToSByte((byte)o);
-				case TypeCode.Int16:
-					return Convert.ToSByte((short)o);
-				case TypeCode.UInt16:
-					return Convert.ToSByte((ushort)o);
-				case TypeCode.Int64:
-					return Convert.ToSByte((long)o);
-				case TypeCode.UInt64:
-					return Convert.ToSByte((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public sbyte ToSByte(TEnum value) => IntegralOperators<TInt>.ToSByte(_toInt(value));
 
-		public byte ToByte(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return Convert.ToByte((int)o);
-				case TypeCode.UInt32:
-					return Convert.ToByte((uint)o);
-				case TypeCode.SByte:
-					return Convert.ToByte((sbyte)o);
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return Convert.ToByte((short)o);
-				case TypeCode.UInt16:
-					return Convert.ToByte((ushort)o);
-				case TypeCode.Int64:
-					return Convert.ToByte((long)o);
-				case TypeCode.UInt64:
-					return Convert.ToByte((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public byte ToByte(TEnum value) => IntegralOperators<TInt>.ToByte(_toInt(value));
 
-		public short ToInt16(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return Convert.ToInt16((int)o);
-				case TypeCode.UInt32:
-					return Convert.ToInt16((uint)o);
-				case TypeCode.SByte:
-					return (sbyte)o;
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return (short)o;
-				case TypeCode.UInt16:
-					return Convert.ToInt16((ushort)o);
-				case TypeCode.Int64:
-					return Convert.ToInt16((long)o);
-				case TypeCode.UInt64:
-					return Convert.ToInt16((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public short ToInt16(TEnum value) => IntegralOperators<TInt>.ToInt16(_toInt(value));
 
-		public ushort ToUInt16(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return Convert.ToUInt16((int)o);
-				case TypeCode.UInt32:
-					return Convert.ToUInt16((uint)o);
-				case TypeCode.SByte:
-					return Convert.ToUInt16((sbyte)o);
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return Convert.ToUInt16((short)o);
-				case TypeCode.UInt16:
-					return (ushort)o;
-				case TypeCode.Int64:
-					return Convert.ToUInt16((long)o);
-				case TypeCode.UInt64:
-					return Convert.ToUInt16((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public ushort ToUInt16(TEnum value) => IntegralOperators<TInt>.ToUInt16(_toInt(value));
 
-		public int ToInt32(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return (int)o;
-				case TypeCode.UInt32:
-					return Convert.ToInt32((uint)o);
-				case TypeCode.SByte:
-					return (sbyte)o;
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return (short)o;
-				case TypeCode.UInt16:
-					return (ushort)o;
-				case TypeCode.Int64:
-					return Convert.ToInt32((long)o);
-				case TypeCode.UInt64:
-					return Convert.ToInt32((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public int ToInt32(TEnum value) => IntegralOperators<TInt>.ToInt32(_toInt(value));
 
-		public uint ToUInt32(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return Convert.ToUInt32((int)o);
-				case TypeCode.UInt32:
-					return (uint)o;
-				case TypeCode.SByte:
-					return Convert.ToUInt32((sbyte)o);
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return Convert.ToUInt32((short)o);
-				case TypeCode.UInt16:
-					return (ushort)o;
-				case TypeCode.Int64:
-					return Convert.ToUInt32((long)o);
-				case TypeCode.UInt64:
-					return Convert.ToUInt32((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public uint ToUInt32(TEnum value) => IntegralOperators<TInt>.ToUInt32(_toInt(value));
 
-		public long ToInt64(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return (int)o;
-				case TypeCode.UInt32:
-					return (uint)o;
-				case TypeCode.SByte:
-					return (sbyte)o;
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return (short)o;
-				case TypeCode.UInt16:
-					return (ushort)o;
-				case TypeCode.Int64:
-					return (long)o;
-				case TypeCode.UInt64:
-					return Convert.ToInt64((ulong)o);
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public long ToInt64(TEnum value) => IntegralOperators<TInt>.ToInt64(_toInt(value));
 
-		public ulong ToUInt64(TEnum value)
-		{
-			object o = value;
-			switch (TypeCode)
-			{
-				case TypeCode.Int32:
-					return Convert.ToUInt64((int)o);
-				case TypeCode.UInt32:
-					return (uint)o;
-				case TypeCode.SByte:
-					return Convert.ToUInt64((sbyte)o);
-				case TypeCode.Byte:
-					return (byte)o;
-				case TypeCode.Int16:
-					return Convert.ToUInt64((short)o);
-				case TypeCode.UInt16:
-					return (ushort)o;
-				case TypeCode.Int64:
-					return Convert.ToUInt64((long)o);
-				case TypeCode.UInt64:
-					return (ulong)o;
-			}
-			// Should never reach this
-			Debug.Fail($"Unknown enum underlying type code of {TypeCode.AsString()}");
-			return 0;
-		}
+		public ulong ToUInt64(TEnum value) => IntegralOperators<TInt>.ToUInt64(_toInt(value));
 		#endregion
 
 		#region Defined Values Main Methods
@@ -1170,10 +857,10 @@ namespace EnumsNET
 			Preconditions.NotNull(value, nameof(value));
 
 			value = value.Trim();
-			TEnum result;
+			TInt result;
 			if (IsFlagEnum)
 			{
-				return TryParseNumeric(value, NumberStyles.AllowLeadingSign, out result) ? result : ParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, parseFormatOrder);
+				return IntegralOperators<TInt>.TryParse(value, NumberStyles.AllowLeadingSign, null, out result) ? _toEnum(result) : ParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, parseFormatOrder);
 			}
 
 			if (!(parseFormatOrder?.Length > 0))
@@ -1183,7 +870,7 @@ namespace EnumsNET
 
 			if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder))
 			{
-				return result;
+				return _toEnum(result);
 			}
 			if (Enums.IsNumeric(value))
 			{
@@ -1218,10 +905,16 @@ namespace EnumsNET
 		{
 			if (value != null)
 			{
+				TInt resultAsInt;
 				value = value.Trim();
 				if (IsFlagEnum)
 				{
-					return TryParseNumeric(value, NumberStyles.AllowLeadingSign, out result) || TryParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, out result, parseFormatOrder);
+					if (IntegralOperators<TInt>.TryParse(value, NumberStyles.AllowLeadingSign, null, out resultAsInt) || TryParseFlags(value, ignoreCase, FlagEnums.DefaultDelimiter, out result, parseFormatOrder))
+					{
+						result = _toEnum(resultAsInt);
+						return true;
+					}
+					return false;
 				}
 
 				if (!(parseFormatOrder?.Length > 0))
@@ -1229,13 +922,17 @@ namespace EnumsNET
 					parseFormatOrder = Enums.DefaultParseFormatOrder;
 				}
 
-				return InternalTryParse(value, ignoreCase, out result, parseFormatOrder);
+				if (InternalTryParse(value, ignoreCase, out resultAsInt, parseFormatOrder))
+				{
+					result = _toEnum(resultAsInt);
+					return true;
+				}
 			}
 			result = default(TEnum);
 			return false;
 		}
 
-		private bool InternalTryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
+		private bool InternalTryParse(string value, bool ignoreCase, out TInt result, EnumFormat[] parseFormatOrder)
 		{
 			foreach (var format in parseFormatOrder)
 			{
@@ -1243,7 +940,7 @@ namespace EnumsNET
 				{
 					case EnumFormat.DecimalValue:
 					case EnumFormat.HexadecimalValue:
-						if (TryParseNumeric(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, out result))
+						if (IntegralOperators<TInt>.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, null, out result))
 						{
 							return true;
 						}
@@ -1288,56 +985,27 @@ namespace EnumsNET
 								_customEnumFormatParsers.TryAdd(format, parser);
 							}
 						}
-						if (parser != null)
+						if (parser != null && parser.TryParse(value, ignoreCase, out result))
 						{
-							if (parser.TryParse(value, ignoreCase, out result))
-							{
-								return true;
-							}
+							return true;
 						}
 						break;
 				}
 			}
-			result = default(TEnum);
+			result = default(TInt);
 			return false;
 		}
 
-		private bool TryParseNumeric(string value, NumberStyles style, out TEnum result)
+		private bool TryParseName(string value, bool ignoreCase, out TInt result)
 		{
-			if (TypeCode == TypeCode.UInt64)
+			if (_valueMap.TryGetFirst(new NameAndAttributes(value), out result))
 			{
-				ulong resultAsULong;
-				if (ulong.TryParse(value, style, null, out resultAsULong))
-				{
-					result = InternalToObject(resultAsULong);
-					return true;
-				}
-			}
-			else
-			{
-				long resultAsLong;
-				if (long.TryParse(value, style, null, out resultAsLong) && IsInValueRange(resultAsLong))
-				{
-					result = InternalToObject(resultAsLong);
-					return true;
-				}
-			}
-			result = default(TEnum);
-			return false;
-		}
-
-		private bool TryParseName(string value, bool ignoreCase, out TEnum result)
-		{
-			TInt resultAsInt;
-			if (_valueMap.TryGetFirst(new NameAndAttributes(value), out resultAsInt))
-			{
-				result = _toEnum(resultAsInt);
 				return true;
 			}
 			ValueAndAttributes<TInt> valueAndAttributes;
 			if (_duplicateValues != null && _duplicateValues.TryGetValue(value, out valueAndAttributes))
 			{
-				result = _toEnum(valueAndAttributes.Value);
+				result = valueAndAttributes.Value;
 				return true;
 			}
 			if (ignoreCase)
@@ -1345,44 +1013,26 @@ namespace EnumsNET
 				string name;
 				if (IgnoreCaseSet.TryGetValue(value, out name))
 				{
-					if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out resultAsInt))
+					if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
 					{
-						resultAsInt = _duplicateValues[name].Value;
+						result = _duplicateValues[name].Value;
 					}
-					result = _toEnum(resultAsInt);
 					return true;
 				}
 			}
-			result = default(TEnum);
+			result = default(TInt);
 			return false;
-		}
-		#endregion
-
-		#region Overflow Methods
-		private void ValidateForOverflow(ulong value)
-		{
-			if (!IsInValueRange(value))
-			{
-				throw Enums.GetOverflowException();
-			}
-		}
-
-		private void ValidateForOverflow(long value)
-		{
-			if (!IsInValueRange(value))
-			{
-				throw Enums.GetOverflowException();
-			}
 		}
 		#endregion
 		#endregion
 
 		#region Flag Enum Operations
 		#region Main Methods
-		public bool IsValidFlagCombination(TEnum value)
+		public bool IsValidFlagCombination(TEnum value) => IsValidFlagCombination(_toInt(value));
+
+		private bool IsValidFlagCombination(TInt value)
 		{
-			var valueAsInt = _toInt(value);
-			return _equals(_and(_allFlags, valueAsInt), valueAsInt);
+			return IntegralOperators<TInt>.Equals(IntegralOperators<TInt>.And(_allFlags, value), value);
 		}
 
 		public string FormatAsFlags(TEnum value) => FormatAsFlags(value, FlagEnums.DefaultDelimiter, Enums.DefaultParseFormatOrder);
@@ -1395,7 +1045,9 @@ namespace EnumsNET
 		{
 			Preconditions.NotNullOrEmpty(delimiter, nameof(delimiter));
 
-			if (!IsValidFlagCombination(value))
+			var valueAsInt = _toInt(value);
+
+			if (!IsValidFlagCombination(valueAsInt))
 			{
 				return null;
 			}
@@ -1405,121 +1057,126 @@ namespace EnumsNET
 				formats = Enums.DefaultParseFormatOrder;
 			}
 
-			TEnum[] flags;
+			List<TInt> flags;
 			var info = GetInternalEnumMemberInfo(value);
-			if (info.Name != null || (flags = InternalGetFlags(value)).Length == 0)
+			if (info.IsDefined || (flags = InternalGetFlags(valueAsInt)).Count == 0)
 			{
 				return InternalFormat(value, info, formats);
 			}
 
-			return string.Join(delimiter, flags.Select(flag => InternalFormat(flag, formats)));
+			return string.Join(delimiter, flags.Select(flag => InternalFormat(_toEnum(flag), formats)));
 		}
 
 		public TEnum[] GetFlags(TEnum value)
 		{
-			return IsValidFlagCombination(value) ? InternalGetFlags(value) : null;
+			var valueAsInt = _toInt(value);
+			return IsValidFlagCombination(valueAsInt) ? InternalGetFlags(valueAsInt).Select(v => _toEnum(v)).ToArray() : null;
 		}
 
 		public bool HasAnyFlags(TEnum value)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			return !_equals(_toInt(value), default(TInt));
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			return !IntegralOperators<TInt>.Equals(valueAsInt, default(TInt));
 		}
 
 		public bool HasAnyFlags(TEnum value, TEnum flagMask)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return InternalHasAnyFlags(value, flagMask);
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			var flagMaskAsInt = ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+			return InternalHasAnyFlags(valueAsInt, flagMaskAsInt);
 		}
 
 		public bool HasAllFlags(TEnum value)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			return _equals(_toInt(value), _allFlags);
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			return IntegralOperators<TInt>.Equals(valueAsInt, _allFlags);
 		}
 
 		public bool HasAllFlags(TEnum value, TEnum flagMask)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-
-			var flagMaskAsInt = _toInt(flagMask);
-			return _equals(_and(_toInt(value), flagMaskAsInt), flagMaskAsInt);
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			var flagMaskAsInt = ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+			return IntegralOperators<TInt>.Equals(IntegralOperators<TInt>.And(valueAsInt, flagMaskAsInt), flagMaskAsInt);
 		}
 
 		public TEnum InvertFlags(TEnum value)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			return _toEnum(_xor(_toInt(value), _allFlags));
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			return _toEnum(IntegralOperators<TInt>.Xor(valueAsInt, _allFlags));
 		}
 
 		public TEnum InvertFlags(TEnum value, TEnum flagMask)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return _toEnum(_xor(_toInt(value), _toInt(flagMask)));
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			var flagMaskAsInt = ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+			return _toEnum(IntegralOperators<TInt>.Xor(valueAsInt, flagMaskAsInt));
 		}
 
 		public TEnum CommonFlags(TEnum value, TEnum flagMask)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return _toEnum(_and(_toInt(value), _toInt(flagMask)));
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			var flagMaskAsInt = ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+			return _toEnum(IntegralOperators<TInt>.And(valueAsInt, flagMaskAsInt));
 		}
 
 		public TEnum SetFlags(TEnum flag0, TEnum flag1)
 		{
-			ValidateIsValidFlagCombination(flag0, nameof(flag0));
-			ValidateIsValidFlagCombination(flag1, nameof(flag1));
-			return _toEnum(_or(_toInt(flag0), _toInt(flag1)));
+			var flag0AsInt = ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			var flag1AsInt = ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			return _toEnum(IntegralOperators<TInt>.Or(flag0AsInt, flag1AsInt));
 		}
 
 		public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2)
 		{
-			ValidateIsValidFlagCombination(flag0, nameof(flag0));
-			ValidateIsValidFlagCombination(flag1, nameof(flag1));
-			ValidateIsValidFlagCombination(flag2, nameof(flag2));
-			return _toEnum(_or(_or(_toInt(flag0), _toInt(flag1)), _toInt(flag2)));
+			var flag0AsInt = ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			var flag1AsInt = ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			var flag2AsInt = ValidateIsValidFlagCombination(flag2, nameof(flag2));
+
+			var or = IntegralOperators<TInt>.Or;
+			return _toEnum(or(or(flag0AsInt, flag1AsInt), flag2AsInt));
 		}
 
 		public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
 		{
-			ValidateIsValidFlagCombination(flag0, nameof(flag0));
-			ValidateIsValidFlagCombination(flag1, nameof(flag1));
-			ValidateIsValidFlagCombination(flag2, nameof(flag2));
-			ValidateIsValidFlagCombination(flag3, nameof(flag3));
-			return _toEnum(_or(_or(_or(_toInt(flag0), _toInt(flag1)), _toInt(flag2)), _toInt(flag3)));
+			var flag0AsInt = ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			var flag1AsInt = ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			var flag2AsInt = ValidateIsValidFlagCombination(flag2, nameof(flag2));
+			var flag3AsInt = ValidateIsValidFlagCombination(flag3, nameof(flag3));
+
+			var or = IntegralOperators<TInt>.Or;
+			return _toEnum(or(or(or(flag0AsInt, flag1AsInt), flag2AsInt), flag3AsInt));
 		}
 
 		public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
 		{
-			ValidateIsValidFlagCombination(flag0, nameof(flag0));
-			ValidateIsValidFlagCombination(flag1, nameof(flag1));
-			ValidateIsValidFlagCombination(flag2, nameof(flag2));
-			ValidateIsValidFlagCombination(flag3, nameof(flag3));
-			ValidateIsValidFlagCombination(flag4, nameof(flag4));
-			return _toEnum(_or(_or(_or(_or(_toInt(flag0), _toInt(flag1)), _toInt(flag2)), _toInt(flag3)), _toInt(flag4)));
+			var flag0AsInt = ValidateIsValidFlagCombination(flag0, nameof(flag0));
+			var flag1AsInt = ValidateIsValidFlagCombination(flag1, nameof(flag1));
+			var flag2AsInt = ValidateIsValidFlagCombination(flag2, nameof(flag2));
+			var flag3AsInt = ValidateIsValidFlagCombination(flag3, nameof(flag3));
+			var flag4AsInt = ValidateIsValidFlagCombination(flag4, nameof(flag4));
+
+			var or = IntegralOperators<TInt>.Or;
+			return _toEnum(or(or(or(or(flag0AsInt, flag1AsInt), flag2AsInt), flag3AsInt), flag4AsInt));
 		}
 
 		public TEnum SetFlags(TEnum[] flags)
 		{
 			var flag = default(TInt);
 			var flagsLength = flags?.Length ?? 0;
+			var or = IntegralOperators<TInt>.Or;
 			for (var i = 0; i < flagsLength; ++i)
 			{
-				var nextFlag = flags[i];
-				ValidateIsValidFlagCombination(nextFlag, nameof(flags) + " must contain all valid flag combinations");
-				flag = _or(flag, _toInt(nextFlag));
+				var nextFlag = ValidateIsValidFlagCombination(flags[i], nameof(flags) + " must contain all valid flag combinations");
+				flag = or(flag, nextFlag);
 			}
 			return _toEnum(flag);
 		}
 
 		public TEnum ClearFlags(TEnum value, TEnum flagMask)
 		{
-			ValidateIsValidFlagCombination(value, nameof(value));
-			ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
-			return _toEnum(_and(_toInt(value), _xor(_toInt(flagMask), _allFlags)));
+			var valueAsInt = ValidateIsValidFlagCombination(value, nameof(value));
+			var flagMaskAsInt = ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+			return _toEnum(IntegralOperators<TInt>.And(valueAsInt, IntegralOperators<TInt>.Xor(flagMaskAsInt, _allFlags)));
 		}
 		#endregion
 
@@ -1556,17 +1213,18 @@ namespace EnumsNET
 			}
 
 			var result = default(TInt);
+			var or = IntegralOperators<TInt>.Or;
 			foreach (var indValue in split)
 			{
 				var trimmedIndValue = indValue.Trim();
-				TEnum indValueAsTEnum;
+				TInt indValueAsTEnum;
 				if (InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsTEnum, parseFormatOrder))
 				{
 					if (!IsValidFlagCombination(indValueAsTEnum))
 					{
 						throw new ArgumentException("All individual enum values within value must be valid");
 					}
-					result = _or(result, _toInt(indValueAsTEnum));
+					result = or(result, indValueAsTEnum);
 				}
 				else
 				{
@@ -1643,16 +1301,17 @@ namespace EnumsNET
 			}
 
 			var resultAsInt = default(TInt);
+			var or = IntegralOperators<TInt>.Or;
 			foreach (var indValue in split)
 			{
 				var trimmedIndValue = indValue.Trim();
-				TEnum indValueAsTEnum;
+				TInt indValueAsTEnum;
 				if (!InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsTEnum, parseFormatOrder) || !IsValidFlagCombination(indValueAsTEnum))
 				{
 					result = default(TEnum);
 					return false;
 				}
-				resultAsInt = _or(resultAsInt, _toInt(indValueAsTEnum));
+				resultAsInt = or(resultAsInt, indValueAsTEnum);
 			}
 			result = _toEnum(resultAsInt);
 			return true;
@@ -1660,32 +1319,34 @@ namespace EnumsNET
 		#endregion
 
 		#region Private Methods
-		private TEnum[] InternalGetFlags(TEnum value)
+		private List<TInt> InternalGetFlags(TInt value)
 		{
-			var valueAsULong = TypeCode == TypeCode.UInt64 ? (ulong)(object)value : (ulong)ToInt64(value);
-			var values = new List<TEnum>();
+			var valueAsULong = TypeCode == TypeCode.UInt64 ? IntegralOperators<TInt>.ToUInt64(value) : (ulong)IntegralOperators<TInt>.ToInt64(value);
+			var values = new List<TInt>();
 			for (var currentValue = 1UL; currentValue <= valueAsULong && currentValue != 0UL; currentValue <<= 1)
 			{
-				var currentValueAsTEnum = InternalToObject(currentValue);
+				var currentValueAsTEnum = IntegralOperators<TInt>.FromUInt64(currentValue);
 				if (IsValidFlagCombination(currentValueAsTEnum) && InternalHasAnyFlags(value, currentValueAsTEnum))
 				{
 					values.Add(currentValueAsTEnum);
 				}
 			}
-			return values.ToArray();
+			return values;
 		}
 
-		private bool InternalHasAnyFlags(TEnum value, TEnum flagMask)
+		private bool InternalHasAnyFlags(TInt value, TInt flagMask)
 		{
-			return !_equals(_and(_toInt(value), _toInt(flagMask)), default(TInt));
+			return !IntegralOperators<TInt>.Equals(IntegralOperators<TInt>.And(value, flagMask), default(TInt));
 		}
 
-		private void ValidateIsValidFlagCombination(TEnum value, string paramName)
+		private TInt ValidateIsValidFlagCombination(TEnum value, string paramName)
 		{
-			if (!IsValidFlagCombination(value))
+			var valueAsInt = _toInt(value);
+			if (!IsValidFlagCombination(valueAsInt))
 			{
 				throw new ArgumentException("must be valid flag combination", paramName);
 			}
+			return valueAsInt;
 		}
 		#endregion
 		#endregion
@@ -1745,20 +1406,18 @@ namespace EnumsNET
 				_formatNameMap = new Dictionary<string, string>(formatNameMap);
 			}
 
-			internal bool TryParse(string format, bool ignoreCase, out TEnum result)
+			internal bool TryParse(string format, bool ignoreCase, out TInt result)
 			{
 				string name;
 				if (_formatNameMap.TryGetValue(format, out name) || (ignoreCase && FormatIgnoreCase.TryGetValue(format, out name)))
 				{
-					TInt resultAsInt;
-					if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out resultAsInt))
+					if (!_valueMap.TryGetFirst(new NameAndAttributes(name), out result))
 					{
-						resultAsInt = _duplicateValues[name].Value;
+						result = _duplicateValues[name].Value;
 					}
-					result = _toEnum(resultAsInt);
 					return true;
 				}
-				result = default(TEnum);
+				result = default(TInt);
 				return false;
 			}
 		}

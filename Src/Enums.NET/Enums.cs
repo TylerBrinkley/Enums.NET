@@ -1399,102 +1399,6 @@ namespace EnumsNET
 		internal static bool IsNumeric(string value) => char.IsDigit(value[0]) || value[0] == '-' || value[0] == '+';
 
 		internal static OverflowException GetOverflowException() => new OverflowException("value is outside the underlying type's value range");
-
-		internal static bool Equals(int x, int y) => x == y;
-
-		internal static bool GreaterThan(int x, int y) => x > y;
-
-		internal static int And(int x, int y) => x & y;
-
-		internal static int Or(int x, int y) => x | y;
-
-		internal static int Xor(int x, int y) => x ^ y;
-
-		internal static bool IsPowerOfTwo(int x) => (x & (x - 1)) == 0;
-
-		internal static bool Equals(uint x, uint y) => x == y;
-
-		internal static bool GreaterThan(uint x, uint y) => x > y;
-
-		internal static uint And(uint x, uint y) => x & y;
-
-		internal static uint Or(uint x, uint y) => x | y;
-
-		internal static uint Xor(uint x, uint y) => x ^ y;
-
-		internal static bool IsPowerOfTwo(uint x) => (x & (x - 1)) == 0;
-
-		internal static bool Equals(long x, long y) => x == y;
-
-		internal static bool GreaterThan(long x, long y) => x > y;
-
-		internal static long And(long x, long y) => x & y;
-
-		internal static long Or(long x, long y) => x | y;
-
-		internal static long Xor(long x, long y) => x ^ y;
-
-		internal static bool IsPowerOfTwo(long x) => (x & (x - 1L)) == 0L;
-
-		internal static bool Equals(ulong x, ulong y) => x == y;
-
-		internal static bool GreaterThan(ulong x, ulong y) => x > y;
-
-		internal static ulong And(ulong x, ulong y) => x & y;
-
-		internal static ulong Or(ulong x, ulong y) => x | y;
-
-		internal static ulong Xor(ulong x, ulong y) => x ^ y;
-
-		internal static bool IsPowerOfTwo(ulong x) => (x & (x - 1UL)) == 0UL;
-
-		internal static bool Equals(sbyte x, sbyte y) => x == y;
-
-		internal static bool GreaterThan(sbyte x, sbyte y) => x > y;
-
-		internal static sbyte And(sbyte x, sbyte y) => (sbyte)(x & y);
-
-		internal static sbyte Or(sbyte x, sbyte y) => (sbyte)(x | y);
-
-		internal static sbyte Xor(sbyte x, sbyte y) => (sbyte)(x ^ y);
-
-		internal static bool IsPowerOfTwo(sbyte x) => (x & (x - 1)) == 0;
-
-		internal static bool Equals(byte x, byte y) => x == y;
-
-		internal static bool GreaterThan(byte x, byte y) => x > y;
-
-		internal static byte And(byte x, byte y) => (byte)(x & y);
-
-		internal static byte Or(byte x, byte y) => (byte)(x | y);
-
-		internal static byte Xor(byte x, byte y) => (byte)(x ^ y);
-
-		internal static bool IsPowerOfTwo(byte x) => (x & (x - 1)) == 0;
-
-		internal static bool Equals(short x, short y) => x == y;
-
-		internal static bool GreaterThan(short x, short y) => x > y;
-
-		internal static short And(short x, short y) => (short)(x & y);
-
-		internal static short Or(short x, short y) => (short)(x | y);
-
-		internal static short Xor(short x, short y) => (short)(x ^ y);
-
-		internal static bool IsPowerOfTwo(short x) => (x & (x - 1)) == 0;
-
-		internal static bool Equals(ushort x, ushort y) => x == y;
-
-		internal static bool GreaterThan(ushort x, ushort y) => x > y;
-
-		internal static ushort And(ushort x, ushort y) => (ushort)(x & y);
-
-		internal static ushort Or(ushort x, ushort y) => (ushort)(x | y);
-
-		internal static ushort Xor(ushort x, ushort y) => (ushort)(x ^ y);
-
-		internal static bool IsPowerOfTwo(ushort x) => (x & (x - 1)) == 0;
 		#endregion
 	}
 
@@ -1517,28 +1421,36 @@ namespace EnumsNET
 			switch (typeCode)
 			{
 				case TypeCode.Int32:
-					Cache = new EnumsCache<TEnum, int>(Expression.Lambda<Func<TEnum, int>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<int, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, int>(Expression.Lambda<Func<TEnum, int>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<int, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.UInt32:
-					Cache = new EnumsCache<TEnum, uint>(Expression.Lambda<Func<TEnum, uint>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<uint, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, uint>(Expression.Lambda<Func<TEnum, uint>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<uint, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.Int64:
-					Cache = new EnumsCache<TEnum, long>(Expression.Lambda<Func<TEnum, long>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<long, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, long>(Expression.Lambda<Func<TEnum, long>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<long, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.UInt64:
-					Cache = new EnumsCache<TEnum, ulong>(Expression.Lambda<Func<TEnum, ulong>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<ulong, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, ulong>(Expression.Lambda<Func<TEnum, ulong>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<ulong, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.SByte:
-					Cache = new EnumsCache<TEnum, sbyte>(Expression.Lambda<Func<TEnum, sbyte>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<sbyte, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, sbyte>(Expression.Lambda<Func<TEnum, sbyte>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<sbyte, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.Byte:
-					Cache = new EnumsCache<TEnum, byte>(Expression.Lambda<Func<TEnum, byte>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<byte, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, byte>(Expression.Lambda<Func<TEnum, byte>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<byte, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.Int16:
-					Cache = new EnumsCache<TEnum, short>(Expression.Lambda<Func<TEnum, short>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<short, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, short>(Expression.Lambda<Func<TEnum, short>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<short, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 				case TypeCode.UInt16:
-					Cache = new EnumsCache<TEnum, ushort>(Expression.Lambda<Func<TEnum, ushort>>(enumParamConvert, enumParam).Compile(), Expression.Lambda<Func<ushort, TEnum>>(intParamConvert, intParam).Compile(), Enums.Equals, Enums.GreaterThan, Enums.And, Enums.Or, Enums.Xor, Enums.IsPowerOfTwo);
+					Cache = new EnumsCache<TEnum, ushort>(Expression.Lambda<Func<TEnum, ushort>>(enumParamConvert, enumParam).Compile(),
+						Expression.Lambda<Func<ushort, TEnum>>(intParamConvert, intParam).Compile());
 					break;
 			}
 		}
