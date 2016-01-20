@@ -30,7 +30,15 @@ namespace EnumsNET
 
 		internal static Func<T, T, T> Xor;
 
-		internal static Func<T, bool> IsPowerOfTwo;
+		internal static Func<T, int, T> LeftShift;
+
+		internal static Func<T, int, T> RightShift;
+
+		internal static Func<T, T, T> Add;
+
+		internal static Func<T, T, T> Subtract;
+
+		internal static bool IsPowerOfTwo(T x) => Equal(And(x, Subtract(x, One)), Zero);
 
 		internal static Func<long, T> FromInt64;
 
@@ -62,6 +70,10 @@ namespace EnumsNET
 
 		internal static string HexFormatString;
 
+		internal static T Zero;
+
+		internal static T One;
+
 		static IntegralOperators()
 		{
 			IntegralOperators.Populate(Type.GetTypeCode(typeof(T)));
@@ -82,7 +94,10 @@ namespace EnumsNET
 					IntegralOperators<int>.And = (x, y) => x & y;
 					IntegralOperators<int>.Or = (x, y) => x | y;
 					IntegralOperators<int>.Xor = (x, y) => x ^ y;
-					IntegralOperators<int>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<int>.LeftShift = (x, n) => x << n;
+					IntegralOperators<int>.RightShift = (x, n) => x >> n;
+					IntegralOperators<int>.Add = (x, y) => x + y;
+					IntegralOperators<int>.Subtract = (x, y) => x - y;
 					IntegralOperators<int>.FromInt64 = x => (int)x;
 					IntegralOperators<int>.FromUInt64 = x => (int)x;
 					IntegralOperators<int>.Int64IsInValueRange = x => x >= int.MinValue && x <= int.MaxValue;
@@ -98,6 +113,8 @@ namespace EnumsNET
 					IntegralOperators<int>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<int>.TryParse = int.TryParse;
 					IntegralOperators<int>.HexFormatString = "X8";
+					IntegralOperators<int>.Zero = 0;
+					IntegralOperators<int>.One = 1;
 					break;
 				case TypeCode.UInt32:
 					IntegralOperators<uint>.Equal = (x, y) => x == y;
@@ -105,7 +122,10 @@ namespace EnumsNET
 					IntegralOperators<uint>.And = (x, y) => x & y;
 					IntegralOperators<uint>.Or = (x, y) => x | y;
 					IntegralOperators<uint>.Xor = (x, y) => x ^ y;
-					IntegralOperators<uint>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<uint>.LeftShift = (x, n) => x << n;
+					IntegralOperators<uint>.RightShift = (x, n) => x >> n;
+					IntegralOperators<uint>.Add = (x, y) => x + y;
+					IntegralOperators<uint>.Subtract = (x, y) => x - y;
 					IntegralOperators<uint>.FromInt64 = x => (uint)x;
 					IntegralOperators<uint>.FromUInt64 = x => (uint)x;
 					IntegralOperators<uint>.Int64IsInValueRange = x => x >= uint.MinValue && x <= uint.MaxValue;
@@ -121,6 +141,8 @@ namespace EnumsNET
 					IntegralOperators<uint>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<uint>.TryParse = uint.TryParse;
 					IntegralOperators<uint>.HexFormatString = "X8";
+					IntegralOperators<uint>.Zero = 0U;
+					IntegralOperators<uint>.One = 1U;
 					break;
 				case TypeCode.Int64:
 					IntegralOperators<long>.Equal = (x, y) => x == y;
@@ -128,7 +150,10 @@ namespace EnumsNET
 					IntegralOperators<long>.And = (x, y) => x & y;
 					IntegralOperators<long>.Or = (x, y) => x | y;
 					IntegralOperators<long>.Xor = (x, y) => x ^ y;
-					IntegralOperators<long>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<long>.LeftShift = (x, n) => x << n;
+					IntegralOperators<long>.RightShift = (x, n) => x >> n;
+					IntegralOperators<long>.Add = (x, y) => x + y;
+					IntegralOperators<long>.Subtract = (x, y) => x - y;
 					IntegralOperators<long>.FromInt64 = x => x;
 					IntegralOperators<long>.FromUInt64 = x => (long)x;
 					IntegralOperators<long>.Int64IsInValueRange = x => true;
@@ -144,6 +169,8 @@ namespace EnumsNET
 					IntegralOperators<long>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<long>.TryParse = long.TryParse;
 					IntegralOperators<long>.HexFormatString = "X16";
+					IntegralOperators<long>.Zero = 0L;
+					IntegralOperators<long>.One = 1L;
 					break;
 				case TypeCode.UInt64:
 					IntegralOperators<ulong>.Equal = (x, y) => x == y;
@@ -151,7 +178,10 @@ namespace EnumsNET
 					IntegralOperators<ulong>.And = (x, y) => x & y;
 					IntegralOperators<ulong>.Or = (x, y) => x | y;
 					IntegralOperators<ulong>.Xor = (x, y) => x ^ y;
-					IntegralOperators<ulong>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<ulong>.LeftShift = (x, n) => x << n;
+					IntegralOperators<ulong>.RightShift = (x, n) => x >> n;
+					IntegralOperators<ulong>.Add = (x, y) => x + y;
+					IntegralOperators<ulong>.Subtract = (x, y) => x - y;
 					IntegralOperators<ulong>.FromInt64 = x => (ulong)x;
 					IntegralOperators<ulong>.FromUInt64 = x => x;
 					IntegralOperators<ulong>.Int64IsInValueRange = x => x >= 0L;
@@ -167,6 +197,8 @@ namespace EnumsNET
 					IntegralOperators<ulong>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<ulong>.TryParse = ulong.TryParse;
 					IntegralOperators<ulong>.HexFormatString = "X16";
+					IntegralOperators<ulong>.Zero = 0UL;
+					IntegralOperators<ulong>.One = 1UL;
 					break;
 				case TypeCode.SByte:
 					IntegralOperators<sbyte>.Equal = (x, y) => x == y;
@@ -174,7 +206,10 @@ namespace EnumsNET
 					IntegralOperators<sbyte>.And = (x, y) => (sbyte)(x & y);
 					IntegralOperators<sbyte>.Or = (x, y) => (sbyte)(x | y);
 					IntegralOperators<sbyte>.Xor = (x, y) => (sbyte)(x ^ y);
-					IntegralOperators<sbyte>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<sbyte>.LeftShift = (x, n) => (sbyte)(x << n);
+					IntegralOperators<sbyte>.RightShift = (x, n) => (sbyte)(x >> n);
+					IntegralOperators<sbyte>.Add = (x, y) => (sbyte)(x + y);
+					IntegralOperators<sbyte>.Subtract = (x, y) => (sbyte)(x - y);
 					IntegralOperators<sbyte>.FromInt64 = x => (sbyte)x;
 					IntegralOperators<sbyte>.FromUInt64 = x => (sbyte)x;
 					IntegralOperators<sbyte>.Int64IsInValueRange = x => x >= sbyte.MinValue && x <= sbyte.MaxValue;
@@ -190,6 +225,8 @@ namespace EnumsNET
 					IntegralOperators<sbyte>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<sbyte>.TryParse = sbyte.TryParse;
 					IntegralOperators<sbyte>.HexFormatString = "X2";
+					IntegralOperators<sbyte>.Zero = 0;
+					IntegralOperators<sbyte>.One = 1;
 					break;
 				case TypeCode.Byte:
 					IntegralOperators<byte>.Equal = (x, y) => x == y;
@@ -197,7 +234,10 @@ namespace EnumsNET
 					IntegralOperators<byte>.And = (x, y) => (byte)(x & y);
 					IntegralOperators<byte>.Or = (x, y) => (byte)(x | y);
 					IntegralOperators<byte>.Xor = (x, y) => (byte)(x ^ y);
-					IntegralOperators<byte>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<byte>.LeftShift = (x, n) => (byte)(x << n);
+					IntegralOperators<byte>.RightShift = (x, n) => (byte)(x >> n);
+					IntegralOperators<byte>.Add = (x, y) => (byte)(x + y);
+					IntegralOperators<byte>.Subtract = (x, y) => (byte)(x - y);
 					IntegralOperators<byte>.FromInt64 = x => (byte)x;
 					IntegralOperators<byte>.FromUInt64 = x => (byte)x;
 					IntegralOperators<byte>.Int64IsInValueRange = x => x >= byte.MinValue && x <= byte.MaxValue;
@@ -213,6 +253,8 @@ namespace EnumsNET
 					IntegralOperators<byte>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<byte>.TryParse = byte.TryParse;
 					IntegralOperators<byte>.HexFormatString = "X2";
+					IntegralOperators<byte>.Zero = 0;
+					IntegralOperators<byte>.One = 1;
 					break;
 				case TypeCode.Int16:
 					IntegralOperators<short>.Equal = (x, y) => x == y;
@@ -220,7 +262,10 @@ namespace EnumsNET
 					IntegralOperators<short>.And = (x, y) => (short)(x & y);
 					IntegralOperators<short>.Or = (x, y) => (short)(x | y);
 					IntegralOperators<short>.Xor = (x, y) => (short)(x ^ y);
-					IntegralOperators<short>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<short>.LeftShift = (x, n) => (short)(x << n);
+					IntegralOperators<short>.RightShift = (x, n) => (short)(x >> n);
+					IntegralOperators<short>.Add = (x, y) => (short)(x + y);
+					IntegralOperators<short>.Subtract = (x, y) => (short)(x - y);
 					IntegralOperators<short>.FromInt64 = x => (short)x;
 					IntegralOperators<short>.FromUInt64 = x => (short)x;
 					IntegralOperators<short>.Int64IsInValueRange = x => x >= short.MinValue && x <= short.MaxValue;
@@ -236,6 +281,8 @@ namespace EnumsNET
 					IntegralOperators<short>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<short>.TryParse = short.TryParse;
 					IntegralOperators<short>.HexFormatString = "X4";
+					IntegralOperators<short>.Zero = 0;
+					IntegralOperators<short>.One = 1;
 					break;
 				case TypeCode.UInt16:
 					IntegralOperators<ushort>.Equal = (x, y) => x == y;
@@ -243,7 +290,10 @@ namespace EnumsNET
 					IntegralOperators<ushort>.And = (x, y) => (ushort)(x & y);
 					IntegralOperators<ushort>.Or = (x, y) => (ushort)(x | y);
 					IntegralOperators<ushort>.Xor = (x, y) => (ushort)(x ^ y);
-					IntegralOperators<ushort>.IsPowerOfTwo = x => (x & (x - 1)) == 0;
+					IntegralOperators<ushort>.LeftShift = (x, n) => (ushort)(x << n);
+					IntegralOperators<ushort>.RightShift = (x, n) => (ushort)(x >> n);
+					IntegralOperators<ushort>.Add = (x, y) => (ushort)(x + y);
+					IntegralOperators<ushort>.Subtract = (x, y) => (ushort)(x - y);
 					IntegralOperators<ushort>.FromInt64 = x => (ushort)x;
 					IntegralOperators<ushort>.FromUInt64 = x => (ushort)x;
 					IntegralOperators<ushort>.Int64IsInValueRange = x => x >= ushort.MinValue && x <= ushort.MaxValue;
@@ -259,6 +309,8 @@ namespace EnumsNET
 					IntegralOperators<ushort>.ToStringFormat = (x, format) => x.ToString(format);
 					IntegralOperators<ushort>.TryParse = ushort.TryParse;
 					IntegralOperators<ushort>.HexFormatString = "X4";
+					IntegralOperators<ushort>.Zero = 0;
+					IntegralOperators<ushort>.One = 1;
 					break;
 			}
 		}

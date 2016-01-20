@@ -376,7 +376,7 @@ namespace EnumsNET
 			}
 			else
 			{
-				var info = obj as EnumMemberInfo<TEnum>;
+				var info = obj as IEnumMemberInfo<TEnum>;
 				if (info != null)
 				{
 					objValue = info.Value;

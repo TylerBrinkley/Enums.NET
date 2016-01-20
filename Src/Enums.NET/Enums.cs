@@ -1363,7 +1363,7 @@ namespace EnumsNET
 		#endregion
 
 		#region Internal Methods
-		internal static string DescriptionEnumFormatter(IEnumMemberInfo info) => info.Description;
+		internal static string DescriptionEnumFormatter(IClsEnumMemberInfo info) => info.Description;
 
 		internal static string GetDescription(Attribute[] attributes)
 		{
@@ -1397,7 +1397,11 @@ namespace EnumsNET
 			}
 		}
 
-		internal static bool IsNumeric(string value) => char.IsDigit(value[0]) || value[0] == '-' || value[0] == '+';
+		internal static bool IsNumeric(string value)
+		{
+			var firstChar = value[0];
+			return char.IsDigit(firstChar) || firstChar == '-' || firstChar == '+';
+		}
 
 		internal static OverflowException GetOverflowException() => new OverflowException("value is outside the underlying type's value range");
 		#endregion

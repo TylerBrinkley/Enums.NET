@@ -129,10 +129,13 @@ namespace EnumsNET
 									attributes[j] = attributes[j - 1];
 								}
 								attributes[0] = descAttr;
-								descriptionFound = true;
-								if (isMainDupe)
+								if (descAttr.GetType() == typeof(DescriptionAttribute))
 								{
-									break;
+									descriptionFound = true;
+									if (isMainDupe)
+									{
+										break;
+									}
 								}
 							}
 						}
@@ -175,16 +178,7 @@ namespace EnumsNET
 					duplicateValues.Add(name, new ValueAndAttributes<TInt>(value, attributes));
 				}
 			}
-			var maxDefined = _toEnum(MaxDefined);
-			var minDefined = _toEnum(MinDefined);
-			if (TypeCode == TypeCode.UInt64)
-			{
-				IsContiguous = ToUInt64(maxDefined) - ToUInt64(minDefined) + 1UL == (ulong)_valueMap.Count;
-			}
-			else
-			{
-				IsContiguous = ToInt64(maxDefined) - ToInt64(minDefined) + 1L == _valueMap.Count;
-			}
+			IsContiguous = IntegralOperators<TInt>.ToInt32(IntegralOperators<TInt>.Add(IntegralOperators<TInt>.Subtract(MaxDefined, MinDefined), IntegralOperators<TInt>.One)) == _valueMap.Count;
 
 			_valueMap.TrimExcess();
 			if (duplicateValues.Count > 0)
@@ -1059,9 +1053,9 @@ namespace EnumsNET
 				formats = Enums.DefaultParseFormatOrder;
 			}
 
-			List<TInt> flags;
+			IEnumerable<TInt> flags;
 			var info = GetInternalEnumMemberInfo(value);
-			if (info.IsDefined || (flags = InternalGetFlags(valueAsInt)).Count == 0)
+			if (info.IsDefined || !(flags = InternalGetFlags(valueAsInt)).Any())
 			{
 				return InternalFormat(value, info, formats);
 			}
@@ -1321,19 +1315,15 @@ namespace EnumsNET
 		#endregion
 
 		#region Private Methods
-		private List<TInt> InternalGetFlags(TInt value)
+		private IEnumerable<TInt> InternalGetFlags(TInt value)
 		{
-			var valueAsUInt64 = TypeCode == TypeCode.UInt64 ? IntegralOperators<TInt>.ToUInt64(value) : (ulong)IntegralOperators<TInt>.ToInt64(value);
-			var values = new List<TInt>();
-			for (var currentValue = 1UL; currentValue <= valueAsUInt64 && currentValue != 0UL; currentValue <<= 1)
+			for (var currentValue = IntegralOperators<TInt>.One; !IntegralOperators<TInt>.Equal(currentValue, IntegralOperators<TInt>.Zero); currentValue = IntegralOperators<TInt>.LeftShift(currentValue, 1))
 			{
-				var currentValueAsInt = IntegralOperators<TInt>.FromUInt64(currentValue);
-				if (IsValidFlagCombination(currentValueAsInt) && InternalHasAnyFlags(value, currentValueAsInt))
+				if (IsValidFlagCombination(currentValue) && InternalHasAnyFlags(value, currentValue))
 				{
-					values.Add(currentValueAsInt);
+					yield return currentValue;
 				}
 			}
-			return values;
 		}
 
 		private bool InternalHasAnyFlags(TInt value, TInt flagMask)
