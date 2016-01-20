@@ -53,7 +53,6 @@
     <Compile Include="IClsEnumMemberInfo.cs" />
     <Compile Include="IEnumMemberInfo.cs" />
     <Compile Include="IEnumsCache.cs" />
-    <Compile Include="IInternalEnumsCache.cs" />
     <Compile Include="IntegralOperators.cs" />
     <Compile Include="InternalEnumMemberInfo.cs" />
     <Compile Include="MainDuplicateAttribute.cs" />

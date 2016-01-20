@@ -32,7 +32,7 @@ namespace EnumsNET
 
 		internal static Func<T, int, T> LeftShift;
 
-		internal static Func<T, int, T> RightShift;
+		//internal static Func<T, int, T> RightShift;
 
 		internal static Func<T, T, T> Add;
 
@@ -66,7 +66,7 @@ namespace EnumsNET
 
 		internal static Func<T, string, string> ToStringFormat;
 
-		internal static TryParseDelegate<T> TryParse;
+		internal static IntegralTryParseDelegate<T> TryParse;
 
 		internal static string HexFormatString;
 
@@ -80,7 +80,7 @@ namespace EnumsNET
 		}
 	}
 
-	internal delegate bool TryParseDelegate<T>(string value, NumberStyles styles, IFormatProvider provider, out T result);
+	internal delegate bool IntegralTryParseDelegate<T>(string value, NumberStyles styles, IFormatProvider provider, out T result);
 
 	internal static class IntegralOperators
 	{
@@ -95,7 +95,7 @@ namespace EnumsNET
 					IntegralOperators<int>.Or = (x, y) => x | y;
 					IntegralOperators<int>.Xor = (x, y) => x ^ y;
 					IntegralOperators<int>.LeftShift = (x, n) => x << n;
-					IntegralOperators<int>.RightShift = (x, n) => x >> n;
+					//IntegralOperators<int>.RightShift = (x, n) => x >> n;
 					IntegralOperators<int>.Add = (x, y) => x + y;
 					IntegralOperators<int>.Subtract = (x, y) => x - y;
 					IntegralOperators<int>.FromInt64 = x => (int)x;
@@ -123,7 +123,7 @@ namespace EnumsNET
 					IntegralOperators<uint>.Or = (x, y) => x | y;
 					IntegralOperators<uint>.Xor = (x, y) => x ^ y;
 					IntegralOperators<uint>.LeftShift = (x, n) => x << n;
-					IntegralOperators<uint>.RightShift = (x, n) => x >> n;
+					//IntegralOperators<uint>.RightShift = (x, n) => x >> n;
 					IntegralOperators<uint>.Add = (x, y) => x + y;
 					IntegralOperators<uint>.Subtract = (x, y) => x - y;
 					IntegralOperators<uint>.FromInt64 = x => (uint)x;
@@ -151,7 +151,7 @@ namespace EnumsNET
 					IntegralOperators<long>.Or = (x, y) => x | y;
 					IntegralOperators<long>.Xor = (x, y) => x ^ y;
 					IntegralOperators<long>.LeftShift = (x, n) => x << n;
-					IntegralOperators<long>.RightShift = (x, n) => x >> n;
+					//IntegralOperators<long>.RightShift = (x, n) => x >> n;
 					IntegralOperators<long>.Add = (x, y) => x + y;
 					IntegralOperators<long>.Subtract = (x, y) => x - y;
 					IntegralOperators<long>.FromInt64 = x => x;
@@ -179,7 +179,7 @@ namespace EnumsNET
 					IntegralOperators<ulong>.Or = (x, y) => x | y;
 					IntegralOperators<ulong>.Xor = (x, y) => x ^ y;
 					IntegralOperators<ulong>.LeftShift = (x, n) => x << n;
-					IntegralOperators<ulong>.RightShift = (x, n) => x >> n;
+					//IntegralOperators<ulong>.RightShift = (x, n) => x >> n;
 					IntegralOperators<ulong>.Add = (x, y) => x + y;
 					IntegralOperators<ulong>.Subtract = (x, y) => x - y;
 					IntegralOperators<ulong>.FromInt64 = x => (ulong)x;
@@ -207,7 +207,7 @@ namespace EnumsNET
 					IntegralOperators<sbyte>.Or = (x, y) => (sbyte)(x | y);
 					IntegralOperators<sbyte>.Xor = (x, y) => (sbyte)(x ^ y);
 					IntegralOperators<sbyte>.LeftShift = (x, n) => (sbyte)(x << n);
-					IntegralOperators<sbyte>.RightShift = (x, n) => (sbyte)(x >> n);
+					//IntegralOperators<sbyte>.RightShift = (x, n) => (sbyte)(x >> n);
 					IntegralOperators<sbyte>.Add = (x, y) => (sbyte)(x + y);
 					IntegralOperators<sbyte>.Subtract = (x, y) => (sbyte)(x - y);
 					IntegralOperators<sbyte>.FromInt64 = x => (sbyte)x;
@@ -235,7 +235,7 @@ namespace EnumsNET
 					IntegralOperators<byte>.Or = (x, y) => (byte)(x | y);
 					IntegralOperators<byte>.Xor = (x, y) => (byte)(x ^ y);
 					IntegralOperators<byte>.LeftShift = (x, n) => (byte)(x << n);
-					IntegralOperators<byte>.RightShift = (x, n) => (byte)(x >> n);
+					//IntegralOperators<byte>.RightShift = (x, n) => (byte)(x >> n);
 					IntegralOperators<byte>.Add = (x, y) => (byte)(x + y);
 					IntegralOperators<byte>.Subtract = (x, y) => (byte)(x - y);
 					IntegralOperators<byte>.FromInt64 = x => (byte)x;
@@ -263,7 +263,7 @@ namespace EnumsNET
 					IntegralOperators<short>.Or = (x, y) => (short)(x | y);
 					IntegralOperators<short>.Xor = (x, y) => (short)(x ^ y);
 					IntegralOperators<short>.LeftShift = (x, n) => (short)(x << n);
-					IntegralOperators<short>.RightShift = (x, n) => (short)(x >> n);
+					//IntegralOperators<short>.RightShift = (x, n) => (short)(x >> n);
 					IntegralOperators<short>.Add = (x, y) => (short)(x + y);
 					IntegralOperators<short>.Subtract = (x, y) => (short)(x - y);
 					IntegralOperators<short>.FromInt64 = x => (short)x;
@@ -291,7 +291,7 @@ namespace EnumsNET
 					IntegralOperators<ushort>.Or = (x, y) => (ushort)(x | y);
 					IntegralOperators<ushort>.Xor = (x, y) => (ushort)(x ^ y);
 					IntegralOperators<ushort>.LeftShift = (x, n) => (ushort)(x << n);
-					IntegralOperators<ushort>.RightShift = (x, n) => (ushort)(x >> n);
+					//IntegralOperators<ushort>.RightShift = (x, n) => (ushort)(x >> n);
 					IntegralOperators<ushort>.Add = (x, y) => (ushort)(x + y);
 					IntegralOperators<ushort>.Subtract = (x, y) => (ushort)(x - y);
 					IntegralOperators<ushort>.FromInt64 = x => (ushort)x;

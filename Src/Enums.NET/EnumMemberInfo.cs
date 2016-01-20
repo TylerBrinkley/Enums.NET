@@ -19,127 +19,127 @@ using System.ComponentModel;
 
 namespace EnumsNET
 {
-	public sealed class EnumMemberInfo : IEnumMemberInfo, IComparable<EnumMemberInfo>
+	public sealed class EnumMemberInfo : IEnumMemberInfo, IComparable<IEnumMemberInfo>
 	{
-		private readonly IEnumMemberInfo _enumMemberInfo;
+		private readonly IEnumMemberInfo _info;
 
-		public object Value => _enumMemberInfo.Value;
+		public object Value => _info.Value;
 
-		public string Name => _enumMemberInfo.Name;
+		public string Name => _info.Name;
 
-		public Attribute[] Attributes => _enumMemberInfo.Attributes;
+		public Attribute[] Attributes => _info.Attributes;
 
-		public string Description => _enumMemberInfo.Description;
+		public string Description => _info.Description;
 
-		public object UnderlyingValue => _enumMemberInfo.UnderlyingValue;
+		public object UnderlyingValue => _info.UnderlyingValue;
 
-		internal EnumMemberInfo(IEnumMemberInfo enumMemberInfo)
+		internal EnumMemberInfo(IEnumMemberInfo info)
 		{
-			_enumMemberInfo = enumMemberInfo;
+			_info = info;
 		}
 
-		public string GetDescriptionOrName() => _enumMemberInfo.GetDescriptionOrName();
+		public string GetDescriptionOrName() => _info.GetDescriptionOrName();
 
-		public string GetDescriptionOrName(Func<string, string> nameFormatter) => _enumMemberInfo.GetDescriptionOrName(nameFormatter);
+		public string GetDescriptionOrName(Func<string, string> nameFormatter) => _info.GetDescriptionOrName(nameFormatter);
 
-		public override string ToString() => _enumMemberInfo.ToString();
+		public override string ToString() => _info.ToString();
 
-		public string ToString(string format) => _enumMemberInfo.ToString(format);
+		public string ToString(string format) => _info.ToString(format);
 
-		public string ToString(params EnumFormat[] formats) => _enumMemberInfo.ToString(formats);
+		public string ToString(params EnumFormat[] formats) => _info.ToString(formats);
 
-		public string AsString() => _enumMemberInfo.AsString();
+		public string AsString() => _info.AsString();
 
-		public string AsString(string format) => _enumMemberInfo.AsString(format);
+		public string AsString(string format) => _info.AsString(format);
 
-		public string AsString(params EnumFormat[] formats) => _enumMemberInfo.AsString(formats);
+		public string AsString(params EnumFormat[] formats) => _info.AsString(formats);
 
-		public string Format(string format) => _enumMemberInfo.Format(format);
+		public string Format(string format) => _info.Format(format);
 
-		public string Format(EnumFormat format) => _enumMemberInfo.Format(format);
+		public string Format(EnumFormat format) => _info.Format(format);
 
-		public string Format(EnumFormat format0, EnumFormat format1) => _enumMemberInfo.Format(format0, format1);
+		public string Format(EnumFormat format0, EnumFormat format1) => _info.Format(format0, format1);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumMemberInfo.Format(format0, format1, format2);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _info.Format(format0, format1, format2);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => _enumMemberInfo.Format(format0, format1, format2, format3);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => _info.Format(format0, format1, format2, format3);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _enumMemberInfo.Format(format0, format1, format2, format3, format4);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _info.Format(format0, format1, format2, format3, format4);
 
-		public string Format(params EnumFormat[] formats) => _enumMemberInfo.Format(formats);
+		public string Format(params EnumFormat[] formats) => _info.Format(formats);
 
-		public bool HasAttribute<TAttribute>() where TAttribute : Attribute => _enumMemberInfo.HasAttribute<TAttribute>();
+		public bool HasAttribute<TAttribute>() where TAttribute : Attribute => _info.HasAttribute<TAttribute>();
 
-		public TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute => _enumMemberInfo.GetAttribute<TAttribute>();
+		public TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute => _info.GetAttribute<TAttribute>();
 
-		public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute => _enumMemberInfo.GetAttributeSelect(selector, defaultValue);
+		public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute => _info.GetAttributeSelect(selector, defaultValue);
 
-		public bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute => _enumMemberInfo.TryGetAttributeSelect(selector, out result);
+		public bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute => _info.TryGetAttributeSelect(selector, out result);
 
-		public IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute => _enumMemberInfo.GetAttributes<TAttribute>();
-
-		[CLSCompliant(false)]
-		public sbyte ToSByte() => _enumMemberInfo.ToSByte();
-
-		public byte ToByte() => _enumMemberInfo.ToByte();
-
-		public short ToInt16() => _enumMemberInfo.ToInt16();
+		public IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute => _info.GetAttributes<TAttribute>();
 
 		[CLSCompliant(false)]
-		public ushort ToUInt16() => _enumMemberInfo.ToUInt16();
+		public sbyte ToSByte() => _info.ToSByte();
 
-		public int ToInt32() => _enumMemberInfo.ToInt32();
+		public byte ToByte() => _info.ToByte();
+
+		public short ToInt16() => _info.ToInt16();
 
 		[CLSCompliant(false)]
-		public uint ToUInt32() => _enumMemberInfo.ToUInt32();
+		public ushort ToUInt16() => _info.ToUInt16();
 
-		public long ToInt64() => _enumMemberInfo.ToInt64();
+		public int ToInt32() => _info.ToInt32();
+
+		[CLSCompliant(false)]
+		public uint ToUInt32() => _info.ToUInt32();
+
+		public long ToInt64() => _info.ToInt64();
 		
 		[CLSCompliant(false)]
-		public ulong ToUInt64() => _enumMemberInfo.ToUInt64();
+		public ulong ToUInt64() => _info.ToUInt64();
 
 		#region Explicit Interface Implementation
-		string IFormattable.ToString(string format, IFormatProvider formatProvider) => _enumMemberInfo.ToString(format, formatProvider);
+		string IFormattable.ToString(string format, IFormatProvider formatProvider) => _info.ToString(format, formatProvider);
 
-		TypeCode IConvertible.GetTypeCode() => _enumMemberInfo.GetTypeCode();
+		TypeCode IConvertible.GetTypeCode() => _info.GetTypeCode();
 
-		bool IConvertible.ToBoolean(IFormatProvider provider) => _enumMemberInfo.ToBoolean(provider);
+		bool IConvertible.ToBoolean(IFormatProvider provider) => _info.ToBoolean(provider);
 
-		char IConvertible.ToChar(IFormatProvider provider) => _enumMemberInfo.ToChar(provider);
+		char IConvertible.ToChar(IFormatProvider provider) => _info.ToChar(provider);
 
-		sbyte IConvertible.ToSByte(IFormatProvider provider) => _enumMemberInfo.ToSByte(provider);
+		sbyte IConvertible.ToSByte(IFormatProvider provider) => _info.ToSByte(provider);
 
-		byte IConvertible.ToByte(IFormatProvider provider) => _enumMemberInfo.ToByte(provider);
+		byte IConvertible.ToByte(IFormatProvider provider) => _info.ToByte(provider);
 
-		short IConvertible.ToInt16(IFormatProvider provider) => _enumMemberInfo.ToInt16(provider);
+		short IConvertible.ToInt16(IFormatProvider provider) => _info.ToInt16(provider);
 
-		ushort IConvertible.ToUInt16(IFormatProvider provider) => _enumMemberInfo.ToUInt16(provider);
+		ushort IConvertible.ToUInt16(IFormatProvider provider) => _info.ToUInt16(provider);
 
-		int IConvertible.ToInt32(IFormatProvider provider) => _enumMemberInfo.ToInt32(provider);
+		int IConvertible.ToInt32(IFormatProvider provider) => _info.ToInt32(provider);
 
-		uint IConvertible.ToUInt32(IFormatProvider provider) => _enumMemberInfo.ToUInt32(provider);
+		uint IConvertible.ToUInt32(IFormatProvider provider) => _info.ToUInt32(provider);
 
-		long IConvertible.ToInt64(IFormatProvider provider) => _enumMemberInfo.ToInt64(provider);
+		long IConvertible.ToInt64(IFormatProvider provider) => _info.ToInt64(provider);
 
-		ulong IConvertible.ToUInt64(IFormatProvider provider) => _enumMemberInfo.ToUInt64(provider);
+		ulong IConvertible.ToUInt64(IFormatProvider provider) => _info.ToUInt64(provider);
 
-		float IConvertible.ToSingle(IFormatProvider provider) => _enumMemberInfo.ToSingle(provider);
+		float IConvertible.ToSingle(IFormatProvider provider) => _info.ToSingle(provider);
 
-		double IConvertible.ToDouble(IFormatProvider provider) => _enumMemberInfo.ToDouble(provider);
+		double IConvertible.ToDouble(IFormatProvider provider) => _info.ToDouble(provider);
 
-		decimal IConvertible.ToDecimal(IFormatProvider provider) => _enumMemberInfo.ToDecimal(provider);
+		decimal IConvertible.ToDecimal(IFormatProvider provider) => _info.ToDecimal(provider);
 
-		DateTime IConvertible.ToDateTime(IFormatProvider provider) => _enumMemberInfo.ToDateTime(provider);
+		DateTime IConvertible.ToDateTime(IFormatProvider provider) => _info.ToDateTime(provider);
 
-		string IConvertible.ToString(IFormatProvider provider) => _enumMemberInfo.ToString(provider);
+		string IConvertible.ToString(IFormatProvider provider) => _info.ToString(provider);
 
-		object IConvertible.ToType(Type conversionType, IFormatProvider provider) => _enumMemberInfo.ToType(conversionType, provider);
+		object IConvertible.ToType(Type conversionType, IFormatProvider provider) => _info.ToType(conversionType, provider);
 
-		int IComparable.CompareTo(object obj) => _enumMemberInfo.CompareTo((obj as EnumMemberInfo)?.Value ?? obj);
+		int IComparable.CompareTo(object obj) => _info.CompareTo(obj);
 
-		int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _enumMemberInfo.CompareTo(other?.Value);
+		int IComparable<IEnumMemberInfo>.CompareTo(IEnumMemberInfo other) => _info.CompareTo(other);
 
-		bool IClsEnumMemberInfo.IsDefined => _enumMemberInfo.IsDefined;
+		bool IClsEnumMemberInfo.IsDefined => _info.IsDefined;
 		#endregion
 	}
 
@@ -147,57 +147,52 @@ namespace EnumsNET
 	/// Class that provides efficient defined enum member operations
 	/// </summary>
 	/// <typeparam name="TEnum"></typeparam>
-	public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>
+	public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo<TEnum>, IComparable<IEnumMemberInfo<TEnum>>
 	{
-		private readonly Attribute[] _attributes;
+		private readonly IEnumMemberInfo<TEnum> _info;
 
 		/// <summary>
 		/// The defined enum member's value
 		/// </summary>
-		public TEnum Value { get; }
+		public TEnum Value => _info.Value;
 
 		/// <summary>
 		/// The defined enum member's name
 		/// </summary>
-		public string Name { get; }
+		public string Name => _info.Name;
 
 		/// <summary>
 		/// The defined enum member's attributes
 		/// </summary>
-		public Attribute[] Attributes => _attributes.Copy();
+		public Attribute[] Attributes => _info.Attributes;
 
 		/// <summary>
 		/// The defined enum member's <see cref="DescriptionAttribute.Description"/> if applied else null.
 		/// </summary>
-		public string Description => Enums.GetDescription(_attributes);
+		public string Description => _info.Description;
 
 		/// <summary>
 		/// The defined enum member's underlying integer value
 		/// </summary>
-		public object UnderlyingValue => Enums<TEnum>.Cache.GetUnderlyingValue(Value);
+		public object UnderlyingValue => _info.UnderlyingValue;
 
-		internal EnumMemberInfo(TEnum value, string name, Attribute[] attributes)
+		internal EnumMemberInfo(IEnumMemberInfo<TEnum> info)
 		{
-			Value = value;
-			Name = name;
-			_attributes = attributes ?? Enums.ZeroLengthAttributes;
+			_info = info;
 		}
 
 		/// <summary>
 		/// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/>.
 		/// </summary>
 		/// <returns></returns>
-		public string GetDescriptionOrName() => Description ?? Name;
+		public string GetDescriptionOrName() => _info.GetDescriptionOrName();
 
 		/// <summary>
 		/// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/> that's been formatted with <paramref name="nameFormatter"/>.
 		/// </summary>
 		/// <param name="nameFormatter"></param>
 		/// <returns></returns>
-		public string GetDescriptionOrName(Func<string, string> nameFormatter)
-		{
-			return Description ?? (nameFormatter != null ? nameFormatter(Name) : Name);
-		}
+		public string GetDescriptionOrName(Func<string, string> nameFormatter) => _info.GetDescriptionOrName(nameFormatter);
 
 		/// <summary>
 		/// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.
@@ -205,10 +200,7 @@ namespace EnumsNET
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <returns>Indication if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.</returns>
 		public bool HasAttribute<TAttribute>()
-			where TAttribute : Attribute
-		{
-			return GetAttribute<TAttribute>() != null;
-		}
+			where TAttribute : Attribute => _info.HasAttribute<TAttribute>();
 
 		/// <summary>
 		/// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined else null.
@@ -216,10 +208,7 @@ namespace EnumsNET
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <returns></returns>
 		public TAttribute GetAttribute<TAttribute>()
-			where TAttribute : Attribute
-		{
-			return Enums.GetAttribute<TAttribute>(_attributes);
-		}
+			where TAttribute : Attribute => _info.GetAttribute<TAttribute>();
 
 		/// <summary>
 		/// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined and returns a <typeparamref name="TResult"/>
@@ -232,15 +221,7 @@ namespace EnumsNET
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
 		public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
-			where TAttribute : Attribute
-		{
-			TResult result;
-			if (!TryGetAttributeSelect(selector, out result))
-			{
-				result = defaultValue;
-			}
-			return result;
-		}
+			where TAttribute : Attribute => _info.GetAttributeSelect(selector, defaultValue);
 
 		/// <summary>
 		/// Tries to retrieve the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined and sets <paramref name="result"/>
@@ -254,19 +235,7 @@ namespace EnumsNET
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
 		public bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result)
-			where TAttribute : Attribute
-		{
-			Preconditions.NotNull(selector, nameof(selector));
-
-			var attr = GetAttribute<TAttribute>();
-			if (attr != null)
-			{
-				result = selector(attr);
-				return true;
-			}
-			result = default(TResult);
-			return false;
-		}
+			where TAttribute : Attribute => _info.TryGetAttributeSelect(selector, out result);
 
 		/// <summary>
 		/// Retrieves all <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.
@@ -274,129 +243,100 @@ namespace EnumsNET
 		/// <typeparam name="TAttribute"></typeparam>
 		/// <returns></returns>
 		public IEnumerable<TAttribute> GetAttributes<TAttribute>()
-			where TAttribute : Attribute
-		{
-			return Enums.GetAttributes<TAttribute>(_attributes);
-		}
+			where TAttribute : Attribute => _info.GetAttributes<TAttribute>();
 
-		public override string ToString() => Name;
+		public override string ToString() => _info.ToString();
 
-		public string ToString(string format) => Enums<TEnum>.Cache.InternalFormat(this, format);
+		public string ToString(string format) => _info.ToString(format);
 
-		public string ToString(params EnumFormat[] formats) => Enums<TEnum>.Cache.InternalFormat(Value, this, formats);
+		public string ToString(params EnumFormat[] formats) => _info.ToString(formats);
 
-		public string AsString() => ToString();
+		public string AsString() => _info.AsString();
 
-		public string AsString(string format) => ToString(format);
+		public string AsString(string format) => _info.AsString(format);
 
-		public string AsString(params EnumFormat[] formats) => ToString(formats);
+		public string AsString(params EnumFormat[] formats) => _info.AsString(formats);
 
-		public string Format(string format) => Enums<TEnum>.Cache.InternalFormat(this, format);
+		public string Format(string format) => _info.Format(format);
 
-		public string Format(EnumFormat format) => Enums<TEnum>.Cache.InternalFormat(Value, this, format);
+		public string Format(EnumFormat format) => _info.Format(format);
 
-		public string Format(EnumFormat format0, EnumFormat format1) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1);
+		public string Format(EnumFormat format0, EnumFormat format1) => _info.Format(format0, format1);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1, format2);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _info.Format(format0, format1, format2);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1, format2, format3);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => _info.Format(format0, format1, format2, format3);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1, format2, format3, format4);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _info.Format(format0, format1, format2, format3, format4);
 
-		public string Format(params EnumFormat[] formats) => Enums<TEnum>.Cache.InternalFormat(Value, this, formats);
+		public string Format(params EnumFormat[] formats) => _info.Format(formats);
 
 		[CLSCompliant(false)]
-		public sbyte ToSByte() => Enums<TEnum>.Cache.ToSByte(Value);
+		public sbyte ToSByte() => _info.ToSByte();
 
-		public byte ToByte() => Enums<TEnum>.Cache.ToByte(Value);
+		public byte ToByte() => _info.ToByte();
 
-		public short ToInt16() => Enums<TEnum>.Cache.ToInt16(Value);
-
-		[CLSCompliant(false)]
-		public ushort ToUInt16() => Enums<TEnum>.Cache.ToUInt16(Value);
-
-		public int ToInt32() => Enums<TEnum>.Cache.ToInt32(Value);
+		public short ToInt16() => _info.ToInt16();
 
 		[CLSCompliant(false)]
-		public uint ToUInt32() => Enums<TEnum>.Cache.ToUInt32(Value);
+		public ushort ToUInt16() => _info.ToUInt16();
 
-		public long ToInt64() => Enums<TEnum>.Cache.ToInt64(Value);
+		public int ToInt32() => _info.ToInt32();
 
 		[CLSCompliant(false)]
-		public ulong ToUInt64() => Enums<TEnum>.Cache.ToUInt64(Value);
+		public uint ToUInt32() => _info.ToUInt32();
+
+		public long ToInt64() => _info.ToInt64();
+
+		[CLSCompliant(false)]
+		public ulong ToUInt64() => _info.ToUInt64();
 
 		#region Explicit Interface Implementation
-		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
+		string IFormattable.ToString(string format, IFormatProvider formatProvider) => _info.ToString(format, formatProvider);
 
-		TypeCode IConvertible.GetTypeCode() => Enums<TEnum>.Cache.TypeCode;
+		TypeCode IConvertible.GetTypeCode() => _info.GetTypeCode();
 
-		bool IConvertible.ToBoolean(IFormatProvider provider) => Convert.ToBoolean(UnderlyingValue);
+		bool IConvertible.ToBoolean(IFormatProvider provider) => _info.ToBoolean(provider);
 
-		char IConvertible.ToChar(IFormatProvider provider) => Convert.ToChar(UnderlyingValue);
+		char IConvertible.ToChar(IFormatProvider provider) => _info.ToChar(provider);
 
-		sbyte IConvertible.ToSByte(IFormatProvider provider) => ToSByte();
+		sbyte IConvertible.ToSByte(IFormatProvider provider) => _info.ToSByte(provider);
 
-		byte IConvertible.ToByte(IFormatProvider provider) => ToByte();
+		byte IConvertible.ToByte(IFormatProvider provider) => _info.ToByte(provider);
 
-		short IConvertible.ToInt16(IFormatProvider provider) => ToInt16();
+		short IConvertible.ToInt16(IFormatProvider provider) => _info.ToInt16(provider);
 
-		ushort IConvertible.ToUInt16(IFormatProvider provider) => ToUInt16();
+		ushort IConvertible.ToUInt16(IFormatProvider provider) => _info.ToUInt16(provider);
 
-		int IConvertible.ToInt32(IFormatProvider provider) => ToInt32();
+		int IConvertible.ToInt32(IFormatProvider provider) => _info.ToInt32(provider);
 
-		uint IConvertible.ToUInt32(IFormatProvider provider) => ToUInt32();
+		uint IConvertible.ToUInt32(IFormatProvider provider) => _info.ToUInt32(provider);
 
-		long IConvertible.ToInt64(IFormatProvider provider) => ToInt64();
+		long IConvertible.ToInt64(IFormatProvider provider) => _info.ToInt64(provider);
 
-		ulong IConvertible.ToUInt64(IFormatProvider provider) => ToUInt64();
+		ulong IConvertible.ToUInt64(IFormatProvider provider) => _info.ToUInt64(provider);
 
-		float IConvertible.ToSingle(IFormatProvider provider) => Convert.ToSingle(UnderlyingValue);
+		float IConvertible.ToSingle(IFormatProvider provider) => _info.ToSingle(provider);
 
-		double IConvertible.ToDouble(IFormatProvider provider) => Convert.ToDouble(UnderlyingValue);
+		double IConvertible.ToDouble(IFormatProvider provider) => _info.ToDouble(provider);
 
-		decimal IConvertible.ToDecimal(IFormatProvider provider) => Convert.ToDecimal(UnderlyingValue);
+		decimal IConvertible.ToDecimal(IFormatProvider provider) => _info.ToDecimal(provider);
 
-		DateTime IConvertible.ToDateTime(IFormatProvider provider)
-		{
-			throw new InvalidCastException();
-		}
+		DateTime IConvertible.ToDateTime(IFormatProvider provider) => _info.ToDateTime(provider);
 
-		string IConvertible.ToString(IFormatProvider provider) => ToString();
+		string IConvertible.ToString(IFormatProvider provider) => _info.ToString(provider);
 
-		object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Convert.ChangeType(UnderlyingValue, conversionType, provider);
+		object IConvertible.ToType(Type conversionType, IFormatProvider provider) => _info.ToType(conversionType, provider);
 
-		int IComparable.CompareTo(object obj)
-		{
-			var assigned = false;
-			TEnum objValue = default(TEnum);
-			if (obj is TEnum)
-			{
-				objValue = (TEnum)obj;
-				assigned = true;
-			}
-			else
-			{
-				var info = obj as IEnumMemberInfo<TEnum>;
-				if (info != null)
-				{
-					objValue = info.Value;
-					assigned = true;
-				}
-			}
-			if (assigned)
-			{
-				return Enums<TEnum>.Cache.Compare(Value, objValue);
-			}
-			return 1;
-		}
+		int IComparable.CompareTo(object obj) => _info.CompareTo(obj);
 
-		int IComparable<TEnum>.CompareTo(TEnum other) => Enums<TEnum>.Cache.Compare(Value, other);
+		int IComparable<TEnum>.CompareTo(TEnum other) => _info.CompareTo(other);
 
-		int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => other != null ? Enums<TEnum>.Cache.Compare(Value, other.Value) : 1;
+		int IComparable<IEnumMemberInfo<TEnum>>.CompareTo(IEnumMemberInfo<TEnum> other) => _info.CompareTo(other);
 
-		bool IClsEnumMemberInfo.IsDefined => true;
+		bool IClsEnumMemberInfo.IsDefined => _info.IsDefined;
 
-		object IClsEnumMemberInfo.Value => Value;
+		object IClsEnumMemberInfo.Value => _info.Value;
 		#endregion
 	}
 }

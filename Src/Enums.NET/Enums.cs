@@ -38,7 +38,7 @@ namespace EnumsNET
 
 		internal static List<Func<IEnumMemberInfo, string>> CustomEnumFormatters;
 
-		internal static readonly EnumFormat[] DefaultParseFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
+		internal static readonly EnumFormat[] DefaultFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
 
 		internal static readonly Attribute[] ZeroLengthAttributes = { };
 
@@ -1409,7 +1409,7 @@ namespace EnumsNET
 
 	internal static class Enums<TEnum>
 	{
-		internal static readonly IInternalEnumsCache<TEnum> Cache;
+		internal static readonly IEnumsCache<TEnum> Cache;
 
 		static Enums()
 		{

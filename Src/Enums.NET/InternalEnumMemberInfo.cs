@@ -18,11 +18,11 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-	internal struct InternalEnumMemberInfo<TEnum> : IEnumMemberInfo<TEnum>
+	internal struct InternalEnumMemberInfo<TEnum, TInt> : IEnumMemberInfo<TEnum>
 	{
 		private readonly Attribute[] _attributes;
 
-		public TEnum Value { get; }
+		public TEnum Value => EnumsCache<TEnum, TInt>.ToEnum(UnderlyingValue);
 
 		public string Name { get; }
 
@@ -44,13 +44,13 @@ namespace EnumsNET
 
 		public string Description => _attributes != null ? Enums.GetDescription(_attributes) : null;
 
-		public object UnderlyingValue => Enums<TEnum>.Cache.GetUnderlyingValue(Value);
+		public TInt UnderlyingValue { get; }
 
 		public bool IsDefined => Name != null;
 
-		public InternalEnumMemberInfo(TEnum value, string name, Attribute[] attributes)
+		public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes)
 		{
-			Value = value;
+			UnderlyingValue = value;
 			Name = name;
 			_attributes = attributes;
 		}
@@ -103,13 +103,15 @@ namespace EnumsNET
 			return false;
 		}
 
-		public EnumMemberInfo<TEnum> ToEnumMemberInfo() => IsDefined ? new EnumMemberInfo<TEnum>(Value, Name, _attributes) : null;
+		public static implicit operator EnumMemberInfo<TEnum>(InternalEnumMemberInfo<TEnum, TInt> info) => info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
+
+		public static implicit operator EnumMemberInfo(InternalEnumMemberInfo<TEnum, TInt> info) => info.IsDefined ? new EnumMemberInfo(info) : null;
 
 		public override string ToString() => Name;
 
-		public string ToString(string format) => Enums<TEnum>.Cache.InternalFormat(this, format);
+		public string ToString(string format) => EnumsCache<TEnum, TInt>.InternalFormat(this, format);
 
-		public string ToString(params EnumFormat[] formats) => Enums<TEnum>.Cache.InternalFormat(Value, this, formats);
+		public string ToString(params EnumFormat[] formats) => EnumsCache<TEnum, TInt>.InternalFormat(this, formats);
 
 		public string AsString() => ToString();
 
@@ -117,40 +119,40 @@ namespace EnumsNET
 
 		public string AsString(params EnumFormat[] formats) => ToString(formats);
 
-		public string Format(string format) => Enums<TEnum>.Cache.InternalFormat(this, format);
+		public string Format(string format) => EnumsCache<TEnum, TInt>.InternalFormat(this, format);
 
-		public string Format(EnumFormat format) => Enums<TEnum>.Cache.InternalFormat(Value, this, format);
+		public string Format(EnumFormat format) => EnumsCache<TEnum, TInt>.InternalFormat(this, format);
 
-		public string Format(EnumFormat format0, EnumFormat format1) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1);
+		public string Format(EnumFormat format0, EnumFormat format1) => EnumsCache<TEnum, TInt>.InternalFormat(this, format0, format1);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1, format2);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => EnumsCache<TEnum, TInt>.InternalFormat(this, format0, format1, format2);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1, format2, format3);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => EnumsCache<TEnum, TInt>.InternalFormat(this, format0, format1, format2, format3);
 
-		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => Enums<TEnum>.Cache.InternalFormat(Value, this, format0, format1, format2, format3, format4);
+		public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => EnumsCache<TEnum, TInt>.InternalFormat(this, format0, format1, format2, format3, format4);
 
-		public string Format(params EnumFormat[] formats) => Enums<TEnum>.Cache.InternalFormat(Value, this, formats);
+		public string Format(params EnumFormat[] formats) => EnumsCache<TEnum, TInt>.InternalFormat(this, formats);
 
-		public sbyte ToSByte() => Enums<TEnum>.Cache.ToSByte(Value);
+		public sbyte ToSByte() => IntegralOperators<TInt>.ToSByte(UnderlyingValue);
 
-		public byte ToByte() => Enums<TEnum>.Cache.ToByte(Value);
+		public byte ToByte() => IntegralOperators<TInt>.ToByte(UnderlyingValue);
 
-		public short ToInt16() => Enums<TEnum>.Cache.ToInt16(Value);
+		public short ToInt16() => IntegralOperators<TInt>.ToInt16(UnderlyingValue);
 
-		public ushort ToUInt16() => Enums<TEnum>.Cache.ToUInt16(Value);
+		public ushort ToUInt16() => IntegralOperators<TInt>.ToUInt16(UnderlyingValue);
 
-		public int ToInt32() => Enums<TEnum>.Cache.ToInt32(Value);
+		public int ToInt32() => IntegralOperators<TInt>.ToInt32(UnderlyingValue);
 
-		public uint ToUInt32() => Enums<TEnum>.Cache.ToUInt32(Value);
+		public uint ToUInt32() => IntegralOperators<TInt>.ToUInt32(UnderlyingValue);
 
-		public long ToInt64() => Enums<TEnum>.Cache.ToInt64(Value);
+		public long ToInt64() => IntegralOperators<TInt>.ToInt64(UnderlyingValue);
 
-		public ulong ToUInt64() => Enums<TEnum>.Cache.ToUInt64(Value);
+		public ulong ToUInt64() => IntegralOperators<TInt>.ToUInt64(UnderlyingValue);
 
 		#region Explicit Interface Implementation
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
-		TypeCode IConvertible.GetTypeCode() => Enums<TEnum>.Cache.TypeCode;
+		TypeCode IConvertible.GetTypeCode() => EnumsCache<TEnum, TInt>._typeCode;
 
 		bool IConvertible.ToBoolean(IFormatProvider provider) => Convert.ToBoolean(UnderlyingValue);
 
@@ -189,6 +191,11 @@ namespace EnumsNET
 
 		int IComparable.CompareTo(object obj)
 		{
+			var objAsInfo = obj as IEnumMemberInfo;
+			if (objAsInfo != null)
+			{
+				return ((IComparable)this).CompareTo(objAsInfo.Value);
+			}
 			var assigned = false;
 			TEnum objValue = default(TEnum);
 			if (obj is TEnum)
@@ -207,14 +214,16 @@ namespace EnumsNET
 			}
 			if (assigned)
 			{
-				return Enums<TEnum>.Cache.Compare(Value, objValue);
+				return ((IComparable<TEnum>)this).CompareTo(objValue);
 			}
 			return 1;
 		}
 
-		int IComparable<TEnum>.CompareTo(TEnum other) => Enums<TEnum>.Cache.Compare(Value, other);
+		int IComparable<TEnum>.CompareTo(TEnum other) => EnumsCache<TEnum, TInt>.InternalCompare(UnderlyingValue, EnumsCache<TEnum, TInt>.ToInt(other));
 
 		object IClsEnumMemberInfo.Value => Value;
+
+		object IClsEnumMemberInfo.UnderlyingValue => UnderlyingValue;
 		#endregion
 	}
 }
