@@ -1317,7 +1317,12 @@ namespace EnumsNET
 		#region Private Methods
 		private IEnumerable<TInt> InternalGetFlags(TInt value)
 		{
-			for (var currentValue = IntegralOperators<TInt>.One; !IntegralOperators<TInt>.Equal(currentValue, IntegralOperators<TInt>.Zero); currentValue = IntegralOperators<TInt>.LeftShift(currentValue, 1))
+			var greaterThan = IntegralOperators<TInt>.GreaterThan;
+			var leftShift = IntegralOperators<TInt>.LeftShift;
+			var equal = IntegralOperators<TInt>.Equal;
+			var zero = IntegralOperators<TInt>.Zero;
+			var isGreaterThanOrEqualToZero = !IntegralOperators<TInt>.GreaterThan(zero, value);
+			for (var currentValue = IntegralOperators<TInt>.One; (isGreaterThanOrEqualToZero && !greaterThan(currentValue, value)) && !equal(currentValue, zero); currentValue = leftShift(currentValue, 1))
 			{
 				if (IsValidFlagCombination(currentValue) && InternalHasAnyFlags(value, currentValue))
 				{
