@@ -9,17 +9,42 @@ namespace EnumsNET.PerfTestConsole
         static void Main(string[] args)
         {
             var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
+            var namesSize = 0;
+            var valuesSize = 0;
+            var attributesSize = 0;
             using (new OperationTimer("All Available Enums Caching Performance"))
             {
                 foreach (var enumType in enumTypes)
                 {
-                    NonGeneric.NonGenericEnums.IsContiguous(enumType);
+                    namesSize += NonGeneric.NonGenericEnums.GetNames(enumType).Sum(name => name.Length << 1);
+                    int typeSize = 0;
+                    switch (NonGeneric.NonGenericEnums.GetTypeCode(enumType))
+                    {
+                        case TypeCode.SByte:
+                        case TypeCode.Byte:
+                            typeSize = 1;
+                            break;
+                        case TypeCode.Int16:
+                        case TypeCode.UInt16:
+                            typeSize = 2;
+                            break;
+                        case TypeCode.Int32:
+                        case TypeCode.UInt32:
+                            typeSize = 4;
+                            break;
+                        case TypeCode.Int64:
+                        case TypeCode.UInt64:
+                            typeSize = 8;
+                            break;
+                    }
+                    valuesSize += NonGeneric.NonGenericEnums.GetDefinedCount(enumType) * typeSize;
                 }
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
             }
             Console.WriteLine(enumTypes.Count);
+            Console.WriteLine(namesSize + valuesSize);
 
             using (new OperationTimer("Enum.IsDefined Performance"))
             {
