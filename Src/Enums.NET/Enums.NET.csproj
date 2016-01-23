@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Enums.NET.XML</DocumentationFile>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Enums.NET.XML</DocumentationFile>
@@ -57,6 +57,10 @@
     <Compile Include="InternalEnumMemberInfo.cs" />
     <Compile Include="MainDuplicateAttribute.cs" />
     <Compile Include="NameAndAttributes.cs" />
+    <Compile Include="Net20\Enumerable.cs" />
+    <Compile Include="Net20\ExtensionAttribute.cs" />
+    <Compile Include="Net20\FuncAndAction.cs" />
+    <Compile Include="Net20\PureAttribute.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
     <Compile Include="OrderedBiDirectionalDictionary.cs" />

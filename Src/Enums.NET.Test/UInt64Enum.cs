@@ -1,6 +1,6 @@
 ﻿namespace EnumsNET.Test
 {
-	public enum UInt64Enum : ulong
-	{
-	}
+    public enum UInt64Enum : ulong
+    {
+    }
 }

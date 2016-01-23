@@ -17,41 +17,41 @@ using System;
 
 namespace EnumsNET
 {
-	internal static class Preconditions
-	{
-		public static void NotNull<T>(T value, string paramName)
-			where T : class
-		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(paramName);
-			}
-		}
+    internal static class Preconditions
+    {
+        public static void NotNull<T>(T value, string paramName)
+            where T : class
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(paramName);
+            }
+        }
 
-		public static void NotNullOrEmpty(string value, string paramName)
-		{
-			NotNull(value, paramName);
-			if (value.Length == 0)
-			{
-				throw new ArgumentException("cannot be empty", paramName);
-			}
-		}
+        public static void NotNullOrEmpty(string value, string paramName)
+        {
+            NotNull(value, paramName);
+            if (value.Length == 0)
+            {
+                throw new ArgumentException("cannot be empty", paramName);
+            }
+        }
 
-		public static void NotNullOrEmpty<T>(T[] array, string paramName)
-		{
-			NotNull(array, paramName);
-			if (array.Length == 0)
-			{
-				throw new ArgumentException("cannot be empty", paramName);
-			}
-		}
+        public static void NotNullOrEmpty<T>(T[] array, string paramName)
+        {
+            NotNull(array, paramName);
+            if (array.Length == 0)
+            {
+                throw new ArgumentException("cannot be empty", paramName);
+            }
+        }
 
-		public static void GreaterThanOrEqual(int value, string paramName, int comparisonValue)
-		{
-			if (value < comparisonValue)
-			{
-				throw new ArgumentOutOfRangeException(paramName, $"must be greater than or equal to {comparisonValue}");
-			}
-		}
-	}
+        public static void GreaterThanOrEqual(int value, string paramName, int comparisonValue)
+        {
+            if (value < comparisonValue)
+            {
+                throw new ArgumentOutOfRangeException(paramName, $"must be greater than or equal to {comparisonValue}");
+            }
+        }
+    }
 }

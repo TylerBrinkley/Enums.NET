@@ -17,23 +17,23 @@ using System;
 
 namespace EnumsNET
 {
-	internal struct NameAndAttributes : IEquatable<NameAndAttributes>
-	{
-		public readonly string Name;
-		// Guaranteed to be null or not empty
-		public readonly Attribute[] Attributes;
+    internal struct NameAndAttributes : IEquatable<NameAndAttributes>
+    {
+        public readonly string Name;
+        // Guaranteed to be null or not empty
+        public readonly Attribute[] Attributes;
 
-		public NameAndAttributes(string name, Attribute[] attributes = null)
-		{
-			Name = name;
-			Attributes = attributes?.Length > 0 ? attributes : null;
-		}
+        public NameAndAttributes(string name, Attribute[] attributes = null)
+        {
+            Name = name;
+            Attributes = attributes?.Length > 0 ? attributes : null;
+        }
 
-		public override int GetHashCode() => Name.GetHashCode();
+        public override int GetHashCode() => Name.GetHashCode();
 
-		public override bool Equals(object obj) => obj is NameAndAttributes && Equals((NameAndAttributes)obj);
+        public override bool Equals(object obj) => obj is NameAndAttributes && Equals((NameAndAttributes)obj);
 
-		// Is case sensitive
-		public bool Equals(NameAndAttributes other) => Name == other.Name;
-	}
+        // Is case sensitive
+        public bool Equals(NameAndAttributes other) => Name == other.Name;
+    }
 }

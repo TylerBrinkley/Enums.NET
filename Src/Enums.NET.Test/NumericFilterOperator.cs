@@ -18,49 +18,49 @@ using System.ComponentModel;
 
 namespace EnumsNET.Test
 {
-	// Duplicate example
-	public enum NumericFilterOperator
-	{
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		Is = 0,
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		IsNot,
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		GreaterThan,
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		LessThan,
-		[MainDuplicate]
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		[Description("Greater than or equal")]
-		GreaterThanOrEqual,
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		[Description("Not less than")]
-		NotLessThan = GreaterThanOrEqual,
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		LessThanOrEqual,
-		[MainDuplicate]
-		[NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
-		NotGreaterThan = LessThanOrEqual,
-		[NumericFilterOperatorType(NumericFilterOperatorType.TwoNumbers)]
-		Between,
-		[NumericFilterOperatorType(NumericFilterOperatorType.TwoNumbers)]
-		NotBetween
-	}
+    // Duplicate example
+    public enum NumericFilterOperator
+    {
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        Is = 0,
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        IsNot,
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        GreaterThan,
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        LessThan,
+        [MainDuplicate]
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        [Description("Greater than or equal")]
+        GreaterThanOrEqual,
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        [Description("Not less than")]
+        NotLessThan = GreaterThanOrEqual,
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        LessThanOrEqual,
+        [MainDuplicate]
+        [NumericFilterOperatorType(NumericFilterOperatorType.OneNumber)]
+        NotGreaterThan = LessThanOrEqual,
+        [NumericFilterOperatorType(NumericFilterOperatorType.TwoNumbers)]
+        Between,
+        [NumericFilterOperatorType(NumericFilterOperatorType.TwoNumbers)]
+        NotBetween
+    }
 
-	public enum NumericFilterOperatorType
-	{
-		OneNumber = 0,
-		TwoNumbers
-	}
+    public enum NumericFilterOperatorType
+    {
+        OneNumber = 0,
+        TwoNumbers
+    }
 
-	[AttributeUsage(AttributeTargets.Field)]
-	public class NumericFilterOperatorTypeAttribute : Attribute
-	{
-		public NumericFilterOperatorType Type { get; }
+    [AttributeUsage(AttributeTargets.Field)]
+    public class NumericFilterOperatorTypeAttribute : Attribute
+    {
+        public NumericFilterOperatorType Type { get; }
 
-		public NumericFilterOperatorTypeAttribute(NumericFilterOperatorType type)
-		{
-			Type = type;
-		}
-	}
+        public NumericFilterOperatorTypeAttribute(NumericFilterOperatorType type)
+        {
+            Type = type;
+        }
+    }
 }

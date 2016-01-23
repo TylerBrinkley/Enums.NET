@@ -17,16 +17,16 @@ using System;
 
 namespace EnumsNET
 {
-	internal struct ValueAndAttributes<TInt>
-	{
-		public readonly TInt Value;
-		// Guaranteed to be either null or not empty
-		public readonly Attribute[] Attributes;
+    internal struct ValueAndAttributes<TInt>
+    {
+        public readonly TInt Value;
+        // Guaranteed to be either null or not empty
+        public readonly Attribute[] Attributes;
 
-		public ValueAndAttributes(TInt value, Attribute[] attributes)
-		{
-			Value = value;
-			Attributes = attributes?.Length > 0 ? attributes : null;
-		}
-	}
+        public ValueAndAttributes(TInt value, Attribute[] attributes)
+        {
+            Value = value;
+            Attributes = attributes?.Length > 0 ? attributes : null;
+        }
+    }
 }

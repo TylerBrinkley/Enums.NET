@@ -19,25 +19,25 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EnumsNET.Test
 {
-	[TestClass]
-	public class UnsafeEnumsTest
-	{
-		[TestMethod]
-		public void UnsafeEnumsBasicTest()
-		{
-			TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<int>());
-			TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<Enum>());
-			TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<string>());
-			Assert.IsTrue(UnsafeEnums.IsContiguous<DateFilterOperator>());
-		}
+    [TestClass]
+    public class UnsafeEnumsTest
+    {
+        [TestMethod]
+        public void UnsafeEnumsBasicTest()
+        {
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<int>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<Enum>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<string>());
+            Assert.IsTrue(UnsafeEnums.IsContiguous<DateFilterOperator>());
+        }
 
-		[TestMethod]
-		public void UnsafeFlagEnumsBasicTest()
-		{
-			TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<int>());
-			TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<Enum>());
-			TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<string>());
-			Assert.AreEqual(ColorFlagEnum.All, UnsafeFlagEnums.GetAllFlags<ColorFlagEnum>());
-		}
-	}
+        [TestMethod]
+        public void UnsafeFlagEnumsBasicTest()
+        {
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<int>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<Enum>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<string>());
+            Assert.AreEqual(ColorFlagEnum.All, UnsafeFlagEnums.GetAllFlags<ColorFlagEnum>());
+        }
+    }
 }

@@ -1,6 +1,6 @@
 ﻿namespace EnumsNET.Test
 {
-	public enum ByteEnum : byte
-	{
-	}
+    public enum ByteEnum : byte
+    {
+    }
 }
