@@ -18,11 +18,11 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TEnum, TInt> : IEnumMemberInfo<TEnum>
+    internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo<TInt>
     {
         private readonly Attribute[] _attributes;
 
-        public TEnum Value => EnumsCache<TEnum, TInt>.ToEnum(UnderlyingValue);
+        public TInt Value { get; }
 
         public string Name { get; }
 
@@ -44,13 +44,11 @@ namespace EnumsNET
 
         public string Description => _attributes != null ? Enums.GetDescription(_attributes) : null;
 
-        public TInt UnderlyingValue { get; }
-
         public bool IsDefined => Name != null;
 
         public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes)
         {
-            UnderlyingValue = value;
+            Value = value;
             Name = name;
             _attributes = attributes;
         }
@@ -103,9 +101,9 @@ namespace EnumsNET
             return false;
         }
 
-        public static implicit operator EnumMemberInfo<TEnum>(InternalEnumMemberInfo<TEnum, TInt> info) => info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
+        public static implicit operator EnumMemberInfo<TEnum>(InternalEnumMemberInfo<TInt> info) => info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
 
-        public static implicit operator EnumMemberInfo(InternalEnumMemberInfo<TEnum, TInt> info) => info.IsDefined ? new EnumMemberInfo(info) : null;
+        public static implicit operator EnumMemberInfo(InternalEnumMemberInfo<TInt> info) => info.IsDefined ? new EnumMemberInfo(info) : null;
 
         public override string ToString() => Name;
 
@@ -133,21 +131,21 @@ namespace EnumsNET
 
         public string Format(params EnumFormat[] formats) => EnumsCache<TEnum, TInt>.InternalFormat(this, formats);
 
-        public sbyte ToSByte() => IntegralOperators<TInt>.ToSByte(UnderlyingValue);
+        public sbyte ToSByte() => EnumsCache<TInt>.ToSByte(UnderlyingValue);
 
-        public byte ToByte() => IntegralOperators<TInt>.ToByte(UnderlyingValue);
+        public byte ToByte() => EnumsCache<TInt>.ToByte(UnderlyingValue);
 
-        public short ToInt16() => IntegralOperators<TInt>.ToInt16(UnderlyingValue);
+        public short ToInt16() => EnumsCache<TInt>.ToInt16(UnderlyingValue);
 
-        public ushort ToUInt16() => IntegralOperators<TInt>.ToUInt16(UnderlyingValue);
+        public ushort ToUInt16() => EnumsCache<TInt>.ToUInt16(UnderlyingValue);
 
-        public int ToInt32() => IntegralOperators<TInt>.ToInt32(UnderlyingValue);
+        public int ToInt32() => EnumsCache<TInt>.ToInt32(UnderlyingValue);
 
-        public uint ToUInt32() => IntegralOperators<TInt>.ToUInt32(UnderlyingValue);
+        public uint ToUInt32() => EnumsCache<TInt>.ToUInt32(UnderlyingValue);
 
-        public long ToInt64() => IntegralOperators<TInt>.ToInt64(UnderlyingValue);
+        public long ToInt64() => EnumsCache<TInt>.ToInt64(UnderlyingValue);
 
-        public ulong ToUInt64() => IntegralOperators<TInt>.ToUInt64(UnderlyingValue);
+        public ulong ToUInt64() => EnumsCache<TInt>.ToUInt64(UnderlyingValue);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
