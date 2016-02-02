@@ -18,5 +18,5 @@ using System.Globalization;
 
 namespace EnumsNET
 {
-    internal delegate bool IntegralTryParseDelegate<T>(string value, NumberStyles styles, IFormatProvider provider, out T result);
+    internal delegate bool IntegralTryParse<T>(string value, NumberStyles styles, IFormatProvider provider, out T result);
 }

@@ -52,8 +52,7 @@
     <Compile Include="HashHelper.cs" />
     <Compile Include="IClsEnumMemberInfo.cs" />
     <Compile Include="IEnumMemberInfo.cs" />
-    <Compile Include="IEnumsCache.cs" />
-    <Compile Include="IntegralOperators.cs" />
+    <Compile Include="IntegralTryParse.cs" />
     <Compile Include="InternalEnumMemberInfo.cs" />
     <Compile Include="MainDuplicateAttribute.cs" />
     <Compile Include="NameAndAttributes.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="Net20\FuncAndAction.cs" />
     <Compile Include="Net20\PureAttribute.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
+    <Compile Include="NonGeneric\NonGenericEnumsCache.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
     <Compile Include="OrderedBiDirectionalDictionary.cs" />
     <Compile Include="Preconditions.cs" />

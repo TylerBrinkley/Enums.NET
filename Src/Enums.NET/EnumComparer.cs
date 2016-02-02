@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using ExtraConstraints;
@@ -25,32 +24,22 @@ namespace EnumsNET
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     public class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
+        where TEnum : struct
     {
-        private readonly Func<TEnum, TEnum, bool> _equals;
-        private readonly Func<TEnum, int> _getHashCode;
-        private readonly Func<TEnum, TEnum, int> _compare;
-
-        public EnumComparer()
-        {
-            _equals = Enums<TEnum>.Cache.Equals;
-            _getHashCode = Enums<TEnum>.Cache.GetHashCode;
-            _compare = Enums<TEnum>.Cache.Compare;
-        }
-
         /// <summary>
         /// Indicates if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
-        public bool Equals(TEnum x, TEnum y) => _equals(x, y);
+        public bool Equals(TEnum x, TEnum y) => Enums.Equals(x, y);
 
         /// <summary>
         /// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-        public int GetHashCode(TEnum obj) => _getHashCode(obj);
+        public int GetHashCode(TEnum obj) => Enums.GetHashCode(obj);
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
@@ -58,16 +47,14 @@ namespace EnumsNET
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int Compare(TEnum x, TEnum y) => _compare(x, y);
-
-        
+        public int Compare(TEnum x, TEnum y) => Enums.Compare(x, y);
 
         #region Explicit Interface Implementation
-        bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && _equals((TEnum)x, (TEnum)y);
+        bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && Equals((TEnum)x, (TEnum)y);
 
-        int IEqualityComparer.GetHashCode(object obj) => obj is TEnum ? _getHashCode((TEnum)obj) : 0;
+        int IEqualityComparer.GetHashCode(object obj) => obj is TEnum ? GetHashCode((TEnum)obj) : 0;
 
-        int IComparer.Compare(object x, object y) => (x is TEnum && y is TEnum) ? _compare((TEnum)x, (TEnum)y) : 0;
+        int IComparer.Compare(object x, object y) => (x is TEnum && y is TEnum) ? Compare((TEnum)x, (TEnum)y) : 0;
         #endregion
     }
 }

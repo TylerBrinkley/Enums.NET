@@ -16,14 +16,44 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using EnumsNET.NonGeneric;
 
 namespace EnumsNET
 {
     public sealed class EnumMemberInfo : IEnumMemberInfo, IComparable<IEnumMemberInfo>
     {
         private readonly IEnumMemberInfo _info;
+        private readonly NonGenericEnumsCache _enumsCache;
 
-        public object Value => _info.Value;
+        public object Value
+        {
+            get
+            {
+                var toEnum = _enumsCache.ToEnum;
+                switch (_enumsCache.TypeCode)
+                {
+                    case TypeCode.Int32:
+                        return ((Func<int, object>)toEnum)(((InternalEnumMemberInfo<int>)_info).Value);
+                    case TypeCode.UInt32:
+                        return ((Func<uint, object>)toEnum)(((InternalEnumMemberInfo<uint>)_info).Value);
+                    case TypeCode.Int64:
+                        return ((Func<long, object>)toEnum)(((InternalEnumMemberInfo<long>)_info).Value);
+                    case TypeCode.UInt64:
+                        return ((Func<ulong, object>)toEnum)(((InternalEnumMemberInfo<ulong>)_info).Value);
+                    case TypeCode.SByte:
+                        return ((Func<sbyte, object>)toEnum)(((InternalEnumMemberInfo<sbyte>)_info).Value);
+                    case TypeCode.Byte:
+                        return ((Func<byte, object>)toEnum)(((InternalEnumMemberInfo<byte>)_info).Value);
+                    case TypeCode.Int16:
+                        return ((Func<short, object>)toEnum)(((InternalEnumMemberInfo<short>)_info).Value);
+                    case TypeCode.UInt16:
+                        return ((Func<ushort, object>)toEnum)(((InternalEnumMemberInfo<ushort>)_info).Value);
+                }
+                Debug.Fail("Unknown Enum TypeCode");
+                return null;
+            }
+        }
 
         public string Name => _info.Name;
 
@@ -33,9 +63,10 @@ namespace EnumsNET
 
         public object UnderlyingValue => _info.UnderlyingValue;
 
-        internal EnumMemberInfo(IEnumMemberInfo info)
+        internal EnumMemberInfo(IEnumMemberInfo info, NonGenericEnumsCache enumsCache)
         {
             _info = info;
+            _enumsCache = enumsCache;
         }
 
         public string GetDescriptionOrName() => _info.GetDescriptionOrName();
@@ -149,12 +180,39 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     public sealed class EnumMemberInfo<TEnum> : IEnumMemberInfo<TEnum>, IComparable<IEnumMemberInfo<TEnum>>
     {
-        private readonly IEnumMemberInfo<TEnum> _info;
+        private readonly IEnumMemberInfo _info;
 
         /// <summary>
         /// The defined enum member's value
         /// </summary>
-        public TEnum Value => _info.Value;
+        public TEnum Value
+        {
+            get
+            {
+                var toEnum = Enums<TEnum>.ToEnum;
+                switch (Enums<TEnum>.TypeCode)
+                {
+                    case TypeCode.Int32:
+                        return ((Func<int, TEnum>)toEnum)(((InternalEnumMemberInfo<int>)_info).Value);
+                    case TypeCode.UInt32:
+                        return ((Func<uint, TEnum>)toEnum)(((InternalEnumMemberInfo<uint>)_info).Value);
+                    case TypeCode.Int64:
+                        return ((Func<long, TEnum>)toEnum)(((InternalEnumMemberInfo<long>)_info).Value);
+                    case TypeCode.UInt64:
+                        return ((Func<ulong, TEnum>)toEnum)(((InternalEnumMemberInfo<ulong>)_info).Value);
+                    case TypeCode.SByte:
+                        return ((Func<sbyte, TEnum>)toEnum)(((InternalEnumMemberInfo<sbyte>)_info).Value);
+                    case TypeCode.Byte:
+                        return ((Func<byte, TEnum>)toEnum)(((InternalEnumMemberInfo<byte>)_info).Value);
+                    case TypeCode.Int16:
+                        return ((Func<short, TEnum>)toEnum)(((InternalEnumMemberInfo<short>)_info).Value);
+                    case TypeCode.UInt16:
+                        return ((Func<ushort, TEnum>)toEnum)(((InternalEnumMemberInfo<ushort>)_info).Value);
+                }
+                Debug.Fail("Unknown Enum TypeCode");
+                return default(TEnum);
+            }
+        }
 
         /// <summary>
         /// The defined enum member's name
@@ -176,7 +234,7 @@ namespace EnumsNET
         /// </summary>
         public object UnderlyingValue => _info.UnderlyingValue;
 
-        internal EnumMemberInfo(IEnumMemberInfo<TEnum> info)
+        internal EnumMemberInfo(IEnumMemberInfo info)
         {
             _info = info;
         }

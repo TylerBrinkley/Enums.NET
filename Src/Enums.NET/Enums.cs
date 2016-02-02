@@ -186,7 +186,32 @@ namespace EnumsNET
         /// <param name="uniqueValued"></param>
         /// <returns></returns>
         [Pure]
-        public static IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos<[EnumConstraint] TEnum>(bool uniqueValued = false) where TEnum : struct => Enums<TEnum>.Cache.GetEnumMemberInfos(uniqueValued);
+        public static IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos<[EnumConstraint] TEnum>(bool uniqueValued = false)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
 
         /// <summary>
         /// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' names.
@@ -524,17 +549,35 @@ namespace EnumsNET
             return false;
         }
 
-        public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<IClsEnumMemberInfo<TEnum>, string> formatter)
-            where TEnum : struct
-        {
-            return Enums<TEnum>.Cache.RegisterCustomEnumFormat(formatter);
-        }
+        public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<IClsEnumMemberInfo, string> formatter)
+            where TEnum : struct => RegisterCustomEnumFormat<TEnum>((Func<IEnumMemberInfo, string>)formatter);
 
         [CLSCompliant(false)]
-        public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<IEnumMemberInfo<TEnum>, string> formatter)
+        public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<IEnumMemberInfo, string> formatter)
             where TEnum : struct
         {
-            return Enums<TEnum>.Cache.RegisterCustomEnumFormat(formatter);
+            var cache = Enums<TEnum>.Cache;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).RegisterCustomEnumFormat(formatter);
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).RegisterCustomEnumFormat(formatter);
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return default(EnumFormat);
         }
         #endregion
 
@@ -628,31 +671,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsValid<[EnumConstraint] TEnum>(sbyte value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsValid<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -666,31 +685,7 @@ namespace EnumsNET
         /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
         [Pure]
         public static bool IsValid<[EnumConstraint] TEnum>(byte value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsValid<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -704,31 +699,7 @@ namespace EnumsNET
         /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
         [Pure]
         public static bool IsValid<[EnumConstraint] TEnum>(short value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsValid<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -743,31 +714,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsValid<[EnumConstraint] TEnum>(ushort value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsValid<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -781,31 +728,7 @@ namespace EnumsNET
         /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
         [Pure]
         public static bool IsValid<[EnumConstraint] TEnum>(int value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsValid<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -820,31 +743,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsValid<[EnumConstraint] TEnum>(uint value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsValid<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -997,41 +896,6 @@ namespace EnumsNET
 
         /// <summary>
         /// Indicates whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="name">The name to check existence.</param>
-        /// <returns>Indication whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null</exception>
-        [Pure]
-        public static bool IsDefined<[EnumConstraint] TEnum>(string name)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(name);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(name);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(name);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(name);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(name);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(name);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(name);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(name);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
-
-        /// <summary>
-        /// Indicates whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.
         /// <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -1041,7 +905,7 @@ namespace EnumsNET
         /// <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is null</exception>
         [Pure]
-        public static bool IsDefined<[EnumConstraint] TEnum>(string name, bool ignoreCase)
+        public static bool IsDefined<[EnumConstraint] TEnum>(string name, bool ignoreCase = false)
             where TEnum : struct
         {
             var cache = Enums<TEnum>.Cache;
@@ -1079,31 +943,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsDefined<[EnumConstraint] TEnum>(sbyte value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsDefined<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -1115,31 +955,7 @@ namespace EnumsNET
         /// and that that value is defined.</returns>
         [Pure]
         public static bool IsDefined<[EnumConstraint] TEnum>(byte value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsDefined<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -1151,31 +967,7 @@ namespace EnumsNET
         /// and that that value is defined.</returns>
         [Pure]
         public static bool IsDefined<[EnumConstraint] TEnum>(short value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsDefined<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -1188,31 +980,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsDefined<[EnumConstraint] TEnum>(ushort value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsDefined<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -1224,31 +992,7 @@ namespace EnumsNET
         /// and that that value is defined.</returns>
         [Pure]
         public static bool IsDefined<[EnumConstraint] TEnum>(int value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsDefined<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -1261,31 +1005,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsDefined<[EnumConstraint] TEnum>(uint value)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsDefined<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> can be converted to a <typeparamref name="TEnum"/>
@@ -1371,30 +1091,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsInValueRange<[EnumConstraint] TEnum>(sbyte value)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return EnumsCache<int>.Int64IsInValueRange(value);
-                case TypeCode.UInt32:
-                    return EnumsCache<uint>.Int64IsInValueRange(value);
-                case TypeCode.Int64:
-                    return EnumsCache<long>.Int64IsInValueRange(value);
-                case TypeCode.UInt64:
-                    return EnumsCache<ulong>.Int64IsInValueRange(value);
-                case TypeCode.SByte:
-                    return EnumsCache<sbyte>.Int64IsInValueRange(value);
-                case TypeCode.Byte:
-                    return EnumsCache<byte>.Int64IsInValueRange(value);
-                case TypeCode.Int16:
-                    return EnumsCache<short>.Int64IsInValueRange(value);
-                case TypeCode.UInt16:
-                    return EnumsCache<ushort>.Int64IsInValueRange(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsInValueRange<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -1404,30 +1101,7 @@ namespace EnumsNET
         /// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
         [Pure]
         public static bool IsInValueRange<[EnumConstraint] TEnum>(byte value)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return EnumsCache<int>.Int64IsInValueRange(value);
-                case TypeCode.UInt32:
-                    return EnumsCache<uint>.Int64IsInValueRange(value);
-                case TypeCode.Int64:
-                    return EnumsCache<long>.Int64IsInValueRange(value);
-                case TypeCode.UInt64:
-                    return EnumsCache<ulong>.Int64IsInValueRange(value);
-                case TypeCode.SByte:
-                    return EnumsCache<sbyte>.Int64IsInValueRange(value);
-                case TypeCode.Byte:
-                    return EnumsCache<byte>.Int64IsInValueRange(value);
-                case TypeCode.Int16:
-                    return EnumsCache<short>.Int64IsInValueRange(value);
-                case TypeCode.UInt16:
-                    return EnumsCache<ushort>.Int64IsInValueRange(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsInValueRange<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -1437,30 +1111,7 @@ namespace EnumsNET
         /// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
         [Pure]
         public static bool IsInValueRange<[EnumConstraint] TEnum>(short value)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return EnumsCache<int>.Int64IsInValueRange(value);
-                case TypeCode.UInt32:
-                    return EnumsCache<uint>.Int64IsInValueRange(value);
-                case TypeCode.Int64:
-                    return EnumsCache<long>.Int64IsInValueRange(value);
-                case TypeCode.UInt64:
-                    return EnumsCache<ulong>.Int64IsInValueRange(value);
-                case TypeCode.SByte:
-                    return EnumsCache<sbyte>.Int64IsInValueRange(value);
-                case TypeCode.Byte:
-                    return EnumsCache<byte>.Int64IsInValueRange(value);
-                case TypeCode.Int16:
-                    return EnumsCache<short>.Int64IsInValueRange(value);
-                case TypeCode.UInt16:
-                    return EnumsCache<ushort>.Int64IsInValueRange(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsInValueRange<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -1471,30 +1122,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsInValueRange<[EnumConstraint] TEnum>(ushort value)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return EnumsCache<int>.Int64IsInValueRange(value);
-                case TypeCode.UInt32:
-                    return EnumsCache<uint>.Int64IsInValueRange(value);
-                case TypeCode.Int64:
-                    return EnumsCache<long>.Int64IsInValueRange(value);
-                case TypeCode.UInt64:
-                    return EnumsCache<ulong>.Int64IsInValueRange(value);
-                case TypeCode.SByte:
-                    return EnumsCache<sbyte>.Int64IsInValueRange(value);
-                case TypeCode.Byte:
-                    return EnumsCache<byte>.Int64IsInValueRange(value);
-                case TypeCode.Int16:
-                    return EnumsCache<short>.Int64IsInValueRange(value);
-                case TypeCode.UInt16:
-                    return EnumsCache<ushort>.Int64IsInValueRange(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsInValueRange<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -1504,30 +1132,7 @@ namespace EnumsNET
         /// <returns>Indication whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.</returns>
         [Pure]
         public static bool IsInValueRange<[EnumConstraint] TEnum>(int value)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return EnumsCache<int>.Int64IsInValueRange(value);
-                case TypeCode.UInt32:
-                    return EnumsCache<uint>.Int64IsInValueRange(value);
-                case TypeCode.Int64:
-                    return EnumsCache<long>.Int64IsInValueRange(value);
-                case TypeCode.UInt64:
-                    return EnumsCache<ulong>.Int64IsInValueRange(value);
-                case TypeCode.SByte:
-                    return EnumsCache<sbyte>.Int64IsInValueRange(value);
-                case TypeCode.Byte:
-                    return EnumsCache<byte>.Int64IsInValueRange(value);
-                case TypeCode.Int16:
-                    return EnumsCache<short>.Int64IsInValueRange(value);
-                case TypeCode.UInt16:
-                    return EnumsCache<ushort>.Int64IsInValueRange(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsInValueRange<TEnum>((long)value);
 
         /// <summary>
         /// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -1538,30 +1143,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool IsInValueRange<[EnumConstraint] TEnum>(uint value)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return EnumsCache<int>.Int64IsInValueRange(value);
-                case TypeCode.UInt32:
-                    return EnumsCache<uint>.Int64IsInValueRange(value);
-                case TypeCode.Int64:
-                    return EnumsCache<long>.Int64IsInValueRange(value);
-                case TypeCode.UInt64:
-                    return EnumsCache<ulong>.Int64IsInValueRange(value);
-                case TypeCode.SByte:
-                    return EnumsCache<sbyte>.Int64IsInValueRange(value);
-                case TypeCode.Byte:
-                    return EnumsCache<byte>.Int64IsInValueRange(value);
-                case TypeCode.Int16:
-                    return EnumsCache<short>.Int64IsInValueRange(value);
-                case TypeCode.UInt16:
-                    return EnumsCache<ushort>.Int64IsInValueRange(value);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+            where TEnum : struct => IsInValueRange<TEnum>((ulong)value);
 
         /// <summary>
         /// Indicates whether the specified <paramref name="value"/> is within <typeparamref name="TEnum"/>'s underlying type's value range.
@@ -1687,32 +1269,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<[EnumConstraint] TEnum>(sbyte value, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
-                case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
-                case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
-                case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
-                case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
-                case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
-                case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
-                case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(TEnum);
-        }
+            where TEnum : struct => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -1726,32 +1283,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<[EnumConstraint] TEnum>(byte value, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
-                case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
-                case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
-                case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
-                case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
-                case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
-                case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
-                case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(TEnum);
-        }
+            where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -1765,32 +1297,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<[EnumConstraint] TEnum>(short value, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
-                case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
-                case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
-                case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
-                case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
-                case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
-                case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
-                case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(TEnum);
-        }
+            where TEnum : struct => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -1805,32 +1312,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<[EnumConstraint] TEnum>(ushort value, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
-                case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
-                case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
-                case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
-                case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
-                case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
-                case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
-                case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(TEnum);
-        }
+            where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -1844,32 +1326,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<[EnumConstraint] TEnum>(int value, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
-                case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
-                case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
-                case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
-                case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
-                case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
-                case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
-                case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(TEnum);
-        }
+            where TEnum : struct => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -1884,32 +1341,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<[EnumConstraint] TEnum>(uint value, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
-                case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
-                case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
-                case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
-                case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
-                case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
-                case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
-                case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(TEnum);
-        }
+            where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
@@ -1991,6 +1423,149 @@ namespace EnumsNET
         }
 
         /// <summary>
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(object value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct
+        {
+            TEnum result;
+            return TryToObject(value, out result, validate) ? result : defaultEnum;
+        }
+
+        /// <summary>
+        /// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        [CLSCompliant(false)]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(sbyte value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct => ToObjectOrDefault((long)value, defaultEnum, validate);
+
+        /// <summary>
+        /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(byte value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+
+        /// <summary>
+        /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(short value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct => ToObjectOrDefault((long)value, defaultEnum, validate);
+
+        /// <summary>
+        /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        [CLSCompliant(false)]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ushort value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+
+        /// <summary>
+        /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(int value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct => ToObjectOrDefault((long)value, defaultEnum, validate);
+
+        /// <summary>
+        /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        [CLSCompliant(false)]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(uint value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+
+        /// <summary>
+        /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(long value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct
+        {
+            TEnum result;
+            return TryToObject(value, out result, validate) ? result : defaultEnum;
+        }
+
+        /// <summary>
+        /// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
+        /// <paramref name="defaultEnum"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="defaultEnum">The fallback value to return.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
+        [Pure]
+        [CLSCompliant(false)]
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ulong value, TEnum defaultEnum, bool validate = true)
+            where TEnum : struct
+        {
+            TEnum result;
+            return TryToObject(value, out result, validate) ? result : defaultEnum;
+        }
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
         /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is returned in the output parameter <paramref name="result"/>.
@@ -2069,58 +1644,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<[EnumConstraint] TEnum>(sbyte value, out TEnum result, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            bool success;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = default(TEnum);
-            return false;
-        }
+            where TEnum : struct => TryToObject((long)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -2134,58 +1658,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static bool TryToObject<[EnumConstraint] TEnum>(byte value, out TEnum result, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            bool success;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = default(TEnum);
-            return false;
-        }
+            where TEnum : struct => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -2199,58 +1672,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static bool TryToObject<[EnumConstraint] TEnum>(short value, out TEnum result, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            bool success;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = default(TEnum);
-            return false;
-        }
+            where TEnum : struct => TryToObject((long)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -2265,58 +1687,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<[EnumConstraint] TEnum>(ushort value, out TEnum result, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            bool success;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = default(TEnum);
-            return false;
-        }
+            where TEnum : struct => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -2330,58 +1701,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static bool TryToObject<[EnumConstraint] TEnum>(int value, out TEnum result, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            bool success;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = default(TEnum);
-            return false;
-        }
+            where TEnum : struct => TryToObject((long)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -2396,58 +1716,7 @@ namespace EnumsNET
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<[EnumConstraint] TEnum>(uint value, out TEnum result, bool validate = true)
-            where TEnum : struct
-        {
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            bool success;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = default(TEnum);
-            return false;
-        }
+            where TEnum : struct => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -3305,13 +2574,84 @@ namespace EnumsNET
 
         #region Defined Values Main Methods
         [Pure]
-        public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => Enums<TEnum>.Cache.GetEnumMemberInfo(value);
+        public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            IEnumMemberInfo info = null;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    info = ((EnumsCache<int>)cache).GetEnumMemberInfo(((Func<TEnum, int>)toInt)(value));
+                    break;
+                case TypeCode.UInt32:
+                    info = ((EnumsCache<uint>)cache).GetEnumMemberInfo(((Func<TEnum, uint>)toInt)(value));
+                    break;
+                case TypeCode.Int64:
+                    info = ((EnumsCache<long>)cache).GetEnumMemberInfo(((Func<TEnum, long>)toInt)(value));
+                    break;
+                case TypeCode.UInt64:
+                    info = ((EnumsCache<ulong>)cache).GetEnumMemberInfo(((Func<TEnum, ulong>)toInt)(value));
+                    break;
+                case TypeCode.SByte:
+                    info = ((EnumsCache<sbyte>)cache).GetEnumMemberInfo(((Func<TEnum, sbyte>)toInt)(value));
+                    break;
+                case TypeCode.Byte:
+                    info = ((EnumsCache<byte>)cache).GetEnumMemberInfo(((Func<TEnum, byte>)toInt)(value));
+                    break;
+                case TypeCode.Int16:
+                    info = ((EnumsCache<short>)cache).GetEnumMemberInfo(((Func<TEnum, short>)toInt)(value));
+                    break;
+                case TypeCode.UInt16:
+                    info = ((EnumsCache<ushort>)cache).GetEnumMemberInfo(((Func<TEnum, ushort>)toInt)(value));
+                    break;
+                default:
+                    Debug.Fail("Unknown Enum TypeCode");
+                    return null;
+            }
+            return info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
+        }
 
         [Pure]
-        public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(string name) where TEnum : struct => Enums<TEnum>.Cache.GetEnumMemberInfo(name);
-
-        [Pure]
-        public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(string name, bool ignoreCase) where TEnum : struct => Enums<TEnum>.Cache.GetEnumMemberInfo(name, ignoreCase);
+        public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(string name, bool ignoreCase = false)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            IEnumMemberInfo info = null;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    info = ((EnumsCache<int>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.UInt32:
+                    info = ((EnumsCache<uint>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.Int64:
+                    info = ((EnumsCache<long>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.UInt64:
+                    info = ((EnumsCache<ulong>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.SByte:
+                    info = ((EnumsCache<sbyte>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.Byte:
+                    info = ((EnumsCache<byte>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.Int16:
+                    info = ((EnumsCache<short>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                case TypeCode.UInt16:
+                    info = ((EnumsCache<ushort>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    break;
+                default:
+                    Debug.Fail("Unknown Enum TypeCode");
+                    return null;
+            }
+            return info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
+        }
 
         /// <summary>
         /// Retrieves the name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
@@ -3322,7 +2662,33 @@ namespace EnumsNET
         /// <returns>Name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
         /// is not defined null is returned.</returns>
         [Pure]
-        public static string GetName<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => Enums<TEnum>.Cache.GetName(value);
+        public static string GetName<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetName(((Func<TEnum, int>)toInt)(value));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetName(((Func<TEnum, uint>)toInt)(value));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetName(((Func<TEnum, long>)toInt)(value));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetName(((Func<TEnum, ulong>)toInt)(value));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetName(((Func<TEnum, sbyte>)toInt)(value));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetName(((Func<TEnum, byte>)toInt)(value));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetName(((Func<TEnum, short>)toInt)(value));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetName(((Func<TEnum, ushort>)toInt)(value));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
 
         /// <summary>
         /// Retrieves the description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
@@ -3333,13 +2699,91 @@ namespace EnumsNET
         /// <returns>Description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
         /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.</returns>
         [Pure]
-        public static string GetDescription<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => Enums<TEnum>.Cache.GetDescription(value);
+        public static string GetDescription<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetDescription(((Func<TEnum, int>)toInt)(value));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetDescription(((Func<TEnum, uint>)toInt)(value));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetDescription(((Func<TEnum, long>)toInt)(value));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetDescription(((Func<TEnum, ulong>)toInt)(value));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetDescription(((Func<TEnum, sbyte>)toInt)(value));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetDescription(((Func<TEnum, byte>)toInt)(value));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetDescription(((Func<TEnum, short>)toInt)(value));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetDescription(((Func<TEnum, ushort>)toInt)(value));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
 
         [Pure]
-        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => Enums<TEnum>.Cache.GetDescriptionOrName(value);
+        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetDescriptionOrName(((Func<TEnum, int>)toInt)(value));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetDescriptionOrName(((Func<TEnum, uint>)toInt)(value));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetDescriptionOrName(((Func<TEnum, long>)toInt)(value));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetDescriptionOrName(((Func<TEnum, ulong>)toInt)(value));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetDescriptionOrName(((Func<TEnum, sbyte>)toInt)(value));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetDescriptionOrName(((Func<TEnum, byte>)toInt)(value));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetDescriptionOrName(((Func<TEnum, short>)toInt)(value));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetDescriptionOrName(((Func<TEnum, ushort>)toInt)(value));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
 
-        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value, Func<string, string> nameFormatter) where TEnum : struct => Enums<TEnum>.Cache.GetDescriptionOrName(value, nameFormatter);
-#endregion
+        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value, Func<string, string> nameFormatter)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetDescriptionOrName(((Func<TEnum, int>)toInt)(value), nameFormatter);
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetDescriptionOrName(((Func<TEnum, uint>)toInt)(value), nameFormatter);
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetDescriptionOrName(((Func<TEnum, long>)toInt)(value), nameFormatter);
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetDescriptionOrName(((Func<TEnum, ulong>)toInt)(value), nameFormatter);
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetDescriptionOrName(((Func<TEnum, sbyte>)toInt)(value), nameFormatter);
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetDescriptionOrName(((Func<TEnum, byte>)toInt)(value), nameFormatter);
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetDescriptionOrName(((Func<TEnum, short>)toInt)(value), nameFormatter);
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetDescriptionOrName(((Func<TEnum, ushort>)toInt)(value), nameFormatter);
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
+        #endregion
 
         #region Attributes
         /// <summary>
@@ -3351,7 +2795,8 @@ namespace EnumsNET
         /// <returns>Indication if the enumerated constant with the specified <paramref name="value"/> has a <typeparamref name="TAttribute"/>.</returns>
         [Pure]
         public static bool HasAttribute<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
-            where TAttribute : Attribute where TEnum : struct => Enums<TEnum>.Cache.HasAttribute<TAttribute>(value);
+            where TAttribute : Attribute
+            where TEnum : struct => GetAttribute<TEnum, TAttribute>(value) != null;
 
         /// <summary>
         /// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>.
@@ -3362,7 +2807,33 @@ namespace EnumsNET
         /// <returns><typeparamref name="TAttribute"/> of the enumerated constant with the specified <paramref name="value"/> if defined and has attribute, else null</returns>
         [Pure]
         public static TAttribute GetAttribute<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
-            where TAttribute : Attribute where TEnum : struct => Enums<TEnum>.Cache.GetAttribute<TAttribute>(value);
+            where TAttribute : Attribute
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetAttribute<TAttribute>(((Func<TEnum, int>)toInt)(value));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetAttribute<TAttribute>(((Func<TEnum, uint>)toInt)(value));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetAttribute<TAttribute>(((Func<TEnum, long>)toInt)(value));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetAttribute<TAttribute>(((Func<TEnum, ulong>)toInt)(value));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetAttribute<TAttribute>(((Func<TEnum, sbyte>)toInt)(value));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetAttribute<TAttribute>(((Func<TEnum, byte>)toInt)(value));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetAttribute<TAttribute>(((Func<TEnum, short>)toInt)(value));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetAttribute<TAttribute>(((Func<TEnum, ushort>)toInt)(value));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
 
         /// <summary>
         /// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>
@@ -3378,11 +2849,64 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
         [Pure]
         public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
-            where TAttribute : Attribute where TEnum : struct => Enums<TEnum>.Cache.GetAttributeSelect(value, selector, defaultValue);
+            where TAttribute : Attribute
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetAttributeSelect(((Func<TEnum, int>)toInt)(value), selector, defaultValue);
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetAttributeSelect(((Func<TEnum, uint>)toInt)(value), selector, defaultValue);
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetAttributeSelect(((Func<TEnum, long>)toInt)(value), selector, defaultValue);
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetAttributeSelect(((Func<TEnum, ulong>)toInt)(value), selector, defaultValue);
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetAttributeSelect(((Func<TEnum, sbyte>)toInt)(value), selector, defaultValue);
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetAttributeSelect(((Func<TEnum, byte>)toInt)(value), selector, defaultValue);
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetAttributeSelect(((Func<TEnum, short>)toInt)(value), selector, defaultValue);
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetAttributeSelect(((Func<TEnum, ushort>)toInt)(value), selector, defaultValue);
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return default(TResult);
+        }
 
         [Pure]
         public static bool TryGetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
-            where TAttribute : Attribute where TEnum : struct => Enums<TEnum>.Cache.TryGetAttributeSelect(value, selector, out result);
+            where TAttribute : Attribute
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).TryGetAttributeSelect(((Func<TEnum, int>)toInt)(value), selector, out result);
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).TryGetAttributeSelect(((Func<TEnum, uint>)toInt)(value), selector, out result);
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).TryGetAttributeSelect(((Func<TEnum, long>)toInt)(value), selector, out result);
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).TryGetAttributeSelect(((Func<TEnum, ulong>)toInt)(value), selector, out result);
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).TryGetAttributeSelect(((Func<TEnum, sbyte>)toInt)(value), selector, out result);
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).TryGetAttributeSelect(((Func<TEnum, byte>)toInt)(value), selector, out result);
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).TryGetAttributeSelect(((Func<TEnum, short>)toInt)(value), selector, out result);
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).TryGetAttributeSelect(((Func<TEnum, ushort>)toInt)(value), selector, out result);
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            result = default(TResult);
+            return false;
+        }
 
         /// <summary>
         /// Retrieves an array of <typeparamref name="TAttribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
@@ -3393,7 +2917,33 @@ namespace EnumsNET
         /// <returns><typeparamref name="TAttribute"/> array</returns>
         [Pure]
         public static IEnumerable<TAttribute> GetAttributes<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
-            where TAttribute : Attribute where TEnum : struct => Enums<TEnum>.Cache.GetAttributes<TAttribute>(value);
+            where TAttribute : Attribute
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetAttributes<TAttribute>(((Func<TEnum, int>)toInt)(value));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetAttributes<TAttribute>(((Func<TEnum, uint>)toInt)(value));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetAttributes<TAttribute>(((Func<TEnum, long>)toInt)(value));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetAttributes<TAttribute>(((Func<TEnum, ulong>)toInt)(value));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetAttributes<TAttribute>(((Func<TEnum, sbyte>)toInt)(value));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetAttributes<TAttribute>(((Func<TEnum, byte>)toInt)(value));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetAttributes<TAttribute>(((Func<TEnum, short>)toInt)(value));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetAttributes<TAttribute>(((Func<TEnum, ushort>)toInt)(value));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
 
         /// <summary>
         /// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
@@ -3402,8 +2952,34 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
         [Pure]
-        public static Attribute[] GetAllAttributes<[EnumConstraint] TEnum>(this TEnum value) where TEnum : struct => Enums<TEnum>.Cache.GetAllAttributes(value);
-#endregion
+        public static Attribute[] GetAllAttributes<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toInt = Enums<TEnum>.ToInt;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((EnumsCache<int>)cache).GetAllAttributes(((Func<TEnum, int>)toInt)(value));
+                case TypeCode.UInt32:
+                    return ((EnumsCache<uint>)cache).GetAllAttributes(((Func<TEnum, uint>)toInt)(value));
+                case TypeCode.Int64:
+                    return ((EnumsCache<long>)cache).GetAllAttributes(((Func<TEnum, long>)toInt)(value));
+                case TypeCode.UInt64:
+                    return ((EnumsCache<ulong>)cache).GetAllAttributes(((Func<TEnum, ulong>)toInt)(value));
+                case TypeCode.SByte:
+                    return ((EnumsCache<sbyte>)cache).GetAllAttributes(((Func<TEnum, sbyte>)toInt)(value));
+                case TypeCode.Byte:
+                    return ((EnumsCache<byte>)cache).GetAllAttributes(((Func<TEnum, byte>)toInt)(value));
+                case TypeCode.Int16:
+                    return ((EnumsCache<short>)cache).GetAllAttributes(((Func<TEnum, short>)toInt)(value));
+                case TypeCode.UInt16:
+                    return ((EnumsCache<ushort>)cache).GetAllAttributes(((Func<TEnum, ushort>)toInt)(value));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return null;
+        }
+        #endregion
 
         #region Parsing
         /// <summary>
@@ -3419,7 +2995,8 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value) where TEnum : struct => Enums<TEnum>.Cache.Parse(value);
+        public static TEnum Parse<[EnumConstraint] TEnum>(string value)
+            where TEnum : struct => Parse<TEnum>(value, false, null);
 
         /// <summary>
         /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -3434,7 +3011,8 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder) where TEnum : struct => Enums<TEnum>.Cache.Parse(value, parseFormatOrder);
+        public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Parse<TEnum>(value, false, parseFormatOrder);
 
         /// <summary>
         /// Converts the string representation of the name or numeric value of one or more enumerated constants
@@ -3450,7 +3028,8 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase) where TEnum : struct => Enums<TEnum>.Cache.Parse(value, ignoreCase);
+        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase)
+            where TEnum : struct => Parse<TEnum>(value, ignoreCase);
 
         /// <summary>
         /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -3467,7 +3046,33 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) where TEnum : struct => Enums<TEnum>.Cache.Parse(value, ignoreCase, parseFormatOrder);
+        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toEnum = Enums<TEnum>.ToEnum;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.UInt32:
+                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.Int64:
+                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.UInt64:
+                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.SByte:
+                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.Byte:
+                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.Int16:
+                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                case TypeCode.UInt16:
+                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).Parse(value, ignoreCase, parseFormatOrder));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return default(TEnum);
+        }
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -3478,7 +3083,8 @@ namespace EnumsNET
         /// <param name="defaultEnum"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum) where TEnum : struct => Enums<TEnum>.Cache.ParseOrDefault(value, defaultEnum);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum)
+            where TEnum : struct => ParseOrDefault(value, false, defaultEnum, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -3490,7 +3096,8 @@ namespace EnumsNET
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => Enums<TEnum>.Cache.ParseOrDefault(value, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => ParseOrDefault(value, false, defaultEnum, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -3503,7 +3110,8 @@ namespace EnumsNET
         /// <param name="defaultEnum"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum) where TEnum : struct => Enums<TEnum>.Cache.ParseOrDefault(value, ignoreCase, defaultEnum);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum)
+            where TEnum : struct => ParseOrDefault(value, ignoreCase, defaultEnum, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -3516,7 +3124,12 @@ namespace EnumsNET
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) where TEnum : struct => Enums<TEnum>.Cache.ParseOrDefault(value, ignoreCase, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            TEnum result;
+            return TryParse(value, ignoreCase, out result, parseFormatOrder) ? result : defaultEnum;
+        }
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -3527,7 +3140,8 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result) where TEnum : struct => Enums<TEnum>.Cache.TryParse(value, out result);
+        public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result)
+            where TEnum : struct => TryParse(value, false, out result, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -3539,7 +3153,8 @@ namespace EnumsNET
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => Enums<TEnum>.Cache.TryParse(value, out result, parseFormatOrder);
+        public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => TryParse(value, false, out result, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -3552,7 +3167,8 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result) where TEnum : struct => Enums<TEnum>.Cache.TryParse(value, ignoreCase, out result);
+        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result)
+            where TEnum : struct => TryParse(value, ignoreCase, out result, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -3565,10 +3181,134 @@ namespace EnumsNET
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) where TEnum : struct => Enums<TEnum>.Cache.TryParse(value, ignoreCase, out result, parseFormatOrder);
-#endregion
+        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            var cache = Enums<TEnum>.Cache;
+            var toEnum = Enums<TEnum>.ToEnum;
+            var success = false;
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    int resultAsInt32;
+                    success = ((EnumsCache<int>)cache).TryParse(value, ignoreCase, out resultAsInt32, parseFormatOrder);
+                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
+                    return success;
+                case TypeCode.UInt32:
+                    uint resultAsUInt32;
+                    success = ((EnumsCache<uint>)cache).TryParse(value, ignoreCase, out resultAsUInt32, parseFormatOrder);
+                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
+                    return success;
+                case TypeCode.Int64:
+                    long resultAsInt64;
+                    success = ((EnumsCache<long>)cache).TryParse(value, ignoreCase, out resultAsInt64, parseFormatOrder);
+                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
+                    return success;
+                case TypeCode.UInt64:
+                    ulong resultAsUInt64;
+                    success = ((EnumsCache<ulong>)cache).TryParse(value, ignoreCase, out resultAsUInt64, parseFormatOrder);
+                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
+                    return success;
+                case TypeCode.SByte:
+                    sbyte resultAsSByte;
+                    success = ((EnumsCache<sbyte>)cache).TryParse(value, ignoreCase, out resultAsSByte, parseFormatOrder);
+                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
+                    return success;
+                case TypeCode.Byte:
+                    byte resultAsByte;
+                    success = ((EnumsCache<byte>)cache).TryParse(value, ignoreCase, out resultAsByte, parseFormatOrder);
+                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
+                    return success;
+                case TypeCode.Int16:
+                    short resultAsInt16;
+                    success = ((EnumsCache<short>)cache).TryParse(value, ignoreCase, out resultAsInt16, parseFormatOrder);
+                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
+                    return success;
+                case TypeCode.UInt16:
+                    ushort resultAsUInt16;
+                    success = ((EnumsCache<ushort>)cache).TryParse(value, ignoreCase, out resultAsUInt16, parseFormatOrder);
+                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
+                    return success;
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            result = default(TEnum);
+            return false;
+        }
+        #endregion
 
         #region Internal Methods
+        internal static void InitializeCache(Type enumType, out TypeCode typeCode, out Delegate toInt, out Delegate toEnum, out object cache)
+        {
+            Debug.Assert(enumType.IsEnum);
+            var underlyingType = Enum.GetUnderlyingType(enumType);
+            typeCode = Type.GetTypeCode(underlyingType);
+
+#if NET20 || USE_EMIT
+            var toIntMethod = new DynamicMethod(enumType.Name + "_ToInt",
+                                       underlyingType,
+                                       new[] { enumType },
+                                       enumType, true);
+            var toIntGenerator = toIntMethod.GetILGenerator();
+            toIntGenerator.DeclareLocal(underlyingType);
+            toIntGenerator.Emit(OpCodes.Ldarg_0);
+            toIntGenerator.Emit(OpCodes.Stloc_0);
+            toIntGenerator.Emit(OpCodes.Ldloc_0);
+            toIntGenerator.Emit(OpCodes.Ret);
+            toInt = toIntMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType));
+
+            var toEnumMethod = new DynamicMethod(underlyingType.Name + "_ToEnum",
+                                       enumType,
+                                       new[] { underlyingType },
+                                       underlyingType, true);
+            var toEnumGenerator = toEnumMethod.GetILGenerator();
+            toEnumGenerator.DeclareLocal(enumType);
+            toEnumGenerator.Emit(OpCodes.Ldarg_0);
+            toEnumGenerator.Emit(OpCodes.Stloc_0);
+            toEnumGenerator.Emit(OpCodes.Ldloc_0);
+            toEnumGenerator.Emit(OpCodes.Ret);
+            toEnum = toEnumMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType));
+#else
+            var enumParam = Expression.Parameter(enumType, "x");
+            var enumParamConvert = Expression.Convert(enumParam, underlyingType);
+            toInt = Expression.Lambda(enumParamConvert, enumParam).Compile();
+            var intParam = Expression.Parameter(underlyingType, "y");
+            var intParamConvert = Expression.Convert(intParam, enumType);
+            toEnum = Expression.Lambda(intParamConvert, intParam).Compile();
+#endif
+
+            switch (typeCode)
+            {
+                case TypeCode.Int32:
+                    cache = new EnumsCache<int>(enumType);
+                    break;
+                case TypeCode.UInt32:
+                    cache = new EnumsCache<uint>(enumType);
+                    break;
+                case TypeCode.Int64:
+                    cache = new EnumsCache<long>(enumType);
+                    break;
+                case TypeCode.UInt64:
+                    cache = new EnumsCache<ulong>(enumType);
+                    break;
+                case TypeCode.SByte:
+                    cache = new EnumsCache<sbyte>(enumType);
+                    break;
+                case TypeCode.Byte:
+                    cache = new EnumsCache<byte>(enumType);
+                    break;
+                case TypeCode.Int16:
+                    cache = new EnumsCache<short>(enumType);
+                    break;
+                case TypeCode.UInt16:
+                    cache = new EnumsCache<ushort>(enumType);
+                    break;
+                default:
+                    Debug.Fail("Unknown Enum TypeCode");
+                    cache = null;
+                    break;
+            }
+        }
+
         internal static string DescriptionEnumFormatter(IClsEnumMemberInfo info) => info.Description;
 
         internal static string GetDescription(Attribute[] attributes)
@@ -3610,7 +3350,7 @@ namespace EnumsNET
         }
 
         internal static OverflowException GetOverflowException() => new OverflowException("value is outside the underlying type's value range");
-#endregion
+        #endregion
     }
 
     internal static class Enums<TEnum>
@@ -3625,71 +3365,7 @@ namespace EnumsNET
 
         static Enums()
         {
-            var enumType = typeof(TEnum);
-            Debug.Assert(enumType.IsEnum);
-            var underlyingType = Enum.GetUnderlyingType(enumType);
-            TypeCode = Type.GetTypeCode(underlyingType);
-
-#if NET20 || USE_EMIT
-            var toInt = new DynamicMethod(enumType.Name + "_ToInt",
-                                       underlyingType,
-                                       new[] { enumType },
-                                       enumType, true);
-            var toIntGenerator = toInt.GetILGenerator();
-            toIntGenerator.DeclareLocal(underlyingType);
-            toIntGenerator.Emit(OpCodes.Ldarg_0);
-            toIntGenerator.Emit(OpCodes.Stloc_0);
-            toIntGenerator.Emit(OpCodes.Ldloc_0);
-            toIntGenerator.Emit(OpCodes.Ret);
-            ToInt = toInt.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType));
-
-            var toEnum = new DynamicMethod(underlyingType.Name + "_ToEnum",
-                                       enumType,
-                                       new[] { underlyingType },
-                                       underlyingType, true);
-            var toEnumGenerator = toEnum.GetILGenerator();
-            toEnumGenerator.DeclareLocal(enumType);
-            toEnumGenerator.Emit(OpCodes.Ldarg_0);
-            toEnumGenerator.Emit(OpCodes.Stloc_0);
-            toEnumGenerator.Emit(OpCodes.Ldloc_0);
-            toEnumGenerator.Emit(OpCodes.Ret);
-            ToEnum = toEnum.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType));
-#else
-            var enumParam = Expression.Parameter(enumType, "x");
-            var enumParamConvert = Expression.Convert(enumParam, underlyingType);
-            ToInt = Expression.Lambda(enumParamConvert, enumParam).Compile();
-            var intParam = Expression.Parameter(underlyingType, "y");
-            var intParamConvert = Expression.Convert(intParam, enumType);
-            ToEnum = Expression.Lambda(intParamConvert, intParam).Compile();
-#endif
-
-            switch (TypeCode)
-            {
-                case TypeCode.Int32:
-                    Cache = new EnumsCache<int>(enumType);
-                    break;
-                case TypeCode.UInt32:
-                    Cache = new EnumsCache<uint>(enumType);
-                    break;
-                case TypeCode.Int64:
-                    Cache = new EnumsCache<long>(enumType);
-                    break;
-                case TypeCode.UInt64:
-                    Cache = new EnumsCache<ulong>(enumType);
-                    break;
-                case TypeCode.SByte:
-                    Cache = new EnumsCache<sbyte>(enumType);
-                    break;
-                case TypeCode.Byte:
-                    Cache = new EnumsCache<byte>(enumType);
-                    break;
-                case TypeCode.Int16:
-                    Cache = new EnumsCache<short>(enumType);
-                    break;
-                case TypeCode.UInt16:
-                    Cache = new EnumsCache<ushort>(enumType);
-                    break;
-            }
+            Enums.InitializeCache(typeof(TEnum), out TypeCode, out ToInt, out ToEnum, out Cache);
         }
     }
 }

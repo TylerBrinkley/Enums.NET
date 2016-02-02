@@ -90,17 +90,17 @@ namespace EnumsNET.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void FormatAsFlags_ThrowsArgumentNullException_WhenUsingValidValueWithNullDelimiter()
+        public void FormatAsFlags_UsesDefaultDelimiter_WhenUsingValidValueWithNullDelimiter()
         {
-            ColorFlagEnum.Red.FormatAsFlags((string)null);
+            var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
+            Assert.AreEqual(value.FormatAsFlags(), value.FormatAsFlags((string)null));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void FormatAsFlags_ThrowsArgumentException_WhenUsingValidValueWithEmptyDelimiter()
+        public void FormatAsFlags_UsesDefaultDelimiter_WhenUsingValidValueWithEmptyDelimiter()
         {
-            ColorFlagEnum.Red.FormatAsFlags(string.Empty);
+            var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
+            Assert.AreEqual(value.FormatAsFlags(), value.FormatAsFlags(string.Empty));
         }
 
         [TestMethod]
@@ -414,15 +414,15 @@ namespace EnumsNET.Test
         }
 
         [TestMethod]
-        public void FlagEnumsParse_ThrowsArgumentNullException_WhenUsingNullDelimiter()
+        public void FlagEnumsParse_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
-            TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.Parse<ColorFlagEnum>("Red", (string)null));
+            Assert.AreEqual(FlagEnums.Parse<ColorFlagEnum>("Red, Green"), FlagEnums.Parse<ColorFlagEnum>("Red, Green", (string)null));
         }
 
         [TestMethod]
-        public void FlagEnumsParse_ThrowsArgumentException_WhenUsingEmptyStringDelimiter()
+        public void FlagEnumsParse_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.Parse<ColorFlagEnum>("Red", string.Empty));
+            Assert.AreEqual(FlagEnums.Parse<ColorFlagEnum>("Red, Green"), FlagEnums.Parse<ColorFlagEnum>("Red, Green", string.Empty));
         }
 
         [TestMethod]
@@ -450,15 +450,15 @@ namespace EnumsNET.Test
         }
 
         [TestMethod]
-        public void FlagEnumsParseOrDefault_ThrowsArgumentNullException_WhenUsingNullDelimiter()
+        public void FlagEnumsParseOrDefault_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
-            TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.ParseOrDefault("Red", null, ColorFlagEnum.Green));
+            Assert.AreEqual(FlagEnums.ParseOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseOrDefault("Red, Green", null, ColorFlagEnum.Green));
         }
 
         [TestMethod]
-        public void FlagEnumsParseOrDefault_ThrowsArgumentException_WhenUsingEmptyStringDelimiter()
+        public void FlagEnumsParseOrDefault_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseOrDefault("Red", string.Empty, ColorFlagEnum.Green));
+            Assert.AreEqual(FlagEnums.ParseOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseOrDefault("Red, Green", string.Empty, ColorFlagEnum.Green));
         }
 
         [TestMethod]
@@ -664,17 +664,21 @@ namespace EnumsNET.Test
         }
 
         [TestMethod]
-        public void FlagEnumsTryParse_ThrowsArgumentNullException_WhenUsingNullDelimiter()
+        public void FlagEnumsTryParse_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
-            ColorFlagEnum result;
-            TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.TryParse("Red", null, out result));
+            ColorFlagEnum result0;
+            ColorFlagEnum result1;
+            Assert.AreEqual(FlagEnums.TryParse("Red, Green", out result0), FlagEnums.TryParse("Red, Green", null, out result1));
+            Assert.AreEqual(result0, result1);
         }
 
         [TestMethod]
-        public void FlagEnumsTryParse_ThrowsArgumentException_WhenUsingEmptyStringDelimiter()
+        public void FlagEnumsTryParse_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
-            ColorFlagEnum result;
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.TryParse("Red", string.Empty, out result));
+            ColorFlagEnum result0;
+            ColorFlagEnum result1;
+            Assert.AreEqual(FlagEnums.TryParse("Red, Green", out result0), FlagEnums.TryParse("Red, Green", string.Empty, out result1));
+            Assert.AreEqual(result0, result1);
         }
         #endregion
     }

@@ -9,46 +9,21 @@ namespace EnumsNET.PerfTestConsole
         static void Main(string[] args)
         {
             var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
-            var namesSize = 0;
-            var valuesSize = 0;
-            var attributesSize = 0;
             using (new OperationTimer("All Available Enums Caching Performance"))
             {
                 foreach (var enumType in enumTypes)
                 {
-                    namesSize += NonGeneric.NonGenericEnums.GetNames(enumType).Sum(name => name.Length << 1);
-                    int typeSize = 0;
-                    switch (NonGeneric.NonGenericEnums.GetTypeCode(enumType))
-                    {
-                        case TypeCode.SByte:
-                        case TypeCode.Byte:
-                            typeSize = 1;
-                            break;
-                        case TypeCode.Int16:
-                        case TypeCode.UInt16:
-                            typeSize = 2;
-                            break;
-                        case TypeCode.Int32:
-                        case TypeCode.UInt32:
-                            typeSize = 4;
-                            break;
-                        case TypeCode.Int64:
-                        case TypeCode.UInt64:
-                            typeSize = 8;
-                            break;
-                    }
-                    valuesSize += NonGeneric.NonGenericEnums.GetDefinedCount(enumType) * typeSize;
+                    NonGeneric.NonGenericEnums.IsContiguous(enumType);
                 }
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
             }
             Console.WriteLine(enumTypes.Count);
-            Console.WriteLine(namesSize + valuesSize);
 
+            var dayOfWeekType = typeof(DayOfWeek);
             using (new OperationTimer("Enum.IsDefined Performance"))
             {
-                var dayOfWeekType = typeof(DayOfWeek);
                 for (var i = 0; i < 1000000; ++i)
                 {
                     Enum.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
@@ -60,6 +35,14 @@ namespace EnumsNET.PerfTestConsole
                 for (var i = 0; i < 1000000; ++i)
                 {
                     ((DayOfWeek)(i % 14)).IsDefined();
+                }
+            }
+
+            using (new OperationTimer("NonGenericEnums.IsDefined Performance"))
+            {
+                for (var i = 0; i < 1000000; ++i)
+                {
+                    NonGeneric.NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
                 }
             }
 
