@@ -9,55 +9,37 @@ namespace EnumsNET.PerfTestConsole
         static void Main(string[] args)
         {
             var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
-            var namesSize = 0;
-            var valuesSize = 0;
-            var attributesSize = 0;
             using (new OperationTimer("All Available Enums Caching Performance"))
             {
                 foreach (var enumType in enumTypes)
                 {
-                    namesSize += NonGeneric.NonGenericEnums.GetNames(enumType).Sum(name => name.Length << 1);
-                    int typeSize = 0;
-                    switch (NonGeneric.NonGenericEnums.GetTypeCode(enumType))
-                    {
-                        case TypeCode.SByte:
-                        case TypeCode.Byte:
-                            typeSize = 1;
-                            break;
-                        case TypeCode.Int16:
-                        case TypeCode.UInt16:
-                            typeSize = 2;
-                            break;
-                        case TypeCode.Int32:
-                        case TypeCode.UInt32:
-                            typeSize = 4;
-                            break;
-                        case TypeCode.Int64:
-                        case TypeCode.UInt64:
-                            typeSize = 8;
-                            break;
-                    }
-                    valuesSize += NonGeneric.NonGenericEnums.GetDefinedCount(enumType) * typeSize;
+                    NonGeneric.NonGenericEnums.IsContiguous(enumType);
                 }
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
             }
             Console.WriteLine(enumTypes.Count);
-            Console.WriteLine(namesSize + valuesSize);
 
+            const int iterations = 100000000;
+
+            var dayOfWeekType = typeof(DayOfWeek);
             using (new OperationTimer("Enum.IsDefined Performance"))
             {
-                var dayOfWeekType = typeof(DayOfWeek);
-                for (var i = 0; i < 1000000; ++i)
+                for (var i = 0; i < iterations; ++i)
                 {
                     Enum.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
                 }
             }
 
+            using (new OperationTimer("NonGenericEnums.IsDefined Performance"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    NonGeneric.NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
+                }
+            }
+
             using (new OperationTimer("Enums.IsDefined Performance"))
             {
-                for (var i = 0; i < 1000000; ++i)
+                for (var i = 0; i < iterations; ++i)
                 {
                     ((DayOfWeek)(i % 14)).IsDefined();
                 }
@@ -90,8 +72,14 @@ namespace EnumsNET.PerfTestConsole
 
         public void Dispose()
         {
-            Console.WriteLine("{0} (GCs={1,3}) (MemUsed={2}) {3}", _stopwatch.Elapsed,
-               GC.CollectionCount(0) - _collectionCount, Process.GetCurrentProcess().PagedMemorySize64 - _privateMemorySize64, _text);
+            var elapsed = _stopwatch.Elapsed;
+            var collectionCount = GC.CollectionCount(0);
+            var currentProcess = Process.GetCurrentProcess();
+            var priorMemorySize64 = currentProcess.PagedMemorySize64;
+            PrepareForOperation();
+            var afterMemorySize64 = currentProcess.PagedMemorySize64;
+            Console.WriteLine("{0} (GCs={1,3}) (MemUsed={2}) (MemFreedOnLastGC={3}) {4}", elapsed,
+               collectionCount - _collectionCount, afterMemorySize64 - _privateMemorySize64, priorMemorySize64 - afterMemorySize64, _text);
         }
 
         private static void PrepareForOperation()
