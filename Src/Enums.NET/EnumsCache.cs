@@ -370,6 +370,8 @@ namespace EnumsNET
         #region IsValid
         public bool IsValid(object value)
         {
+            Preconditions.NotNull(value, nameof(value));
+
             TInt result;
             return TryToObject(value, out result);
         }
@@ -384,6 +386,8 @@ namespace EnumsNET
         #region IsDefined
         public bool IsDefined(object value)
         {
+            Preconditions.NotNull(value, nameof(value));
+
             TInt result;
             return TryToObject(value, out result, false) && IsDefined(result);
         }
@@ -488,41 +492,42 @@ namespace EnumsNET
 
         public bool TryToObject(object value, out TInt result, bool validate = true)
         {
-            Preconditions.NotNull(value, nameof(value));
-
-            if (value is TInt)
+            if (value != null)
             {
-                result = (TInt)value;
-                return true;
-            }
+                if (value is TInt)
+                {
+                    result = (TInt)value;
+                    return true;
+                }
 
-            switch (Type.GetTypeCode(value.GetType()))
-            {
-                case TypeCode.SByte:
-                    return TryToObject((sbyte)value, out result, validate);
-                case TypeCode.Byte:
-                    return TryToObject((byte)value, out result, validate);
-                case TypeCode.Int16:
-                    return TryToObject((short)value, out result, validate);
-                case TypeCode.UInt16:
-                    return TryToObject((ushort)value, out result, validate);
-                case TypeCode.Int32:
-                    return TryToObject((int)value, out result, validate);
-                case TypeCode.UInt32:
-                    return TryToObject((uint)value, out result, validate);
-                case TypeCode.Int64:
-                    return TryToObject((long)value, out result, validate);
-                case TypeCode.UInt64:
-                    return TryToObject((ulong)value, out result, validate);
-                case TypeCode.String:
-                    if (TryParse((string)value, false, out result, null))
-                    {
-                        if (!validate || IsValid(result))
+                switch (Type.GetTypeCode(value.GetType()))
+                {
+                    case TypeCode.SByte:
+                        return TryToObject((sbyte)value, out result, validate);
+                    case TypeCode.Byte:
+                        return TryToObject((byte)value, out result, validate);
+                    case TypeCode.Int16:
+                        return TryToObject((short)value, out result, validate);
+                    case TypeCode.UInt16:
+                        return TryToObject((ushort)value, out result, validate);
+                    case TypeCode.Int32:
+                        return TryToObject((int)value, out result, validate);
+                    case TypeCode.UInt32:
+                        return TryToObject((uint)value, out result, validate);
+                    case TypeCode.Int64:
+                        return TryToObject((long)value, out result, validate);
+                    case TypeCode.UInt64:
+                        return TryToObject((ulong)value, out result, validate);
+                    case TypeCode.String:
+                        if (TryParse((string)value, false, out result, null))
                         {
-                            return true;
+                            if (!validate || IsValid(result))
+                            {
+                                return true;
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
             result = Zero;
             return false;

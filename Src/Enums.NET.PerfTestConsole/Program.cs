@@ -15,34 +15,33 @@ namespace EnumsNET.PerfTestConsole
                 {
                     NonGeneric.NonGenericEnums.IsContiguous(enumType);
                 }
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
             }
             Console.WriteLine(enumTypes.Count);
+
+            const int iterations = 100000000;
 
             var dayOfWeekType = typeof(DayOfWeek);
             using (new OperationTimer("Enum.IsDefined Performance"))
             {
-                for (var i = 0; i < 1000000; ++i)
+                for (var i = 0; i < iterations; ++i)
                 {
                     Enum.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
                 }
             }
 
-            using (new OperationTimer("Enums.IsDefined Performance"))
+            using (new OperationTimer("NonGenericEnums.IsDefined Performance"))
             {
-                for (var i = 0; i < 1000000; ++i)
+                for (var i = 0; i < iterations; ++i)
                 {
-                    ((DayOfWeek)(i % 14)).IsDefined();
+                    NonGeneric.NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
                 }
             }
 
-            using (new OperationTimer("NonGenericEnums.IsDefined Performance"))
+            using (new OperationTimer("Enums.IsDefined Performance"))
             {
-                for (var i = 0; i < 1000000; ++i)
+                for (var i = 0; i < iterations; ++i)
                 {
-                    NonGeneric.NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
+                    ((DayOfWeek)(i % 14)).IsDefined();
                 }
             }
 
@@ -73,8 +72,14 @@ namespace EnumsNET.PerfTestConsole
 
         public void Dispose()
         {
-            Console.WriteLine("{0} (GCs={1,3}) (MemUsed={2}) {3}", _stopwatch.Elapsed,
-               GC.CollectionCount(0) - _collectionCount, Process.GetCurrentProcess().PagedMemorySize64 - _privateMemorySize64, _text);
+            var elapsed = _stopwatch.Elapsed;
+            var collectionCount = GC.CollectionCount(0);
+            var currentProcess = Process.GetCurrentProcess();
+            var priorMemorySize64 = currentProcess.PagedMemorySize64;
+            PrepareForOperation();
+            var afterMemorySize64 = currentProcess.PagedMemorySize64;
+            Console.WriteLine("{0} (GCs={1,3}) (MemUsed={2}) (MemFreedOnLastGC={3}) {4}", elapsed,
+               collectionCount - _collectionCount, afterMemorySize64 - _privateMemorySize64, priorMemorySize64 - afterMemorySize64, _text);
         }
 
         private static void PrepareForOperation()
