@@ -145,27 +145,38 @@ namespace EnumsNET.Unsafe
         {
             VerifyTypeIsEnum(typeof(TEnum));
             var cache = Enums<TEnum>.Cache;
+            IEnumerable<IEnumMemberInfo> infos;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<int>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<uint>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<long>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<ulong>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<sbyte>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<byte>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<short>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum>(info));
+                    infos = ((EnumsCache<ushort>)cache).GetEnumMemberInfos(uniqueValued);
+                    break;
+                default:
+                    Debug.Fail("Unknown Enum TypeCode");
+                    return null;
             }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+            return infos.Select(info => new EnumMemberInfo<TEnum>(info));
         }
 
         /// <summary>
@@ -491,35 +502,11 @@ namespace EnumsNET.Unsafe
         }
 
         [Pure]
-        public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IClsEnumMemberInfo, string> formatter) => RegisterCustomEnumFormat<TEnum>((Func<IEnumMemberInfo, string>)formatter);
-
-        [CLSCompliant(false)]
-        [Pure]
-        public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<IEnumMemberInfo, string> formatter)
+        public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<EnumMemberInfo<TEnum>, string> formatter)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).RegisterCustomEnumFormat(formatter);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).RegisterCustomEnumFormat(formatter);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return default(EnumFormat);
+
+            return Enums.InternalRegisterCustomEnumFormat(formatter);
         }
         #endregion
 
