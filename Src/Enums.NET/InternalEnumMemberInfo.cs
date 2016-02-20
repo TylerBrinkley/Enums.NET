@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo, IComparable<TInt>
+    internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo
     {
         private readonly Attribute[] _attributes;
         private readonly EnumsCache<TInt> _enumsCache;
@@ -39,7 +39,9 @@ namespace EnumsNET
                 {
                     return Enums.ZeroLengthAttributes;
                 }
-                return _attributes.Copy();
+                var copiedAttributes = new Attribute[_attributes.Length];
+                _attributes.CopyTo(copiedAttributes, 0);
+                return copiedAttributes;
             }
         }
 
@@ -187,7 +189,7 @@ namespace EnumsNET
 
         int IComparable.CompareTo(object obj)
         {
-            var objAsInfo = obj as IEnumMemberInfo;
+            var objAsInfo = obj as EnumMemberInfo;
             if (objAsInfo != null)
             {
                 return ((IComparable)this).CompareTo(objAsInfo.Value);
@@ -201,7 +203,7 @@ namespace EnumsNET
             }
             else
             {
-                var info = obj as IEnumMemberInfo<TInt>;
+                var info = obj as EnumMemberInfo<TInt>;
                 if (info != null)
                 {
                     objValue = info.Value;
@@ -210,16 +212,14 @@ namespace EnumsNET
             }
             if (assigned)
             {
-                return ((IComparable<TInt>)this).CompareTo(objValue);
+                return EnumsCache<TInt>.Compare(Value, objValue);
             }
             return 1;
         }
 
-        int IComparable<TInt>.CompareTo(TInt other) => EnumsCache<TInt>.Compare(Value, other);
+        object IEnumMemberInfo.Value => Value;
 
-        object IClsEnumMemberInfo.Value => Value;
-
-        object IClsEnumMemberInfo.UnderlyingValue => Value;
+        object IEnumMemberInfo.UnderlyingValue => Value;
         #endregion
     }
 }

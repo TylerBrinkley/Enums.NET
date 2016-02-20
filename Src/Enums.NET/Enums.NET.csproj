@@ -43,16 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumComparer.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumMemberInfo.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EnumsCache.cs" />
     <Compile Include="FlagEnums.cs" />
     <Compile Include="HashHelper.cs" />
-    <Compile Include="IClsEnumMemberInfo.cs" />
     <Compile Include="IEnumMemberInfo.cs" />
-    <Compile Include="IntegralTryParse.cs" />
     <Compile Include="InternalEnumMemberInfo.cs" />
     <Compile Include="MainDuplicateAttribute.cs" />
     <Compile Include="NameAndAttributes.cs" />
@@ -60,6 +57,7 @@
     <Compile Include="Net20\ExtensionAttribute.cs" />
     <Compile Include="Net20\FuncAndAction.cs" />
     <Compile Include="Net20\PureAttribute.cs" />
+    <Compile Include="NonGeneric\NonGenericEnumMemberInfo.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericEnumsCache.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />

@@ -830,21 +830,13 @@ namespace EnumsNET.Test
         {
             ColorFlagEnum result;
             Assert.IsFalse(TryToObject((sbyte)16, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject((byte)16, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject((short)16, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject((ushort)16, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject(16, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject(16U, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject(16L, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
             Assert.IsFalse(TryToObject(16UL, out result));
-            Assert.AreEqual(default(ColorFlagEnum), result);
         }
 
         [TestMethod]
@@ -1046,7 +1038,7 @@ namespace EnumsNET.Test
         [TestMethod]
         public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
         {
-            var customFormat = RegisterCustomEnumFormat((IClsEnumMemberInfo info) => info.GetAttribute<EnumMemberAttribute>().Value);
+            var customFormat = RegisterCustomEnumFormat(info => info.GetAttribute<EnumMemberAttribute>().Value);
             Assert.AreEqual("a", EnumMemberAttributeEnum.A.Format(customFormat));
         }
 

@@ -46,11 +46,15 @@ namespace EnumsNET.NonGeneric
             return enumsCache;
         }
 
+        private static bool IsEnum<TEnum>(object value) => value is TEnum;
+
         private static NonGenericEnumsCache Create<TEnum>()
         {
             var cache = Enums<TEnum>.Cache;
             var typeCode = Enums<TEnum>.TypeCode;
             var toEnum = Enums<TEnum>.ToEnum;
+            Func<object, bool> isEnum = IsEnum<TEnum>;
+            var enumName = typeof(TEnum).Name;
             Delegate newToEnum = null;
             Delegate newToInt = null;
             switch (typeCode)
@@ -59,100 +63,92 @@ namespace EnumsNET.NonGeneric
                     newToEnum = (Func<int, object>)(value => ((Func<int, TEnum>)toEnum)(value));
                     newToInt = (Func<object, int>)(value =>
                     {
-                        int result;
-                        if (!((EnumsCache<int>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (int)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.UInt32:
                     newToEnum = (Func<uint, object>)(value => ((Func<uint, TEnum>)toEnum)(value));
                     newToInt = (Func<object, uint>)(value =>
                     {
-                        uint result;
-                        if (!((EnumsCache<uint>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (uint)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.Int64:
                     newToEnum = (Func<long, object>)(value => ((Func<long, TEnum>)toEnum)(value));
                     newToInt = (Func<object, long>)(value =>
                     {
-                        long result;
-                        if (!((EnumsCache<long>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (long)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.UInt64:
                     newToEnum = (Func<ulong, object>)(value => ((Func<ulong, TEnum>)toEnum)(value));
                     newToInt = (Func<object, ulong>)(value =>
                     {
-                        ulong result;
-                        if (!((EnumsCache<ulong>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (ulong)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.SByte:
                     newToEnum = (Func<sbyte, object>)(value => ((Func<sbyte, TEnum>)toEnum)(value));
                     newToInt = (Func<object, sbyte>)(value =>
                     {
-                        sbyte result;
-                        if (!((EnumsCache<sbyte>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (sbyte)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.Byte:
                     newToEnum = (Func<byte, object>)(value => ((Func<byte, TEnum>)toEnum)(value));
                     newToInt = (Func<object, byte>)(value =>
                     {
-                        byte result;
-                        if (!((EnumsCache<byte>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (byte)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.Int16:
                     newToEnum = (Func<short, object>)(value => ((Func<short, TEnum>)toEnum)(value));
                     newToInt = (Func<object, short>)(value =>
                     {
-                        short result;
-                        if (!((EnumsCache<short>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (short)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
                 case TypeCode.UInt16:
                     newToEnum = (Func<ushort, object>)(value => ((Func<ushort, TEnum>)toEnum)(value));
                     newToInt = (Func<object, ushort>)(value =>
                     {
-                        ushort result;
-                        if (!((EnumsCache<ushort>)cache).TryToObject(value, out result, false))
+                        if (isEnum(value))
                         {
-                            throw new ArgumentException($"value is not of type {typeof(TEnum).Name}", nameof(value));
+                            return (ushort)value;
                         }
-                        return result;
+                        throw new ArgumentException($"value is not of type {enumName}", nameof(value));
                     });
                     break;
             }
-            return new NonGenericEnumsCache(cache, newToEnum, newToInt, typeCode);
+            return new NonGenericEnumsCache(cache, newToEnum, newToInt, typeCode, Enums.InternalRegisterCustomEnumFormat<TEnum>);
         }
 
         internal readonly object Cache;
@@ -163,12 +159,15 @@ namespace EnumsNET.NonGeneric
 
         internal readonly TypeCode TypeCode;
 
-        private NonGenericEnumsCache(object cache, Delegate toEnum, Delegate toInt, TypeCode typeCode)
+        internal readonly Func<Func<EnumMemberInfo, string>, EnumFormat> RegisterCustomEnumFormat;
+
+        private NonGenericEnumsCache(object cache, Delegate toEnum, Delegate toInt, TypeCode typeCode, Func<Func<EnumMemberInfo, string>, EnumFormat> registerCustomEnumFormat)
         {
             Cache = cache;
             ToEnum = toEnum;
             ToInt = toInt;
             TypeCode = typeCode;
+            RegisterCustomEnumFormat = registerCustomEnumFormat;
         }
     }
 }
