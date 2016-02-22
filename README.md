@@ -33,3 +33,5 @@ EnumsNET.NonGeneric.NonGenericFlagEnums static class for non-generic flag enum o
 Inspired by Jon Skeet's [Unconstrained Melody] (https://github.com/jskeet/unconstrained-melody)
 
 Utilizes Simon Cropp's [Fody.ExtraConstraints] (https://github.com/Fody/ExtraConstraints)
+
+Contains modified build scripts from James Newton-King's [Json.NET] (https://github.com/JamesNK/Newtonsoft.Json)
