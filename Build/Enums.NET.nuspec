@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>Enums.NET</id>
+    <version></version>
+    <title>Enums.NET</title>
+    <description>Enums.NET is an efficient type-safe .NET enum utility library</description>
+    <authors>Tyler Brinkley</authors>
+    <language>en-US</language>
+    <projectUrl>https://github.com/Tydude4Christ/Enums.NET</projectUrl>
+    <licenseUrl>https://github.com/Tydude4Christ/Enums.NET/blob/master/LICENSE</licenseUrl>
+    <tags>enum</tags>
+  </metadata>
+</package>
