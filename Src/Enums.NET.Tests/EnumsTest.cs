@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using static EnumsNET.Enums;
+using EnumsNET.Tests.TestEnums;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;

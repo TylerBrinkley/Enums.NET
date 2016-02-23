@@ -1,4 +1,4 @@
-﻿namespace EnumsNET.Tests
+﻿namespace EnumsNET.Tests.TestEnums
 {
     // Non-Contiguous UInt64 example
     public enum NonContiguousUInt64Enum : ulong

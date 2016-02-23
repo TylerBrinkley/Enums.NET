@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace EnumsNET.Tests
+namespace EnumsNET.Tests.TestEnums
 {
     // Contiguous example
     public enum DateFilterOperator : short

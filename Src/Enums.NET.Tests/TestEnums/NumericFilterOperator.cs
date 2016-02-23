@@ -16,7 +16,7 @@
 using System;
 using System.ComponentModel;
 
-namespace EnumsNET.Tests
+namespace EnumsNET.Tests.TestEnums
 {
     // Duplicate example
     public enum NumericFilterOperator

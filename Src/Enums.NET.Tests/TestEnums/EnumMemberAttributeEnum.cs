@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace EnumsNET.Tests
+namespace EnumsNET.Tests.TestEnums
 {
     public enum EnumMemberAttributeEnum
     {

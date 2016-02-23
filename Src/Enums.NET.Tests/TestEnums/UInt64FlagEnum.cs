@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EnumsNET.Tests
+namespace EnumsNET.Tests.TestEnums
 {
     // UInt64 Flag example
     [Flags]

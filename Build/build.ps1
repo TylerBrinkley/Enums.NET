@@ -1,12 +1,12 @@
 ﻿properties { 
-  $zipFileName = "Enums1b1.zip"
+  $zipFileName = "Enums10b1.zip"
   $majorVersion = "1.0"
   $majorWithReleaseVersion = "1.0.0"
   $nugetPrelease = "beta1"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Enums.NET"
   $signAssemblies = $false
-  $signKeyPath = "C:\Users\brinkleyt\Desktop\enumsnet.snk"
+  $signKeyPath = "C:\Development\Release\enumsnet.snk"
   $buildDocumentation = $false
   $buildNuGet = $true
   $treatWarningsAsErrors = $false

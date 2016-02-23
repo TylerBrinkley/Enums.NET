@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using EnumsNET.Tests.TestEnums;
 using EnumsNET.Unsafe;
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
