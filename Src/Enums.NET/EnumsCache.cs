@@ -815,11 +815,13 @@ namespace EnumsNET
                                 {
                                     if (_customEnumFormatParsers == null)
                                     {
+                                        Interlocked.CompareExchange(ref _customEnumFormatParsers,
 #if NET20
-                                        _customEnumFormatParsers = new Dictionary<EnumFormat, EnumParser>();
+                                            new Dictionary<EnumFormat, EnumParser>(),
 #else
-                                        Interlocked.CompareExchange(ref _customEnumFormatParsers, new ConcurrentDictionary<EnumFormat, EnumParser>(), null);
+                                            new ConcurrentDictionary<EnumFormat, EnumParser>(),
 #endif
+                                            null);
                                     }
 #if NET20
                                     _customEnumFormatParsers.Add(format, parser);
@@ -1105,18 +1107,17 @@ namespace EnumsNET
 
         internal sealed class EnumParser
         {
-            private readonly Dictionary<string, string> _formatNameMap;
-            private Dictionary<string, string> _formatIgnoreCase;
-            private EnumsCache<TInt> _enumsCache;
+            private readonly Dictionary<string, TInt> _formatValueMap;
+            private Dictionary<string, TInt> _formatIgnoreCase;
 
-            private Dictionary<string, string> FormatIgnoreCase
+            private Dictionary<string, TInt> FormatIgnoreCase
             {
                 get
                 {
                     if (_formatIgnoreCase == null)
                     {
-                        var formatIgnoreCase = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                        foreach (var pair in _formatNameMap)
+                        var formatIgnoreCase = new Dictionary<string, TInt>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
+                        foreach (var pair in _formatValueMap)
                         {
                             if (!formatIgnoreCase.ContainsKey(pair.Key))
                             {
@@ -1125,54 +1126,29 @@ namespace EnumsNET
                         }
 
                         // Reduces memory usage
-                        _formatIgnoreCase = new Dictionary<string, string>(formatIgnoreCase, StringComparer.OrdinalIgnoreCase);
+                        _formatIgnoreCase = new Dictionary<string, TInt>(formatIgnoreCase, StringComparer.OrdinalIgnoreCase);
                     }
                     return _formatIgnoreCase;
                 }
             }
 
-            public EnumParser(Func<IEnumMemberInfo, string> enumFormatter, EnumsCache<TInt> enumsCache)
+            public EnumParser(Func<IEnumMemberInfo, string> formatter, EnumsCache<TInt> enumsCache)
             {
-                _enumsCache = enumsCache;
-                var formatNameMap = new Dictionary<string, string>();
-                foreach (var pair in _enumsCache._valueMap)
+                var formatValueMap = new Dictionary<string, TInt>(enumsCache.GetDefinedCount(false));
+                foreach (var info in enumsCache.GetInternalEnumMemberInfos(false))
                 {
-                    var format = enumFormatter(new InternalEnumMemberInfo<TInt>(pair.First, pair.Second.Name, pair.Second.Attributes, _enumsCache));
-                    if (format != null && !formatNameMap.ContainsKey(format))
+                    var format = formatter(info);
+                    if (format != null && !formatValueMap.ContainsKey(format))
                     {
-                        formatNameMap.Add(format, pair.Second.Name);
-                    }
-                }
-                if (_enumsCache._duplicateValues != null)
-                {
-                    foreach (var pair in _enumsCache._duplicateValues)
-                    {
-                        var format = enumFormatter(new InternalEnumMemberInfo<TInt>(pair.Value.Value, pair.Key, pair.Value.Attributes, _enumsCache));
-                        if (format != null && !formatNameMap.ContainsKey(format))
-                        {
-                            formatNameMap.Add(format, pair.Key);
-                        }
+                        formatValueMap.Add(format, info.Value);
                     }
                 }
 
                 // Reduces memory usage
-                _formatNameMap = new Dictionary<string, string>(formatNameMap);
+                _formatValueMap = new Dictionary<string, TInt>(formatValueMap);
             }
 
-            internal bool TryParse(string format, bool ignoreCase, out TInt result)
-            {
-                string name;
-                if (_formatNameMap.TryGetValue(format, out name) || (ignoreCase && FormatIgnoreCase.TryGetValue(format, out name)))
-                {
-                    if (!_enumsCache._valueMap.TryGetFirst(new NameAndAttributes(name), out result))
-                    {
-                        result = _enumsCache._duplicateValues[name].Value;
-                    }
-                    return true;
-                }
-                result = Zero;
-                return false;
-            }
+            internal bool TryParse(string format, bool ignoreCase, out TInt result) => _formatValueMap.TryGetValue(format, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(format, out result));
         }
         #endregion
     }
