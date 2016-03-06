@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿#if NET20
+using System.Collections;
 using System.Collections.Generic;
 using EnumsNET;
 
 namespace System.Linq
 {
-#if NET20
     internal static class Enumerable
     {
         public static IEnumerable<TResult> Select<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector)
@@ -52,5 +52,5 @@ namespace System.Linq
             return list.ToArray();
         }
     }
-#endif
 }
+#endif

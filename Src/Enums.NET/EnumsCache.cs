@@ -89,6 +89,8 @@ namespace EnumsNET
 
         internal static int Compare(TInt x, TInt y) => GreaterThan(x, y) ? 1 : (GreaterThan(y, x) ? -1 : 0);
 
+        internal static Func<TInt, int> GetHashCodeMethod;
+
         static EnumsCache()
         {
             TypeCode = Type.GetTypeCode(typeof(TInt));
@@ -105,7 +107,11 @@ namespace EnumsNET
 
         private readonly string _enumTypeName;
 
-        private readonly Func<int, Func<IEnumMemberInfo, string>> _getCustomFormatter;
+        private readonly TInt _maxDefined;
+
+        private readonly TInt _minDefined;
+
+        private readonly Func<EnumFormat, Func<IEnumMemberInfo, string>> _getCustomFormatter;
 
         // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
         // If constant contains a DescriptionAttribute it will be the first in the attribute array
@@ -124,10 +130,6 @@ namespace EnumsNET
         #endregion
 
         #region Properties
-        private TInt MaxDefined => _valueMap.GetFirstAt(_valueMap.Count - 1);
-
-        private TInt MinDefined => _valueMap.GetFirstAt(0);
-
         // Enables case insensitive parsing, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe as it's only used for retrieval
         private Dictionary<string, string> IgnoreCaseSet
         {
@@ -155,7 +157,7 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumsCache(Type enumType, Func<int, Func<IEnumMemberInfo, string>> getCustomFormatter)
+        public EnumsCache(Type enumType, Func<EnumFormat, Func<IEnumMemberInfo, string>> getCustomFormatter)
         {
             Debug.Assert(enumType != null);
             Debug.Assert(enumType.IsEnum);
@@ -242,7 +244,9 @@ namespace EnumsNET
                     duplicateValues.Add(name, new ValueAndAttributes<TInt>(value, attributes));
                 }
             }
-            IsContiguous = ToInt64(Add(Subtract(MaxDefined, MinDefined), One)) == _valueMap.Count;
+            _maxDefined = _valueMap.GetFirstAt(_valueMap.Count - 1);
+            _minDefined = _valueMap.GetFirstAt(0);
+            IsContiguous = ToInt64(Add(Subtract(_maxDefined, _minDefined), One)) == _valueMap.Count;
 
             _valueMap.TrimExcess();
             if (duplicateValues.Count > 0)
@@ -376,7 +380,7 @@ namespace EnumsNET
             return TryToObject(value, out result, false) && IsDefined(result);
         }
 
-        public bool IsDefined(TInt value) => IsContiguous ? (!(GreaterThan(MinDefined, value) || GreaterThan(value, MaxDefined))) : _valueMap.ContainsFirst(value);
+        public bool IsDefined(TInt value) => IsContiguous ? (!(GreaterThan(_minDefined, value) || GreaterThan(value, _maxDefined))) : _valueMap.ContainsFirst(value);
 
         public bool IsDefined(string name, bool ignoreCase)
         {
@@ -604,7 +608,7 @@ namespace EnumsNET
                 case EnumFormat.Description:
                     return info.Description;
                 default:
-                    return _getCustomFormatter(format.ToInt32())?.Invoke(info);
+                    return _getCustomFormatter(format)?.Invoke(info);
             }
         }
 
@@ -804,7 +808,7 @@ namespace EnumsNET
                                         parser = new EnumParser(Enums.DescriptionEnumFormatter, this);
                                         break;
                                     default:
-                                        var customEnumFormatter = _getCustomFormatter(format.ToInt32());
+                                        var customEnumFormatter = _getCustomFormatter(format);
                                         if (customEnumFormatter != null)
                                         {
                                             parser = new EnumParser(customEnumFormatter, this);
@@ -1210,6 +1214,7 @@ namespace EnumsNET
                     EnumsCache<int>.HexFormatString = "X8";
                     EnumsCache<int>.Zero = 0;
                     EnumsCache<int>.One = 1;
+                    EnumsCache<int>.GetHashCodeMethod = x => x;
                     break;
                 case TypeCode.UInt32:
                     EnumsCache<uint>.Equal = (x, y) => x == y;
@@ -1238,6 +1243,7 @@ namespace EnumsNET
                     EnumsCache<uint>.HexFormatString = "X8";
                     EnumsCache<uint>.Zero = 0U;
                     EnumsCache<uint>.One = 1U;
+                    EnumsCache<uint>.GetHashCodeMethod = x => x.GetHashCode();
                     break;
                 case TypeCode.Int64:
                     EnumsCache<long>.Equal = (x, y) => x == y;
@@ -1266,6 +1272,7 @@ namespace EnumsNET
                     EnumsCache<long>.HexFormatString = "X16";
                     EnumsCache<long>.Zero = 0L;
                     EnumsCache<long>.One = 1L;
+                    EnumsCache<long>.GetHashCodeMethod = x => x.GetHashCode();
                     break;
                 case TypeCode.UInt64:
                     EnumsCache<ulong>.Equal = (x, y) => x == y;
@@ -1294,6 +1301,7 @@ namespace EnumsNET
                     EnumsCache<ulong>.HexFormatString = "X16";
                     EnumsCache<ulong>.Zero = 0UL;
                     EnumsCache<ulong>.One = 1UL;
+                    EnumsCache<ulong>.GetHashCodeMethod = x => x.GetHashCode();
                     break;
                 case TypeCode.SByte:
                     EnumsCache<sbyte>.Equal = (x, y) => x == y;
@@ -1322,6 +1330,7 @@ namespace EnumsNET
                     EnumsCache<sbyte>.HexFormatString = "X2";
                     EnumsCache<sbyte>.Zero = 0;
                     EnumsCache<sbyte>.One = 1;
+                    EnumsCache<sbyte>.GetHashCodeMethod = x => x;
                     break;
                 case TypeCode.Byte:
                     EnumsCache<byte>.Equal = (x, y) => x == y;
@@ -1350,6 +1359,7 @@ namespace EnumsNET
                     EnumsCache<byte>.HexFormatString = "X2";
                     EnumsCache<byte>.Zero = 0;
                     EnumsCache<byte>.One = 1;
+                    EnumsCache<byte>.GetHashCodeMethod = x => x;
                     break;
                 case TypeCode.Int16:
                     EnumsCache<short>.Equal = (x, y) => x == y;
@@ -1378,6 +1388,7 @@ namespace EnumsNET
                     EnumsCache<short>.HexFormatString = "X4";
                     EnumsCache<short>.Zero = 0;
                     EnumsCache<short>.One = 1;
+                    EnumsCache<short>.GetHashCodeMethod = x => x;
                     break;
                 case TypeCode.UInt16:
                     EnumsCache<ushort>.Equal = (x, y) => x == y;
@@ -1406,6 +1417,7 @@ namespace EnumsNET
                     EnumsCache<ushort>.HexFormatString = "X4";
                     EnumsCache<ushort>.Zero = 0;
                     EnumsCache<ushort>.One = 1;
+                    EnumsCache<ushort>.GetHashCodeMethod = x => x;
                     break;
             }
         }

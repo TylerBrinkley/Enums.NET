@@ -37,7 +37,7 @@ namespace EnumsNET
                 }
                 if (_attributes == null)
                 {
-                    return Enums.ZeroLengthAttributes;
+                    return Enums.EmptyAttributes;
                 }
                 var copiedAttributes = new Attribute[_attributes.Length];
                 _attributes.CopyTo(copiedAttributes, 0);
@@ -146,6 +146,8 @@ namespace EnumsNET
         public long ToInt64() => EnumsCache<TInt>.ToInt64(Value);
 
         public ulong ToUInt64() => EnumsCache<TInt>.ToUInt64(Value);
+
+        public override int GetHashCode() => EnumsCache<TInt>.GetHashCodeMethod(Value);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);

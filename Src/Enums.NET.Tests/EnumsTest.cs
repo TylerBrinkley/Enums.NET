@@ -19,6 +19,7 @@ using System.Runtime.Serialization;
 using static EnumsNET.Enums;
 using EnumsNET.Tests.TestEnums;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
+using System.Reflection;
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
@@ -32,6 +33,20 @@ namespace EnumsNET.Tests
     [TestFixture]
     public class EnumsTest
     {
+        [Test]
+        public void TestGenericConstraints()
+        {
+            var enumTypeArgs = new[] { typeof(Enums), typeof(FlagEnums) }
+                .SelectMany(type => type.GetMethods(BindingFlags.Static | BindingFlags.Public))
+                .Select(method => method.GetGenericArguments().FirstOrDefault())
+                .Where(genericArg => genericArg != null)
+                .Concat(new[] { typeof(EnumComparer<>).GetGenericArguments().First() });
+            foreach (var enumTypeArg in enumTypeArgs)
+            {
+                Assert.IsTrue(enumTypeArg.GetGenericParameterConstraints().Any(genericParamConstraint => genericParamConstraint == typeof(Enum)));
+            }
+        }
+
         #region "Properties"
         [Test]
         public void IsContiguous()

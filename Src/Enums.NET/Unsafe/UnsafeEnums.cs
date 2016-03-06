@@ -39,25 +39,24 @@ namespace EnumsNET.Unsafe
         public static bool IsContiguous<TEnum>()
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsContiguous;
+                    return Enums<TEnum, int>.Cache.IsContiguous;
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsContiguous;
+                    return Enums<TEnum, uint>.Cache.IsContiguous;
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsContiguous;
+                    return Enums<TEnum, long>.Cache.IsContiguous;
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsContiguous;
+                    return Enums<TEnum, ulong>.Cache.IsContiguous;
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsContiguous;
+                    return Enums<TEnum, sbyte>.Cache.IsContiguous;
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsContiguous;
+                    return Enums<TEnum, byte>.Cache.IsContiguous;
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsContiguous;
+                    return Enums<TEnum, short>.Cache.IsContiguous;
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsContiguous;
+                    return Enums<TEnum, ushort>.Cache.IsContiguous;
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -116,25 +115,24 @@ namespace EnumsNET.Unsafe
         public static int GetDefinedCount<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetDefinedCount(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDefinedCount(uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetDefinedCount(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -144,33 +142,32 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             IEnumerable<IEnumMemberInfo> infos;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    infos = ((EnumsCache<int>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, int>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.UInt32:
-                    infos = ((EnumsCache<uint>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, uint>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.Int64:
-                    infos = ((EnumsCache<long>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, long>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.UInt64:
-                    infos = ((EnumsCache<ulong>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, ulong>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.SByte:
-                    infos = ((EnumsCache<sbyte>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, sbyte>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.Byte:
-                    infos = ((EnumsCache<byte>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, byte>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.Int16:
-                    infos = ((EnumsCache<short>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, short>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 case TypeCode.UInt16:
-                    infos = ((EnumsCache<ushort>)cache).GetEnumMemberInfos(uniqueValued);
+                    infos = Enums<TEnum, ushort>.Cache.GetEnumMemberInfos(uniqueValued);
                     break;
                 default:
                     Debug.Fail("Unknown Enum TypeCode");
@@ -190,25 +187,24 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<string> GetNames<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetNames(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetNames(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetNames(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetNames(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetNames(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetNames(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetNames(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetNames(uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetNames(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -225,34 +221,24 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<TEnum> GetValues<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    var int32ToEnum = (Func<int, TEnum>)toEnum;
-                    return ((EnumsCache<int>)cache).GetValues(uniqueValued).Select(value => int32ToEnum(value));
+                    return Enums<TEnum, int>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, int>.ToEnum(value));
                 case TypeCode.UInt32:
-                    var uint32ToEnum = (Func<uint, TEnum>)toEnum;
-                    return ((EnumsCache<uint>)cache).GetValues(uniqueValued).Select(value => uint32ToEnum(value));
+                    return Enums<TEnum, uint>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, uint>.ToEnum(value));
                 case TypeCode.Int64:
-                    var int64ToEnum = (Func<long, TEnum>)toEnum;
-                    return ((EnumsCache<long>)cache).GetValues(uniqueValued).Select(value => int64ToEnum(value));
+                    return Enums<TEnum, long>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, long>.ToEnum(value));
                 case TypeCode.UInt64:
-                    var uint64ToEnum = (Func<ulong, TEnum>)toEnum;
-                    return ((EnumsCache<ulong>)cache).GetValues(uniqueValued).Select(value => uint64ToEnum(value));
+                    return Enums<TEnum, ulong>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, ulong>.ToEnum(value));
                 case TypeCode.SByte:
-                    var sbyteToEnum = (Func<sbyte, TEnum>)toEnum;
-                    return ((EnumsCache<sbyte>)cache).GetValues(uniqueValued).Select(value => sbyteToEnum(value));
+                    return Enums<TEnum, sbyte>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, sbyte>.ToEnum(value));
                 case TypeCode.Byte:
-                    var byteToEnum = (Func<byte, TEnum>)toEnum;
-                    return ((EnumsCache<byte>)cache).GetValues(uniqueValued).Select(value => byteToEnum(value));
+                    return Enums<TEnum, byte>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, byte>.ToEnum(value));
                 case TypeCode.Int16:
-                    var int16ToEnum = (Func<short, TEnum>)toEnum;
-                    return ((EnumsCache<short>)cache).GetValues(uniqueValued).Select(value => int16ToEnum(value));
+                    return Enums<TEnum, short>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, short>.ToEnum(value));
                 case TypeCode.UInt16:
-                    var uint16ToEnum = (Func<ushort, TEnum>)toEnum;
-                    return ((EnumsCache<ushort>)cache).GetValues(uniqueValued).Select(value => uint16ToEnum(value));
+                    return Enums<TEnum, ushort>.Cache.GetValues(uniqueValued).Select(value => Enums<TEnum, ushort>.ToEnum(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -269,25 +255,24 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<string> GetDescriptions<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetDescriptions(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptions(uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetDescriptions(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -297,25 +282,24 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<string> GetDescriptionsOrNames<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetDescriptionsOrNames(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetDescriptionsOrNames(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -324,25 +308,24 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<string> GetDescriptionsOrNames<TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -359,25 +342,24 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<Attribute[]> GetAllAttributes<TEnum>(bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetAllAttributes(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAllAttributes(uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetAllAttributes(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -396,25 +378,24 @@ namespace EnumsNET.Unsafe
             where TAttribute : Attribute
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetAttributes<TAttribute>(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAttributes<TAttribute>(uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetAttributes<TAttribute>(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -433,32 +414,31 @@ namespace EnumsNET.Unsafe
         public static int Compare<TEnum>(TEnum x, TEnum y)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<TEnum, int>)toInt;
+                    var enumToInt32 = Enums<TEnum, int>.ToInt;
                     return EnumsCache<int>.Compare(enumToInt32(x), enumToInt32(y));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<TEnum, uint>)toInt;
+                    var enumToUInt32 = Enums<TEnum, uint>.ToInt;
                     return EnumsCache<uint>.Compare(enumToUInt32(x), enumToUInt32(y));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<TEnum, long>)toInt;
+                    var enumToInt64 = Enums<TEnum, long>.ToInt;
                     return EnumsCache<long>.Compare(enumToInt64(x), enumToInt64(y));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<TEnum, ulong>)toInt;
+                    var enumToUInt64 = Enums<TEnum, ulong>.ToInt;
                     return EnumsCache<ulong>.Compare(enumToUInt64(x), enumToUInt64(y));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<TEnum, sbyte>)toInt;
+                    var enumToSByte = Enums<TEnum, sbyte>.ToInt;
                     return EnumsCache<sbyte>.Compare(enumToSByte(x), enumToSByte(y));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<TEnum, byte>)toInt;
+                    var enumToByte = Enums<TEnum, byte>.ToInt;
                     return EnumsCache<byte>.Compare(enumToByte(x), enumToByte(y));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<TEnum, short>)toInt;
+                    var enumToInt16 = Enums<TEnum, short>.ToInt;
                     return EnumsCache<short>.Compare(enumToInt16(x), enumToInt16(y));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<TEnum, ushort>)toInt;
+                    var enumToUInt16 = Enums<TEnum, ushort>.ToInt;
                     return EnumsCache<ushort>.Compare(enumToUInt16(x), enumToUInt16(y));
             }
             Debug.Fail("Unknown Enum TypeCode");
@@ -469,43 +449,48 @@ namespace EnumsNET.Unsafe
         public static bool Equals<TEnum>(TEnum x, TEnum y)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<TEnum, int>)toInt;
+                    var enumToInt32 = Enums<TEnum, int>.ToInt;
                     return EnumsCache<int>.Equal(enumToInt32(x), enumToInt32(y));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<TEnum, uint>)toInt;
+                    var enumToUInt32 = Enums<TEnum, uint>.ToInt;
                     return EnumsCache<uint>.Equal(enumToUInt32(x), enumToUInt32(y));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<TEnum, long>)toInt;
+                    var enumToInt64 = Enums<TEnum, long>.ToInt;
                     return EnumsCache<long>.Equal(enumToInt64(x), enumToInt64(y));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<TEnum, ulong>)toInt;
+                    var enumToUInt64 = Enums<TEnum, ulong>.ToInt;
                     return EnumsCache<ulong>.Equal(enumToUInt64(x), enumToUInt64(y));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<TEnum, sbyte>)toInt;
+                    var enumToSByte = Enums<TEnum, sbyte>.ToInt;
                     return EnumsCache<sbyte>.Equal(enumToSByte(x), enumToSByte(y));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<TEnum, byte>)toInt;
+                    var enumToByte = Enums<TEnum, byte>.ToInt;
                     return EnumsCache<byte>.Equal(enumToByte(x), enumToByte(y));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<TEnum, short>)toInt;
+                    var enumToInt16 = Enums<TEnum, short>.ToInt;
                     return EnumsCache<short>.Equal(enumToInt16(x), enumToInt16(y));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<TEnum, ushort>)toInt;
+                    var enumToUInt16 = Enums<TEnum, ushort>.ToInt;
                     return EnumsCache<ushort>.Equal(enumToUInt16(x), enumToUInt16(y));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
         }
 
+        /// <summary>
+        /// Registers a custom enum format for <typeparamref name="TEnum"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="formatter"></param>
+        /// <returns></returns>
+        /// /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<EnumMemberInfo<TEnum>, string> formatter)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-
             return Enums.InternalRegisterCustomEnumFormat(formatter);
         }
         #endregion
@@ -523,25 +508,24 @@ namespace EnumsNET.Unsafe
         public static bool IsValid<TEnum>(object value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
+                    return Enums<TEnum, int>.Cache.IsValid(value);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
+                    return Enums<TEnum, uint>.Cache.IsValid(value);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
+                    return Enums<TEnum, long>.Cache.IsValid(value);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
+                    return Enums<TEnum, ulong>.Cache.IsValid(value);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
+                    return Enums<TEnum, sbyte>.Cache.IsValid(value);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
+                    return Enums<TEnum, byte>.Cache.IsValid(value);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
+                    return Enums<TEnum, short>.Cache.IsValid(value);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
+                    return Enums<TEnum, ushort>.Cache.IsValid(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -560,26 +544,24 @@ namespace EnumsNET.Unsafe
         public static bool IsValid<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.IsValid(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.IsValid(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.IsValid(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.IsValid(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.IsValid(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.IsValid(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.IsValid(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.IsValid(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -659,25 +641,24 @@ namespace EnumsNET.Unsafe
         public static bool IsValid<TEnum>(long value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
+                    return Enums<TEnum, int>.Cache.IsValid(value);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
+                    return Enums<TEnum, uint>.Cache.IsValid(value);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
+                    return Enums<TEnum, long>.Cache.IsValid(value);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
+                    return Enums<TEnum, ulong>.Cache.IsValid(value);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
+                    return Enums<TEnum, sbyte>.Cache.IsValid(value);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
+                    return Enums<TEnum, byte>.Cache.IsValid(value);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
+                    return Enums<TEnum, short>.Cache.IsValid(value);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
+                    return Enums<TEnum, ushort>.Cache.IsValid(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -695,25 +676,24 @@ namespace EnumsNET.Unsafe
         public static bool IsValid<TEnum>(ulong value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValid(value);
+                    return Enums<TEnum, int>.Cache.IsValid(value);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValid(value);
+                    return Enums<TEnum, uint>.Cache.IsValid(value);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValid(value);
+                    return Enums<TEnum, long>.Cache.IsValid(value);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValid(value);
+                    return Enums<TEnum, ulong>.Cache.IsValid(value);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValid(value);
+                    return Enums<TEnum, sbyte>.Cache.IsValid(value);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValid(value);
+                    return Enums<TEnum, byte>.Cache.IsValid(value);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValid(value);
+                    return Enums<TEnum, short>.Cache.IsValid(value);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValid(value);
+                    return Enums<TEnum, ushort>.Cache.IsValid(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -732,25 +712,24 @@ namespace EnumsNET.Unsafe
         public static bool IsDefined<TEnum>(object value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
+                    return Enums<TEnum, int>.Cache.IsDefined(value);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
+                    return Enums<TEnum, uint>.Cache.IsDefined(value);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
+                    return Enums<TEnum, long>.Cache.IsDefined(value);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
+                    return Enums<TEnum, ulong>.Cache.IsDefined(value);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
+                    return Enums<TEnum, sbyte>.Cache.IsDefined(value);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
+                    return Enums<TEnum, byte>.Cache.IsDefined(value);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
+                    return Enums<TEnum, short>.Cache.IsDefined(value);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
+                    return Enums<TEnum, ushort>.Cache.IsDefined(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -767,25 +746,24 @@ namespace EnumsNET.Unsafe
         public static bool IsDefined<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
+                    return Enums<TEnum, int>.Cache.IsDefined(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
+                    return Enums<TEnum, uint>.Cache.IsDefined(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
+                    return Enums<TEnum, long>.Cache.IsDefined(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
+                    return Enums<TEnum, ulong>.Cache.IsDefined(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
+                    return Enums<TEnum, sbyte>.Cache.IsDefined(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
+                    return Enums<TEnum, byte>.Cache.IsDefined(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
+                    return Enums<TEnum, short>.Cache.IsDefined(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
+                    return Enums<TEnum, ushort>.Cache.IsDefined(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -805,25 +783,24 @@ namespace EnumsNET.Unsafe
         public static bool IsDefined<TEnum>(string name, bool ignoreCase = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, int>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, uint>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, long>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, ulong>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, sbyte>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, byte>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, short>.Cache.IsDefined(name, ignoreCase);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(name, ignoreCase);
+                    return Enums<TEnum, ushort>.Cache.IsDefined(name, ignoreCase);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -903,25 +880,24 @@ namespace EnumsNET.Unsafe
         public static bool IsDefined<TEnum>(long value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
+                    return Enums<TEnum, int>.Cache.IsDefined(value);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
+                    return Enums<TEnum, uint>.Cache.IsDefined(value);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
+                    return Enums<TEnum, long>.Cache.IsDefined(value);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
+                    return Enums<TEnum, ulong>.Cache.IsDefined(value);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
+                    return Enums<TEnum, sbyte>.Cache.IsDefined(value);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
+                    return Enums<TEnum, byte>.Cache.IsDefined(value);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
+                    return Enums<TEnum, short>.Cache.IsDefined(value);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
+                    return Enums<TEnum, ushort>.Cache.IsDefined(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -939,25 +915,24 @@ namespace EnumsNET.Unsafe
         public static bool IsDefined<TEnum>(ulong value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsDefined(value);
+                    return Enums<TEnum, int>.Cache.IsDefined(value);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsDefined(value);
+                    return Enums<TEnum, uint>.Cache.IsDefined(value);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsDefined(value);
+                    return Enums<TEnum, long>.Cache.IsDefined(value);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsDefined(value);
+                    return Enums<TEnum, ulong>.Cache.IsDefined(value);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsDefined(value);
+                    return Enums<TEnum, sbyte>.Cache.IsDefined(value);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsDefined(value);
+                    return Enums<TEnum, byte>.Cache.IsDefined(value);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsDefined(value);
+                    return Enums<TEnum, short>.Cache.IsDefined(value);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsDefined(value);
+                    return Enums<TEnum, ushort>.Cache.IsDefined(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -1117,26 +1092,24 @@ namespace EnumsNET.Unsafe
         public static TEnum ToObject<TEnum>(object value, bool validate = true)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
+                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.ToObject(value, validate));
                 case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
+                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.ToObject(value, validate));
                 case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
+                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.ToObject(value, validate));
                 case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
+                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.ToObject(value, validate));
                 case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
+                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.ToObject(value, validate));
                 case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
+                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.ToObject(value, validate));
                 case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
+                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.ToObject(value, validate));
                 case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
+                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.ToObject(value, validate));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TEnum);
@@ -1251,26 +1224,24 @@ namespace EnumsNET.Unsafe
         public static TEnum ToObject<TEnum>(long value, bool validate = true)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
+                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.ToObject(value, validate));
                 case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
+                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.ToObject(value, validate));
                 case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
+                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.ToObject(value, validate));
                 case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
+                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.ToObject(value, validate));
                 case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
+                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.ToObject(value, validate));
                 case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
+                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.ToObject(value, validate));
                 case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
+                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.ToObject(value, validate));
                 case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
+                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.ToObject(value, validate));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TEnum);
@@ -1293,26 +1264,24 @@ namespace EnumsNET.Unsafe
         public static TEnum ToObject<TEnum>(ulong value, bool validate = true)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).ToObject(value, validate));
+                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.ToObject(value, validate));
                 case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).ToObject(value, validate));
+                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.ToObject(value, validate));
                 case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).ToObject(value, validate));
+                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.ToObject(value, validate));
                 case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).ToObject(value, validate));
+                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.ToObject(value, validate));
                 case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).ToObject(value, validate));
+                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.ToObject(value, validate));
                 case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).ToObject(value, validate));
+                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.ToObject(value, validate));
                 case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).ToObject(value, validate));
+                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.ToObject(value, validate));
                 case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).ToObject(value, validate));
+                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.ToObject(value, validate));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TEnum);
@@ -1332,7 +1301,6 @@ namespace EnumsNET.Unsafe
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultEnum, bool validate = true)
         {
-            VerifyTypeIsEnum(typeof(TEnum));
             TEnum result;
             return TryToObject(value, out result, validate) ? result : defaultEnum;
         }
@@ -1438,7 +1406,6 @@ namespace EnumsNET.Unsafe
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultEnum, bool validate = true)
         {
-            VerifyTypeIsEnum(typeof(TEnum));
             TEnum result;
             return TryToObject(value, out result, validate) ? result : defaultEnum;
         }
@@ -1458,7 +1425,6 @@ namespace EnumsNET.Unsafe
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultEnum, bool validate = true)
         {
-            VerifyTypeIsEnum(typeof(TEnum));
             TEnum result;
             return TryToObject(value, out result, validate) ? result : defaultEnum;
         }
@@ -1478,50 +1444,48 @@ namespace EnumsNET.Unsafe
         public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate = true)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             bool success;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
                     int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
+                    success = Enums<TEnum, int>.Cache.TryToObject(value, out resultAsInt32, validate);
+                    result = Enums<TEnum, int>.ToEnum(resultAsInt32);
                     return success;
                 case TypeCode.UInt32:
                     uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
+                    success = Enums<TEnum, uint>.Cache.TryToObject(value, out resultAsUInt32, validate);
+                    result = Enums<TEnum, uint>.ToEnum(resultAsUInt32);
                     return success;
                 case TypeCode.Int64:
                     long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
+                    success = Enums<TEnum, long>.Cache.TryToObject(value, out resultAsInt64, validate);
+                    result = Enums<TEnum, long>.ToEnum(resultAsInt64);
                     return success;
                 case TypeCode.UInt64:
                     ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
+                    success = Enums<TEnum, ulong>.Cache.TryToObject(value, out resultAsUInt64, validate);
+                    result = Enums<TEnum, ulong>.ToEnum(resultAsUInt64);
                     return success;
                 case TypeCode.SByte:
                     sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
+                    success = Enums<TEnum, sbyte>.Cache.TryToObject(value, out resultAsSByte, validate);
+                    result = Enums<TEnum, sbyte>.ToEnum(resultAsSByte);
                     return success;
                 case TypeCode.Byte:
                     byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
+                    success = Enums<TEnum, byte>.Cache.TryToObject(value, out resultAsByte, validate);
+                    result = Enums<TEnum, byte>.ToEnum(resultAsByte);
                     return success;
                 case TypeCode.Int16:
                     short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
+                    success = Enums<TEnum, short>.Cache.TryToObject(value, out resultAsInt16, validate);
+                    result = Enums<TEnum, short>.ToEnum(resultAsInt16);
                     return success;
                 case TypeCode.UInt16:
                     ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
+                    success = Enums<TEnum, ushort>.Cache.TryToObject(value, out resultAsUInt16, validate);
+                    result = Enums<TEnum, ushort>.ToEnum(resultAsUInt16);
                     return success;
             }
             Debug.Fail("Unknown Enum TypeCode");
@@ -1631,50 +1595,48 @@ namespace EnumsNET.Unsafe
         public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate = true)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             bool success;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
                     int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
+                    success = Enums<TEnum, int>.Cache.TryToObject(value, out resultAsInt32, validate);
+                    result = Enums<TEnum, int>.ToEnum(resultAsInt32);
                     return success;
                 case TypeCode.UInt32:
                     uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
+                    success = Enums<TEnum, uint>.Cache.TryToObject(value, out resultAsUInt32, validate);
+                    result = Enums<TEnum, uint>.ToEnum(resultAsUInt32);
                     return success;
                 case TypeCode.Int64:
                     long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
+                    success = Enums<TEnum, long>.Cache.TryToObject(value, out resultAsInt64, validate);
+                    result = Enums<TEnum, long>.ToEnum(resultAsInt64);
                     return success;
                 case TypeCode.UInt64:
                     ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
+                    success = Enums<TEnum, ulong>.Cache.TryToObject(value, out resultAsUInt64, validate);
+                    result = Enums<TEnum, ulong>.ToEnum(resultAsUInt64);
                     return success;
                 case TypeCode.SByte:
                     sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
+                    success = Enums<TEnum, sbyte>.Cache.TryToObject(value, out resultAsSByte, validate);
+                    result = Enums<TEnum, sbyte>.ToEnum(resultAsSByte);
                     return success;
                 case TypeCode.Byte:
                     byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
+                    success = Enums<TEnum, byte>.Cache.TryToObject(value, out resultAsByte, validate);
+                    result = Enums<TEnum, byte>.ToEnum(resultAsByte);
                     return success;
                 case TypeCode.Int16:
                     short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
+                    success = Enums<TEnum, short>.Cache.TryToObject(value, out resultAsInt16, validate);
+                    result = Enums<TEnum, short>.ToEnum(resultAsInt16);
                     return success;
                 case TypeCode.UInt16:
                     ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
+                    success = Enums<TEnum, ushort>.Cache.TryToObject(value, out resultAsUInt16, validate);
+                    result = Enums<TEnum, ushort>.ToEnum(resultAsUInt16);
                     return success;
             }
             Debug.Fail("Unknown Enum TypeCode");
@@ -1698,50 +1660,48 @@ namespace EnumsNET.Unsafe
         public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate = true)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             bool success;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
                     int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryToObject(value, out resultAsInt32, validate);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
+                    success = Enums<TEnum, int>.Cache.TryToObject(value, out resultAsInt32, validate);
+                    result = Enums<TEnum, int>.ToEnum(resultAsInt32);
                     return success;
                 case TypeCode.UInt32:
                     uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryToObject(value, out resultAsUInt32, validate);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
+                    success = Enums<TEnum, uint>.Cache.TryToObject(value, out resultAsUInt32, validate);
+                    result = Enums<TEnum, uint>.ToEnum(resultAsUInt32);
                     return success;
                 case TypeCode.Int64:
                     long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryToObject(value, out resultAsInt64, validate);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
+                    success = Enums<TEnum, long>.Cache.TryToObject(value, out resultAsInt64, validate);
+                    result = Enums<TEnum, long>.ToEnum(resultAsInt64);
                     return success;
                 case TypeCode.UInt64:
                     ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryToObject(value, out resultAsUInt64, validate);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
+                    success = Enums<TEnum, ulong>.Cache.TryToObject(value, out resultAsUInt64, validate);
+                    result = Enums<TEnum, ulong>.ToEnum(resultAsUInt64);
                     return success;
                 case TypeCode.SByte:
                     sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryToObject(value, out resultAsSByte, validate);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
+                    success = Enums<TEnum, sbyte>.Cache.TryToObject(value, out resultAsSByte, validate);
+                    result = Enums<TEnum, sbyte>.ToEnum(resultAsSByte);
                     return success;
                 case TypeCode.Byte:
                     byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryToObject(value, out resultAsByte, validate);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
+                    success = Enums<TEnum, byte>.Cache.TryToObject(value, out resultAsByte, validate);
+                    result = Enums<TEnum, byte>.ToEnum(resultAsByte);
                     return success;
                 case TypeCode.Int16:
                     short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryToObject(value, out resultAsInt16, validate);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
+                    success = Enums<TEnum, short>.Cache.TryToObject(value, out resultAsInt16, validate);
+                    result = Enums<TEnum, short>.ToEnum(resultAsInt16);
                     return success;
                 case TypeCode.UInt16:
                     ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryToObject(value, out resultAsUInt16, validate);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
+                    success = Enums<TEnum, ushort>.Cache.TryToObject(value, out resultAsUInt16, validate);
+                    result = Enums<TEnum, ushort>.ToEnum(resultAsUInt16);
                     return success;
             }
             Debug.Fail("Unknown Enum TypeCode");
@@ -1765,33 +1725,31 @@ namespace EnumsNET.Unsafe
         public static TEnum Validate<TEnum>(TEnum value, string paramName)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    ((EnumsCache<int>)cache).Validate(((Func<TEnum, int>)toInt)(value), paramName);
+                    Enums<TEnum, int>.Cache.Validate(Enums<TEnum, int>.ToInt(value), paramName);
                     return value;
                 case TypeCode.UInt32:
-                    ((EnumsCache<uint>)cache).Validate(((Func<TEnum, uint>)toInt)(value), paramName);
+                    Enums<TEnum, uint>.Cache.Validate(Enums<TEnum, uint>.ToInt(value), paramName);
                     return value;
                 case TypeCode.Int64:
-                    ((EnumsCache<long>)cache).Validate(((Func<TEnum, long>)toInt)(value), paramName);
+                    Enums<TEnum, long>.Cache.Validate(Enums<TEnum, long>.ToInt(value), paramName);
                     return value;
                 case TypeCode.UInt64:
-                    ((EnumsCache<ulong>)cache).Validate(((Func<TEnum, ulong>)toInt)(value), paramName);
+                    Enums<TEnum, ulong>.Cache.Validate(Enums<TEnum, ulong>.ToInt(value), paramName);
                     return value;
                 case TypeCode.SByte:
-                    ((EnumsCache<sbyte>)cache).Validate(((Func<TEnum, sbyte>)toInt)(value), paramName);
+                    Enums<TEnum, sbyte>.Cache.Validate(Enums<TEnum, sbyte>.ToInt(value), paramName);
                     return value;
                 case TypeCode.Byte:
-                    ((EnumsCache<byte>)cache).Validate(((Func<TEnum, byte>)toInt)(value), paramName);
+                    Enums<TEnum, byte>.Cache.Validate(Enums<TEnum, byte>.ToInt(value), paramName);
                     return value;
                 case TypeCode.Int16:
-                    ((EnumsCache<short>)cache).Validate(((Func<TEnum, short>)toInt)(value), paramName);
+                    Enums<TEnum, short>.Cache.Validate(Enums<TEnum, short>.ToInt(value), paramName);
                     return value;
                 case TypeCode.UInt16:
-                    ((EnumsCache<ushort>)cache).Validate(((Func<TEnum, ushort>)toInt)(value), paramName);
+                    Enums<TEnum, ushort>.Cache.Validate(Enums<TEnum, ushort>.ToInt(value), paramName);
                     return value;
             }
             Debug.Fail("Unknown Enum TypeCode");
@@ -1809,26 +1767,24 @@ namespace EnumsNET.Unsafe
         public static string AsString<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).AsString(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.AsString(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).AsString(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.AsString(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).AsString(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.AsString(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).AsString(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.AsString(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).AsString(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.AsString(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).AsString(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.AsString(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).AsString(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.AsString(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).AsString(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.AsString(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -1847,26 +1803,24 @@ namespace EnumsNET.Unsafe
         public static string AsString<TEnum>(TEnum value, string format)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).AsString(((Func<TEnum, int>)toInt)(value), format);
+                    return Enums<TEnum, int>.Cache.AsString(Enums<TEnum, int>.ToInt(value), format);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).AsString(((Func<TEnum, uint>)toInt)(value), format);
+                    return Enums<TEnum, uint>.Cache.AsString(Enums<TEnum, uint>.ToInt(value), format);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).AsString(((Func<TEnum, long>)toInt)(value), format);
+                    return Enums<TEnum, long>.Cache.AsString(Enums<TEnum, long>.ToInt(value), format);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).AsString(((Func<TEnum, ulong>)toInt)(value), format);
+                    return Enums<TEnum, ulong>.Cache.AsString(Enums<TEnum, ulong>.ToInt(value), format);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).AsString(((Func<TEnum, sbyte>)toInt)(value), format);
+                    return Enums<TEnum, sbyte>.Cache.AsString(Enums<TEnum, sbyte>.ToInt(value), format);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).AsString(((Func<TEnum, byte>)toInt)(value), format);
+                    return Enums<TEnum, byte>.Cache.AsString(Enums<TEnum, byte>.ToInt(value), format);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).AsString(((Func<TEnum, short>)toInt)(value), format);
+                    return Enums<TEnum, short>.Cache.AsString(Enums<TEnum, short>.ToInt(value), format);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).AsString(((Func<TEnum, ushort>)toInt)(value), format);
+                    return Enums<TEnum, ushort>.Cache.AsString(Enums<TEnum, ushort>.ToInt(value), format);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -1876,26 +1830,24 @@ namespace EnumsNET.Unsafe
         public static string AsString<TEnum>(TEnum value, params EnumFormat[] formats)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).AsString(((Func<TEnum, int>)toInt)(value), formats);
+                    return Enums<TEnum, int>.Cache.AsString(Enums<TEnum, int>.ToInt(value), formats);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).AsString(((Func<TEnum, uint>)toInt)(value), formats);
+                    return Enums<TEnum, uint>.Cache.AsString(Enums<TEnum, uint>.ToInt(value), formats);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).AsString(((Func<TEnum, long>)toInt)(value), formats);
+                    return Enums<TEnum, long>.Cache.AsString(Enums<TEnum, long>.ToInt(value), formats);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).AsString(((Func<TEnum, ulong>)toInt)(value), formats);
+                    return Enums<TEnum, ulong>.Cache.AsString(Enums<TEnum, ulong>.ToInt(value), formats);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).AsString(((Func<TEnum, sbyte>)toInt)(value), formats);
+                    return Enums<TEnum, sbyte>.Cache.AsString(Enums<TEnum, sbyte>.ToInt(value), formats);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).AsString(((Func<TEnum, byte>)toInt)(value), formats);
+                    return Enums<TEnum, byte>.Cache.AsString(Enums<TEnum, byte>.ToInt(value), formats);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).AsString(((Func<TEnum, short>)toInt)(value), formats);
+                    return Enums<TEnum, short>.Cache.AsString(Enums<TEnum, short>.ToInt(value), formats);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).AsString(((Func<TEnum, ushort>)toInt)(value), formats);
+                    return Enums<TEnum, ushort>.Cache.AsString(Enums<TEnum, ushort>.ToInt(value), formats);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -1915,26 +1867,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, string format)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), format);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), format);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), format);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), format);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), format);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), format);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), format);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), format);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -1944,26 +1894,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, EnumFormat format)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
-            switch (Enums<TEnum>.TypeCode)
+            switch(Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), format);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), format);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), format);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), format);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), format);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), format);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), format);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), format);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -1973,26 +1921,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), format0, format1);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), format0, format1);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), format0, format1);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), format0, format1);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), format0, format1);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), format0, format1);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), format0, format1);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), format0, format1);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2002,26 +1948,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), format0, format1, format2);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2031,26 +1975,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2, format3);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), format0, format1, format2, format3);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2, format3);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2060,26 +2002,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2, format3, format4);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), format0, format1, format2, format3, format4);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2, format3, format4);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2089,26 +2029,24 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, params EnumFormat[] formats)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).Format(((Func<TEnum, int>)toInt)(value), formats);
+                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), formats);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).Format(((Func<TEnum, uint>)toInt)(value), formats);
+                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), formats);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).Format(((Func<TEnum, long>)toInt)(value), formats);
+                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), formats);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).Format(((Func<TEnum, ulong>)toInt)(value), formats);
+                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), formats);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).Format(((Func<TEnum, sbyte>)toInt)(value), formats);
+                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), formats);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).Format(((Func<TEnum, byte>)toInt)(value), formats);
+                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), formats);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).Format(((Func<TEnum, short>)toInt)(value), formats);
+                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), formats);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).Format(((Func<TEnum, ushort>)toInt)(value), formats);
+                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), formats);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2125,25 +2063,24 @@ namespace EnumsNET.Unsafe
         public static object GetUnderlyingValue<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<TEnum, int>)toInt)(value);
+                    return Enums<TEnum, int>.ToInt(value);
                 case TypeCode.UInt32:
-                    return ((Func<TEnum, uint>)toInt)(value);
+                    return Enums<TEnum, uint>.ToInt(value);
                 case TypeCode.Int64:
-                    return ((Func<TEnum, long>)toInt)(value);
+                    return Enums<TEnum, long>.ToInt(value);
                 case TypeCode.UInt64:
-                    return ((Func<TEnum, ulong>)toInt)(value);
+                    return Enums<TEnum, ulong>.ToInt(value);
                 case TypeCode.SByte:
-                    return ((Func<TEnum, sbyte>)toInt)(value);
+                    return Enums<TEnum, sbyte>.ToInt(value);
                 case TypeCode.Byte:
-                    return ((Func<TEnum, byte>)toInt)(value);
+                    return Enums<TEnum, byte>.ToInt(value);
                 case TypeCode.Int16:
-                    return ((Func<TEnum, short>)toInt)(value);
+                    return Enums<TEnum, short>.ToInt(value);
                 case TypeCode.UInt16:
-                    return ((Func<TEnum, ushort>)toInt)(value);
+                    return Enums<TEnum, ushort>.ToInt(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2162,25 +2099,24 @@ namespace EnumsNET.Unsafe
         public static sbyte ToSByte<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToSByte(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToSByte(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToSByte(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToSByte(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToSByte(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToSByte(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToSByte(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToSByte(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToSByte(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToSByte(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToSByte(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToSByte(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToSByte(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToSByte(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToSByte(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToSByte(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2198,25 +2134,24 @@ namespace EnumsNET.Unsafe
         public static byte ToByte<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToByte(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToByte(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToByte(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToByte(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToByte(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToByte(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToByte(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToByte(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToByte(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToByte(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToByte(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToByte(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToByte(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToByte(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToByte(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToByte(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2234,25 +2169,24 @@ namespace EnumsNET.Unsafe
         public static short ToInt16<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToInt16(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToInt16(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToInt16(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToInt16(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToInt16(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToInt16(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToInt16(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToInt16(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToInt16(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToInt16(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToInt16(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToInt16(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToInt16(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToInt16(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToInt16(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToInt16(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2271,25 +2205,24 @@ namespace EnumsNET.Unsafe
         public static ushort ToUInt16<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToUInt16(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToUInt16(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToUInt16(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToUInt16(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToUInt16(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToUInt16(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToUInt16(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToUInt16(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToUInt16(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToUInt16(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToUInt16(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToUInt16(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToUInt16(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToUInt16(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToUInt16(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToUInt16(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2307,25 +2240,24 @@ namespace EnumsNET.Unsafe
         public static int ToInt32<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToInt32(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToInt32(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToInt32(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToInt32(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToInt32(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToInt32(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToInt32(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToInt32(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToInt32(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToInt32(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToInt32(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToInt32(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToInt32(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToInt32(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToInt32(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToInt32(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2344,25 +2276,24 @@ namespace EnumsNET.Unsafe
         public static uint ToUInt32<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToUInt32(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToUInt32(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToUInt32(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToUInt32(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToUInt32(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToUInt32(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToUInt32(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToUInt32(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToUInt32(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToUInt32(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToUInt32(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToUInt32(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToUInt32(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToUInt32(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToUInt32(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToUInt32(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2380,25 +2311,24 @@ namespace EnumsNET.Unsafe
         public static long ToInt64<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToInt64(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToInt64(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToInt64(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToInt64(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToInt64(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToInt64(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToInt64(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToInt64(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToInt64(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToInt64(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToInt64(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToInt64(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToInt64(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToInt64(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToInt64(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToInt64(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2417,25 +2347,24 @@ namespace EnumsNET.Unsafe
         public static ulong ToUInt64<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return EnumsCache<int>.ToUInt64(((Func<TEnum, int>)toInt)(value));
+                    return EnumsCache<int>.ToUInt64(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return EnumsCache<uint>.ToUInt64(((Func<TEnum, uint>)toInt)(value));
+                    return EnumsCache<uint>.ToUInt64(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return EnumsCache<long>.ToUInt64(((Func<TEnum, long>)toInt)(value));
+                    return EnumsCache<long>.ToUInt64(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return EnumsCache<ulong>.ToUInt64(((Func<TEnum, ulong>)toInt)(value));
+                    return EnumsCache<ulong>.ToUInt64(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return EnumsCache<sbyte>.ToUInt64(((Func<TEnum, sbyte>)toInt)(value));
+                    return EnumsCache<sbyte>.ToUInt64(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return EnumsCache<byte>.ToUInt64(((Func<TEnum, byte>)toInt)(value));
+                    return EnumsCache<byte>.ToUInt64(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return EnumsCache<short>.ToUInt64(((Func<TEnum, short>)toInt)(value));
+                    return EnumsCache<short>.ToUInt64(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return EnumsCache<ushort>.ToUInt64(((Func<TEnum, ushort>)toInt)(value));
+                    return EnumsCache<ushort>.ToUInt64(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2445,25 +2374,24 @@ namespace EnumsNET.Unsafe
         public static int GetHashCode<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<TEnum, int>)toInt)(value);
+                    return Enums<TEnum, int>.ToInt(value);
                 case TypeCode.UInt32:
-                    return ((Func<TEnum, uint>)toInt)(value).GetHashCode();
+                    return Enums<TEnum, uint>.ToInt(value).GetHashCode();
                 case TypeCode.Int64:
-                    return ((Func<TEnum, long>)toInt)(value).GetHashCode();
+                    return Enums<TEnum, long>.ToInt(value).GetHashCode();
                 case TypeCode.UInt64:
-                    return ((Func<TEnum, ulong>)toInt)(value).GetHashCode();
+                    return Enums<TEnum, ulong>.ToInt(value).GetHashCode();
                 case TypeCode.SByte:
-                    return ((Func<TEnum, sbyte>)toInt)(value);
+                    return Enums<TEnum, sbyte>.ToInt(value);
                 case TypeCode.Byte:
-                    return ((Func<TEnum, byte>)toInt)(value);
+                    return Enums<TEnum, byte>.ToInt(value);
                 case TypeCode.Int16:
-                    return ((Func<TEnum, short>)toInt)(value);
+                    return Enums<TEnum, short>.ToInt(value);
                 case TypeCode.UInt16:
-                    return ((Func<TEnum, ushort>)toInt)(value);
+                    return Enums<TEnum, ushort>.ToInt(value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
@@ -2475,34 +2403,32 @@ namespace EnumsNET.Unsafe
         public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             IEnumMemberInfo info = null;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    info = ((EnumsCache<int>)cache).GetEnumMemberInfo(((Func<TEnum, int>)toInt)(value));
+                    info = Enums<TEnum, int>.Cache.GetEnumMemberInfo(Enums<TEnum, int>.ToInt(value));
                     break;
                 case TypeCode.UInt32:
-                    info = ((EnumsCache<uint>)cache).GetEnumMemberInfo(((Func<TEnum, uint>)toInt)(value));
+                    info = Enums<TEnum, uint>.Cache.GetEnumMemberInfo(Enums<TEnum, uint>.ToInt(value));
                     break;
                 case TypeCode.Int64:
-                    info = ((EnumsCache<long>)cache).GetEnumMemberInfo(((Func<TEnum, long>)toInt)(value));
+                    info = Enums<TEnum, long>.Cache.GetEnumMemberInfo(Enums<TEnum, long>.ToInt(value));
                     break;
                 case TypeCode.UInt64:
-                    info = ((EnumsCache<ulong>)cache).GetEnumMemberInfo(((Func<TEnum, ulong>)toInt)(value));
+                    info = Enums<TEnum, ulong>.Cache.GetEnumMemberInfo(Enums<TEnum, ulong>.ToInt(value));
                     break;
                 case TypeCode.SByte:
-                    info = ((EnumsCache<sbyte>)cache).GetEnumMemberInfo(((Func<TEnum, sbyte>)toInt)(value));
+                    info = Enums<TEnum, sbyte>.Cache.GetEnumMemberInfo(Enums<TEnum, sbyte>.ToInt(value));
                     break;
                 case TypeCode.Byte:
-                    info = ((EnumsCache<byte>)cache).GetEnumMemberInfo(((Func<TEnum, byte>)toInt)(value));
+                    info = Enums<TEnum, byte>.Cache.GetEnumMemberInfo(Enums<TEnum, byte>.ToInt(value));
                     break;
                 case TypeCode.Int16:
-                    info = ((EnumsCache<short>)cache).GetEnumMemberInfo(((Func<TEnum, short>)toInt)(value));
+                    info = Enums<TEnum, short>.Cache.GetEnumMemberInfo(Enums<TEnum, short>.ToInt(value));
                     break;
                 case TypeCode.UInt16:
-                    info = ((EnumsCache<ushort>)cache).GetEnumMemberInfo(((Func<TEnum, ushort>)toInt)(value));
+                    info = Enums<TEnum, ushort>.Cache.GetEnumMemberInfo(Enums<TEnum, ushort>.ToInt(value));
                     break;
                 default:
                     Debug.Fail("Unknown Enum TypeCode");
@@ -2515,34 +2441,32 @@ namespace EnumsNET.Unsafe
         public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(string name, bool ignoreCase = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             IEnumMemberInfo info = null;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    info = ((EnumsCache<int>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, int>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.UInt32:
-                    info = ((EnumsCache<uint>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, uint>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.Int64:
-                    info = ((EnumsCache<long>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, long>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.UInt64:
-                    info = ((EnumsCache<ulong>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, ulong>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.SByte:
-                    info = ((EnumsCache<sbyte>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, sbyte>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.Byte:
-                    info = ((EnumsCache<byte>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, byte>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.Int16:
-                    info = ((EnumsCache<short>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, short>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 case TypeCode.UInt16:
-                    info = ((EnumsCache<ushort>)cache).GetEnumMemberInfo(name, ignoreCase);
+                    info = Enums<TEnum, ushort>.Cache.GetEnumMemberInfo(name, ignoreCase);
                     break;
                 default:
                     Debug.Fail("Unknown Enum TypeCode");
@@ -2564,26 +2488,24 @@ namespace EnumsNET.Unsafe
         public static string GetName<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetName(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.GetName(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetName(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.GetName(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetName(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.GetName(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetName(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.GetName(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetName(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.GetName(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetName(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.GetName(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetName(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.GetName(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetName(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.GetName(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2602,83 +2524,92 @@ namespace EnumsNET.Unsafe
         public static string GetDescription<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescription(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.GetDescription(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescription(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.GetDescription(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescription(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.GetDescription(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescription(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.GetDescription(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescription(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.GetDescription(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescription(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.GetDescription(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescription(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.GetDescription(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescription(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.GetDescription(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
         }
 
+        /// <summary>
+        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static string GetDescriptionOrName<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionOrName(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.GetDescriptionOrName(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionOrName(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.GetDescriptionOrName(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionOrName(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.GetDescriptionOrName(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionOrName(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.GetDescriptionOrName(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionOrName(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.GetDescriptionOrName(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionOrName(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.GetDescriptionOrName(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionOrName(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.GetDescriptionOrName(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionOrName(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.GetDescriptionOrName(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
         }
 
+        /// <summary>
+        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="nameFormatter"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         public static string GetDescriptionOrName<TEnum>(TEnum value, Func<string, string> nameFormatter)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionOrName(((Func<TEnum, int>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, int>.Cache.GetDescriptionOrName(Enums<TEnum, int>.ToInt(value), nameFormatter);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionOrName(((Func<TEnum, uint>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, uint>.Cache.GetDescriptionOrName(Enums<TEnum, uint>.ToInt(value), nameFormatter);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionOrName(((Func<TEnum, long>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, long>.Cache.GetDescriptionOrName(Enums<TEnum, long>.ToInt(value), nameFormatter);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionOrName(((Func<TEnum, ulong>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, ulong>.Cache.GetDescriptionOrName(Enums<TEnum, ulong>.ToInt(value), nameFormatter);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionOrName(((Func<TEnum, sbyte>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, sbyte>.Cache.GetDescriptionOrName(Enums<TEnum, sbyte>.ToInt(value), nameFormatter);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionOrName(((Func<TEnum, byte>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, byte>.Cache.GetDescriptionOrName(Enums<TEnum, byte>.ToInt(value), nameFormatter);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionOrName(((Func<TEnum, short>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, short>.Cache.GetDescriptionOrName(Enums<TEnum, short>.ToInt(value), nameFormatter);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionOrName(((Func<TEnum, ushort>)toInt)(value), nameFormatter);
+                    return Enums<TEnum, ushort>.Cache.GetDescriptionOrName(Enums<TEnum, ushort>.ToInt(value), nameFormatter);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2711,26 +2642,24 @@ namespace EnumsNET.Unsafe
             where TAttribute : Attribute
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAttribute<TAttribute>(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.GetAttribute<TAttribute>(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAttribute<TAttribute>(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.GetAttribute<TAttribute>(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAttribute<TAttribute>(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.GetAttribute<TAttribute>(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAttribute<TAttribute>(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.GetAttribute<TAttribute>(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAttribute<TAttribute>(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.GetAttribute<TAttribute>(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAttribute<TAttribute>(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.GetAttribute<TAttribute>(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAttribute<TAttribute>(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.GetAttribute<TAttribute>(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAttribute<TAttribute>(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.GetAttribute<TAttribute>(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2754,26 +2683,24 @@ namespace EnumsNET.Unsafe
             where TAttribute : Attribute
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAttributeSelect(((Func<TEnum, int>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, int>.Cache.GetAttributeSelect(Enums<TEnum, int>.ToInt(value), selector, defaultValue);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAttributeSelect(((Func<TEnum, uint>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, uint>.Cache.GetAttributeSelect(Enums<TEnum, uint>.ToInt(value), selector, defaultValue);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAttributeSelect(((Func<TEnum, long>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, long>.Cache.GetAttributeSelect(Enums<TEnum, long>.ToInt(value), selector, defaultValue);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAttributeSelect(((Func<TEnum, ulong>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, ulong>.Cache.GetAttributeSelect(Enums<TEnum, ulong>.ToInt(value), selector, defaultValue);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAttributeSelect(((Func<TEnum, sbyte>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, sbyte>.Cache.GetAttributeSelect(Enums<TEnum, sbyte>.ToInt(value), selector, defaultValue);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAttributeSelect(((Func<TEnum, byte>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, byte>.Cache.GetAttributeSelect(Enums<TEnum, byte>.ToInt(value), selector, defaultValue);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAttributeSelect(((Func<TEnum, short>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, short>.Cache.GetAttributeSelect(Enums<TEnum, short>.ToInt(value), selector, defaultValue);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAttributeSelect(((Func<TEnum, ushort>)toInt)(value), selector, defaultValue);
+                    return Enums<TEnum, ushort>.Cache.GetAttributeSelect(Enums<TEnum, ushort>.ToInt(value), selector, defaultValue);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TResult);
@@ -2784,26 +2711,24 @@ namespace EnumsNET.Unsafe
             where TAttribute : Attribute
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).TryGetAttributeSelect(((Func<TEnum, int>)toInt)(value), selector, out result);
+                    return Enums<TEnum, int>.Cache.TryGetAttributeSelect(Enums<TEnum, int>.ToInt(value), selector, out result);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).TryGetAttributeSelect(((Func<TEnum, uint>)toInt)(value), selector, out result);
+                    return Enums<TEnum, uint>.Cache.TryGetAttributeSelect(Enums<TEnum, uint>.ToInt(value), selector, out result);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).TryGetAttributeSelect(((Func<TEnum, long>)toInt)(value), selector, out result);
+                    return Enums<TEnum, long>.Cache.TryGetAttributeSelect(Enums<TEnum, long>.ToInt(value), selector, out result);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).TryGetAttributeSelect(((Func<TEnum, ulong>)toInt)(value), selector, out result);
+                    return Enums<TEnum, ulong>.Cache.TryGetAttributeSelect(Enums<TEnum, ulong>.ToInt(value), selector, out result);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).TryGetAttributeSelect(((Func<TEnum, sbyte>)toInt)(value), selector, out result);
+                    return Enums<TEnum, sbyte>.Cache.TryGetAttributeSelect(Enums<TEnum, sbyte>.ToInt(value), selector, out result);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).TryGetAttributeSelect(((Func<TEnum, byte>)toInt)(value), selector, out result);
+                    return Enums<TEnum, byte>.Cache.TryGetAttributeSelect(Enums<TEnum, byte>.ToInt(value), selector, out result);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).TryGetAttributeSelect(((Func<TEnum, short>)toInt)(value), selector, out result);
+                    return Enums<TEnum, short>.Cache.TryGetAttributeSelect(Enums<TEnum, short>.ToInt(value), selector, out result);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).TryGetAttributeSelect(((Func<TEnum, ushort>)toInt)(value), selector, out result);
+                    return Enums<TEnum, ushort>.Cache.TryGetAttributeSelect(Enums<TEnum, ushort>.ToInt(value), selector, out result);
             }
             Debug.Fail("Unknown Enum TypeCode");
             result = default(TResult);
@@ -2823,26 +2748,24 @@ namespace EnumsNET.Unsafe
             where TAttribute : Attribute
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAttributes<TAttribute>(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.GetAttributes<TAttribute>(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAttributes<TAttribute>(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.GetAttributes<TAttribute>(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAttributes<TAttribute>(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.GetAttributes<TAttribute>(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAttributes<TAttribute>(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.GetAttributes<TAttribute>(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAttributes<TAttribute>(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.GetAttributes<TAttribute>(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAttributes<TAttribute>(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.GetAttributes<TAttribute>(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAttributes<TAttribute>(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.GetAttributes<TAttribute>(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAttributes<TAttribute>(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.GetAttributes<TAttribute>(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2859,26 +2782,24 @@ namespace EnumsNET.Unsafe
         public static Attribute[] GetAllAttributes<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toInt = Enums<TEnum>.ToInt;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAllAttributes(((Func<TEnum, int>)toInt)(value));
+                    return Enums<TEnum, int>.Cache.GetAllAttributes(Enums<TEnum, int>.ToInt(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAllAttributes(((Func<TEnum, uint>)toInt)(value));
+                    return Enums<TEnum, uint>.Cache.GetAllAttributes(Enums<TEnum, uint>.ToInt(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAllAttributes(((Func<TEnum, long>)toInt)(value));
+                    return Enums<TEnum, long>.Cache.GetAllAttributes(Enums<TEnum, long>.ToInt(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAllAttributes(((Func<TEnum, ulong>)toInt)(value));
+                    return Enums<TEnum, ulong>.Cache.GetAllAttributes(Enums<TEnum, ulong>.ToInt(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAllAttributes(((Func<TEnum, sbyte>)toInt)(value));
+                    return Enums<TEnum, sbyte>.Cache.GetAllAttributes(Enums<TEnum, sbyte>.ToInt(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAllAttributes(((Func<TEnum, byte>)toInt)(value));
+                    return Enums<TEnum, byte>.Cache.GetAllAttributes(Enums<TEnum, byte>.ToInt(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAllAttributes(((Func<TEnum, short>)toInt)(value));
+                    return Enums<TEnum, short>.Cache.GetAllAttributes(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAllAttributes(((Func<TEnum, ushort>)toInt)(value));
+                    return Enums<TEnum, ushort>.Cache.GetAllAttributes(Enums<TEnum, ushort>.ToInt(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2958,26 +2879,24 @@ namespace EnumsNET.Unsafe
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, TEnum>)toEnum)(((EnumsCache<int>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.UInt32:
-                    return ((Func<uint, TEnum>)toEnum)(((EnumsCache<uint>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.Int64:
-                    return ((Func<long, TEnum>)toEnum)(((EnumsCache<long>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.UInt64:
-                    return ((Func<ulong, TEnum>)toEnum)(((EnumsCache<ulong>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.SByte:
-                    return ((Func<sbyte, TEnum>)toEnum)(((EnumsCache<sbyte>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.Byte:
-                    return ((Func<byte, TEnum>)toEnum)(((EnumsCache<byte>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.Int16:
-                    return ((Func<short, TEnum>)toEnum)(((EnumsCache<short>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.Parse(value, ignoreCase, parseFormatOrder));
                 case TypeCode.UInt16:
-                    return ((Func<ushort, TEnum>)toEnum)(((EnumsCache<ushort>)cache).Parse(value, ignoreCase, parseFormatOrder));
+                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.Parse(value, ignoreCase, parseFormatOrder));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TEnum);
@@ -3036,7 +2955,6 @@ namespace EnumsNET.Unsafe
         [Pure]
         public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
         {
-            VerifyTypeIsEnum(typeof(TEnum));
             TEnum result;
             return TryParse(value, ignoreCase, out result, parseFormatOrder) ? result : defaultEnum;
         }
@@ -3095,50 +3013,48 @@ namespace EnumsNET.Unsafe
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            var cache = Enums<TEnum>.Cache;
-            var toEnum = Enums<TEnum>.ToEnum;
-            var success = false;
+            bool success;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
                     int resultAsInt32;
-                    success = ((EnumsCache<int>)cache).TryParse(value, ignoreCase, out resultAsInt32, parseFormatOrder);
-                    result = ((Func<int, TEnum>)toEnum)(resultAsInt32);
+                    success = Enums<TEnum, int>.Cache.TryParse(value, ignoreCase, out resultAsInt32, parseFormatOrder);
+                    result = Enums<TEnum, int>.ToEnum(resultAsInt32);
                     return success;
                 case TypeCode.UInt32:
                     uint resultAsUInt32;
-                    success = ((EnumsCache<uint>)cache).TryParse(value, ignoreCase, out resultAsUInt32, parseFormatOrder);
-                    result = ((Func<uint, TEnum>)toEnum)(resultAsUInt32);
+                    success = Enums<TEnum, uint>.Cache.TryParse(value, ignoreCase, out resultAsUInt32, parseFormatOrder);
+                    result = Enums<TEnum, uint>.ToEnum(resultAsUInt32);
                     return success;
                 case TypeCode.Int64:
                     long resultAsInt64;
-                    success = ((EnumsCache<long>)cache).TryParse(value, ignoreCase, out resultAsInt64, parseFormatOrder);
-                    result = ((Func<long, TEnum>)toEnum)(resultAsInt64);
+                    success = Enums<TEnum, long>.Cache.TryParse(value, ignoreCase, out resultAsInt64, parseFormatOrder);
+                    result = Enums<TEnum, long>.ToEnum(resultAsInt64);
                     return success;
                 case TypeCode.UInt64:
                     ulong resultAsUInt64;
-                    success = ((EnumsCache<ulong>)cache).TryParse(value, ignoreCase, out resultAsUInt64, parseFormatOrder);
-                    result = ((Func<ulong, TEnum>)toEnum)(resultAsUInt64);
+                    success = Enums<TEnum, ulong>.Cache.TryParse(value, ignoreCase, out resultAsUInt64, parseFormatOrder);
+                    result = Enums<TEnum, ulong>.ToEnum(resultAsUInt64);
                     return success;
                 case TypeCode.SByte:
                     sbyte resultAsSByte;
-                    success = ((EnumsCache<sbyte>)cache).TryParse(value, ignoreCase, out resultAsSByte, parseFormatOrder);
-                    result = ((Func<sbyte, TEnum>)toEnum)(resultAsSByte);
+                    success = Enums<TEnum, sbyte>.Cache.TryParse(value, ignoreCase, out resultAsSByte, parseFormatOrder);
+                    result = Enums<TEnum, sbyte>.ToEnum(resultAsSByte);
                     return success;
                 case TypeCode.Byte:
                     byte resultAsByte;
-                    success = ((EnumsCache<byte>)cache).TryParse(value, ignoreCase, out resultAsByte, parseFormatOrder);
-                    result = ((Func<byte, TEnum>)toEnum)(resultAsByte);
+                    success = Enums<TEnum, byte>.Cache.TryParse(value, ignoreCase, out resultAsByte, parseFormatOrder);
+                    result = Enums<TEnum, byte>.ToEnum(resultAsByte);
                     return success;
                 case TypeCode.Int16:
                     short resultAsInt16;
-                    success = ((EnumsCache<short>)cache).TryParse(value, ignoreCase, out resultAsInt16, parseFormatOrder);
-                    result = ((Func<short, TEnum>)toEnum)(resultAsInt16);
+                    success = Enums<TEnum, short>.Cache.TryParse(value, ignoreCase, out resultAsInt16, parseFormatOrder);
+                    result = Enums<TEnum, short>.ToEnum(resultAsInt16);
                     return success;
                 case TypeCode.UInt16:
                     ushort resultAsUInt16;
-                    success = ((EnumsCache<ushort>)cache).TryParse(value, ignoreCase, out resultAsUInt16, parseFormatOrder);
-                    result = ((Func<ushort, TEnum>)toEnum)(resultAsUInt16);
+                    success = Enums<TEnum, ushort>.Cache.TryParse(value, ignoreCase, out resultAsUInt16, parseFormatOrder);
+                    result = Enums<TEnum, ushort>.ToEnum(resultAsUInt16);
                     return success;
             }
             Debug.Fail("Unknown Enum TypeCode");

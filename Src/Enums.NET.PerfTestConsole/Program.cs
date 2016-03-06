@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using EnumsNET.NonGeneric;
 
 namespace EnumsNET.PerfTestConsole
 {
@@ -13,7 +14,7 @@ namespace EnumsNET.PerfTestConsole
             {
                 foreach (var enumType in enumTypes)
                 {
-                    NonGeneric.NonGenericEnums.IsContiguous(enumType);
+                    NonGenericEnums.IsContiguous(enumType);
                 }
             }
             Console.WriteLine(enumTypes.Count);
@@ -33,7 +34,7 @@ namespace EnumsNET.PerfTestConsole
             {
                 for (var i = 0; i < iterations; ++i)
                 {
-                    NonGeneric.NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
+                    NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
                 }
             }
 

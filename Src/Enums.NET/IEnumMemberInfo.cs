@@ -55,5 +55,6 @@ namespace EnumsNET
         ushort ToUInt16();
         uint ToUInt32();
         ulong ToUInt64();
+        int GetHashCode();
     }
 }

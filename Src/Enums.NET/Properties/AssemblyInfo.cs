@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Enums.NET")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Enums.NET is an efficient type-safe .NET enum utility library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Stifel Nicolaus")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Enums.NET")]
-[assembly: AssemblyCopyright("Copyright © Stifel Nicolaus 2015")]
+[assembly: AssemblyCopyright("Copyright © Tyler Brinkley 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
