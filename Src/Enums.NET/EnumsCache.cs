@@ -287,7 +287,7 @@ namespace EnumsNET
 
         public IEnumerable<string> GetFormattedValues(EnumFormat[] formats, bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Format(formats));
 
-        public IEnumerable<Attribute[]> GetAllAttributes(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Attributes);
+        public IEnumerable<Attribute[]> GetAttributes(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Attributes);
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(bool uniqueValued)
             where TAttribute : Attribute => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.GetAttribute<TAttribute>());
@@ -718,7 +718,7 @@ namespace EnumsNET
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TInt value)
             where TAttribute : Attribute => GetEnumMemberInfo(value).GetAttributes<TAttribute>();
 
-        public Attribute[] GetAllAttributes(TInt value) => GetEnumMemberInfo(value).Attributes;
+        public Attribute[] GetAttributes(TInt value) => GetEnumMemberInfo(value).Attributes;
         #endregion
 
         #region Parsing

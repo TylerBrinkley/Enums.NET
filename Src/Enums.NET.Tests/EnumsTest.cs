@@ -169,14 +169,14 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetAllAttributes()
+        public void GetAttributes1()
         {
-            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetAllAttributes<ColorFlagEnum>());
-            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetAllAttributes<ByteEnum>());
+            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetAttributes<ColorFlagEnum>());
+            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetAttributes<ByteEnum>());
         }
 
         [Test]
-        public void GetAttributes()
+        public void GetAttributes2()
         {
             CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetAttributes<ColorFlagEnum, DescriptionAttribute>().ToArray());
             CollectionAssert.AreEqual(new DescriptionAttribute[0], GetAttributes<ByteEnum, DescriptionAttribute>().ToArray());

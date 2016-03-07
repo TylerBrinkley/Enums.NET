@@ -301,6 +301,13 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
+        /// <summary>
+        /// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' descriptions else names.
+        /// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="uniqueValued"></param>
+        /// <returns></returns>
         [Pure]
         public static IEnumerable<string> GetDescriptionsOrNames(Type enumType, bool uniqueValued = false)
         {
@@ -367,7 +374,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static IEnumerable<Attribute[]> GetAllAttributes(Type enumType, bool uniqueValued = false)
+        public static IEnumerable<Attribute[]> GetAttributes(Type enumType, bool uniqueValued = false)
         {
             var enumsCache = NonGenericEnumsCache.Get(enumType);
 
@@ -375,21 +382,21 @@ namespace EnumsNET.NonGeneric
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<int>)cache).GetAttributes(uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<uint>)cache).GetAttributes(uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<long>)cache).GetAttributes(uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<ulong>)cache).GetAttributes(uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<sbyte>)cache).GetAttributes(uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<byte>)cache).GetAttributes(uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<short>)cache).GetAttributes(uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAllAttributes(uniqueValued);
+                    return ((EnumsCache<ushort>)cache).GetAttributes(uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -483,6 +490,14 @@ namespace EnumsNET.NonGeneric
             return false;
         }
 
+        /// <summary>
+        /// Registers a custom enum format for <paramref name="enumType"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="formatter"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<EnumMemberInfo, string> formatter)
         {
@@ -1845,6 +1860,15 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="formats"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         public static string AsString(Type enumType, object value, params EnumFormat[] formats)
         {
@@ -2677,7 +2701,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is invalid</exception>
         [Pure]
-        public static Attribute[] GetAllAttributes(Type enumType, object value)
+        public static Attribute[] GetAttributes(Type enumType, object value)
         {
             var enumsCache = NonGenericEnumsCache.Get(enumType);
             var cache = enumsCache.Cache;
@@ -2685,21 +2709,21 @@ namespace EnumsNET.NonGeneric
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetAllAttributes(((Func<object, int>)toInt)(value));
+                    return ((EnumsCache<int>)cache).GetAttributes(((Func<object, int>)toInt)(value));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetAllAttributes(((Func<object, uint>)toInt)(value));
+                    return ((EnumsCache<uint>)cache).GetAttributes(((Func<object, uint>)toInt)(value));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetAllAttributes(((Func<object, long>)toInt)(value));
+                    return ((EnumsCache<long>)cache).GetAttributes(((Func<object, long>)toInt)(value));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetAllAttributes(((Func<object, ulong>)toInt)(value));
+                    return ((EnumsCache<ulong>)cache).GetAttributes(((Func<object, ulong>)toInt)(value));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetAllAttributes(((Func<object, sbyte>)toInt)(value));
+                    return ((EnumsCache<sbyte>)cache).GetAttributes(((Func<object, sbyte>)toInt)(value));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetAllAttributes(((Func<object, byte>)toInt)(value));
+                    return ((EnumsCache<byte>)cache).GetAttributes(((Func<object, byte>)toInt)(value));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetAllAttributes(((Func<object, short>)toInt)(value));
+                    return ((EnumsCache<short>)cache).GetAttributes(((Func<object, short>)toInt)(value));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetAllAttributes(((Func<object, ushort>)toInt)(value));
+                    return ((EnumsCache<ushort>)cache).GetAttributes(((Func<object, ushort>)toInt)(value));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
