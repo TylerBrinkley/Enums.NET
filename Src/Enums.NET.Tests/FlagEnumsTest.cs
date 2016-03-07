@@ -43,7 +43,7 @@ namespace EnumsNET.Tests
         }
         #endregion
 
-        #region Extension Methods
+        #region Main Methods
         [Test]
         public void IsValidFlagCombination_Test()
         {
@@ -205,34 +205,34 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void InvertFlags()
+        public void ToggleFlags()
         {
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.UltraViolet, (ColorFlagEnum.Red | ColorFlagEnum.Blue).InvertFlags());
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.UltraViolet, (ColorFlagEnum.Red | ColorFlagEnum.Blue).ToggleFlags());
         }
 
         [Test]
-        public void InvertFlags_ThrowsArgumentException_WhenUsingInvalidValue()
+        public void ToggleFlags_ThrowsArgumentException_WhenUsingInvalidValue()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).InvertFlags());
+            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).ToggleFlags());
         }
 
         [Test]
-        public void InvertFlags1()
+        public void ToggleFlags1()
         {
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).InvertFlags(ColorFlagEnum.Green));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).InvertFlags(ColorFlagEnum.Red | ColorFlagEnum.UltraViolet));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ToggleFlags(ColorFlagEnum.Green));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ToggleFlags(ColorFlagEnum.Red | ColorFlagEnum.UltraViolet));
         }
 
         [Test]
-        public void InvertFlags1_ThrowsArgumentException_WhenUsingInvalidValue()
+        public void ToggleFlags1_ThrowsArgumentException_WhenUsingInvalidValue()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).InvertFlags(ColorFlagEnum.Blue));
+            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).ToggleFlags(ColorFlagEnum.Blue));
         }
 
         [Test]
-        public void InvertFlags1_ThrowsArgumentException_WhenUsingInvalidFlagMask()
+        public void ToggleFlags1_ThrowsArgumentException_WhenUsingInvalidFlagMask()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ColorFlagEnum.Blue.InvertFlags((ColorFlagEnum)16));
+            TestHelper.ExpectException<ArgumentException>(() => ColorFlagEnum.Blue.ToggleFlags((ColorFlagEnum)16));
         }
 
         [Test]

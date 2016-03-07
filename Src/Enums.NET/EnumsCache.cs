@@ -270,10 +270,7 @@ namespace EnumsNET
         #region Type Methods
         public int GetDefinedCount(bool uniqueValued) => _valueMap.Count + (uniqueValued ? 0 : _duplicateValues?.Count ?? 0);
 
-        public IEnumerable<IEnumMemberInfo> GetEnumMemberInfos(bool uniqueValued)
-        {
-            return GetInternalEnumMemberInfos(uniqueValued).Select(info => (IEnumMemberInfo)info);
-        }
+        public IEnumerable<IEnumMemberInfo> GetEnumMemberInfos(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => (IEnumMemberInfo)info);
 
         public IEnumerable<string> GetNames(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Name);
 
@@ -294,7 +291,7 @@ namespace EnumsNET
 
         private IEnumerable<InternalEnumMemberInfo<TInt>> GetInternalEnumMemberInfos(bool uniqueValued)
         {
-            if (uniqueValued)
+            if (uniqueValued || _duplicateValues == null)
             {
                 return _valueMap.Select(pair => new InternalEnumMemberInfo<TInt>(pair.First, pair.Second.Name, pair.Second.Attributes, this));
             }
@@ -308,13 +305,15 @@ namespace EnumsNET
         {
             using (var mainEnumerator = _valueMap.GetEnumerator())
             {
-                var mainIsActive = mainEnumerator.MoveNext();
-                var mainPair = mainIsActive ? mainEnumerator.Current : new Pair<TInt, NameAndAttributes>();
-                using (IEnumerator<KeyValuePair<string, ValueAndAttributes<TInt>>> dupeEnumerator = _duplicateValues?.GetEnumerator())
+                var mainIsActive = true;
+                mainEnumerator.MoveNext();
+                var mainPair = mainEnumerator.Current;
+                using (IEnumerator<KeyValuePair<string, ValueAndAttributes<TInt>>> dupeEnumerator = _duplicateValues.GetEnumerator())
                 {
-                    var dupeIsActive = dupeEnumerator?.MoveNext() ?? false;
-                    var dupePair = dupeIsActive ? dupeEnumerator.Current : new KeyValuePair<string, ValueAndAttributes<TInt>>();
-                    var count = _valueMap.Count + (_duplicateValues?.Count ?? 0);
+                    var dupeIsActive = true;
+                    dupeEnumerator.MoveNext();
+                    var dupePair = dupeEnumerator.Current;
+                    var count = GetDefinedCount(false);
                     for (var i = 0; i < count; ++i)
                     {
                         TInt value;
@@ -325,13 +324,9 @@ namespace EnumsNET
                             value = dupePair.Value.Value;
                             name = dupePair.Key;
                             attributes = dupePair.Value.Attributes;
-                            if (dupeEnumerator.MoveNext())
+                            if (dupeIsActive = dupeEnumerator.MoveNext())
                             {
                                 dupePair = dupeEnumerator.Current;
-                            }
-                            else
-                            {
-                                dupeIsActive = false;
                             }
                         }
                         else
@@ -339,13 +334,9 @@ namespace EnumsNET
                             value = mainPair.First;
                             name = mainPair.Second.Name;
                             attributes = mainPair.Second.Attributes;
-                            if (mainEnumerator.MoveNext())
+                            if (mainIsActive = mainEnumerator.MoveNext())
                             {
                                 mainPair = mainEnumerator.Current;
-                            }
-                            else
-                            {
-                                mainIsActive = false;
                             }
                         }
                         yield return new InternalEnumMemberInfo<TInt>(value, name, attributes, this);
@@ -937,13 +928,13 @@ namespace EnumsNET
             return Equal(And(value, flagMask), flagMask);
         }
 
-        public TInt InvertFlags(TInt value)
+        public TInt ToggleFlags(TInt value)
         {
             ValidateIsValidFlagCombination(value, nameof(value));
             return Xor(value, AllFlags);
         }
 
-        public TInt InvertFlags(TInt value, TInt flagMask)
+        public TInt ToggleFlags(TInt value, TInt flagMask)
         {
             ValidateIsValidFlagCombination(value, nameof(value));
             ValidateIsValidFlagCombination(flagMask, nameof(flagMask));

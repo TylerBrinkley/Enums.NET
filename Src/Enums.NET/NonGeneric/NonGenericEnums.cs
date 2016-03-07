@@ -453,43 +453,6 @@ namespace EnumsNET.NonGeneric
             return 0;
         }
 
-        [Pure]
-        public static bool Equals(Type enumType, object x, object y)
-        {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
-
-            var toInt = enumsCache.ToInt;
-            switch (enumsCache.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return EnumsCache<int>.Equal(enumToInt32(x), enumToInt32(y));
-                case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return EnumsCache<uint>.Equal(enumToUInt32(x), enumToUInt32(y));
-                case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return EnumsCache<long>.Equal(enumToInt64(x), enumToInt64(y));
-                case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return EnumsCache<ulong>.Equal(enumToUInt64(x), enumToUInt64(y));
-                case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return EnumsCache<sbyte>.Equal(enumToSByte(x), enumToSByte(y));
-                case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return EnumsCache<byte>.Equal(enumToByte(x), enumToByte(y));
-                case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return EnumsCache<short>.Equal(enumToInt16(x), enumToInt16(y));
-                case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return EnumsCache<ushort>.Equal(enumToUInt16(x), enumToUInt16(y));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
-
         /// <summary>
         /// Registers a custom enum format for <paramref name="enumType"/>.
         /// </summary>
@@ -2465,6 +2428,43 @@ namespace EnumsNET.NonGeneric
             }
             Debug.Fail("Unknown Enum TypeCode");
             return 0;
+        }
+
+        [Pure]
+        public static bool Equals(Type enumType, object x, object y)
+        {
+            var enumsCache = NonGenericEnumsCache.Get(enumType);
+
+            var toInt = enumsCache.ToInt;
+            switch (enumsCache.TypeCode)
+            {
+                case TypeCode.Int32:
+                    var enumToInt32 = (Func<object, int>)toInt;
+                    return EnumsCache<int>.Equal(enumToInt32(x), enumToInt32(y));
+                case TypeCode.UInt32:
+                    var enumToUInt32 = (Func<object, uint>)toInt;
+                    return EnumsCache<uint>.Equal(enumToUInt32(x), enumToUInt32(y));
+                case TypeCode.Int64:
+                    var enumToInt64 = (Func<object, long>)toInt;
+                    return EnumsCache<long>.Equal(enumToInt64(x), enumToInt64(y));
+                case TypeCode.UInt64:
+                    var enumToUInt64 = (Func<object, ulong>)toInt;
+                    return EnumsCache<ulong>.Equal(enumToUInt64(x), enumToUInt64(y));
+                case TypeCode.SByte:
+                    var enumToSByte = (Func<object, sbyte>)toInt;
+                    return EnumsCache<sbyte>.Equal(enumToSByte(x), enumToSByte(y));
+                case TypeCode.Byte:
+                    var enumToByte = (Func<object, byte>)toInt;
+                    return EnumsCache<byte>.Equal(enumToByte(x), enumToByte(y));
+                case TypeCode.Int16:
+                    var enumToInt16 = (Func<object, short>)toInt;
+                    return EnumsCache<short>.Equal(enumToInt16(x), enumToInt16(y));
+                case TypeCode.UInt16:
+                    var enumToUInt16 = (Func<object, ushort>)toInt;
+                    return EnumsCache<ushort>.Equal(enumToUInt16(x), enumToUInt16(y));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return false;
         }
         #endregion
 

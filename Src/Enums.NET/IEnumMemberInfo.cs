@@ -44,7 +44,7 @@ namespace EnumsNET
         string Format(params EnumFormat[] formats);
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
-        TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute;
+        TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue) where TAttribute : Attribute;
         bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
         IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute;
         byte ToByte();

@@ -409,11 +409,11 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with all of it's flags inverted. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags(Type)"/>.
+        /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags(Type)"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value">Must be a valid flag combination.</param>
-        /// <returns><paramref name="value"/> with all of it's flags inverted.</returns>
+        /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
@@ -421,7 +421,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is not a valid flag combination.</exception>
         [Pure]
-        public static object InvertFlags(Type enumType, object value)
+        public static object ToggleFlags(Type enumType, object value)
         {
             var enumsCache = NonGenericEnumsCache.Get(enumType);
             var cache = enumsCache.Cache;
@@ -430,33 +430,33 @@ namespace EnumsNET.NonGeneric
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).InvertFlags(((Func<object, int>)toInt)(value)));
+                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).ToggleFlags(((Func<object, int>)toInt)(value)));
                 case TypeCode.UInt32:
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).InvertFlags(((Func<object, uint>)toInt)(value)));
+                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).ToggleFlags(((Func<object, uint>)toInt)(value)));
                 case TypeCode.Int64:
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).InvertFlags(((Func<object, long>)toInt)(value)));
+                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).ToggleFlags(((Func<object, long>)toInt)(value)));
                 case TypeCode.UInt64:
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).InvertFlags(((Func<object, ulong>)toInt)(value)));
+                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).ToggleFlags(((Func<object, ulong>)toInt)(value)));
                 case TypeCode.SByte:
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).InvertFlags(((Func<object, sbyte>)toInt)(value)));
+                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).ToggleFlags(((Func<object, sbyte>)toInt)(value)));
                 case TypeCode.Byte:
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).InvertFlags(((Func<object, byte>)toInt)(value)));
+                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).ToggleFlags(((Func<object, byte>)toInt)(value)));
                 case TypeCode.Int16:
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).InvertFlags(((Func<object, short>)toInt)(value)));
+                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).ToggleFlags(((Func<object, short>)toInt)(value)));
                 case TypeCode.UInt16:
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).InvertFlags(((Func<object, ushort>)toInt)(value)));
+                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).ToggleFlags(((Func<object, ushort>)toInt)(value)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> while inverting the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
+        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value">Must be a valid flag combination.</param>
         /// <param name="flagMask">Must be a valid flag combination.</param>
-        /// <returns><paramref name="value"/> while inverting the flags that are set in <paramref name="flagMask"/>.</returns>
+        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
@@ -464,7 +464,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
         [Pure]
-        public static object InvertFlags(Type enumType, object value, object flagMask)
+        public static object ToggleFlags(Type enumType, object value, object flagMask)
         {
             var enumsCache = NonGenericEnumsCache.Get(enumType);
             var cache = enumsCache.Cache;
@@ -474,28 +474,28 @@ namespace EnumsNET.NonGeneric
             {
                 case TypeCode.Int32:
                     var enumToInt32 = (Func<object, int>)toInt;
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).InvertFlags(enumToInt32(value), enumToInt32(flagMask)));
+                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).ToggleFlags(enumToInt32(value), enumToInt32(flagMask)));
                 case TypeCode.UInt32:
                     var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).InvertFlags(enumToUInt32(value), enumToUInt32(flagMask)));
+                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).ToggleFlags(enumToUInt32(value), enumToUInt32(flagMask)));
                 case TypeCode.Int64:
                     var enumToInt64 = (Func<object, long>)toInt;
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).InvertFlags(enumToInt64(value), enumToInt64(flagMask)));
+                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).ToggleFlags(enumToInt64(value), enumToInt64(flagMask)));
                 case TypeCode.UInt64:
                     var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).InvertFlags(enumToUInt64(value), enumToUInt64(flagMask)));
+                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).ToggleFlags(enumToUInt64(value), enumToUInt64(flagMask)));
                 case TypeCode.SByte:
                     var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).InvertFlags(enumToSByte(value), enumToSByte(flagMask)));
+                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).ToggleFlags(enumToSByte(value), enumToSByte(flagMask)));
                 case TypeCode.Byte:
                     var enumToByte = (Func<object, byte>)toInt;
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).InvertFlags(enumToByte(value), enumToByte(flagMask)));
+                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).ToggleFlags(enumToByte(value), enumToByte(flagMask)));
                 case TypeCode.Int16:
                     var enumToInt16 = (Func<object, short>)toInt;
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).InvertFlags(enumToInt16(value), enumToInt16(flagMask)));
+                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).ToggleFlags(enumToInt16(value), enumToInt16(flagMask)));
                 case TypeCode.UInt16:
                     var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).InvertFlags(enumToUInt16(value), enumToUInt16(flagMask)));
+                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).ToggleFlags(enumToUInt16(value), enumToUInt16(flagMask)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;

@@ -62,24 +62,15 @@ namespace EnumsNET
         public string GetDescriptionOrName(Func<string, string> nameFormatter) => IsDefined ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
 
         public bool HasAttribute<TAttribute>()
-            where TAttribute : Attribute
-        {
-            return GetAttribute<TAttribute>() != null;
-        }
+            where TAttribute : Attribute => GetAttribute<TAttribute>() != null;
 
         public TAttribute GetAttribute<TAttribute>()
-            where TAttribute : Attribute
-        {
-            return _attributes != null ? Enums.GetAttribute<TAttribute>(_attributes) : null;
-        }
+            where TAttribute : Attribute => _attributes != null ? Enums.GetAttribute<TAttribute>(_attributes) : null;
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>()
-            where TAttribute : Attribute
-        {
-            return IsDefined ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
-        }
+            where TAttribute : Attribute => IsDefined ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
 
-        public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult))
+        public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute
         {
             TResult result;

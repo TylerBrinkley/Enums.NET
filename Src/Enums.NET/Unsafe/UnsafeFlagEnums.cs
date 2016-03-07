@@ -392,81 +392,81 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with all of it's flags inverted. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
+        /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value">Must be a valid flag combination.</param>
-        /// <returns><paramref name="value"/> with all of it's flags inverted.</returns>
+        /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum InvertFlags<TEnum>(TEnum value)
+        public static TEnum ToggleFlags<TEnum>(TEnum value)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.InvertFlags(Enums<TEnum, int>.ToInt(value)));
+                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.ToggleFlags(Enums<TEnum, int>.ToInt(value)));
                 case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.InvertFlags(Enums<TEnum, uint>.ToInt(value)));
+                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.ToggleFlags(Enums<TEnum, uint>.ToInt(value)));
                 case TypeCode.Int64:
-                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.InvertFlags(Enums<TEnum, long>.ToInt(value)));
+                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.ToggleFlags(Enums<TEnum, long>.ToInt(value)));
                 case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.InvertFlags(Enums<TEnum, ulong>.ToInt(value)));
+                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.ToggleFlags(Enums<TEnum, ulong>.ToInt(value)));
                 case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.InvertFlags(Enums<TEnum, sbyte>.ToInt(value)));
+                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.ToggleFlags(Enums<TEnum, sbyte>.ToInt(value)));
                 case TypeCode.Byte:
-                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.InvertFlags(Enums<TEnum, byte>.ToInt(value)));
+                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.ToggleFlags(Enums<TEnum, byte>.ToInt(value)));
                 case TypeCode.Int16:
-                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.InvertFlags(Enums<TEnum, short>.ToInt(value)));
+                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.ToggleFlags(Enums<TEnum, short>.ToInt(value)));
                 case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.InvertFlags(Enums<TEnum, ushort>.ToInt(value)));
+                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.ToggleFlags(Enums<TEnum, ushort>.ToInt(value)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TEnum);
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> while inverting the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
+        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value">Must be a valid flag combination.</param>
         /// <param name="flagMask">Must be a valid flag combination.</param>
-        /// <returns><paramref name="value"/> while inverting the flags that are set in <paramref name="flagMask"/>.</returns>
+        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum InvertFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum flagMask)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
                     var enumToInt32 = Enums<TEnum, int>.ToInt;
-                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.InvertFlags(enumToInt32(value), enumToInt32(flagMask)));
+                    return Enums<TEnum, int>.ToEnum(Enums<TEnum, int>.Cache.ToggleFlags(enumToInt32(value), enumToInt32(flagMask)));
                 case TypeCode.UInt32:
                     var enumToUInt32 = Enums<TEnum, uint>.ToInt;
-                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.InvertFlags(enumToUInt32(value), enumToUInt32(flagMask)));
+                    return Enums<TEnum, uint>.ToEnum(Enums<TEnum, uint>.Cache.ToggleFlags(enumToUInt32(value), enumToUInt32(flagMask)));
                 case TypeCode.Int64:
                     var enumToInt64 = Enums<TEnum, long>.ToInt;
-                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.InvertFlags(enumToInt64(value), enumToInt64(flagMask)));
+                    return Enums<TEnum, long>.ToEnum(Enums<TEnum, long>.Cache.ToggleFlags(enumToInt64(value), enumToInt64(flagMask)));
                 case TypeCode.UInt64:
                     var enumToUInt64 = Enums<TEnum, ulong>.ToInt;
-                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.InvertFlags(enumToUInt64(value), enumToUInt64(flagMask)));
+                    return Enums<TEnum, ulong>.ToEnum(Enums<TEnum, ulong>.Cache.ToggleFlags(enumToUInt64(value), enumToUInt64(flagMask)));
                 case TypeCode.SByte:
                     var enumToSByte = Enums<TEnum, sbyte>.ToInt;
-                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.InvertFlags(enumToSByte(value), enumToSByte(flagMask)));
+                    return Enums<TEnum, sbyte>.ToEnum(Enums<TEnum, sbyte>.Cache.ToggleFlags(enumToSByte(value), enumToSByte(flagMask)));
                 case TypeCode.Byte:
                     var enumToByte = Enums<TEnum, byte>.ToInt;
-                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.InvertFlags(enumToByte(value), enumToByte(flagMask)));
+                    return Enums<TEnum, byte>.ToEnum(Enums<TEnum, byte>.Cache.ToggleFlags(enumToByte(value), enumToByte(flagMask)));
                 case TypeCode.Int16:
                     var enumToInt16 = Enums<TEnum, short>.ToInt;
-                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.InvertFlags(enumToInt16(value), enumToInt16(flagMask)));
+                    return Enums<TEnum, short>.ToEnum(Enums<TEnum, short>.Cache.ToggleFlags(enumToInt16(value), enumToInt16(flagMask)));
                 case TypeCode.UInt16:
                     var enumToUInt16 = Enums<TEnum, ushort>.ToInt;
-                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.InvertFlags(enumToUInt16(value), enumToUInt16(flagMask)));
+                    return Enums<TEnum, ushort>.ToEnum(Enums<TEnum, ushort>.Cache.ToggleFlags(enumToUInt16(value), enumToUInt16(flagMask)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return default(TEnum);
