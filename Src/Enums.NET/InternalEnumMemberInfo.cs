@@ -96,11 +96,11 @@ namespace EnumsNET
             return false;
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => _enumsCache.InternalAsString(this);
 
-        public string ToString(string format) => _enumsCache.InternalFormat(this, format);
+        public string ToString(string format) => _enumsCache.InternalAsString(this, format);
 
-        public string ToString(params EnumFormat[] formats) => _enumsCache.InternalFormat(this, formats);
+        public string ToString(params EnumFormat[] formats) => _enumsCache.InternalAsString(this, formats);
 
         public string AsString() => ToString();
 
@@ -108,7 +108,12 @@ namespace EnumsNET
 
         public string AsString(params EnumFormat[] formats) => ToString(formats);
 
-        public string Format(string format) => _enumsCache.InternalFormat(this, format);
+        public string Format(string format)
+        {
+            Preconditions.NotNull(format, nameof(format));
+
+            return _enumsCache.InternalFormat(this, format);
+        }
 
         public string Format(EnumFormat format) => _enumsCache.InternalFormat(this, format);
 
@@ -120,7 +125,12 @@ namespace EnumsNET
 
         public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _enumsCache.InternalFormat(this, format0, format1, format2, format3, format4);
 
-        public string Format(params EnumFormat[] formats) => _enumsCache.InternalFormat(this, formats);
+        public string Format(params EnumFormat[] formats)
+        {
+            Preconditions.NotNull(formats, nameof(formats));
+
+            return _enumsCache.InternalFormat(this, formats);
+        }
 
         public sbyte ToSByte() => EnumsCache<TInt>.ToSByte(Value);
 

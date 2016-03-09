@@ -137,19 +137,18 @@ namespace EnumsNET
             {
                 if (_ignoreCaseSet == null)
                 {
-                    var ignoreCaseSet = new Dictionary<string, string>(_valueMap.Count + (_duplicateValues?.Count ?? 0), StringComparer.OrdinalIgnoreCase);
+                    var ignoreCaseSet = new Dictionary<string, string>(GetDefinedCount(false), StringComparer.OrdinalIgnoreCase);
                     foreach (var nameAndAttributes in _valueMap.SecondItems)
                     {
-                        ignoreCaseSet.Add(nameAndAttributes.Name, nameAndAttributes.Name);
+                        ignoreCaseSet[nameAndAttributes.Name] = nameAndAttributes.Name;
                     }
                     if (_duplicateValues != null)
                     {
                         foreach (var name in _duplicateValues.Keys)
                         {
-                            ignoreCaseSet.Add(name, name);
+                            ignoreCaseSet[name] = name;
                         }
                     }
-                    // Doesn't matter if it gets overwritten
                     _ignoreCaseSet = ignoreCaseSet;
                 }
                 return _ignoreCaseSet;
@@ -246,7 +245,7 @@ namespace EnumsNET
             }
             _maxDefined = _valueMap.GetFirstAt(_valueMap.Count - 1);
             _minDefined = _valueMap.GetFirstAt(0);
-            IsContiguous = ToInt64(Add(Subtract(_maxDefined, _minDefined), One)) == _valueMap.Count;
+            IsContiguous = Equal(Subtract(_maxDefined, FromInt64(_valueMap.Count - 1)), _minDefined);
 
             _valueMap.TrimExcess();
             if (duplicateValues.Count > 0)
@@ -533,7 +532,7 @@ namespace EnumsNET
 
         public string AsString(TInt value) => InternalAsString(GetEnumMemberInfo(value));
 
-        private string InternalAsString(InternalEnumMemberInfo<TInt> info)
+        internal string InternalAsString(InternalEnumMemberInfo<TInt> info)
         {
             if (IsFlagEnum)
             {
@@ -543,12 +542,16 @@ namespace EnumsNET
                     return str;
                 }
             }
-            return InternalFormat(info, Enums.DefaultFormatOrder);
+            return InternalFormat(info, EnumFormat.Name, EnumFormat.DecimalValue);
         }
 
-        public string AsString(TInt value, EnumFormat[] formats) => formats?.Length > 0 ? Format(value, formats) : AsString(value);
+        public string AsString(TInt value, EnumFormat[] formats) => InternalAsString(GetEnumMemberInfo(value), formats);
 
-        public string AsString(TInt value, string format) => string.IsNullOrEmpty(format) ? AsString(value) : Format(value, format);
+        internal string InternalAsString(InternalEnumMemberInfo<TInt> info, EnumFormat[] formats) => formats?.Length > 0 ? InternalFormat(info, formats) : InternalAsString(info);
+
+        public string AsString(TInt value, string format) => InternalAsString(GetEnumMemberInfo(value), format);
+
+        internal string InternalAsString(InternalEnumMemberInfo<TInt> info, string format) => string.IsNullOrEmpty(format) ? InternalAsString(info) : InternalFormat(info, format);
 
         public string Format(TInt value, EnumFormat format) => InternalFormat(GetEnumMemberInfo(value), format);
 
@@ -560,14 +563,22 @@ namespace EnumsNET
 
         public string Format(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => InternalFormat(GetEnumMemberInfo(value), format0, format1, format2, format3, format4);
 
-        public string Format(TInt value, EnumFormat[] formats) => InternalFormat(GetEnumMemberInfo(value), formats);
+        public string Format(TInt value, EnumFormat[] formats)
+        {
+            Preconditions.NotNull(formats, nameof(formats));
 
-        public string Format(TInt value, string format) => InternalFormat(GetEnumMemberInfo(value), format);
+            return InternalFormat(GetEnumMemberInfo(value), formats);
+        }
 
-        internal string InternalFormat(InternalEnumMemberInfo<TInt> info, string format)
+        public string Format(TInt value, string format)
         {
             Preconditions.NotNull(format, nameof(format));
 
+            return InternalFormat(GetEnumMemberInfo(value), format);
+        }
+
+        internal string InternalFormat(InternalEnumMemberInfo<TInt> info, string format)
+        {
             switch (format)
             {
                 case "G":
@@ -575,7 +586,7 @@ namespace EnumsNET
                     return InternalAsString(info);
                 case "F":
                 case "f":
-                    return InternalFormatAsFlags(info, null, null) ?? InternalFormat(info, Enums.DefaultFormatOrder);
+                    return InternalFormatAsFlags(info, null, null) ?? InternalFormat(info, EnumFormat.Name, EnumFormat.DecimalValue);
                 case "D":
                 case "d":
                     return ToStringFormat(info.Value, "D");
@@ -625,8 +636,6 @@ namespace EnumsNET
 
         internal string InternalFormat(InternalEnumMemberInfo<TInt> info, EnumFormat[] formats)
         {
-            Preconditions.NotNull(formats, nameof(formats));
-
             foreach (var format in formats)
             {
                 var formattedValue = InternalFormat(info, format);
@@ -655,33 +664,36 @@ namespace EnumsNET
         {
             Preconditions.NotNull(name, nameof(name));
 
+            return InternalGetEnumMemberInfo(name, ignoreCase);
+        }
+
+        private InternalEnumMemberInfo<TInt> InternalGetEnumMemberInfo(string name, bool ignoreCase)
+        {
             var index = _valueMap.IndexOfSecond(new NameAndAttributes(name));
-            if (index >= 0)
+            if (index < 0)
             {
-                var pair = _valueMap.GetAt(index);
-                return new InternalEnumMemberInfo<TInt>(pair.First, name, pair.Second.Attributes, this);
-            }
-            ValueAndAttributes<TInt> valueAndAttributes;
-            if (_duplicateValues != null && _duplicateValues.TryGetValue(name, out valueAndAttributes))
-            {
-                return new InternalEnumMemberInfo<TInt>(valueAndAttributes.Value, name, valueAndAttributes.Attributes, this);
-            }
-            if (ignoreCase)
-            {
-                string actualName;
-                if (IgnoreCaseSet.TryGetValue(name, out actualName))
+                var valueAndAttributes = default(ValueAndAttributes<TInt>);
+                bool foundInDuplicates;
+                if (!(foundInDuplicates = (_duplicateValues?.TryGetValue(name, out valueAndAttributes)).GetValueOrDefault()))
                 {
-                    index = _valueMap.IndexOfSecond(new NameAndAttributes(actualName));
-                    if (index >= 0)
+                    if (!(ignoreCase && IgnoreCaseSet.TryGetValue(name, out name)))
                     {
-                        var pair = _valueMap.GetAt(index);
-                        return new InternalEnumMemberInfo<TInt>(pair.First, actualName, pair.Second.Attributes, this);
+                        return new InternalEnumMemberInfo<TInt>();
                     }
-                    valueAndAttributes = _duplicateValues[actualName];
-                    return new InternalEnumMemberInfo<TInt>(valueAndAttributes.Value, actualName, valueAndAttributes.Attributes, this);
+                    index = _valueMap.IndexOfSecond(new NameAndAttributes(name));
+                    if (index < 0)
+                    {
+                        valueAndAttributes = _duplicateValues[name];
+                        foundInDuplicates = true;
+                    }
+                }
+                if (foundInDuplicates)
+                {
+                    return new InternalEnumMemberInfo<TInt>(valueAndAttributes.Value, name, valueAndAttributes.Attributes, this);
                 }
             }
-            return new InternalEnumMemberInfo<TInt>();
+            var pair = _valueMap.GetAt(index);
+            return new InternalEnumMemberInfo<TInt>(pair.First, name, pair.Second.Attributes, this);
         }
 
         public string GetName(TInt value) => GetEnumMemberInfo(value).Name;
@@ -766,23 +778,24 @@ namespace EnumsNET
 
         private bool InternalTryParse(string value, bool ignoreCase, out TInt result, EnumFormat[] parseFormatOrder)
         {
+            result = default(TInt);
             foreach (var format in parseFormatOrder)
             {
+                var success = false;
                 switch (format)
                 {
                     case EnumFormat.DecimalValue:
+                        success = TryParseMethod(value, NumberStyles.AllowLeadingSign, null, out result);
+                        break;
                     case EnumFormat.HexadecimalValue:
-                        if (TryParseMethod(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, null, out result))
-                        {
-                            return true;
-                        }
+                        success = TryParseMethod(value, NumberStyles.AllowHexSpecifier, null, out result);
                         break;
                     case EnumFormat.Name:
-                        var info = GetEnumMemberInfo(value, ignoreCase);
+                        var info = InternalGetEnumMemberInfo(value, ignoreCase);
                         if (info.IsDefined)
                         {
                             result = info.Value;
-                            return true;
+                            success = true;
                         }
                         break;
                     default:
@@ -791,7 +804,7 @@ namespace EnumsNET
                         lock (_valueMap)
                         {
 #endif
-                            if (_customEnumFormatParsers == null || !_customEnumFormatParsers.TryGetValue(format, out parser))
+                            if (_customEnumFormatParsers?.TryGetValue(format, out parser) != true)
                             {
                                 switch (format)
                                 {
@@ -812,9 +825,9 @@ namespace EnumsNET
                                     {
                                         Interlocked.CompareExchange(ref _customEnumFormatParsers,
 #if NET20
-                                            new Dictionary<EnumFormat, EnumParser>(),
+                                            new Dictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>()),
 #else
-                                            new ConcurrentDictionary<EnumFormat, EnumParser>(),
+                                            new ConcurrentDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>()),
 #endif
                                             null);
                                     }
@@ -825,17 +838,17 @@ namespace EnumsNET
 #endif
                                 }
                             }
-                            if (parser != null && parser.TryParse(value, ignoreCase, out result))
-                            {
-                                return true;
-                            }
 #if NET20
                         }
 #endif
+                        success = parser?.TryParse(value, ignoreCase, out result) ?? false;
                         break;
                 }
+                if (success)
+                {
+                    return true;
+                }
             }
-            result = Zero;
             return false;
         }
         #endregion
@@ -863,15 +876,14 @@ namespace EnumsNET
             {
                 formats = Enums.DefaultFormatOrder;
             }
-
-            IEnumerable<TInt> flags;
-            if (info.IsDefined || !(flags = InternalGetFlags(info.Value)).Any())
+            
+            if (info.IsDefined || Equal(info.Value, Zero))
             {
                 return InternalFormat(info, formats);
             }
 
             return string.Join(delimiter,
-                flags.Select(flag => InternalFormat(GetEnumMemberInfo(flag), formats))
+                InternalGetFlags(info.Value).Select(flag => InternalFormat(GetEnumMemberInfo(flag), formats))
 #if NET20 || NET35
                 .ToArray()
 #endif
@@ -882,8 +894,8 @@ namespace EnumsNET
 
         private IEnumerable<TInt> InternalGetFlags(TInt value)
         {
-            var isGreaterThanOrEqualToZero = !GreaterThan(Zero, value);
-            for (var currentValue = One; (isGreaterThanOrEqualToZero && !GreaterThan(currentValue, value)) && !Equal(currentValue, Zero); currentValue = LeftShift(currentValue, 1))
+            var isLessThanZero = GreaterThan(Zero, value);
+            for (var currentValue = One; (isLessThanZero || !GreaterThan(currentValue, value)) && !Equal(currentValue, Zero); currentValue = LeftShift(currentValue, 1))
             {
                 if (IsValidFlagCombination(currentValue) && InternalHasAnyFlags(value, currentValue))
                 {
@@ -894,11 +906,11 @@ namespace EnumsNET
 
         public bool HasAnyFlags(TInt value)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
+            ValidateFlagCombination(value, nameof(value));
             return !Equal(value, Zero);
         }
 
-        private void ValidateIsValidFlagCombination(TInt value, string paramName)
+        private void ValidateFlagCombination(TInt value, string paramName)
         {
             if (!IsValidFlagCombination(value))
             {
@@ -908,8 +920,8 @@ namespace EnumsNET
 
         public bool HasAnyFlags(TInt value, TInt flagMask)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
-            ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+            ValidateFlagCombination(value, nameof(value));
+            ValidateFlagCombination(flagMask, nameof(flagMask));
             return InternalHasAnyFlags(value, flagMask);
         }
 
@@ -917,71 +929,68 @@ namespace EnumsNET
 
         public bool HasAllFlags(TInt value)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
+            ValidateFlagCombination(value, nameof(value));
             return Equal(value, AllFlags);
         }
 
         public bool HasAllFlags(TInt value, TInt flagMask)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
-            ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+            ValidateFlagCombination(value, nameof(value));
+            ValidateFlagCombination(flagMask, nameof(flagMask));
             return Equal(And(value, flagMask), flagMask);
         }
 
         public TInt ToggleFlags(TInt value)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
+            ValidateFlagCombination(value, nameof(value));
             return Xor(value, AllFlags);
         }
 
         public TInt ToggleFlags(TInt value, TInt flagMask)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
-            ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+            ValidateFlagCombination(value, nameof(value));
+            ValidateFlagCombination(flagMask, nameof(flagMask));
             return Xor(value, flagMask);
         }
 
         public TInt CommonFlags(TInt value, TInt flagMask)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
-            ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+            ValidateFlagCombination(value, nameof(value));
+            ValidateFlagCombination(flagMask, nameof(flagMask));
             return And(value, flagMask);
         }
 
         public TInt SetFlags(TInt flag0, TInt flag1)
         {
-            ValidateIsValidFlagCombination(flag0, nameof(flag0));
-            ValidateIsValidFlagCombination(flag1, nameof(flag1));
+            ValidateFlagCombination(flag0, nameof(flag0));
+            ValidateFlagCombination(flag1, nameof(flag1));
             return Or(flag0, flag1);
         }
 
         public TInt SetFlags(TInt flag0, TInt flag1, TInt flag2)
         {
-            ValidateIsValidFlagCombination(flag0, nameof(flag0));
-            ValidateIsValidFlagCombination(flag1, nameof(flag1));
-            ValidateIsValidFlagCombination(flag2, nameof(flag2));
-
+            ValidateFlagCombination(flag0, nameof(flag0));
+            ValidateFlagCombination(flag1, nameof(flag1));
+            ValidateFlagCombination(flag2, nameof(flag2));
             return Or(Or(flag0, flag1), flag2);
         }
 
         public TInt SetFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3)
         {
-            ValidateIsValidFlagCombination(flag0, nameof(flag0));
-            ValidateIsValidFlagCombination(flag1, nameof(flag1));
-            ValidateIsValidFlagCombination(flag2, nameof(flag2));
-            ValidateIsValidFlagCombination(flag3, nameof(flag3));
-
+            ValidateFlagCombination(flag0, nameof(flag0));
+            ValidateFlagCombination(flag1, nameof(flag1));
+            ValidateFlagCombination(flag2, nameof(flag2));
+            ValidateFlagCombination(flag3, nameof(flag3));
             return Or(Or(Or(flag0, flag1), flag2), flag3);
         }
 
         public TInt SetFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4)
         {
-            ValidateIsValidFlagCombination(flag0, nameof(flag0));
-            ValidateIsValidFlagCombination(flag1, nameof(flag1));
-            ValidateIsValidFlagCombination(flag2, nameof(flag2));
-            ValidateIsValidFlagCombination(flag3, nameof(flag3));
-            ValidateIsValidFlagCombination(flag4, nameof(flag4));
-
+            ValidateFlagCombination(flag0, nameof(flag0));
+            ValidateFlagCombination(flag1, nameof(flag1));
+            ValidateFlagCombination(flag2, nameof(flag2));
+            ValidateFlagCombination(flag3, nameof(flag3));
+            ValidateFlagCombination(flag4, nameof(flag4));
             return Or(Or(Or(Or(flag0, flag1), flag2), flag3), flag4);
         }
 
@@ -992,7 +1001,7 @@ namespace EnumsNET
             {
                 foreach (var nextFlag in flags)
                 {
-                    ValidateIsValidFlagCombination(nextFlag, nameof(flags) + " must contain all valid flag combinations");
+                    ValidateFlagCombination(nextFlag, nameof(flags) + " must contain all valid flag combinations");
                     flag = Or(flag, nextFlag);
                 }
             }
@@ -1001,8 +1010,8 @@ namespace EnumsNET
 
         public TInt ClearFlags(TInt value, TInt flagMask)
         {
-            ValidateIsValidFlagCombination(value, nameof(value));
-            ValidateIsValidFlagCombination(flagMask, nameof(flagMask));
+            ValidateFlagCombination(value, nameof(value));
+            ValidateFlagCombination(flagMask, nameof(flagMask));
             return And(value, Xor(flagMask, AllFlags));
         }
         #endregion
@@ -1119,9 +1128,8 @@ namespace EnumsNET
                                 formatIgnoreCase.Add(pair.Key, pair.Value);
                             }
                         }
-
-                        // Reduces memory usage
-                        _formatIgnoreCase = new Dictionary<string, TInt>(formatIgnoreCase, StringComparer.OrdinalIgnoreCase);
+                        
+                        _formatIgnoreCase = formatIgnoreCase;
                     }
                     return _formatIgnoreCase;
                 }
@@ -1129,18 +1137,15 @@ namespace EnumsNET
 
             public EnumParser(Func<IEnumMemberInfo, string> formatter, EnumsCache<TInt> enumsCache)
             {
-                var formatValueMap = new Dictionary<string, TInt>(enumsCache.GetDefinedCount(false));
+                _formatValueMap = new Dictionary<string, TInt>(enumsCache.GetDefinedCount(false));
                 foreach (var info in enumsCache.GetInternalEnumMemberInfos(false))
                 {
                     var format = formatter(info);
-                    if (format != null && !formatValueMap.ContainsKey(format))
+                    if (format != null)
                     {
-                        formatValueMap.Add(format, info.Value);
+                        _formatValueMap[format] = info.Value;
                     }
                 }
-
-                // Reduces memory usage
-                _formatValueMap = new Dictionary<string, TInt>(formatValueMap);
             }
 
             internal bool TryParse(string format, bool ignoreCase, out TInt result) => _formatValueMap.TryGetValue(format, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(format, out result));
