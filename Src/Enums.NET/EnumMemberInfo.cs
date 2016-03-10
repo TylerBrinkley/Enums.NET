@@ -64,19 +64,6 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/>.
-        /// </summary>
-        /// <returns></returns>
-        public string GetDescriptionOrName() => _info.GetDescriptionOrName();
-
-        /// <summary>
-        /// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/> that's been formatted with <paramref name="nameFormatter"/>.
-        /// </summary>
-        /// <param name="nameFormatter"></param>
-        /// <returns></returns>
-        public string GetDescriptionOrName(Func<string, string> nameFormatter) => _info.GetDescriptionOrName(nameFormatter);
-
-        /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation.
         /// </summary>
         /// <returns></returns>

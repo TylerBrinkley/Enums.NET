@@ -301,15 +301,7 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
-        /// <summary>
-        /// Retrieves in value order an array of <typeparamref name="TEnum"/>'s members' descriptions else names.
-        /// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="uniqueValued"></param>
-        /// <returns></returns>
-        [Pure]
-        public static IEnumerable<string> GetDescriptionsOrNames(Type enumType, bool uniqueValued = false)
+        public static IEnumerable<string> GetFormattedValues(Type enumType, EnumFormat[] formats, bool uniqueValued = false)
         {
             var enumsCache = NonGenericEnumsCache.Get(enumType);
 
@@ -317,49 +309,21 @@ namespace EnumsNET.NonGeneric
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<int>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<uint>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<long>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<ulong>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<sbyte>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<byte>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionsOrNames(uniqueValued);
+                    return ((EnumsCache<short>)cache).GetFormattedValues(formats, uniqueValued);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionsOrNames(uniqueValued);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        public static IEnumerable<string> GetDescriptionsOrNames(Type enumType, Func<string, string> nameFormatter, bool uniqueValued = false)
-        {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
-
-            var cache = enumsCache.Cache;
-            switch (enumsCache.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return ((EnumsCache<ushort>)cache).GetFormattedValues(formats, uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2626,63 +2590,6 @@ namespace EnumsNET.NonGeneric
                     return ((EnumsCache<short>)cache).GetDescription(((Func<object, short>)toInt)(value));
                 case TypeCode.UInt16:
                     return ((EnumsCache<ushort>)cache).GetDescription(((Func<object, ushort>)toInt)(value));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        [Pure]
-        public static string GetDescriptionOrName(Type enumType, object value)
-        {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
-            switch (enumsCache.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionOrName(((Func<object, int>)toInt)(value));
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionOrName(((Func<object, uint>)toInt)(value));
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionOrName(((Func<object, long>)toInt)(value));
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionOrName(((Func<object, ulong>)toInt)(value));
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionOrName(((Func<object, sbyte>)toInt)(value));
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionOrName(((Func<object, byte>)toInt)(value));
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionOrName(((Func<object, short>)toInt)(value));
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionOrName(((Func<object, ushort>)toInt)(value));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        public static string GetDescriptionOrName(Type enumType, object value, Func<string, string> nameFormatter)
-        {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
-            switch (enumsCache.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).GetDescriptionOrName(((Func<object, int>)toInt)(value), nameFormatter);
-                case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).GetDescriptionOrName(((Func<object, uint>)toInt)(value), nameFormatter);
-                case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).GetDescriptionOrName(((Func<object, long>)toInt)(value), nameFormatter);
-                case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).GetDescriptionOrName(((Func<object, ulong>)toInt)(value), nameFormatter);
-                case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).GetDescriptionOrName(((Func<object, sbyte>)toInt)(value), nameFormatter);
-                case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).GetDescriptionOrName(((Func<object, byte>)toInt)(value), nameFormatter);
-                case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).GetDescriptionOrName(((Func<object, short>)toInt)(value), nameFormatter);
-                case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).GetDescriptionOrName(((Func<object, ushort>)toInt)(value), nameFormatter);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;

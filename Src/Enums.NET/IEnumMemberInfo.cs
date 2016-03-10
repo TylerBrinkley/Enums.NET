@@ -27,8 +27,6 @@ namespace EnumsNET
         string Description { get; }
         object UnderlyingValue { get; }
 
-        string GetDescriptionOrName();
-        string GetDescriptionOrName(Func<string, string> nameFormatter);
         string ToString();
         string ToString(string format);
         string ToString(params EnumFormat[] formats);

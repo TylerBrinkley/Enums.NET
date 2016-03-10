@@ -278,54 +278,27 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
-        [Pure]
-        public static IEnumerable<string> GetDescriptionsOrNames<TEnum>(bool uniqueValued = false)
+        public static IEnumerable<string> GetFormattedValues<TEnum>(EnumFormat[] formats, bool uniqueValued = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, int>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, uint>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, long>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, ulong>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, sbyte>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, byte>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.GetDescriptionsOrNames(uniqueValued);
+                    return Enums<TEnum, short>.Cache.GetFormattedValues(formats, uniqueValued);
                 case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.GetDescriptionsOrNames(uniqueValued);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        public static IEnumerable<string> GetDescriptionsOrNames<TEnum>(Func<string, string> nameFormatter, bool uniqueValued = false)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.GetDescriptionsOrNames(nameFormatter, uniqueValued);
+                    return Enums<TEnum, ushort>.Cache.GetFormattedValues(formats, uniqueValued);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -2542,74 +2515,6 @@ namespace EnumsNET.Unsafe
                     return Enums<TEnum, short>.Cache.GetDescription(Enums<TEnum, short>.ToInt(value));
                 case TypeCode.UInt16:
                     return Enums<TEnum, ushort>.Cache.GetDescription(Enums<TEnum, ushort>.ToInt(value));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        /// <summary>
-        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static string GetDescriptionOrName<TEnum>(TEnum value)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.GetDescriptionOrName(Enums<TEnum, int>.ToInt(value));
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.GetDescriptionOrName(Enums<TEnum, uint>.ToInt(value));
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.GetDescriptionOrName(Enums<TEnum, long>.ToInt(value));
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.GetDescriptionOrName(Enums<TEnum, ulong>.ToInt(value));
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.GetDescriptionOrName(Enums<TEnum, sbyte>.ToInt(value));
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.GetDescriptionOrName(Enums<TEnum, byte>.ToInt(value));
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.GetDescriptionOrName(Enums<TEnum, short>.ToInt(value));
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.GetDescriptionOrName(Enums<TEnum, ushort>.ToInt(value));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        /// <summary>
-        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="nameFormatter"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        public static string GetDescriptionOrName<TEnum>(TEnum value, Func<string, string> nameFormatter)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.GetDescriptionOrName(Enums<TEnum, int>.ToInt(value), nameFormatter);
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.GetDescriptionOrName(Enums<TEnum, uint>.ToInt(value), nameFormatter);
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.GetDescriptionOrName(Enums<TEnum, long>.ToInt(value), nameFormatter);
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.GetDescriptionOrName(Enums<TEnum, ulong>.ToInt(value), nameFormatter);
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.GetDescriptionOrName(Enums<TEnum, sbyte>.ToInt(value), nameFormatter);
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.GetDescriptionOrName(Enums<TEnum, byte>.ToInt(value), nameFormatter);
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.GetDescriptionOrName(Enums<TEnum, short>.ToInt(value), nameFormatter);
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.GetDescriptionOrName(Enums<TEnum, ushort>.ToInt(value), nameFormatter);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;

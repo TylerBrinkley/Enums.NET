@@ -277,11 +277,12 @@ namespace EnumsNET
 
         public IEnumerable<string> GetDescriptions(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Description);
 
-        public IEnumerable<string> GetDescriptionsOrNames(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.GetDescriptionOrName());
+        public IEnumerable<string> GetFormattedValues(EnumFormat[] formats, bool uniqueValued)
+        {
+            Preconditions.NotNull(formats, nameof(formats));
 
-        public IEnumerable<string> GetDescriptionsOrNames(Func<string, string> nameFormatter, bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.GetDescriptionOrName(nameFormatter));
-
-        public IEnumerable<string> GetFormattedValues(EnumFormat[] formats, bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Format(formats));
+            return GetInternalEnumMemberInfos(uniqueValued).Select(info => InternalFormat(info, formats));
+        }
 
         public IEnumerable<Attribute[]> GetAttributes(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Attributes);
 
@@ -699,10 +700,6 @@ namespace EnumsNET
         public string GetName(TInt value) => GetEnumMemberInfo(value).Name;
 
         public string GetDescription(TInt value) => GetEnumMemberInfo(value).Description;
-
-        public string GetDescriptionOrName(TInt value) => GetEnumMemberInfo(value).GetDescriptionOrName();
-
-        public string GetDescriptionOrName(TInt value, Func<string, string> nameFormatter) => GetEnumMemberInfo(value).GetDescriptionOrName(nameFormatter);
         #endregion
 
         #region Attributes
