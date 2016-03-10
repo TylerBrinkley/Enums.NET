@@ -1060,8 +1060,11 @@ namespace EnumsNET.Tests
         [Test]
         public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
         {
-            var customFormat = RegisterCustomEnumFormat(info => info.GetAttribute<EnumMemberAttribute>().Value);
+            var customFormat = RegisterCustomEnumFormat(info => info.GetAttribute<EnumMemberAttribute>()?.Value);
             Assert.AreEqual("a", EnumMemberAttributeEnum.A.Format(customFormat));
+            var getDescriptionOrNameFormat = RegisterCustomEnumFormat(info => info.Description ?? info.Name);
+            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.Format(getDescriptionOrNameFormat));
+            Assert.AreEqual("Red", ColorFlagEnum.Red.Format(getDescriptionOrNameFormat));
         }
 
         [Test]
