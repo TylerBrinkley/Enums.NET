@@ -275,20 +275,6 @@ namespace EnumsNET
 
         public IEnumerable<TInt> GetValues(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Value);
 
-        public IEnumerable<string> GetDescriptions(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Description);
-
-        public IEnumerable<string> GetFormattedValues(EnumFormat[] formats, bool uniqueValued)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return GetInternalEnumMemberInfos(uniqueValued).Select(info => InternalFormat(info, formats));
-        }
-
-        public IEnumerable<Attribute[]> GetAttributes(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Attributes);
-
-        public IEnumerable<TAttribute> GetAttributes<TAttribute>(bool uniqueValued)
-            where TAttribute : Attribute => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.GetAttribute<TAttribute>());
-
         private IEnumerable<InternalEnumMemberInfo<TInt>> GetInternalEnumMemberInfos(bool uniqueValued)
         {
             if (uniqueValued || _duplicateValues == null)

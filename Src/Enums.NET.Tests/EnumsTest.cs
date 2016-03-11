@@ -162,24 +162,24 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetDescriptions()
+        public void GetDescriptionsAlternative()
         {
-            CollectionAssert.AreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetDescriptions<ColorFlagEnum>().ToArray());
-            CollectionAssert.AreEqual(new string[0], GetDescriptions<ByteEnum>().ToArray());
+            CollectionAssert.AreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetEnumMemberInfos<ColorFlagEnum>().Select(info => info.Description).ToArray());
+            CollectionAssert.AreEqual(new string[0], GetEnumMemberInfos<ByteEnum>().Select(info => info.Description).ToArray());
         }
 
         [Test]
-        public void GetAttributes1()
+        public void GetAttributes1Alternative()
         {
-            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetAttributes<ColorFlagEnum>());
-            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetAttributes<ByteEnum>());
+            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetEnumMemberInfos<ColorFlagEnum>().Select(info => info.Attributes));
+            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetEnumMemberInfos<ByteEnum>().Select(info => info.Attributes));
         }
 
         [Test]
-        public void GetAttributes2()
+        public void GetAttributes2Alternative()
         {
-            CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetAttributes<ColorFlagEnum, DescriptionAttribute>().ToArray());
-            CollectionAssert.AreEqual(new DescriptionAttribute[0], GetAttributes<ByteEnum, DescriptionAttribute>().ToArray());
+            CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetEnumMemberInfos<ColorFlagEnum>().Select(info => info.GetAttribute<DescriptionAttribute>()).ToArray());
+            CollectionAssert.AreEqual(new DescriptionAttribute[0], GetEnumMemberInfos<ByteEnum>().Select(info => info.GetAttribute<DescriptionAttribute>()).ToArray());
         }
         #endregion
 
