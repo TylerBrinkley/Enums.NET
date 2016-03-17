@@ -28,7 +28,7 @@ using System.Collections.Concurrent;
 
 namespace EnumsNET
 {
-    internal sealed class EnumsCache<TInt>
+    internal sealed class EnumsCache<TInt> where TInt : struct
     {
         #region Static
         internal static Func<TInt, TInt, bool> Equal;
@@ -376,7 +376,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(value, nameof(value));
 
-            if (value is TInt)
+            if (value is TInt || value is TInt?)
             {
                 var result = (TInt)value;
                 if (validate)
@@ -386,7 +386,9 @@ namespace EnumsNET
                 return result;
             }
 
-            switch (Type.GetTypeCode(value.GetType()))
+            var type = value.GetType();
+
+            switch (Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type))
             {
                 case TypeCode.SByte:
                     return ToObject((sbyte)value, validate);
@@ -449,13 +451,15 @@ namespace EnumsNET
         {
             if (value != null)
             {
-                if (value is TInt)
+                if (value is TInt || value is TInt?)
                 {
                     result = (TInt)value;
                     return true;
                 }
 
-                switch (Type.GetTypeCode(value.GetType()))
+                var type = value.GetType();
+
+                switch (Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type))
                 {
                     case TypeCode.SByte:
                         return TryToObject((sbyte)value, out result, validate);

@@ -1,4 +1,5 @@
-﻿using EnumsNET.NonGeneric;
+﻿using System;
+using EnumsNET.NonGeneric;
 using EnumsNET.Tests.TestEnums;
 #if NETFX_CORE
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
@@ -20,6 +21,13 @@ namespace EnumsNET.Tests
             Assert.IsTrue(NonGenericEnums.IsContiguous(typeof(ContiguousUInt64Enum)));
             Assert.IsFalse(NonGenericEnums.IsContiguous(typeof(NonContiguousEnum)));
             Assert.IsFalse(NonGenericEnums.IsContiguous(typeof(NonContiguousUInt64Enum)));
+        }
+
+        [Test]
+        public void NonGenericEnumsNullableTest()
+        {
+            Assert.AreEqual("Black", NonGenericEnums.GetName(typeof(ConsoleColor?), (ConsoleColor?)ConsoleColor.Black));
+            Assert.AreEqual("Black", NonGenericEnums.GetName(typeof(ConsoleColor?), ConsoleColor.Black));
         }
     }
 }

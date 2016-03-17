@@ -3092,6 +3092,7 @@ namespace EnumsNET
     }
 
     internal static class Enums<TEnum, TInt>
+        where TInt : struct
     {
         internal static readonly EnumsCache<TInt> Cache;
 

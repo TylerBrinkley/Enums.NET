@@ -19,6 +19,7 @@ using System.Collections.Generic;
 namespace EnumsNET
 {
     internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo
+        where TInt : struct
     {
         private readonly Attribute[] _attributes;
         private readonly EnumsCache<TInt> _enumsCache;

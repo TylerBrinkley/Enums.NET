@@ -38,7 +38,11 @@ namespace EnumsNET.NonGeneric
             Preconditions.NotNull(enumType, nameof(enumType));
             if (!enumType.IsEnum)
             {
-                throw new ArgumentException("must be an enum type", nameof(enumType));
+                enumType = Nullable.GetUnderlyingType(enumType);
+                if (enumType?.IsEnum != true)
+                {
+                    throw new ArgumentException("must be an enum type", nameof(enumType));
+                }
             }
 
             NonGenericEnumsCache enumsCache;
@@ -62,9 +66,11 @@ namespace EnumsNET.NonGeneric
             return enumsCache;
         }
 
-        private static bool IsEnum<TEnum>(object value) => value is TEnum;
+        private static bool IsEnum<TEnum>(object value) where TEnum : struct => value is TEnum || value is TEnum?;
 
         private static NonGenericEnumsCache Create<TEnum, TInt>(string enumName, TypeCode typeCode)
+            where TEnum : struct
+            where TInt : struct
         {
             Delegate toEnum = Enums<TEnum, TInt>.ToEnum;
             Func<object, bool> isEnum = IsEnum<TEnum>;
