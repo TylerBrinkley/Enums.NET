@@ -54,6 +54,7 @@
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericEnumsCache.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
+    <Compile Include="OptionalOutParameter.cs" />
     <Compile Include="OrderedBiDirectionalDictionary.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

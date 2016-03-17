@@ -33,7 +33,7 @@ namespace EnumsNET.NonGeneric
 #endif
         private static readonly MethodInfo _openCreateMethod = typeof(NonGenericEnumsCache).GetMethod(nameof(Create), BindingFlags.Static | BindingFlags.NonPublic);
 
-        internal static NonGenericEnumsCache Get(Type enumType)
+        internal static NonGenericEnumsCache Get(Type enumType, OptionalOutParameter<bool> isNullable = null)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
             if (!enumType.IsEnum)
@@ -43,6 +43,14 @@ namespace EnumsNET.NonGeneric
                 {
                     throw new ArgumentException("must be an enum type", nameof(enumType));
                 }
+                else if (isNullable != null)
+                {
+                    isNullable.Result = true;
+                }
+            }
+            else if (isNullable != null)
+            {
+                isNullable.Result = false;
             }
 
             NonGenericEnumsCache enumsCache;

@@ -28,7 +28,8 @@ using System.Collections.Concurrent;
 
 namespace EnumsNET
 {
-    internal sealed class EnumsCache<TInt> where TInt : struct
+    internal sealed class EnumsCache<TInt>
+        where TInt : struct
     {
         #region Static
         internal static Func<TInt, TInt, bool> Equal;

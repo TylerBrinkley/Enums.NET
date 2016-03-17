@@ -281,7 +281,20 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static int Compare(Type enumType, object x, object y)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (isNullable)
+            {
+                if (x == null)
+                {
+                    return y == null ? 0 : -1;
+                }
+                if (y == null)
+                {
+                    return 1;
+                }
+            }
 
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -347,7 +360,13 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsValid(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return true;
+            }
 
             var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
@@ -532,7 +551,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsDefined(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return false;
+            }
+
             var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
@@ -899,7 +925,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToObject(Type enumType, object value, bool validate = true)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toEnum = enumsCache.ToEnum;
             switch (enumsCache.TypeCode)
@@ -1275,7 +1308,15 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryToObject(Type enumType, object value, out object result, bool validate = true)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                result = null;
+                return true;
+            }
+
             var cache = enumsCache.Cache;
             var toEnum = enumsCache.ToEnum;
             bool success;
@@ -1571,7 +1612,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Validate(Type enumType, object value, string paramName)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return value;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1618,7 +1666,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1659,7 +1714,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, string format)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1697,7 +1759,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, params EnumFormat[] formats)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1738,7 +1807,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, string format)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1767,7 +1843,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1796,7 +1879,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1825,7 +1915,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1854,7 +1951,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1883,7 +1987,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1912,7 +2023,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, params EnumFormat[] formats)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -1951,7 +2069,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object GetUnderlyingValue(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
@@ -2295,7 +2420,20 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool Equals(Type enumType, object x, object y)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (isNullable)
+            {
+                if (x == null)
+                {
+                    return y == null;
+                }
+                if (y == null)
+                {
+                    return false;
+                }
+            }
 
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -2334,7 +2472,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static EnumMemberInfo GetEnumMemberInfo(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             IEnumMemberInfo info = null;
@@ -2426,7 +2571,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string GetName(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -2467,7 +2619,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string GetDescription(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
@@ -2508,7 +2667,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static Attribute[] GetAttributes(Type enumType, object value)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
