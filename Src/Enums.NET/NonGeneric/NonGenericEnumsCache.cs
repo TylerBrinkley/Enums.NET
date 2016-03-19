@@ -74,24 +74,14 @@ namespace EnumsNET.NonGeneric
             return enumsCache;
         }
 
-        private static bool IsEnum<TEnum>(object value) where TEnum : struct => value is TEnum || value is TEnum?;
-
         private static NonGenericEnumsCache Create<TEnum, TInt>(string enumName, TypeCode typeCode)
-            where TEnum : struct
             where TInt : struct
         {
+            var cache = Enums<TEnum, TInt>.Cache;
             Delegate toEnum = Enums<TEnum, TInt>.ToEnum;
-            Func<object, bool> isEnum = IsEnum<TEnum>;
-            return new NonGenericEnumsCache(Enums<TEnum, TInt>.Cache,
+            return new NonGenericEnumsCache(cache,
                 (Func<TInt, object>)(value => ((Func<TInt, TEnum>)toEnum)(value)),
-                (Func<object, TInt>)(value =>
-                {
-                    if (isEnum(value))
-                    {
-                        return (TInt)value;
-                    }
-                    throw new ArgumentException($"value is not of type {enumName}", nameof(value));
-                }),
+                (Func<object, TInt>)(value => cache.ToObject(value, false)),
                 typeCode,
                 Enums.InternalRegisterCustomEnumFormat<TEnum>);
         }

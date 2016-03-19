@@ -318,10 +318,11 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    return flagMask == null;
+                    return !HasAnyFlags(enumType, flagMask);
                 }
                 if (flagMask == null)
                 {
+                    NonGenericEnums.ToObject(enumType, value, false);
                     return true;
                 }
             }
@@ -430,10 +431,11 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    return flagMask == null;
+                    return !HasAnyFlags(enumType, flagMask);
                 }
                 if (flagMask == null)
                 {
+                    NonGenericEnums.ToObject(enumType, value, false);
                     return true;
                 }
             }
@@ -543,11 +545,11 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    return flagMask;
+                    return NonGenericEnums.ToObject(enumType, flagMask, false);
                 }
                 if (flagMask == null)
                 {
-                    return value;
+                    return NonGenericEnums.ToObject(enumType, value, false);
                 }
             }
             
@@ -604,9 +606,21 @@ namespace EnumsNET.NonGeneric
             var isNullable = new OptionalOutParameter<bool>();
             var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
 
-            if (isNullable && (value == null || flagMask == null))
+            if (isNullable)
             {
-                return null;
+                if (value == null)
+                {
+                    if (flagMask != null)
+                    {
+                        NonGenericEnums.ToObject(enumType, flagMask, false);
+                    }
+                    return null;
+                }
+                if (flagMask == null)
+                {
+                    NonGenericEnums.ToObject(enumType, value, false);
+                    return null;
+                }
             }
 
             var cache = enumsCache.Cache;
@@ -666,11 +680,11 @@ namespace EnumsNET.NonGeneric
             {
                 if (flag0 == null)
                 {
-                    return flag1;
+                    return NonGenericEnums.ToObject(enumType, flag1, false);
                 }
                 if (flag1 == null)
                 {
-                    return flag0;
+                    return NonGenericEnums.ToObject(enumType, flag0, false);
                 }
             }
 
@@ -770,9 +784,20 @@ namespace EnumsNET.NonGeneric
             var isNullable = new OptionalOutParameter<bool>();
             var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
 
-            if (isNullable && (value == null || flagMask == null))
+            if (isNullable)
             {
-                return value;
+                if (value == null)
+                {
+                    if (flagMask != null)
+                    {
+                        NonGenericEnums.ToObject(enumType, flagMask, false);
+                    }
+                    return null;
+                }
+                if (flagMask == null)
+                {
+                    return NonGenericEnums.ToObject(enumType, value, false);
+                }
             }
 
             var cache = enumsCache.Cache;
@@ -900,7 +925,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Parse(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (string.IsNullOrEmpty(value) && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toEnum = enumsCache.ToEnum;
             switch (enumsCache.TypeCode)
@@ -1080,7 +1112,15 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParse(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (string.IsNullOrEmpty(value) && isNullable)
+            {
+                result = null;
+                return true;
+            }
+
             var cache = enumsCache.Cache;
             var toEnum = enumsCache.ToEnum;
             var success = false;

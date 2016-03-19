@@ -288,10 +288,16 @@ namespace EnumsNET.NonGeneric
             {
                 if (x == null)
                 {
-                    return y == null ? 0 : -1;
+                    if (y == null)
+                    {
+                        return 0;
+                    }
+                    ToObject(enumType, y, false);
+                    return -1;
                 }
                 if (y == null)
                 {
+                    ToObject(enumType, x, false);
                     return 1;
                 }
             }
@@ -2427,10 +2433,16 @@ namespace EnumsNET.NonGeneric
             {
                 if (x == null)
                 {
-                    return y == null;
+                    if (y == null)
+                    {
+                        return true;
+                    }
+                    ToObject(enumType, y, false);
+                    return false;
                 }
                 if (y == null)
                 {
+                    ToObject(enumType, x, false);
                     return false;
                 }
             }
@@ -2773,7 +2785,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Parse(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (string.IsNullOrEmpty(value) && isNullable)
+            {
+                return null;
+            }
+
             var cache = enumsCache.Cache;
             var toEnum = enumsCache.ToEnum;
             switch (enumsCache.TypeCode)
@@ -2917,7 +2936,15 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var enumsCache = NonGenericEnumsCache.Get(enumType);
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
+
+            if (string.IsNullOrEmpty(value) && isNullable)
+            {
+                result = null;
+                return true;
+            }
+
             var cache = enumsCache.Cache;
             var toEnum = enumsCache.ToEnum;
             var success = false;

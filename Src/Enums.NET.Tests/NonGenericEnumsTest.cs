@@ -28,6 +28,7 @@ namespace EnumsNET.Tests
         {
             Assert.AreEqual("Black", NonGenericEnums.GetName(typeof(ConsoleColor?), (ConsoleColor?)ConsoleColor.Black));
             Assert.AreEqual("Black", NonGenericEnums.GetName(typeof(ConsoleColor?), ConsoleColor.Black));
+            Assert.AreEqual(null, NonGenericEnums.GetName(typeof(ConsoleColor?), null));
         }
     }
 }
