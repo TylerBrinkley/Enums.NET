@@ -121,25 +121,32 @@ namespace EnumsNET.NonGeneric
             }
 
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).IsValidFlagCombination(((Func<object, int>)toInt)(value));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.IsValidFlagCombination(int32Cache.ToObject(value, false));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).IsValidFlagCombination(((Func<object, uint>)toInt)(value));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.IsValidFlagCombination(uint32Cache.ToObject(value, false));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).IsValidFlagCombination(((Func<object, long>)toInt)(value));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.IsValidFlagCombination(int64Cache.ToObject(value, false));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).IsValidFlagCombination(((Func<object, ulong>)toInt)(value));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.IsValidFlagCombination(uint64Cache.ToObject(value, false));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).IsValidFlagCombination(((Func<object, sbyte>)toInt)(value));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.IsValidFlagCombination(sbyteCache.ToObject(value, false));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).IsValidFlagCombination(((Func<object, byte>)toInt)(value));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.IsValidFlagCombination(byteCache.ToObject(value, false));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).IsValidFlagCombination(((Func<object, short>)toInt)(value));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.IsValidFlagCombination(int16Cache.ToObject(value, false));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).IsValidFlagCombination(((Func<object, ushort>)toInt)(value));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.IsValidFlagCombination(uint16Cache.ToObject(value, false));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -166,25 +173,32 @@ namespace EnumsNET.NonGeneric
             }
 
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).FormatAsFlags(((Func<object, int>)toInt)(value), delimiter, formats);
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.FormatAsFlags(int32Cache.ToObject(value, false), delimiter, formats);
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).FormatAsFlags(((Func<object, uint>)toInt)(value), delimiter, formats);
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.FormatAsFlags(uint32Cache.ToObject(value, false), delimiter, formats);
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).FormatAsFlags(((Func<object, long>)toInt)(value), delimiter, formats);
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.FormatAsFlags(int64Cache.ToObject(value, false), delimiter, formats);
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).FormatAsFlags(((Func<object, ulong>)toInt)(value), delimiter, formats);
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.FormatAsFlags(uint64Cache.ToObject(value, false), delimiter, formats);
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).FormatAsFlags(((Func<object, sbyte>)toInt)(value), delimiter, formats);
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.FormatAsFlags(sbyteCache.ToObject(value, false), delimiter, formats);
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).FormatAsFlags(((Func<object, byte>)toInt)(value), delimiter, formats);
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.FormatAsFlags(byteCache.ToObject(value, false), delimiter, formats);
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).FormatAsFlags(((Func<object, short>)toInt)(value), delimiter, formats);
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.FormatAsFlags(int16Cache.ToObject(value, false), delimiter, formats);
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).FormatAsFlags(((Func<object, ushort>)toInt)(value), delimiter, formats);
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.FormatAsFlags(uint16Cache.ToObject(value, false), delimiter, formats);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -214,34 +228,41 @@ namespace EnumsNET.NonGeneric
             }
 
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             var toEnum = enumsCache.ToEnum;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
                     var int32ToEnum = (Func<int, object>)toEnum;
-                    return ((EnumsCache<int>)cache).GetFlags(((Func<object, int>)toInt)(value))?.Select(flag => int32ToEnum(flag)).ToArray();
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.GetFlags(int32Cache.ToObject(value, false))?.Select(flag => int32ToEnum(flag)).ToArray();
                 case TypeCode.UInt32:
                     var uint32ToEnum = (Func<uint, object>)toEnum;
-                    return ((EnumsCache<uint>)cache).GetFlags(((Func<object, uint>)toInt)(value))?.Select(flag => uint32ToEnum(flag)).ToArray();
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.GetFlags(uint32Cache.ToObject(value, false))?.Select(flag => uint32ToEnum(flag)).ToArray();
                 case TypeCode.Int64:
                     var int64ToEnum = (Func<long, object>)toEnum;
-                    return ((EnumsCache<long>)cache).GetFlags(((Func<object, long>)toInt)(value))?.Select(flag => int64ToEnum(flag)).ToArray();
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.GetFlags(int64Cache.ToObject(value, false))?.Select(flag => int64ToEnum(flag)).ToArray();
                 case TypeCode.UInt64:
                     var uint64ToEnum = (Func<ulong, object>)toEnum;
-                    return ((EnumsCache<ulong>)cache).GetFlags(((Func<object, ulong>)toInt)(value))?.Select(flag => uint64ToEnum(flag)).ToArray();
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.GetFlags(uint64Cache.ToObject(value, false))?.Select(flag => uint64ToEnum(flag)).ToArray();
                 case TypeCode.SByte:
                     var sbyteToEnum = (Func<sbyte, object>)toEnum;
-                    return ((EnumsCache<sbyte>)cache).GetFlags(((Func<object, sbyte>)toInt)(value))?.Select(flag => sbyteToEnum(flag)).ToArray();
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.GetFlags(sbyteCache.ToObject(value, false))?.Select(flag => sbyteToEnum(flag)).ToArray();
                 case TypeCode.Byte:
                     var byteToEnum = (Func<byte, object>)toEnum;
-                    return ((EnumsCache<byte>)cache).GetFlags(((Func<object, byte>)toInt)(value))?.Select(flag => byteToEnum(flag)).ToArray();
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.GetFlags(byteCache.ToObject(value, false))?.Select(flag => byteToEnum(flag)).ToArray();
                 case TypeCode.Int16:
                     var int16ToEnum = (Func<short, object>)toEnum;
-                    return ((EnumsCache<short>)cache).GetFlags(((Func<object, short>)toInt)(value))?.Select(flag => int16ToEnum(flag)).ToArray();
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.GetFlags(int16Cache.ToObject(value, false))?.Select(flag => int16ToEnum(flag)).ToArray();
                 case TypeCode.UInt16:
                     var uint16ToEnum = (Func<ushort, object>)toEnum;
-                    return ((EnumsCache<ushort>)cache).GetFlags(((Func<object, ushort>)toInt)(value))?.Select(flag => uint16ToEnum(flag)).ToArray();
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.GetFlags(uint16Cache.ToObject(value, false))?.Select(flag => uint16ToEnum(flag)).ToArray();
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -271,25 +292,32 @@ namespace EnumsNET.NonGeneric
             }
 
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).HasAnyFlags(((Func<object, int>)toInt)(value));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.HasAnyFlags(int32Cache.ToObject(value, false));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).HasAnyFlags(((Func<object, uint>)toInt)(value));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.HasAnyFlags(uint32Cache.ToObject(value, false));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).HasAnyFlags(((Func<object, long>)toInt)(value));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.HasAnyFlags(int64Cache.ToObject(value, false));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).HasAnyFlags(((Func<object, ulong>)toInt)(value));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.HasAnyFlags(uint64Cache.ToObject(value, false));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).HasAnyFlags(((Func<object, sbyte>)toInt)(value));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.HasAnyFlags(sbyteCache.ToObject(value, false));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).HasAnyFlags(((Func<object, byte>)toInt)(value));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.HasAnyFlags(byteCache.ToObject(value, false));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).HasAnyFlags(((Func<object, short>)toInt)(value));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.HasAnyFlags(int16Cache.ToObject(value, false));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).HasAnyFlags(((Func<object, ushort>)toInt)(value));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.HasAnyFlags(uint16Cache.ToObject(value, false));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -328,33 +356,32 @@ namespace EnumsNET.NonGeneric
             }
 
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((EnumsCache<int>)cache).HasAnyFlags(enumToInt32(value), enumToInt32(flagMask));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.HasAnyFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((EnumsCache<uint>)cache).HasAnyFlags(enumToUInt32(value), enumToUInt32(flagMask));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.HasAnyFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((EnumsCache<long>)cache).HasAnyFlags(enumToInt64(value), enumToInt64(flagMask));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.HasAnyFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((EnumsCache<ulong>)cache).HasAnyFlags(enumToUInt64(value), enumToUInt64(flagMask));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.HasAnyFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((EnumsCache<sbyte>)cache).HasAnyFlags(enumToSByte(value), enumToSByte(flagMask));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.HasAnyFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((EnumsCache<byte>)cache).HasAnyFlags(enumToByte(value), enumToByte(flagMask));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.HasAnyFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((EnumsCache<short>)cache).HasAnyFlags(enumToInt16(value), enumToInt16(flagMask));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.HasAnyFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((EnumsCache<ushort>)cache).HasAnyFlags(enumToUInt16(value), enumToUInt16(flagMask));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.HasAnyFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -382,27 +409,34 @@ namespace EnumsNET.NonGeneric
             {
                 return false;
             }
-            
+
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((EnumsCache<int>)cache).HasAllFlags(((Func<object, int>)toInt)(value));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.HasAllFlags(int32Cache.ToObject(value, false));
                 case TypeCode.UInt32:
-                    return ((EnumsCache<uint>)cache).HasAllFlags(((Func<object, uint>)toInt)(value));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.HasAllFlags(uint32Cache.ToObject(value, false));
                 case TypeCode.Int64:
-                    return ((EnumsCache<long>)cache).HasAllFlags(((Func<object, long>)toInt)(value));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.HasAllFlags(int64Cache.ToObject(value, false));
                 case TypeCode.UInt64:
-                    return ((EnumsCache<ulong>)cache).HasAllFlags(((Func<object, ulong>)toInt)(value));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.HasAllFlags(uint64Cache.ToObject(value, false));
                 case TypeCode.SByte:
-                    return ((EnumsCache<sbyte>)cache).HasAllFlags(((Func<object, sbyte>)toInt)(value));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.HasAllFlags(sbyteCache.ToObject(value, false));
                 case TypeCode.Byte:
-                    return ((EnumsCache<byte>)cache).HasAllFlags(((Func<object, byte>)toInt)(value));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.HasAllFlags(byteCache.ToObject(value, false));
                 case TypeCode.Int16:
-                    return ((EnumsCache<short>)cache).HasAllFlags(((Func<object, short>)toInt)(value));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.HasAllFlags(int16Cache.ToObject(value, false));
                 case TypeCode.UInt16:
-                    return ((EnumsCache<ushort>)cache).HasAllFlags(((Func<object, ushort>)toInt)(value));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.HasAllFlags(uint16Cache.ToObject(value, false));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -441,33 +475,32 @@ namespace EnumsNET.NonGeneric
             }
 
             var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((EnumsCache<int>)cache).HasAllFlags(enumToInt32(value), enumToInt32(flagMask));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return int32Cache.HasAllFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((EnumsCache<uint>)cache).HasAllFlags(enumToUInt32(value), enumToUInt32(flagMask));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return uint32Cache.HasAllFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((EnumsCache<long>)cache).HasAllFlags(enumToInt64(value), enumToInt64(flagMask));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return int64Cache.HasAllFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((EnumsCache<ulong>)cache).HasAllFlags(enumToUInt64(value), enumToUInt64(flagMask));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return uint64Cache.HasAllFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((EnumsCache<sbyte>)cache).HasAllFlags(enumToSByte(value), enumToSByte(flagMask));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return sbyteCache.HasAllFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((EnumsCache<byte>)cache).HasAllFlags(enumToByte(value), enumToByte(flagMask));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return byteCache.HasAllFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((EnumsCache<short>)cache).HasAllFlags(enumToInt16(value), enumToInt16(flagMask));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return int16Cache.HasAllFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((EnumsCache<ushort>)cache).HasAllFlags(enumToUInt16(value), enumToUInt16(flagMask));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return uint16Cache.HasAllFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return false;
@@ -496,27 +529,34 @@ namespace EnumsNET.NonGeneric
                 return GetAllFlags(enumType);
             }
 
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             var toEnum = enumsCache.ToEnum;
+            var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).ToggleFlags(((Func<object, int>)toInt)(value)));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return ((Func<int, object>)toEnum)(int32Cache.ToggleFlags(int32Cache.ToObject(value, false)));
                 case TypeCode.UInt32:
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).ToggleFlags(((Func<object, uint>)toInt)(value)));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return ((Func<uint, object>)toEnum)(uint32Cache.ToggleFlags(uint32Cache.ToObject(value, false)));
                 case TypeCode.Int64:
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).ToggleFlags(((Func<object, long>)toInt)(value)));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return ((Func<long, object>)toEnum)(int64Cache.ToggleFlags(int64Cache.ToObject(value, false)));
                 case TypeCode.UInt64:
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).ToggleFlags(((Func<object, ulong>)toInt)(value)));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return ((Func<ulong, object>)toEnum)(uint64Cache.ToggleFlags(uint64Cache.ToObject(value, false)));
                 case TypeCode.SByte:
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).ToggleFlags(((Func<object, sbyte>)toInt)(value)));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return ((Func<sbyte, object>)toEnum)(sbyteCache.ToggleFlags(sbyteCache.ToObject(value, false)));
                 case TypeCode.Byte:
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).ToggleFlags(((Func<object, byte>)toInt)(value)));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return ((Func<byte, object>)toEnum)(byteCache.ToggleFlags(byteCache.ToObject(value, false)));
                 case TypeCode.Int16:
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).ToggleFlags(((Func<object, short>)toInt)(value)));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return ((Func<short, object>)toEnum)(int16Cache.ToggleFlags(int16Cache.ToObject(value, false)));
                 case TypeCode.UInt16:
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).ToggleFlags(((Func<object, ushort>)toInt)(value)));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return ((Func<ushort, object>)toEnum)(uint16Cache.ToggleFlags(uint16Cache.ToObject(value, false)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -552,36 +592,35 @@ namespace EnumsNET.NonGeneric
                     return NonGenericEnums.ToObject(enumType, value, false);
                 }
             }
-            
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
+
             var toEnum = enumsCache.ToEnum;
+            var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).ToggleFlags(enumToInt32(value), enumToInt32(flagMask)));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return ((Func<int, object>)toEnum)(int32Cache.ToggleFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).ToggleFlags(enumToUInt32(value), enumToUInt32(flagMask)));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return ((Func<uint, object>)toEnum)(uint32Cache.ToggleFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false)));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).ToggleFlags(enumToInt64(value), enumToInt64(flagMask)));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return ((Func<long, object>)toEnum)(int64Cache.ToggleFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).ToggleFlags(enumToUInt64(value), enumToUInt64(flagMask)));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return ((Func<ulong, object>)toEnum)(uint64Cache.ToggleFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false)));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).ToggleFlags(enumToSByte(value), enumToSByte(flagMask)));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return ((Func<sbyte, object>)toEnum)(sbyteCache.ToggleFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false)));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).ToggleFlags(enumToByte(value), enumToByte(flagMask)));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return ((Func<byte, object>)toEnum)(byteCache.ToggleFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false)));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).ToggleFlags(enumToInt16(value), enumToInt16(flagMask)));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return ((Func<short, object>)toEnum)(int16Cache.ToggleFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).ToggleFlags(enumToUInt16(value), enumToUInt16(flagMask)));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return ((Func<ushort, object>)toEnum)(uint16Cache.ToggleFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -623,35 +662,34 @@ namespace EnumsNET.NonGeneric
                 }
             }
 
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             var toEnum = enumsCache.ToEnum;
+            var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).CommonFlags(enumToInt32(value), enumToInt32(flagMask)));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return ((Func<int, object>)toEnum)(int32Cache.CommonFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).CommonFlags(enumToUInt32(value), enumToUInt32(flagMask)));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return ((Func<uint, object>)toEnum)(uint32Cache.CommonFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false)));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).CommonFlags(enumToInt64(value), enumToInt64(flagMask)));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return ((Func<long, object>)toEnum)(int64Cache.CommonFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).CommonFlags(enumToUInt64(value), enumToUInt64(flagMask)));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return ((Func<ulong, object>)toEnum)(uint64Cache.CommonFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false)));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).CommonFlags(enumToSByte(value), enumToSByte(flagMask)));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return ((Func<sbyte, object>)toEnum)(sbyteCache.CommonFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false)));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).CommonFlags(enumToByte(value), enumToByte(flagMask)));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return ((Func<byte, object>)toEnum)(byteCache.CommonFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false)));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).CommonFlags(enumToInt16(value), enumToInt16(flagMask)));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return ((Func<short, object>)toEnum)(int16Cache.CommonFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).CommonFlags(enumToUInt16(value), enumToUInt16(flagMask)));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return ((Func<ushort, object>)toEnum)(uint16Cache.CommonFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -688,35 +726,34 @@ namespace EnumsNET.NonGeneric
                 }
             }
 
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             var toEnum = enumsCache.ToEnum;
+            var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).SetFlags(enumToInt32(flag0), enumToInt32(flag1)));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return ((Func<int, object>)toEnum)(int32Cache.SetFlags(int32Cache.ToObject(flag0, false), int32Cache.ToObject(flag1, false)));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).SetFlags(enumToUInt32(flag0), enumToUInt32(flag1)));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return ((Func<uint, object>)toEnum)(uint32Cache.SetFlags(uint32Cache.ToObject(flag0, false), uint32Cache.ToObject(flag1, false)));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).SetFlags(enumToInt64(flag0), enumToInt64(flag1)));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return ((Func<long, object>)toEnum)(int64Cache.SetFlags(int64Cache.ToObject(flag0, false), int64Cache.ToObject(flag1, false)));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).SetFlags(enumToUInt64(flag0), enumToUInt64(flag1)));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return ((Func<ulong, object>)toEnum)(uint64Cache.SetFlags(uint64Cache.ToObject(flag0, false), uint64Cache.ToObject(flag1, false)));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).SetFlags(enumToSByte(flag0), enumToSByte(flag1)));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return ((Func<sbyte, object>)toEnum)(sbyteCache.SetFlags(sbyteCache.ToObject(flag0, false), sbyteCache.ToObject(flag1, false)));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).SetFlags(enumToByte(flag0), enumToByte(flag1)));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return ((Func<byte, object>)toEnum)(byteCache.SetFlags(byteCache.ToObject(flag0, false), byteCache.ToObject(flag1, false)));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).SetFlags(enumToInt16(flag0), enumToInt16(flag1)));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return ((Func<short, object>)toEnum)(int16Cache.SetFlags(int16Cache.ToObject(flag0, false), int16Cache.ToObject(flag1, false)));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).SetFlags(enumToUInt16(flag0), enumToUInt16(flag1)));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return ((Func<ushort, object>)toEnum)(uint16Cache.SetFlags(uint16Cache.ToObject(flag0, false), uint16Cache.ToObject(flag1, false)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -731,35 +768,34 @@ namespace EnumsNET.NonGeneric
             var enumsCache = NonGenericEnumsCache.Get(enumType, isNullable);
 
             var allFlags = isNullable ? flags.Where(flag => flag != null) : flags;
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             var toEnum = enumsCache.ToEnum;
+            var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).SetFlags(allFlags.Select(flag => enumToInt32(flag))));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return ((Func<int, object>)toEnum)(int32Cache.SetFlags(allFlags.Select(flag => int32Cache.ToObject(flag, false))));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).SetFlags(allFlags.Select(flag => enumToUInt32(flag))));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return ((Func<uint, object>)toEnum)(uint32Cache.SetFlags(allFlags.Select(flag => uint32Cache.ToObject(flag, false))));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).SetFlags(allFlags.Select(flag => enumToInt64(flag))));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return ((Func<long, object>)toEnum)(int64Cache.SetFlags(allFlags.Select(flag => int64Cache.ToObject(flag, false))));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).SetFlags(allFlags.Select(flag => enumToUInt64(flag))));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return ((Func<ulong, object>)toEnum)(uint64Cache.SetFlags(allFlags.Select(flag => uint64Cache.ToObject(flag, false))));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).SetFlags(allFlags.Select(flag => enumToSByte(flag))));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return ((Func<sbyte, object>)toEnum)(sbyteCache.SetFlags(allFlags.Select(flag => sbyteCache.ToObject(flag, false))));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).SetFlags(allFlags.Select(flag => enumToByte(flag))));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return ((Func<byte, object>)toEnum)(byteCache.SetFlags(allFlags.Select(flag => byteCache.ToObject(flag, false))));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).SetFlags(allFlags.Select(flag => enumToInt16(flag))));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return ((Func<short, object>)toEnum)(int16Cache.SetFlags(allFlags.Select(flag => int16Cache.ToObject(flag, false))));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).SetFlags(allFlags.Select(flag => enumToUInt16(flag))));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return ((Func<ushort, object>)toEnum)(uint16Cache.SetFlags(allFlags.Select(flag => uint16Cache.ToObject(flag, false))));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;
@@ -800,35 +836,34 @@ namespace EnumsNET.NonGeneric
                 }
             }
 
-            var cache = enumsCache.Cache;
-            var toInt = enumsCache.ToInt;
             var toEnum = enumsCache.ToEnum;
+            var cache = enumsCache.Cache;
             switch (enumsCache.TypeCode)
             {
                 case TypeCode.Int32:
-                    var enumToInt32 = (Func<object, int>)toInt;
-                    return ((Func<int, object>)toEnum)(((EnumsCache<int>)cache).ClearFlags(enumToInt32(value), enumToInt32(flagMask)));
+                    var int32Cache = (EnumsCache<int>)cache;
+                    return ((Func<int, object>)toEnum)(int32Cache.ClearFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt32:
-                    var enumToUInt32 = (Func<object, uint>)toInt;
-                    return ((Func<uint, object>)toEnum)(((EnumsCache<uint>)cache).ClearFlags(enumToUInt32(value), enumToUInt32(flagMask)));
+                    var uint32Cache = (EnumsCache<uint>)cache;
+                    return ((Func<uint, object>)toEnum)(uint32Cache.ClearFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false)));
                 case TypeCode.Int64:
-                    var enumToInt64 = (Func<object, long>)toInt;
-                    return ((Func<long, object>)toEnum)(((EnumsCache<long>)cache).ClearFlags(enumToInt64(value), enumToInt64(flagMask)));
+                    var int64Cache = (EnumsCache<long>)cache;
+                    return ((Func<long, object>)toEnum)(int64Cache.ClearFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt64:
-                    var enumToUInt64 = (Func<object, ulong>)toInt;
-                    return ((Func<ulong, object>)toEnum)(((EnumsCache<ulong>)cache).ClearFlags(enumToUInt64(value), enumToUInt64(flagMask)));
+                    var uint64Cache = (EnumsCache<ulong>)cache;
+                    return ((Func<ulong, object>)toEnum)(uint64Cache.ClearFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false)));
                 case TypeCode.SByte:
-                    var enumToSByte = (Func<object, sbyte>)toInt;
-                    return ((Func<sbyte, object>)toEnum)(((EnumsCache<sbyte>)cache).ClearFlags(enumToSByte(value), enumToSByte(flagMask)));
+                    var sbyteCache = (EnumsCache<sbyte>)cache;
+                    return ((Func<sbyte, object>)toEnum)(sbyteCache.ClearFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false)));
                 case TypeCode.Byte:
-                    var enumToByte = (Func<object, byte>)toInt;
-                    return ((Func<byte, object>)toEnum)(((EnumsCache<byte>)cache).ClearFlags(enumToByte(value), enumToByte(flagMask)));
+                    var byteCache = (EnumsCache<byte>)cache;
+                    return ((Func<byte, object>)toEnum)(byteCache.ClearFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false)));
                 case TypeCode.Int16:
-                    var enumToInt16 = (Func<object, short>)toInt;
-                    return ((Func<short, object>)toEnum)(((EnumsCache<short>)cache).ClearFlags(enumToInt16(value), enumToInt16(flagMask)));
+                    var int16Cache = (EnumsCache<short>)cache;
+                    return ((Func<short, object>)toEnum)(int16Cache.ClearFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false)));
                 case TypeCode.UInt16:
-                    var enumToUInt16 = (Func<object, ushort>)toInt;
-                    return ((Func<ushort, object>)toEnum)(((EnumsCache<ushort>)cache).ClearFlags(enumToUInt16(value), enumToUInt16(flagMask)));
+                    var uint16Cache = (EnumsCache<ushort>)cache;
+                    return ((Func<ushort, object>)toEnum)(uint16Cache.ClearFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false)));
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;

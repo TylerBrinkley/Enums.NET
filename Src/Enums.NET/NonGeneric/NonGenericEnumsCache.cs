@@ -77,11 +77,9 @@ namespace EnumsNET.NonGeneric
         private static NonGenericEnumsCache Create<TEnum, TInt>(string enumName, TypeCode typeCode)
             where TInt : struct
         {
-            var cache = Enums<TEnum, TInt>.Cache;
             Delegate toEnum = Enums<TEnum, TInt>.ToEnum;
-            return new NonGenericEnumsCache(cache,
+            return new NonGenericEnumsCache(Enums<TEnum, TInt>.Cache,
                 (Func<TInt, object>)(value => ((Func<TInt, TEnum>)toEnum)(value)),
-                (Func<object, TInt>)(value => cache.ToObject(value, false)),
                 typeCode,
                 Enums.InternalRegisterCustomEnumFormat<TEnum>);
         }
@@ -90,17 +88,14 @@ namespace EnumsNET.NonGeneric
 
         internal readonly Delegate ToEnum;
 
-        internal readonly Delegate ToInt;
-
         internal readonly TypeCode TypeCode;
 
         internal readonly Func<Func<EnumMemberInfo, string>, EnumFormat> RegisterCustomEnumFormat;
 
-        private NonGenericEnumsCache(object cache, Delegate toEnum, Delegate toInt, TypeCode typeCode, Func<Func<EnumMemberInfo, string>, EnumFormat> registerCustomEnumFormat)
+        private NonGenericEnumsCache(object cache, Delegate toEnum, TypeCode typeCode, Func<Func<EnumMemberInfo, string>, EnumFormat> registerCustomEnumFormat)
         {
             Cache = cache;
             ToEnum = toEnum;
-            ToInt = toInt;
             TypeCode = typeCode;
             RegisterCustomEnumFormat = registerCustomEnumFormat;
         }
