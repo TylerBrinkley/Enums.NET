@@ -650,6 +650,49 @@ namespace EnumsNET
         }
 
         [Pure]
+        public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, params TEnum[] otherFlags)
+            where TEnum : struct
+        {
+            switch (Enums<TEnum>.TypeCode)
+            {
+                case TypeCode.Int32:
+                    var enumToInt32 = Enums<TEnum, int>.ToInt;
+                    var int32Cache = Enums<TEnum, int>.Cache;
+                    return Enums<TEnum, int>.ToEnum(int32Cache.SetFlags(enumToInt32(flag0), int32Cache.SetFlags(otherFlags.Select(flag => enumToInt32(flag)))));
+                case TypeCode.UInt32:
+                    var enumToUInt32 = Enums<TEnum, uint>.ToInt;
+                    var uint32Cache = Enums<TEnum, uint>.Cache;
+                    return Enums<TEnum, uint>.ToEnum(uint32Cache.SetFlags(enumToUInt32(flag0), uint32Cache.SetFlags(otherFlags.Select(flag => enumToUInt32(flag)))));
+                case TypeCode.Int64:
+                    var enumToInt64 = Enums<TEnum, long>.ToInt;
+                    var int64Cache = Enums<TEnum, long>.Cache;
+                    return Enums<TEnum, long>.ToEnum(int64Cache.SetFlags(enumToInt64(flag0), int64Cache.SetFlags(otherFlags.Select(flag => enumToInt64(flag)))));
+                case TypeCode.UInt64:
+                    var enumToUInt64 = Enums<TEnum, ulong>.ToInt;
+                    var uint64Cache = Enums<TEnum, ulong>.Cache;
+                    return Enums<TEnum, ulong>.ToEnum(uint64Cache.SetFlags(enumToUInt64(flag0), uint64Cache.SetFlags(otherFlags.Select(flag => enumToUInt64(flag)))));
+                case TypeCode.SByte:
+                    var enumToSByte = Enums<TEnum, sbyte>.ToInt;
+                    var sbyteCache = Enums<TEnum, sbyte>.Cache;
+                    return Enums<TEnum, sbyte>.ToEnum(sbyteCache.SetFlags(enumToSByte(flag0), sbyteCache.SetFlags(otherFlags.Select(flag => enumToSByte(flag)))));
+                case TypeCode.Byte:
+                    var enumToByte = Enums<TEnum, byte>.ToInt;
+                    var byteCache = Enums<TEnum, byte>.Cache;
+                    return Enums<TEnum, byte>.ToEnum(byteCache.SetFlags(enumToByte(flag0), byteCache.SetFlags(otherFlags.Select(flag => enumToByte(flag)))));
+                case TypeCode.Int16:
+                    var enumToInt16 = Enums<TEnum, short>.ToInt;
+                    var int16Cache = Enums<TEnum, short>.Cache;
+                    return Enums<TEnum, short>.ToEnum(int16Cache.SetFlags(enumToInt16(flag0), int16Cache.SetFlags(otherFlags.Select(flag => enumToInt16(flag)))));
+                case TypeCode.UInt16:
+                    var enumToUInt16 = Enums<TEnum, ushort>.ToInt;
+                    var uint16Cache = Enums<TEnum, ushort>.Cache;
+                    return Enums<TEnum, ushort>.ToEnum(uint16Cache.SetFlags(enumToUInt16(flag0), uint16Cache.SetFlags(otherFlags.Select(flag => enumToUInt16(flag)))));
+            }
+            Debug.Fail("Unknown Enum TypeCode");
+            return default(TEnum);
+        }
+
+        [Pure]
         public static TEnum SetFlags<[EnumConstraint] TEnum>(params TEnum[] flags)
             where TEnum : struct
         {
