@@ -20,35 +20,34 @@ namespace EnumsNET.NonGeneric
 {
     internal sealed class NonGenericEnumMemberInfo : EnumMemberInfo
     {
-        private readonly NonGenericEnumsCache _enumsCache;
+        private readonly NonGenericEnumInfo _enumInfo;
 
-        internal NonGenericEnumMemberInfo(IEnumMemberInfo info, NonGenericEnumsCache enumsCache)
+        internal NonGenericEnumMemberInfo(IEnumMemberInfo info, NonGenericEnumInfo enumInfo)
             : base(info)
         {
-            _enumsCache = enumsCache;
+            _enumInfo = enumInfo;
         }
 
         internal override object GetValue()
         {
-            var toEnum = _enumsCache.ToEnum;
-            switch (_enumsCache.TypeCode)
+            switch (_enumInfo.TypeCode)
             {
                 case TypeCode.Int32:
-                    return ((Func<int, object>)toEnum)(((InternalEnumMemberInfo<int>)_info).Value);
+                    return ((NonGenericEnumInfo<int>)_enumInfo).ToEnum(((InternalEnumMemberInfo<int>)_info).Value);
                 case TypeCode.UInt32:
-                    return ((Func<uint, object>)toEnum)(((InternalEnumMemberInfo<uint>)_info).Value);
+                    return ((NonGenericEnumInfo<uint>)_enumInfo).ToEnum(((InternalEnumMemberInfo<uint>)_info).Value);
                 case TypeCode.Int64:
-                    return ((Func<long, object>)toEnum)(((InternalEnumMemberInfo<long>)_info).Value);
+                    return ((NonGenericEnumInfo<long>)_enumInfo).ToEnum(((InternalEnumMemberInfo<long>)_info).Value);
                 case TypeCode.UInt64:
-                    return ((Func<ulong, object>)toEnum)(((InternalEnumMemberInfo<ulong>)_info).Value);
+                    return ((NonGenericEnumInfo<ulong>)_enumInfo).ToEnum(((InternalEnumMemberInfo<ulong>)_info).Value);
                 case TypeCode.SByte:
-                    return ((Func<sbyte, object>)toEnum)(((InternalEnumMemberInfo<sbyte>)_info).Value);
+                    return ((NonGenericEnumInfo<sbyte>)_enumInfo).ToEnum(((InternalEnumMemberInfo<sbyte>)_info).Value);
                 case TypeCode.Byte:
-                    return ((Func<byte, object>)toEnum)(((InternalEnumMemberInfo<byte>)_info).Value);
+                    return ((NonGenericEnumInfo<byte>)_enumInfo).ToEnum(((InternalEnumMemberInfo<byte>)_info).Value);
                 case TypeCode.Int16:
-                    return ((Func<short, object>)toEnum)(((InternalEnumMemberInfo<short>)_info).Value);
+                    return ((NonGenericEnumInfo<short>)_enumInfo).ToEnum(((InternalEnumMemberInfo<short>)_info).Value);
                 case TypeCode.UInt16:
-                    return ((Func<ushort, object>)toEnum)(((InternalEnumMemberInfo<ushort>)_info).Value);
+                    return ((NonGenericEnumInfo<ushort>)_enumInfo).ToEnum(((InternalEnumMemberInfo<ushort>)_info).Value);
             }
             Debug.Fail("Unknown Enum TypeCode");
             return null;

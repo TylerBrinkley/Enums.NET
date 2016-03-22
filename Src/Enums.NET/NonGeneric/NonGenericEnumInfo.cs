@@ -24,16 +24,16 @@ using System.Collections.Concurrent;
 
 namespace EnumsNET.NonGeneric
 {
-    internal struct NonGenericEnumsCache
+    internal abstract class NonGenericEnumInfo
     {
 #if NET20 || NET35
-        private static readonly Dictionary<Type, NonGenericEnumsCache> _enumsCacheDictionary = new Dictionary<Type, NonGenericEnumsCache>();
+        private static readonly Dictionary<Type, NonGenericEnumInfo> _enumsCacheDictionary = new Dictionary<Type, NonGenericEnumInfo>();
 #else
-        private static readonly ConcurrentDictionary<Type, NonGenericEnumsCache> _enumsCacheDictionary = new ConcurrentDictionary<Type, NonGenericEnumsCache>();
+        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _enumsCacheDictionary = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
 #endif
-        private static readonly MethodInfo _openCreateMethod = typeof(NonGenericEnumsCache).GetMethod(nameof(Create), BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly MethodInfo _openCreateMethod = typeof(NonGenericEnumInfo).GetMethod(nameof(Create), BindingFlags.Static | BindingFlags.NonPublic);
 
-        internal static NonGenericEnumsCache Get(Type enumType, OptionalOutParameter<bool> isNullable = null)
+        internal static NonGenericEnumInfo Get(Type enumType, OptionalOutParameter<bool> isNullable = null)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
             if (!enumType.IsEnum)
@@ -53,51 +53,60 @@ namespace EnumsNET.NonGeneric
                 isNullable.Result = false;
             }
 
-            NonGenericEnumsCache enumsCache;
+            NonGenericEnumInfo enumInfo;
 #if NET20 || NET35
             lock (_enumsCacheDictionary)
             {
 #endif
-            if (!_enumsCacheDictionary.TryGetValue(enumType, out enumsCache))
+            if (!_enumsCacheDictionary.TryGetValue(enumType, out enumInfo))
             {
                 var underlyingType = Enum.GetUnderlyingType(enumType);
-                enumsCache = (NonGenericEnumsCache)_openCreateMethod.MakeGenericMethod(enumType, underlyingType).Invoke(null, new object[] { enumType.Name, Type.GetTypeCode(underlyingType) });
+                enumInfo = (NonGenericEnumInfo)_openCreateMethod.MakeGenericMethod(enumType, underlyingType).Invoke(null, new object[] { enumType.Name, Type.GetTypeCode(underlyingType) });
 #if NET20 || NET35
-                _enumsCacheDictionary.Add(enumType, enumsCache);
+                _enumsCacheDictionary.Add(enumType, enumInfo);
 #else
-                _enumsCacheDictionary.TryAdd(enumType, enumsCache);
+                _enumsCacheDictionary.TryAdd(enumType, enumInfo);
 #endif
             }
 #if NET20 || NET35
             }
 #endif
-            return enumsCache;
+            return enumInfo;
         }
 
-        private static NonGenericEnumsCache Create<TEnum, TInt>(string enumName, TypeCode typeCode)
+        private static NonGenericEnumInfo Create<TEnum, TInt>(string enumName, TypeCode typeCode)
             where TInt : struct
         {
             Delegate toEnum = Enums<TEnum, TInt>.ToEnum;
-            return new NonGenericEnumsCache(Enums<TEnum, TInt>.Cache,
-                (Func<TInt, object>)(value => ((Func<TInt, TEnum>)toEnum)(value)),
+            return new NonGenericEnumInfo<TInt>(Enums<TEnum, TInt>.Cache,
+                value => ((Func<TInt, TEnum>)toEnum)(value),
                 typeCode,
                 Enums.InternalRegisterCustomEnumFormat<TEnum>);
         }
-
-        internal readonly object Cache;
-
-        internal readonly Delegate ToEnum;
 
         internal readonly TypeCode TypeCode;
 
         internal readonly Func<Func<EnumMemberInfo, string>, EnumFormat> RegisterCustomEnumFormat;
 
-        private NonGenericEnumsCache(object cache, Delegate toEnum, TypeCode typeCode, Func<Func<EnumMemberInfo, string>, EnumFormat> registerCustomEnumFormat)
+        internal NonGenericEnumInfo(TypeCode typeCode, Func<Func<EnumMemberInfo, string>, EnumFormat> registerCustomEnumFormat)
+        {
+            TypeCode = typeCode;
+            RegisterCustomEnumFormat = registerCustomEnumFormat;
+        }
+    }
+
+    internal class NonGenericEnumInfo<TInt> : NonGenericEnumInfo
+        where TInt : struct
+    {
+        internal readonly EnumsCache<TInt> Cache;
+
+        internal readonly Func<TInt, object> ToEnum;
+
+        internal NonGenericEnumInfo(EnumsCache<TInt> cache, Func<TInt, object> toEnum, TypeCode typeCode, Func<Func<EnumMemberInfo, string>, EnumFormat> registerCustomEnumFormat)
+            : base(typeCode, registerCustomEnumFormat)
         {
             Cache = cache;
             ToEnum = toEnum;
-            TypeCode = typeCode;
-            RegisterCustomEnumFormat = registerCustomEnumFormat;
         }
     }
 }

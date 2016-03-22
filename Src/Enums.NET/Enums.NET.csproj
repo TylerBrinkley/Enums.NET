@@ -52,7 +52,7 @@
     <Compile Include="Net20\PureAttribute.cs" />
     <Compile Include="NonGeneric\NonGenericEnumMemberInfo.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
-    <Compile Include="NonGeneric\NonGenericEnumsCache.cs" />
+    <Compile Include="NonGeneric\NonGenericEnumInfo.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
     <Compile Include="OptionalOutParameter.cs" />
     <Compile Include="OrderedBiDirectionalDictionary.cs" />
