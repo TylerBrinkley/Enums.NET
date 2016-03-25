@@ -2919,7 +2919,6 @@ namespace EnumsNET
         internal static void InitializeCache(Type enumType, Func<EnumFormat, Func<IEnumMemberInfo, string>> getCustomEnumFormatter, out object cache, out Delegate toEnum, out Delegate toInt)
         {
             var underlyingType = Enum.GetUnderlyingType(enumType);
-            var typeCode = Type.GetTypeCode(underlyingType);
 
 #if NET20 || USE_EMIT
             var toIntMethod = new DynamicMethod(enumType.Name + "_ToInt",
@@ -2954,7 +2953,7 @@ namespace EnumsNET
             toEnum = Expression.Lambda(intParamConvert, intParam).Compile();
 #endif
 
-            switch (typeCode)
+            switch (Type.GetTypeCode(underlyingType))
             {
                 case TypeCode.Int32:
                     cache = new EnumsCache<int>(enumType, getCustomEnumFormatter);
@@ -3008,10 +3007,7 @@ namespace EnumsNET
 
         internal static string DescriptionEnumFormatter(IEnumMemberInfo info) => info.Description;
 
-        internal static string GetDescription(Attribute[] attributes)
-        {
-            return attributes.Length > 0 ? (attributes[0] as DescriptionAttribute)?.Description : null;
-        }
+        internal static string GetDescription(Attribute[] attributes) => attributes.Length > 0 ? (attributes[0] as DescriptionAttribute)?.Description : null;
 
         internal static TAttribute GetAttribute<TAttribute>(Attribute[] attributes)
             where TAttribute : Attribute
@@ -3068,8 +3064,8 @@ namespace EnumsNET
 
         internal static bool IsNumeric(string value)
         {
-            var firstChar = value[0];
-            return char.IsDigit(firstChar) || firstChar == '-' || firstChar == '+';
+            char firstChar;
+            return value.Length > 0 && (char.IsDigit((firstChar = value[0])) || firstChar == '-' || firstChar == '+');
         }
 
         internal static OverflowException GetOverflowException() => new OverflowException("value is outside the underlying type's value range");

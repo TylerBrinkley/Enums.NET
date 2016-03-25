@@ -1041,7 +1041,7 @@ namespace EnumsNET
                 }
                 else
                 {
-                    if (Enums.IsNumeric(indValue))
+                    if (Enums.IsNumeric(trimmedIndValue))
                     {
                         throw Enums.GetOverflowException();
                     }

@@ -280,9 +280,9 @@ namespace EnumsNET
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => _info.ToType(conversionType, provider);
 
-        int IComparable.CompareTo(object obj) => _info.CompareTo(obj);
+        int IComparable.CompareTo(object obj) => _info.CompareTo((obj as EnumMemberInfo)?._info);
 
-        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(other);
+        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(other?._info);
         #endregion
     }
 
@@ -331,7 +331,7 @@ namespace EnumsNET
         internal override object GetValue() => Value;
 
         #region Explicit Interface Implementation
-        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(other);
+        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(other?._info);
         #endregion
     }
 }

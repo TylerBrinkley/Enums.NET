@@ -189,30 +189,9 @@ namespace EnumsNET
 
         int IComparable.CompareTo(object obj)
         {
-            var objAsInfo = obj as EnumMemberInfo;
-            if (objAsInfo != null)
+            if (obj is InternalEnumMemberInfo<TInt>)
             {
-                return ((IComparable)this).CompareTo(objAsInfo.Value);
-            }
-            var assigned = false;
-            TInt objValue = default(TInt);
-            if (obj is TInt)
-            {
-                objValue = (TInt)obj;
-                assigned = true;
-            }
-            else
-            {
-                var info = obj as EnumMemberInfo<TInt>;
-                if (info != null)
-                {
-                    objValue = info.Value;
-                    assigned = true;
-                }
-            }
-            if (assigned)
-            {
-                return EnumsCache<TInt>.Compare(Value, objValue);
+                return EnumsCache<TInt>.Compare(Value, ((InternalEnumMemberInfo<TInt>)obj).Value);
             }
             return 1;
         }
