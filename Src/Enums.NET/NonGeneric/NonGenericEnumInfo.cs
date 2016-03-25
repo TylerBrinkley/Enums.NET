@@ -27,9 +27,9 @@ namespace EnumsNET.NonGeneric
     internal abstract class NonGenericEnumInfo
     {
 #if NET20 || NET35
-        private static readonly Dictionary<Type, NonGenericEnumInfo> _enumsCacheDictionary = new Dictionary<Type, NonGenericEnumInfo>();
+        private static readonly Dictionary<Type, NonGenericEnumInfo> _enumInfosDictionary = new Dictionary<Type, NonGenericEnumInfo>();
 #else
-        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _enumsCacheDictionary = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
+        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _enumInfosDictionary = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
 #endif
         private static readonly MethodInfo _openCreateMethod = typeof(NonGenericEnumInfo).GetMethod(nameof(Create), BindingFlags.Static | BindingFlags.NonPublic);
 
@@ -55,17 +55,17 @@ namespace EnumsNET.NonGeneric
 
             NonGenericEnumInfo enumInfo;
 #if NET20 || NET35
-            lock (_enumsCacheDictionary)
+            lock (_enumInfosDictionary)
             {
 #endif
-            if (!_enumsCacheDictionary.TryGetValue(enumType, out enumInfo))
+            if (!_enumInfosDictionary.TryGetValue(enumType, out enumInfo))
             {
                 var underlyingType = Enum.GetUnderlyingType(enumType);
                 enumInfo = (NonGenericEnumInfo)_openCreateMethod.MakeGenericMethod(enumType, underlyingType).Invoke(null, new object[] { enumType.Name, Type.GetTypeCode(underlyingType) });
 #if NET20 || NET35
-                _enumsCacheDictionary.Add(enumType, enumInfo);
+                _enumInfosDictionary.Add(enumType, enumInfo);
 #else
-                _enumsCacheDictionary.TryAdd(enumType, enumInfo);
+                _enumInfosDictionary.TryAdd(enumType, enumInfo);
 #endif
             }
 #if NET20 || NET35

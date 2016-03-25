@@ -1139,7 +1139,7 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            var success = false;
+            bool success;
             switch (enumInfo.TypeCode)
             {
                 case TypeCode.Int32:

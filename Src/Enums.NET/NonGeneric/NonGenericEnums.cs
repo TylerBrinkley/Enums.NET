@@ -464,7 +464,6 @@ namespace EnumsNET.NonGeneric
         public static bool IsValid(Type enumType, long value)
         {
             var enumInfo = NonGenericEnumInfo.Get(enumType);
-            
             switch (enumInfo.TypeCode)
             {
                 case TypeCode.Int32:
@@ -501,7 +500,6 @@ namespace EnumsNET.NonGeneric
         public static bool IsValid(Type enumType, ulong value)
         {
             var enumInfo = NonGenericEnumInfo.Get(enumType);
-            
             switch (enumInfo.TypeCode)
             {
                 case TypeCode.Int32:
@@ -2563,7 +2561,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
             
-            IEnumMemberInfo info = null;
+            IEnumMemberInfo info;
             switch (enumInfo.TypeCode)
             {
                 case TypeCode.Int32:
@@ -2609,7 +2607,7 @@ namespace EnumsNET.NonGeneric
         public static EnumMemberInfo GetEnumMemberInfo(Type enumType, string name, bool ignoreCase = false)
         {
             var enumInfo = NonGenericEnumInfo.Get(enumType);
-            IEnumMemberInfo info = null;
+            IEnumMemberInfo info;
             switch (enumInfo.TypeCode)
             {
                 case TypeCode.Int32:
@@ -3044,7 +3042,7 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            var success = false;
+            bool success;
             switch (enumInfo.TypeCode)
             {
                 case TypeCode.Int32:
