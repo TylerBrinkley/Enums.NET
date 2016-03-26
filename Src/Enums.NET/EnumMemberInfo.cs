@@ -114,15 +114,29 @@ namespace EnumsNET
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public string Format(string format) => _info.Format(format);
 
+        /// <summary>
+        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public string Format(EnumFormat format) => _info.Format(format);
 
+        /// <summary>
+        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
         public string Format(EnumFormat format0, EnumFormat format1) => _info.Format(format0, format1);
 
+        /// <summary>
+        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
         public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _info.Format(format0, format1, format2);
-
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => _info.Format(format0, format1, format2, format3);
-
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _info.Format(format0, format1, format2, format3, format4);
 
         /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
@@ -130,7 +144,6 @@ namespace EnumsNET
         /// <param name="formats"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="formats"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> is empty.</exception>
         public string Format(params EnumFormat[] formats) => _info.Format(formats);
 
         /// <summary>
@@ -239,6 +252,10 @@ namespace EnumsNET
         [CLSCompliant(false)]
         public ulong ToUInt64() => _info.ToUInt64();
 
+        /// <summary>
+        /// A more efficient GetHashCode method as it doesn't require boxing and unboxing of the value
+        /// </summary>
+        /// <returns></returns>
         public sealed override int GetHashCode() => _info.GetHashCode();
 
         internal abstract object GetValue();

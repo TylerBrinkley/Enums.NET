@@ -37,8 +37,6 @@ namespace EnumsNET
         string Format(EnumFormat format);
         string Format(EnumFormat format0, EnumFormat format1);
         string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3);
-        string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4);
         string Format(params EnumFormat[] formats);
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;

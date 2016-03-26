@@ -139,6 +139,11 @@ namespace EnumsNET
             return null;
         }
 
+        /// <summary>
+        /// Gets <typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
         [Pure]
         public static TypeCode GetTypeCode<[EnumConstraint] TEnum>() where TEnum : struct => Enums<TEnum>.TypeCode;
         #endregion
@@ -1775,6 +1780,13 @@ namespace EnumsNET
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         [Pure]
         public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format)
             where TEnum : struct
@@ -1802,6 +1814,14 @@ namespace EnumsNET
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
         [Pure]
         public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1)
             where TEnum : struct
@@ -1829,6 +1849,15 @@ namespace EnumsNET
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
         [Pure]
         public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
             where TEnum : struct
@@ -1856,60 +1885,6 @@ namespace EnumsNET
             return null;
         }
 
-        [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2, format3);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
-            where TEnum : struct
-        {
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2, format3, format4);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
         /// </summary>
@@ -1918,7 +1893,6 @@ namespace EnumsNET
         /// <param name="formats"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="formats"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> is empty.</exception>
         [Pure]
         public static string Format<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats)
             where TEnum : struct
@@ -2255,6 +2229,12 @@ namespace EnumsNET
             return 0;
         }
 
+        /// <summary>
+        /// A more efficient GetHashCode method as it doesn't require boxing and unboxing of <paramref name="value"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [Pure]
         public static int GetHashCode<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct
@@ -2282,6 +2262,13 @@ namespace EnumsNET
             return 0;
         }
 
+        /// <summary>
+        /// Indicates if the two values are equal to each other
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
         [Pure]
         public static bool Equals<[EnumConstraint] TEnum>(this TEnum value, TEnum other)
             where TEnum : struct
@@ -2319,11 +2306,18 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
+        /// <summary>
+        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="value"/>.
+        /// If no enum member exists with the given <paramref name="value"/> null is returned.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [Pure]
         public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct
         {
-            IEnumMemberInfo info = null;
+            IEnumMemberInfo info;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
@@ -2357,11 +2351,21 @@ namespace EnumsNET
             return info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
         }
 
+        /// <summary>
+        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="name"/>.
+        /// If no enum member exists with the given <paramref name="name"/> null is returned.
+        /// The optional parameter <paramref name="ignoreCase"/> indicates if the name comparison should ignore the casing.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
         [Pure]
         public static EnumMemberInfo<TEnum> GetEnumMemberInfo<[EnumConstraint] TEnum>(string name, bool ignoreCase = false)
             where TEnum : struct
         {
-            IEnumMemberInfo info = null;
+            IEnumMemberInfo info;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
@@ -2566,6 +2570,7 @@ namespace EnumsNET
         /// <param name="selector"></param>
         /// <param name="result"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
         [Pure]
         public static bool TryGetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
             where TAttribute : Attribute

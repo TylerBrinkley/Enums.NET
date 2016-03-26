@@ -118,10 +118,6 @@ namespace EnumsNET
 
         public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumsCache.InternalFormat(this, format0, format1, format2);
 
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => _enumsCache.InternalFormat(this, format0, format1, format2, format3);
-
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => _enumsCache.InternalFormat(this, format0, format1, format2, format3, format4);
-
         public string Format(params EnumFormat[] formats)
         {
             Preconditions.NotNull(formats, nameof(formats));

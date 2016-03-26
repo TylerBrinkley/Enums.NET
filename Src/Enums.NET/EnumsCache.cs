@@ -551,10 +551,6 @@ namespace EnumsNET
 
         public string Format(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(GetEnumMemberInfo(value), format0, format1, format2);
 
-        public string Format(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3) => InternalFormat(GetEnumMemberInfo(value), format0, format1, format2, format3);
-
-        public string Format(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4) => InternalFormat(GetEnumMemberInfo(value), format0, format1, format2, format3, format4);
-
         public string Format(TInt value, EnumFormat[] formats)
         {
             Preconditions.NotNull(formats, nameof(formats));

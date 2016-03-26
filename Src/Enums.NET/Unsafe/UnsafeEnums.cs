@@ -95,6 +95,12 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
+        /// <summary>
+        ///  Gets <typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TypeCode GetTypeCode<TEnum>()
         {
@@ -138,6 +144,14 @@ namespace EnumsNET.Unsafe
             return 0;
         }
 
+        /// <summary>
+        /// Retrieves in value order an array of info on <typeparamref name="TEnum"/>'s members.
+        /// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="uniqueValued"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos<TEnum>(bool uniqueValued = false)
         {
@@ -1634,6 +1648,14 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="formats"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, params EnumFormat[] formats)
         {
@@ -1698,6 +1720,14 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static string Format<TEnum>(TEnum value, EnumFormat format)
         {
@@ -1725,6 +1755,15 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
         {
@@ -1752,6 +1791,16 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
@@ -1779,60 +1828,15 @@ namespace EnumsNET.Unsafe
             return null;
         }
 
-        [Pure]
-        public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2, format3);
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2, format3);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        [Pure]
-        public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            switch (Enums<TEnum>.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return Enums<TEnum, int>.Cache.Format(Enums<TEnum, int>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.UInt32:
-                    return Enums<TEnum, uint>.Cache.Format(Enums<TEnum, uint>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.Int64:
-                    return Enums<TEnum, long>.Cache.Format(Enums<TEnum, long>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.UInt64:
-                    return Enums<TEnum, ulong>.Cache.Format(Enums<TEnum, ulong>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.SByte:
-                    return Enums<TEnum, sbyte>.Cache.Format(Enums<TEnum, sbyte>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.Byte:
-                    return Enums<TEnum, byte>.Cache.Format(Enums<TEnum, byte>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.Int16:
-                    return Enums<TEnum, short>.Cache.Format(Enums<TEnum, short>.ToInt(value), format0, format1, format2, format3, format4);
-                case TypeCode.UInt16:
-                    return Enums<TEnum, ushort>.Cache.Format(Enums<TEnum, ushort>.ToInt(value), format0, format1, format2, format3, format4);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="formats"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is null.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static string Format<TEnum>(TEnum value, params EnumFormat[] formats)
         {
@@ -2178,6 +2182,13 @@ namespace EnumsNET.Unsafe
             return 0;
         }
 
+        /// <summary>
+        /// A more efficient GetHashCode method as it doesn't require boxing and unboxing of <paramref name="value"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static int GetHashCode<TEnum>(TEnum value)
         {
@@ -2205,6 +2216,14 @@ namespace EnumsNET.Unsafe
             return 0;
         }
 
+        /// <summary>
+        /// Indicates if the two values are equal to each other
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static bool Equals<TEnum>(TEnum value, TEnum other)
         {
@@ -2242,11 +2261,19 @@ namespace EnumsNET.Unsafe
         #endregion
 
         #region Defined Values Main Methods
+        /// <summary>
+        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="value"/>.
+        /// If no enum member exists with the given <paramref name="value"/> <see langref="null"/> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            IEnumMemberInfo info = null;
+            IEnumMemberInfo info;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
@@ -2280,11 +2307,22 @@ namespace EnumsNET.Unsafe
             return info.IsDefined ? new EnumMemberInfo<TEnum>(info) : null;
         }
 
+        /// <summary>
+        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="name"/>.
+        /// If no enum member exists with the given <paramref name="name"/> null is returned.
+        /// The optional parameter <paramref name="ignoreCase"/> indicates if the name comparison should ignore the casing.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static EnumMemberInfo<TEnum> GetEnumMemberInfo<TEnum>(string name, bool ignoreCase = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            IEnumMemberInfo info = null;
+            IEnumMemberInfo info;
             switch (Enums<TEnum>.TypeCode)
             {
                 case TypeCode.Int32:
@@ -2481,6 +2519,20 @@ namespace EnumsNET.Unsafe
             return default(TResult);
         }
 
+        /// <summary>
+        /// Tries to retrieve the first <typeparamref name="TAttribute"/> if it exists of the enumeration constant with the specified <paramref name="value"/>
+        /// and sets <paramref name="result"/> to the result of applying the <paramref name="selector"/> to the <typeparamref name="TAttribute"/>.
+        /// Returns true if a <typeparamref name="TAttribute"/> is found else false.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="selector"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
         [Pure]
         public static bool TryGetAttributeSelect<TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
             where TAttribute : Attribute

@@ -99,6 +99,13 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
+        /// <summary>
+        /// Gets <paramref name="enumType"/>'s underlying type's <see cref="TypeCode"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         public static TypeCode GetTypeCode(Type enumType) => NonGenericEnumInfo.Get(enumType).TypeCode;
         #endregion
@@ -139,6 +146,15 @@ namespace EnumsNET.NonGeneric
             return 0;
         }
 
+        /// <summary>
+        /// Retrieves in value order an array of info on <paramref name="enumType"/>'s members.
+        /// The optional parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="uniqueValued"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         public static IEnumerable<EnumMemberInfo> GetEnumMemberInfos(Type enumType, bool uniqueValued = false)
         {
@@ -1889,6 +1905,17 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid</exception>
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format)
         {
@@ -1931,6 +1958,18 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid</exception>
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1)
         {
@@ -1973,6 +2012,19 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid</exception>
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
@@ -2015,90 +2067,17 @@ namespace EnumsNET.NonGeneric
             return null;
         }
 
-        [Pure]
-        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
-        {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
-
-            if (value == null && isNullable)
-            {
-                return null;
-            }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.Format(int32Cache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.Format(uint32Cache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.Format(int64Cache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.Format(uint64Cache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.Format(sbyteCache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.Format(byteCache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.Format(int16Cache.ToObject(value, false), format0, format1, format2, format3);
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.Format(uint16Cache.ToObject(value, false), format0, format1, format2, format3);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
-        [Pure]
-        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
-        {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
-
-            if (value == null && isNullable)
-            {
-                return null;
-            }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.Format(int32Cache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.Format(uint32Cache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.Format(int64Cache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.Format(uint64Cache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.Format(sbyteCache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.Format(byteCache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.Format(int16Cache.ToObject(value, false), format0, format1, format2, format3, format4);
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.Format(uint16Cache.ToObject(value, false), format0, format1, format2, format3, format4);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
-
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="formats"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="formats"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid.</exception>
         [Pure]
         public static string Format(Type enumType, object value, params EnumFormat[] formats)
         {
@@ -2493,6 +2472,13 @@ namespace EnumsNET.NonGeneric
             return 0;
         }
 
+        /// <summary>
+        /// Indicates if the two values are equal to each other
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         [Pure]
         public static bool Equals(Type enumType, object x, object y)
         {
@@ -2550,6 +2536,17 @@ namespace EnumsNET.NonGeneric
         #endregion
 
         #region Defined Values Main Methods
+        /// <summary>
+        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="value"/>.
+        /// If no enum member exists with the given <paramref name="value"/> null is returned.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid</exception>
         [Pure]
         public static EnumMemberInfo GetEnumMemberInfo(Type enumType, object value)
         {
@@ -2603,6 +2600,17 @@ namespace EnumsNET.NonGeneric
             return info.IsDefined ? new NonGenericEnumMemberInfo(info, enumInfo) : null;
         }
 
+        /// <summary>
+        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="name"/>.
+        /// If no enum member exists with the given <paramref name="name"/> null is returned.
+        /// The optional parameter <paramref name="ignoreCase"/> indicates if the name comparison should ignore the casing.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="name"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Pure]
         public static EnumMemberInfo GetEnumMemberInfo(Type enumType, string name, bool ignoreCase = false)
         {
