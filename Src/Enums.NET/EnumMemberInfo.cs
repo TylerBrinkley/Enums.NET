@@ -327,7 +327,7 @@ namespace EnumsNET
         #endregion
     }
 
-    internal sealed class EnumMemberInfo<TEnum, TInt> : EnumMemberInfo<TEnum>
+    internal sealed class EnumMemberInfo<TEnum, TInt> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>
         where TInt : struct
     {
         private new InternalEnumMemberInfo<TInt> _info;
@@ -339,5 +339,11 @@ namespace EnumsNET
         }
 
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt>.ToEnum(_info.Value);
+
+        #region Explicit Interface Implementation
+        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt>)other)._info);
+
+        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt>)other)._info);
+        #endregion
     }
 }

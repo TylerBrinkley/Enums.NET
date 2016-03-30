@@ -543,7 +543,7 @@ namespace EnumsNET
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(object value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(object value, bool validate = false)
             where TEnum : struct => Enums<TEnum>.Info.ToObject(value, validate);
 
         /// <summary>
@@ -558,7 +558,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(sbyte value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(sbyte value, bool validate = false)
             where TEnum : struct => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
@@ -572,7 +572,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(byte value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(byte value, bool validate = false)
             where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
@@ -586,36 +586,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(short value, bool validate = true)
-            where TEnum : struct => ToObject<TEnum>((long)value, validate);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
-        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(ushort value, bool validate = true)
-            where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
-        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Pure]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(int value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(short value, bool validate = false)
             where TEnum : struct => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
@@ -630,7 +601,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(uint value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(ushort value, bool validate = false)
             where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
@@ -644,7 +615,36 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(long value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(int value, bool validate = false)
+            where TEnum : struct => ToObject<TEnum>((long)value, validate);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [Pure]
+        [CLSCompliant(false)]
+        public static TEnum ToObject<[EnumConstraint] TEnum>(uint value, bool validate = false)
+            where TEnum : struct => ToObject<TEnum>((ulong)value, validate);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it's within the
+        /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [Pure]
+        public static TEnum ToObject<[EnumConstraint] TEnum>(long value, bool validate = false)
             where TEnum : struct => Enums<TEnum>.Info.ToObject(value, validate);
 
         /// <summary>
@@ -659,7 +659,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<[EnumConstraint] TEnum>(ulong value, bool validate = true)
+        public static TEnum ToObject<[EnumConstraint] TEnum>(ulong value, bool validate = false)
             where TEnum : struct => Enums<TEnum>.Info.ToObject(value, validate);
 
         /// <summary>
@@ -674,7 +674,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(object value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(object value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct
         {
             TEnum result;
@@ -693,7 +693,7 @@ namespace EnumsNET
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(sbyte value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(sbyte value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct => ToObjectOrDefault((long)value, defaultEnum, validate);
 
         /// <summary>
@@ -707,7 +707,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(byte value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(byte value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct => ToObjectOrDefault((ulong)value, defaultEnum, validate);
 
         /// <summary>
@@ -721,7 +721,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(short value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(short value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct => ToObjectOrDefault((long)value, defaultEnum, validate);
 
         /// <summary>
@@ -736,7 +736,7 @@ namespace EnumsNET
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ushort value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ushort value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct => ToObjectOrDefault((ulong)value, defaultEnum, validate);
 
         /// <summary>
@@ -750,7 +750,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(int value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(int value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct => ToObjectOrDefault((long)value, defaultEnum, validate);
 
         /// <summary>
@@ -765,7 +765,7 @@ namespace EnumsNET
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(uint value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(uint value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct => ToObjectOrDefault((ulong)value, defaultEnum, validate);
 
         /// <summary>
@@ -779,7 +779,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(long value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(long value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct
         {
             TEnum result;
@@ -798,7 +798,7 @@ namespace EnumsNET
         /// <returns>If succeeded <paramref name="value"/> converted to a <typeparamref name="TEnum"/> otherwise <paramref name="defaultEnum"/>.</returns>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ulong value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<[EnumConstraint] TEnum>(ulong value, TEnum defaultEnum, bool validate = false)
             where TEnum : struct
         {
             TEnum result;
@@ -817,7 +817,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns></returns>
         [Pure]
-        public static bool TryToObject<[EnumConstraint] TEnum>(object value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(object value, out TEnum result, bool validate = false)
             where TEnum : struct => Enums<TEnum>.Info.TryToObject(value, out result, validate);
 
         /// <summary>
@@ -832,7 +832,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<[EnumConstraint] TEnum>(sbyte value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(sbyte value, out TEnum result, bool validate = false)
             where TEnum : struct => TryToObject((long)value, out result, validate);
 
         /// <summary>
@@ -846,7 +846,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns></returns>
         [Pure]
-        public static bool TryToObject<[EnumConstraint] TEnum>(byte value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(byte value, out TEnum result, bool validate = false)
             where TEnum : struct => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
@@ -860,7 +860,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns></returns>
         [Pure]
-        public static bool TryToObject<[EnumConstraint] TEnum>(short value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(short value, out TEnum result, bool validate = false)
             where TEnum : struct => TryToObject((long)value, out result, validate);
 
         /// <summary>
@@ -875,7 +875,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<[EnumConstraint] TEnum>(ushort value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(ushort value, out TEnum result, bool validate = false)
             where TEnum : struct => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
@@ -889,7 +889,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns></returns>
         [Pure]
-        public static bool TryToObject<[EnumConstraint] TEnum>(int value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(int value, out TEnum result, bool validate = false)
             where TEnum : struct => TryToObject((long)value, out result, validate);
 
         /// <summary>
@@ -904,7 +904,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<[EnumConstraint] TEnum>(uint value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(uint value, out TEnum result, bool validate = false)
             where TEnum : struct => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
@@ -918,7 +918,7 @@ namespace EnumsNET
         /// <param name="validate">(Optional) Indicates whether to check that the result is valid.</param>
         /// <returns></returns>
         [Pure]
-        public static bool TryToObject<[EnumConstraint] TEnum>(long value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(long value, out TEnum result, bool validate = false)
             where TEnum : struct => Enums<TEnum>.Info.TryToObject(value, out result, validate);
 
         /// <summary>
@@ -933,7 +933,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<[EnumConstraint] TEnum>(ulong value, out TEnum result, bool validate = true)
+        public static bool TryToObject<[EnumConstraint] TEnum>(ulong value, out TEnum result, bool validate = false)
             where TEnum : struct => Enums<TEnum>.Info.TryToObject(value, out result, validate);
         #endregion
 

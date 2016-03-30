@@ -622,14 +622,14 @@ namespace EnumsNET.Tests
         [Test]
         public void ToObject_ThrowsArgumentException_WhenUsingInvalidValueAndCheckIsOn()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int16Enum>(short.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt16Enum>(ushort.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int32Enum>(int.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt32Enum>(uint.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int64Enum>(long.MaxValue));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt64Enum>(ulong.MaxValue));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int16Enum>(short.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt16Enum>(ushort.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int32Enum>(int.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt32Enum>(uint.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int64Enum>(long.MaxValue, true));
+            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt64Enum>(ulong.MaxValue, true));
         }
 
         [Test]
@@ -661,14 +661,14 @@ namespace EnumsNET.Tests
         [Test]
         public void ToObjectOrDefault_ReturnsDefaultValue_WhenUsingValueInRangeButNotValid()
         {
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((sbyte)16, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((byte)16, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((short)16, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((ushort)16, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16U, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16L, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16UL, ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((sbyte)16, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((byte)16, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((short)16, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((ushort)16, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16U, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16L, ColorFlagEnum.Blue, true));
+            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16UL, ColorFlagEnum.Blue, true));
         }
 
         [Test]
@@ -851,14 +851,14 @@ namespace EnumsNET.Tests
         public void TryToObject_ReturnsFalse_WhenUsingValueInRangeButNotValid()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(TryToObject((sbyte)16, out result));
-            Assert.IsFalse(TryToObject((byte)16, out result));
-            Assert.IsFalse(TryToObject((short)16, out result));
-            Assert.IsFalse(TryToObject((ushort)16, out result));
-            Assert.IsFalse(TryToObject(16, out result));
-            Assert.IsFalse(TryToObject(16U, out result));
-            Assert.IsFalse(TryToObject(16L, out result));
-            Assert.IsFalse(TryToObject(16UL, out result));
+            Assert.IsFalse(TryToObject((sbyte)16, out result, true));
+            Assert.IsFalse(TryToObject((byte)16, out result, true));
+            Assert.IsFalse(TryToObject((short)16, out result, true));
+            Assert.IsFalse(TryToObject((ushort)16, out result, true));
+            Assert.IsFalse(TryToObject(16, out result, true));
+            Assert.IsFalse(TryToObject(16U, out result, true));
+            Assert.IsFalse(TryToObject(16L, out result, true));
+            Assert.IsFalse(TryToObject(16UL, out result, true));
         }
 
         [Test]

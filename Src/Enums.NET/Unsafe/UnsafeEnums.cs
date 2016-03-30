@@ -16,9 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 
 namespace EnumsNET.Unsafe
 {
@@ -532,7 +530,7 @@ namespace EnumsNET.Unsafe
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
-        public static TEnum ToObject<TEnum>(object value, bool validate = true)
+        public static TEnum ToObject<TEnum>(object value, bool validate = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.ToObject(value, validate);
@@ -552,7 +550,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<TEnum>(sbyte value, bool validate = true) => ToObject<TEnum>((long)value, validate);
+        public static TEnum ToObject<TEnum>(sbyte value, bool validate = false) => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
         /// Converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -567,7 +565,7 @@ namespace EnumsNET.Unsafe
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
-        public static TEnum ToObject<TEnum>(byte value, bool validate = true) => ToObject<TEnum>((ulong)value, validate);
+        public static TEnum ToObject<TEnum>(byte value, bool validate = false) => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
         /// Converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -582,7 +580,7 @@ namespace EnumsNET.Unsafe
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
-        public static TEnum ToObject<TEnum>(short value, bool validate = true) => ToObject<TEnum>((long)value, validate);
+        public static TEnum ToObject<TEnum>(short value, bool validate = false) => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
         /// Converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -598,7 +596,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<TEnum>(ushort value, bool validate = true) => ToObject<TEnum>((ulong)value, validate);
+        public static TEnum ToObject<TEnum>(ushort value, bool validate = false) => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
         /// Converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -613,7 +611,7 @@ namespace EnumsNET.Unsafe
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
-        public static TEnum ToObject<TEnum>(int value, bool validate = true) => ToObject<TEnum>((long)value, validate);
+        public static TEnum ToObject<TEnum>(int value, bool validate = false) => ToObject<TEnum>((long)value, validate);
 
         /// <summary>
         /// Converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -629,7 +627,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<TEnum>(uint value, bool validate = true) => ToObject<TEnum>((ulong)value, validate);
+        public static TEnum ToObject<TEnum>(uint value, bool validate = false) => ToObject<TEnum>((ulong)value, validate);
 
         /// <summary>
         /// Converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -644,7 +642,7 @@ namespace EnumsNET.Unsafe
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
-        public static TEnum ToObject<TEnum>(long value, bool validate = true)
+        public static TEnum ToObject<TEnum>(long value, bool validate = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.ToObject(value, validate);
@@ -664,7 +662,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObject<TEnum>(ulong value, bool validate = true)
+        public static TEnum ToObject<TEnum>(ulong value, bool validate = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.ToObject(value, validate);
@@ -682,7 +680,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultEnum, bool validate = false)
         {
             TEnum result;
             return TryToObject(value, out result, validate) ? result : defaultEnum;
@@ -701,7 +699,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultEnum, bool validate = true) => ToObjectOrDefault((long)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((long)value, defaultEnum, validate);
 
         /// <summary>
         /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -715,7 +713,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultEnum, bool validate = true) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -729,7 +727,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultEnum, bool validate = true) => ToObjectOrDefault((long)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((long)value, defaultEnum, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -744,7 +742,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultEnum, bool validate = true) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -758,7 +756,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultEnum, bool validate = true) => ToObjectOrDefault((long)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((long)value, defaultEnum, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -773,7 +771,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultEnum, bool validate = true) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
 
         /// <summary>
         /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -787,7 +785,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultEnum, bool validate = false)
         {
             TEnum result;
             return TryToObject(value, out result, validate) ? result : defaultEnum;
@@ -806,7 +804,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultEnum, bool validate = true)
+        public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultEnum, bool validate = false)
         {
             TEnum result;
             return TryToObject(value, out result, validate) ? result : defaultEnum;
@@ -824,7 +822,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate = true)
+        public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.TryToObject(value, out result, validate);
@@ -843,7 +841,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(sbyte value, out TEnum result, bool validate = true) => TryToObject((long)value, out result, validate);
+        public static bool TryToObject<TEnum>(sbyte value, out TEnum result, bool validate = false) => TryToObject((long)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -857,7 +855,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryToObject<TEnum>(byte value, out TEnum result, bool validate = true) => TryToObject((ulong)value, out result, validate);
+        public static bool TryToObject<TEnum>(byte value, out TEnum result, bool validate = false) => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -871,7 +869,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryToObject<TEnum>(short value, out TEnum result, bool validate = true) => TryToObject((long)value, out result, validate);
+        public static bool TryToObject<TEnum>(short value, out TEnum result, bool validate = false) => TryToObject((long)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -886,7 +884,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(ushort value, out TEnum result, bool validate = true) => TryToObject((ulong)value, out result, validate);
+        public static bool TryToObject<TEnum>(ushort value, out TEnum result, bool validate = false) => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -900,7 +898,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryToObject<TEnum>(int value, out TEnum result, bool validate = true) => TryToObject((long)value, out result, validate);
+        public static bool TryToObject<TEnum>(int value, out TEnum result, bool validate = false) => TryToObject((long)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -915,7 +913,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(uint value, out TEnum result, bool validate = true) => TryToObject((ulong)value, out result, validate);
+        public static bool TryToObject<TEnum>(uint value, out TEnum result, bool validate = false) => TryToObject((ulong)value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -929,7 +927,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate = true)
+        public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.TryToObject(value, out result, validate);
@@ -948,7 +946,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate = true)
+        public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate = false)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.TryToObject(value, out result, validate);

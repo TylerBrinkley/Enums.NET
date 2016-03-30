@@ -36,7 +36,7 @@ namespace EnumsNET
         }
 
         #region Enums
-        #region "Properties"
+        #region Properties
         public TypeCode TypeCode => _typeCode;
 
         public Type UnderlyingType => _underlyingType;
@@ -54,25 +54,6 @@ namespace EnumsNET
         public IEnumerable<TEnum> GetValues(bool uniqueValued) => _cache.GetValues(uniqueValued).Select(value => ToEnum(value));
 
         public int Compare(TEnum x, TEnum y) => EnumsCache<TInt>.Compare(_toInt(x), _toInt(y));
-
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo<TEnum>, string> formatter)
-        {
-            Preconditions.NotNull(formatter, nameof(formatter));
-
-            var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
-            if (index == 0)
-            {
-                _customEnumFormatters = new List<Func<EnumMemberInfo<TEnum>, string>>();
-            }
-            else
-            {
-                while (_customEnumFormatters?.Count != index)
-                {
-                }
-            }
-            _customEnumFormatters.Add(formatter);
-            return (EnumFormat)(index + Enums.StartingGenericCustomEnumFormatValue);
-        }
         #endregion
 
         #region IsValid
@@ -229,18 +210,10 @@ namespace EnumsNET
         #endregion
 
         #region FlagEnums
-        #region "Properties"
+        #region Properties
         public bool IsFlagEnum => _cache.IsFlagEnum;
 
         public TEnum AllFlags => ToEnum(_cache.AllFlags);
-
-        object IEnumInfo.AllFlags
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
         #endregion
 
         #region Main Methods
@@ -291,6 +264,8 @@ namespace EnumsNET
         #endregion
 
         #region NonGeneric
+        object IEnumInfo.AllFlags => AllFlags;
+
         public string AsString(object value) => AsString(ToObject(value));
 
         public string AsString(object value, string format) => AsString(ToObject(value), format);
@@ -424,6 +399,26 @@ namespace EnumsNET
         public object Validate(object value, string paramName) => Validate(ToObject(value), paramName);
         #endregion
 
+        #region CustomEnumFormatters
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo<TEnum>, string> formatter)
+        {
+            Preconditions.NotNull(formatter, nameof(formatter));
+
+            var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
+            if (index == 0)
+            {
+                _customEnumFormatters = new List<Func<EnumMemberInfo<TEnum>, string>>();
+            }
+            else
+            {
+                while (_customEnumFormatters?.Count != index)
+                {
+                }
+            }
+            _customEnumFormatters.Add(formatter);
+            return (EnumFormat)(index + Enums.StartingGenericCustomEnumFormatValue);
+        }
+
         internal static Func<InternalEnumMemberInfo<TInt>, string> InternalGetCustomEnumFormatter(EnumFormat format)
         {
             var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
@@ -439,5 +434,6 @@ namespace EnumsNET
             }
             return null;
         }
+        #endregion
     }
 }
