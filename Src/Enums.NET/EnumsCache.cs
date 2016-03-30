@@ -112,7 +112,7 @@ namespace EnumsNET
 
         private readonly TInt _minDefined;
 
-        private readonly Func<EnumFormat, Func<IEnumMemberInfo, string>> _getCustomFormatter;
+        private readonly Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>> _getCustomFormatter;
 
         // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
         // If constant contains a DescriptionAttribute it will be the first in the attribute array
@@ -157,7 +157,7 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumsCache(Type enumType, Func<EnumFormat, Func<IEnumMemberInfo, string>> getCustomFormatter)
+        public EnumsCache(Type enumType, Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>> getCustomFormatter)
         {
             Debug.Assert(enumType != null);
             Debug.Assert(enumType.IsEnum);
@@ -270,13 +270,7 @@ namespace EnumsNET
         #region Type Methods
         public int GetDefinedCount(bool uniqueValued) => _valueMap.Count + (uniqueValued ? 0 : _duplicateValues?.Count ?? 0);
 
-        public IEnumerable<IEnumMemberInfo> GetEnumMemberInfos(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => (IEnumMemberInfo)info);
-
-        public IEnumerable<string> GetNames(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Name);
-
-        public IEnumerable<TInt> GetValues(bool uniqueValued) => GetInternalEnumMemberInfos(uniqueValued).Select(info => info.Value);
-
-        private IEnumerable<InternalEnumMemberInfo<TInt>> GetInternalEnumMemberInfos(bool uniqueValued)
+        public IEnumerable<InternalEnumMemberInfo<TInt>> GetEnumMemberInfos(bool uniqueValued)
         {
             if (uniqueValued || _duplicateValues == null)
             {
@@ -287,6 +281,10 @@ namespace EnumsNET
                 return GetAllEnumMembersInValueOrder();
             }
         }
+
+        public IEnumerable<string> GetNames(bool uniqueValued) => GetEnumMemberInfos(uniqueValued).Select(info => info.Name);
+
+        public IEnumerable<TInt> GetValues(bool uniqueValued) => GetEnumMemberInfos(uniqueValued).Select(info => info.Value);
 
         private IEnumerable<InternalEnumMemberInfo<TInt>> GetAllEnumMembersInValueOrder()
         {
@@ -793,7 +791,7 @@ namespace EnumsNET
                                 switch (format)
                                 {
                                     case EnumFormat.Description:
-                                        parser = new EnumParser(Enums.DescriptionEnumFormatter, this);
+                                        parser = new EnumParser(internalInfo => internalInfo.Description, this);
                                         break;
                                     default:
                                         var customEnumFormatter = _getCustomFormatter(format);
@@ -1119,10 +1117,10 @@ namespace EnumsNET
                 }
             }
 
-            public EnumParser(Func<IEnumMemberInfo, string> formatter, EnumsCache<TInt> enumsCache)
+            public EnumParser(Func<InternalEnumMemberInfo<TInt>, string> formatter, EnumsCache<TInt> enumsCache)
             {
                 _formatValueMap = new Dictionary<string, TInt>(enumsCache.GetDefinedCount(false));
-                foreach (var info in enumsCache.GetInternalEnumMemberInfos(false))
+                foreach (var info in enumsCache.GetEnumMemberInfos(false))
                 {
                     var format = formatter(info);
                     if (format != null)
