@@ -14,7 +14,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -34,31 +33,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsFlagEnum(Type enumType)
-        {
-            var enumInfo = NonGenericEnumInfo.Get(enumType);
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    return ((NonGenericEnumInfo<int>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.UInt32:
-                    return ((NonGenericEnumInfo<uint>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.Int64:
-                    return ((NonGenericEnumInfo<long>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.UInt64:
-                    return ((NonGenericEnumInfo<ulong>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.SByte:
-                    return ((NonGenericEnumInfo<sbyte>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.Byte:
-                    return ((NonGenericEnumInfo<byte>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.Int16:
-                    return ((NonGenericEnumInfo<short>)enumInfo).Cache.IsFlagEnum;
-                case TypeCode.UInt16:
-                    return ((NonGenericEnumInfo<ushort>)enumInfo).Cache.IsFlagEnum;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
-        }
+        public static bool IsFlagEnum(Type enumType) => NonGenericEnums.GetInfo(enumType).IsFlagEnum;
 
         /// <summary>
         /// Retrieves all the flags defined by <paramref name="enumType"/>.
@@ -68,39 +43,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object GetAllFlags(Type enumType)
-        {
-            var enumInfo = NonGenericEnumInfo.Get(enumType);
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.AllFlags);
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.AllFlags);
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.AllFlags);
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.AllFlags);
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.AllFlags);
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.AllFlags);
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.AllFlags);
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.AllFlags);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
-        }
+        public static object GetAllFlags(Type enumType) => NonGenericEnums.GetInfo(enumType).AllFlags;
         #endregion
 
         #region Main Methods
@@ -118,42 +61,14 @@ namespace EnumsNET.NonGeneric
         public static bool IsValidFlagCombination(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (value == null && isNullable)
             {
                 return true;
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.IsValidFlagCombination(int32Cache.ToObject(value, false));
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.IsValidFlagCombination(uint32Cache.ToObject(value, false));
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.IsValidFlagCombination(int64Cache.ToObject(value, false));
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.IsValidFlagCombination(uint64Cache.ToObject(value, false));
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.IsValidFlagCombination(sbyteCache.ToObject(value, false));
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.IsValidFlagCombination(byteCache.ToObject(value, false));
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.IsValidFlagCombination(int16Cache.ToObject(value, false));
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.IsValidFlagCombination(uint16Cache.ToObject(value, false));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
+
+            return enumInfo.IsValidFlagCombination(value);
         }
 
         [Pure]
@@ -169,42 +84,14 @@ namespace EnumsNET.NonGeneric
         public static string FormatAsFlags(Type enumType, object value, string delimiter, params EnumFormat[] formats)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (value == null && isNullable)
             {
                 return null;
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.FormatAsFlags(int32Cache.ToObject(value, false), delimiter, formats);
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.FormatAsFlags(uint32Cache.ToObject(value, false), delimiter, formats);
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.FormatAsFlags(int64Cache.ToObject(value, false), delimiter, formats);
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.FormatAsFlags(uint64Cache.ToObject(value, false), delimiter, formats);
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.FormatAsFlags(sbyteCache.ToObject(value, false), delimiter, formats);
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.FormatAsFlags(byteCache.ToObject(value, false), delimiter, formats);
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.FormatAsFlags(int16Cache.ToObject(value, false), delimiter, formats);
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.FormatAsFlags(uint16Cache.ToObject(value, false), delimiter, formats);
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.FormatAsFlags(value, delimiter, formats);
         }
 
         /// <summary>
@@ -223,42 +110,14 @@ namespace EnumsNET.NonGeneric
         public static object[] GetFlags(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (value == null && isNullable)
             {
                 return new object[0];
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.Cache.GetFlags(int32EnumInfo.Cache.ToObject(value, false))?.Select(flag => int32EnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.Cache.GetFlags(uint32EnumInfo.Cache.ToObject(value, false))?.Select(flag => uint32EnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.Cache.GetFlags(int64EnumInfo.Cache.ToObject(value, false))?.Select(flag => int64EnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.Cache.GetFlags(uint64EnumInfo.Cache.ToObject(value, false))?.Select(flag => uint64EnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.Cache.GetFlags(sbyteEnumInfo.Cache.ToObject(value, false))?.Select(flag => sbyteEnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.Cache.GetFlags(byteEnumInfo.Cache.ToObject(value, false))?.Select(flag => byteEnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.Cache.GetFlags(int16EnumInfo.Cache.ToObject(value, false))?.Select(flag => int16EnumInfo.ToEnum(flag)).ToArray();
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.Cache.GetFlags(uint16EnumInfo.Cache.ToObject(value, false))?.Select(flag => uint16EnumInfo.ToEnum(flag)).ToArray();
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.GetFlags(value);
         }
 
         /// <summary>
@@ -277,42 +136,14 @@ namespace EnumsNET.NonGeneric
         public static bool HasAnyFlags(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (value == null && isNullable)
             {
                 return false;
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.HasAnyFlags(int32Cache.ToObject(value, false));
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.HasAnyFlags(uint32Cache.ToObject(value, false));
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.HasAnyFlags(int64Cache.ToObject(value, false));
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.HasAnyFlags(uint64Cache.ToObject(value, false));
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.HasAnyFlags(sbyteCache.ToObject(value, false));
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.HasAnyFlags(byteCache.ToObject(value, false));
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.HasAnyFlags(int16Cache.ToObject(value, false));
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.HasAnyFlags(uint16Cache.ToObject(value, false));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
+
+            return enumInfo.HasAnyFlags(value);
         }
 
         /// <summary>
@@ -332,50 +163,22 @@ namespace EnumsNET.NonGeneric
         public static bool HasAnyFlags(Type enumType, object value, object flagMask)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (isNullable)
             {
                 if (value == null)
                 {
-                    return !HasAnyFlags(enumType, flagMask);
+                    return !enumInfo.HasAnyFlags(flagMask);
                 }
                 if (flagMask == null)
                 {
-                    NonGenericEnums.ToObject(enumType, value, false);
+                    enumInfo.ToObject(value);
                     return true;
                 }
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.HasAnyFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false));
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.HasAnyFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false));
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.HasAnyFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false));
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.HasAnyFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false));
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.HasAnyFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false));
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.HasAnyFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false));
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.HasAnyFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false));
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.HasAnyFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
+
+            return enumInfo.HasAnyFlags(value, flagMask);
         }
 
         /// <summary>
@@ -394,42 +197,14 @@ namespace EnumsNET.NonGeneric
         public static bool HasAllFlags(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (value == null && isNullable)
             {
                 return false;
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.HasAllFlags(int32Cache.ToObject(value, false));
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.HasAllFlags(uint32Cache.ToObject(value, false));
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.HasAllFlags(int64Cache.ToObject(value, false));
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.HasAllFlags(uint64Cache.ToObject(value, false));
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.HasAllFlags(sbyteCache.ToObject(value, false));
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.HasAllFlags(byteCache.ToObject(value, false));
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.HasAllFlags(int16Cache.ToObject(value, false));
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.HasAllFlags(uint16Cache.ToObject(value, false));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
+
+            return enumInfo.HasAllFlags(value);
         }
 
         /// <summary>
@@ -449,50 +224,22 @@ namespace EnumsNET.NonGeneric
         public static bool HasAllFlags(Type enumType, object value, object flagMask)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (isNullable)
             {
                 if (value == null)
                 {
-                    return !HasAnyFlags(enumType, flagMask);
+                    return !enumInfo.HasAnyFlags(flagMask);
                 }
                 if (flagMask == null)
                 {
-                    NonGenericEnums.ToObject(enumType, value, false);
+                    enumInfo.ToObject(value);
                     return true;
                 }
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32Cache = ((NonGenericEnumInfo<int>)enumInfo).Cache;
-                    return int32Cache.HasAllFlags(int32Cache.ToObject(value, false), int32Cache.ToObject(flagMask, false));
-                case TypeCode.UInt32:
-                    var uint32Cache = ((NonGenericEnumInfo<uint>)enumInfo).Cache;
-                    return uint32Cache.HasAllFlags(uint32Cache.ToObject(value, false), uint32Cache.ToObject(flagMask, false));
-                case TypeCode.Int64:
-                    var int64Cache = ((NonGenericEnumInfo<long>)enumInfo).Cache;
-                    return int64Cache.HasAllFlags(int64Cache.ToObject(value, false), int64Cache.ToObject(flagMask, false));
-                case TypeCode.UInt64:
-                    var uint64Cache = ((NonGenericEnumInfo<ulong>)enumInfo).Cache;
-                    return uint64Cache.HasAllFlags(uint64Cache.ToObject(value, false), uint64Cache.ToObject(flagMask, false));
-                case TypeCode.SByte:
-                    var sbyteCache = ((NonGenericEnumInfo<sbyte>)enumInfo).Cache;
-                    return sbyteCache.HasAllFlags(sbyteCache.ToObject(value, false), sbyteCache.ToObject(flagMask, false));
-                case TypeCode.Byte:
-                    var byteCache = ((NonGenericEnumInfo<byte>)enumInfo).Cache;
-                    return byteCache.HasAllFlags(byteCache.ToObject(value, false), byteCache.ToObject(flagMask, false));
-                case TypeCode.Int16:
-                    var int16Cache = ((NonGenericEnumInfo<short>)enumInfo).Cache;
-                    return int16Cache.HasAllFlags(int16Cache.ToObject(value, false), int16Cache.ToObject(flagMask, false));
-                case TypeCode.UInt16:
-                    var uint16Cache = ((NonGenericEnumInfo<ushort>)enumInfo).Cache;
-                    return uint16Cache.HasAllFlags(uint16Cache.ToObject(value, false), uint16Cache.ToObject(flagMask, false));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return false;
+
+            return enumInfo.HasAllFlags(value, flagMask);
         }
 
         /// <summary>
@@ -511,42 +258,14 @@ namespace EnumsNET.NonGeneric
         public static object ToggleFlags(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (value == null && isNullable)
             {
-                return GetAllFlags(enumType);
+                return enumInfo.AllFlags;
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.ToggleFlags(int32EnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.ToggleFlags(uint32EnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.ToggleFlags(int64EnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.ToggleFlags(uint64EnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.ToggleFlags(sbyteEnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.ToggleFlags(byteEnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.ToggleFlags(int16EnumInfo.Cache.ToObject(value, false)));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.ToggleFlags(uint16EnumInfo.Cache.ToObject(value, false)));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.ToggleFlags(value);
         }
 
         /// <summary>
@@ -566,49 +285,21 @@ namespace EnumsNET.NonGeneric
         public static object ToggleFlags(Type enumType, object value, object flagMask)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (isNullable)
             {
                 if (value == null)
                 {
-                    return NonGenericEnums.ToObject(enumType, flagMask, false);
+                    return enumInfo.ToObject(flagMask);
                 }
                 if (flagMask == null)
                 {
-                    return NonGenericEnums.ToObject(enumType, value, false);
+                    return enumInfo.ToObject(value);
                 }
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.ToggleFlags(int32EnumInfo.Cache.ToObject(value, false), int32EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.ToggleFlags(uint32EnumInfo.Cache.ToObject(value, false), uint32EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.ToggleFlags(int64EnumInfo.Cache.ToObject(value, false), int64EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.ToggleFlags(uint64EnumInfo.Cache.ToObject(value, false), uint64EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.ToggleFlags(sbyteEnumInfo.Cache.ToObject(value, false), sbyteEnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.ToggleFlags(byteEnumInfo.Cache.ToObject(value, false), byteEnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.ToggleFlags(int16EnumInfo.Cache.ToObject(value, false), int16EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.ToggleFlags(uint16EnumInfo.Cache.ToObject(value, false), uint16EnumInfo.Cache.ToObject(flagMask, false)));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.ToggleFlags(value, flagMask);
         }
 
         /// <summary>
@@ -628,7 +319,7 @@ namespace EnumsNET.NonGeneric
         public static object CommonFlags(Type enumType, object value, object flagMask)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (isNullable)
             {
@@ -636,46 +327,18 @@ namespace EnumsNET.NonGeneric
                 {
                     if (flagMask != null)
                     {
-                        NonGenericEnums.ToObject(enumType, flagMask, false);
+                        enumInfo.ToObject(flagMask);
                     }
                     return null;
                 }
                 if (flagMask == null)
                 {
-                    NonGenericEnums.ToObject(enumType, value, false);
+                    enumInfo.ToObject(value);
                     return null;
                 }
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.CommonFlags(int32EnumInfo.Cache.ToObject(value, false), int32EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.CommonFlags(uint32EnumInfo.Cache.ToObject(value, false), uint32EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.CommonFlags(int64EnumInfo.Cache.ToObject(value, false), int64EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.CommonFlags(uint64EnumInfo.Cache.ToObject(value, false), uint64EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.CommonFlags(sbyteEnumInfo.Cache.ToObject(value, false), sbyteEnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.CommonFlags(byteEnumInfo.Cache.ToObject(value, false), byteEnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.CommonFlags(int16EnumInfo.Cache.ToObject(value, false), int16EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.CommonFlags(uint16EnumInfo.Cache.ToObject(value, false), uint16EnumInfo.Cache.ToObject(flagMask, false)));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.CommonFlags(value, flagMask);
         }
 
         /// <summary>
@@ -695,49 +358,21 @@ namespace EnumsNET.NonGeneric
         public static object SetFlags(Type enumType, object flag0, object flag1)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (isNullable)
             {
                 if (flag0 == null)
                 {
-                    return NonGenericEnums.ToObject(enumType, flag1, false);
+                    return enumInfo.ToObject(flag1);
                 }
                 if (flag1 == null)
                 {
-                    return NonGenericEnums.ToObject(enumType, flag0, false);
+                    return enumInfo.ToObject(flag0);
                 }
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.SetFlags(int32EnumInfo.Cache.ToObject(flag0, false), int32EnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.SetFlags(uint32EnumInfo.Cache.ToObject(flag0, false), uint32EnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.SetFlags(int64EnumInfo.Cache.ToObject(flag0, false), int64EnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.SetFlags(uint64EnumInfo.Cache.ToObject(flag0, false), uint64EnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.SetFlags(sbyteEnumInfo.Cache.ToObject(flag0, false), sbyteEnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.SetFlags(byteEnumInfo.Cache.ToObject(flag0, false), byteEnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.SetFlags(int16EnumInfo.Cache.ToObject(flag0, false), int16EnumInfo.Cache.ToObject(flag1, false)));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.SetFlags(uint16EnumInfo.Cache.ToObject(flag0, false), uint16EnumInfo.Cache.ToObject(flag1, false)));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.SetFlags(flag0, flag1);
         }
 
         [Pure]
@@ -746,38 +381,7 @@ namespace EnumsNET.NonGeneric
             Preconditions.NotNull(flags, nameof(flags));
 
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
-
-            var allFlags = isNullable ? flags.Where(flag => flag != null) : flags;
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.SetFlags(allFlags.Select(flag => int32EnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.SetFlags(allFlags.Select(flag => uint32EnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.SetFlags(allFlags.Select(flag => int64EnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.SetFlags(allFlags.Select(flag => uint64EnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.SetFlags(allFlags.Select(flag => sbyteEnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.SetFlags(allFlags.Select(flag => byteEnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.SetFlags(allFlags.Select(flag => int16EnumInfo.Cache.ToObject(flag, false))));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.SetFlags(allFlags.Select(flag => uint16EnumInfo.Cache.ToObject(flag, false))));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+            return NonGenericEnums.GetInfo(enumType, isNullable).SetFlags(isNullable ? flags.Where(flag => flag != null) : flags);
         }
 
         /// <summary>
@@ -797,7 +401,7 @@ namespace EnumsNET.NonGeneric
         public static object ClearFlags(Type enumType, object value, object flagMask)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (isNullable)
             {
@@ -805,45 +409,17 @@ namespace EnumsNET.NonGeneric
                 {
                     if (flagMask != null)
                     {
-                        NonGenericEnums.ToObject(enumType, flagMask, false);
+                        enumInfo.ToObject(flagMask);
                     }
                     return null;
                 }
                 if (flagMask == null)
                 {
-                    return NonGenericEnums.ToObject(enumType, value, false);
+                    return enumInfo.ToObject(value);
                 }
             }
 
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.ClearFlags(int32EnumInfo.Cache.ToObject(value, false), int32EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.ClearFlags(uint32EnumInfo.Cache.ToObject(value, false), uint32EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.ClearFlags(int64EnumInfo.Cache.ToObject(value, false), int64EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.ClearFlags(uint64EnumInfo.Cache.ToObject(value, false), uint64EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.ClearFlags(sbyteEnumInfo.Cache.ToObject(value, false), sbyteEnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.ClearFlags(byteEnumInfo.Cache.ToObject(value, false), byteEnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.ClearFlags(int16EnumInfo.Cache.ToObject(value, false), int16EnumInfo.Cache.ToObject(flagMask, false)));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.ClearFlags(uint16EnumInfo.Cache.ToObject(value, false), uint16EnumInfo.Cache.ToObject(flagMask, false)));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+            return enumInfo.ClearFlags(value, flagMask);
         }
         #endregion
 
@@ -938,42 +514,14 @@ namespace EnumsNET.NonGeneric
         public static object Parse(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (string.IsNullOrEmpty(value) && isNullable)
             {
                 return null;
             }
-            
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    return int32EnumInfo.ToEnum(int32EnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    return uint32EnumInfo.ToEnum(uint32EnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    return int64EnumInfo.ToEnum(int64EnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    return uint64EnumInfo.ToEnum(uint64EnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    return sbyteEnumInfo.ToEnum(sbyteEnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    return byteEnumInfo.ToEnum(byteEnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    return int16EnumInfo.ToEnum(int16EnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    return uint16EnumInfo.ToEnum(uint16EnumInfo.Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            return null;
+
+            return enumInfo.Parse(value, ignoreCase, delimiter, parseFormatOrder);
         }
 
         /// <summary>
@@ -1131,7 +679,7 @@ namespace EnumsNET.NonGeneric
         public static bool TryParse(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder)
         {
             var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnumInfo.Get(enumType, isNullable);
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
 
             if (string.IsNullOrEmpty(value) && isNullable)
             {
@@ -1139,61 +687,7 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            bool success;
-            switch (enumInfo.TypeCode)
-            {
-                case TypeCode.Int32:
-                    var int32EnumInfo = (NonGenericEnumInfo<int>)enumInfo;
-                    int resultAsInt32;
-                    success = int32EnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt32, parseFormatOrder);
-                    result = int32EnumInfo.ToEnum(resultAsInt32);
-                    return success;
-                case TypeCode.UInt32:
-                    var uint32EnumInfo = (NonGenericEnumInfo<uint>)enumInfo;
-                    uint resultAsUInt32;
-                    success = uint32EnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsUInt32, parseFormatOrder);
-                    result = uint32EnumInfo.ToEnum(resultAsUInt32);
-                    return success;
-                case TypeCode.Int64:
-                    var int64EnumInfo = (NonGenericEnumInfo<long>)enumInfo;
-                    long resultAsInt64;
-                    success = int64EnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt64, parseFormatOrder);
-                    result = int64EnumInfo.ToEnum(resultAsInt64);
-                    return success;
-                case TypeCode.UInt64:
-                    var uint64EnumInfo = (NonGenericEnumInfo<ulong>)enumInfo;
-                    ulong resultAsUInt64;
-                    success = uint64EnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsUInt64, parseFormatOrder);
-                    result = uint64EnumInfo.ToEnum(resultAsUInt64);
-                    return success;
-                case TypeCode.SByte:
-                    var sbyteEnumInfo = (NonGenericEnumInfo<sbyte>)enumInfo;
-                    sbyte resultAsSByte;
-                    success = sbyteEnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsSByte, parseFormatOrder);
-                    result = sbyteEnumInfo.ToEnum(resultAsSByte);
-                    return success;
-                case TypeCode.Byte:
-                    var byteEnumInfo = (NonGenericEnumInfo<byte>)enumInfo;
-                    byte resultAsByte;
-                    success = byteEnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsByte, parseFormatOrder);
-                    result = byteEnumInfo.ToEnum(resultAsByte);
-                    return success;
-                case TypeCode.Int16:
-                    var int16EnumInfo = (NonGenericEnumInfo<short>)enumInfo;
-                    short resultAsInt16;
-                    success = int16EnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt16, parseFormatOrder);
-                    result = int16EnumInfo.ToEnum(resultAsInt16);
-                    return success;
-                case TypeCode.UInt16:
-                    var uint16EnumInfo = (NonGenericEnumInfo<ushort>)enumInfo;
-                    ushort resultAsUInt16;
-                    success = uint16EnumInfo.Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsUInt16, parseFormatOrder);
-                    result = uint16EnumInfo.ToEnum(resultAsUInt16);
-                    return success;
-            }
-            Debug.Fail("Unknown Enum TypeCode");
-            result = null;
-            return false;
+            return enumInfo.TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder);
         }
         #endregion
     }

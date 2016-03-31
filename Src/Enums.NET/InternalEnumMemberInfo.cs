@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo
+    internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo, IComparable<InternalEnumMemberInfo<TInt>>
         where TInt : struct
     {
         private readonly Attribute[] _attributes;
@@ -143,6 +143,8 @@ namespace EnumsNET
 
         public override int GetHashCode() => EnumsCache<TInt>.GetHashCodeMethod(Value);
 
+        public int CompareTo(InternalEnumMemberInfo<TInt> obj) => EnumsCache<TInt>.Compare(Value, obj.Value);
+
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
@@ -187,7 +189,7 @@ namespace EnumsNET
         {
             if (obj is InternalEnumMemberInfo<TInt>)
             {
-                return EnumsCache<TInt>.Compare(Value, ((InternalEnumMemberInfo<TInt>)obj).Value);
+                return CompareTo((InternalEnumMemberInfo<TInt>)obj);
             }
             return 1;
         }

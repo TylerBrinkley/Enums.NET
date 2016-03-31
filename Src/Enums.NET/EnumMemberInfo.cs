@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace EnumsNET
 {
@@ -307,48 +306,44 @@ namespace EnumsNET
     /// Represents a <typeparamref name="TEnum"/> member's Name, Value, and Attributes
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public sealed class EnumMemberInfo<TEnum> : EnumMemberInfo, IComparable<EnumMemberInfo<TEnum>>
+    public abstract class EnumMemberInfo<TEnum> : EnumMemberInfo, IComparable<EnumMemberInfo<TEnum>>
     {
         /// <summary>
         /// The defined enum member's value
         /// </summary>
-        public new TEnum Value
-        {
-            get
-            {
-                switch (Enums<TEnum>.TypeCode)
-                {
-                    case TypeCode.Int32:
-                        return Enums<TEnum, int>.ToEnum(((InternalEnumMemberInfo<int>)_info).Value);
-                    case TypeCode.UInt32:
-                        return Enums<TEnum, uint>.ToEnum(((InternalEnumMemberInfo<uint>)_info).Value);
-                    case TypeCode.Int64:
-                        return Enums<TEnum, long>.ToEnum(((InternalEnumMemberInfo<long>)_info).Value);
-                    case TypeCode.UInt64:
-                        return Enums<TEnum, ulong>.ToEnum(((InternalEnumMemberInfo<ulong>)_info).Value);
-                    case TypeCode.SByte:
-                        return Enums<TEnum, sbyte>.ToEnum(((InternalEnumMemberInfo<sbyte>)_info).Value);
-                    case TypeCode.Byte:
-                        return Enums<TEnum, byte>.ToEnum(((InternalEnumMemberInfo<byte>)_info).Value);
-                    case TypeCode.Int16:
-                        return Enums<TEnum, short>.ToEnum(((InternalEnumMemberInfo<short>)_info).Value);
-                    case TypeCode.UInt16:
-                        return Enums<TEnum, ushort>.ToEnum(((InternalEnumMemberInfo<ushort>)_info).Value);
-                }
-                Debug.Fail("Unknown Enum TypeCode");
-                return default(TEnum);
-            }
-        }
+        public new TEnum Value => GetGenericValue();
 
         internal EnumMemberInfo(IEnumMemberInfo info)
             : base(info)
         {
         }
 
-        internal override object GetValue() => Value;
+        internal abstract TEnum GetGenericValue();
+
+        internal sealed override object GetValue() => GetGenericValue();
 
         #region Explicit Interface Implementation
         int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(other?._info);
+        #endregion
+    }
+
+    internal sealed class EnumMemberInfo<TEnum, TInt> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>
+        where TInt : struct
+    {
+        private new InternalEnumMemberInfo<TInt> _info;
+
+        internal EnumMemberInfo(InternalEnumMemberInfo<TInt> info)
+            : base(info)
+        {
+            _info = info;
+        }
+
+        internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt>.ToEnum(_info.Value);
+
+        #region Explicit Interface Implementation
+        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt>)other)._info);
+
+        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt>)other)._info);
         #endregion
     }
 }
