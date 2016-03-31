@@ -13,21 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define USE_EMIT
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using ExtraConstraints;
-
-#if NET20 || USE_EMIT
-using System.Reflection.Emit;
-#else
-using System.Linq.Expressions;
-#endif
 
 namespace EnumsNET
 {
@@ -1491,78 +1482,6 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static void InitializeCache(Type enumType, Delegate getCustomEnumFormatter, out TypeCode typeCode, out Type underlyingType, out object cache, out Delegate toEnum, out Delegate toInt)
-        {
-            underlyingType = Enum.GetUnderlyingType(enumType);
-
-#if NET20 || USE_EMIT
-            var toIntMethod = new DynamicMethod(enumType.Name + "_ToInt",
-                                       underlyingType,
-                                       new[] { enumType },
-                                       enumType, true);
-            var toIntGenerator = toIntMethod.GetILGenerator();
-            toIntGenerator.DeclareLocal(underlyingType);
-            toIntGenerator.Emit(OpCodes.Ldarg_0);
-            toIntGenerator.Emit(OpCodes.Stloc_0);
-            toIntGenerator.Emit(OpCodes.Ldloc_0);
-            toIntGenerator.Emit(OpCodes.Ret);
-            toInt = toIntMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType));
-
-            var toEnumMethod = new DynamicMethod(underlyingType.Name + "_ToEnum",
-                                       enumType,
-                                       new[] { underlyingType },
-                                       underlyingType, true);
-            var toEnumGenerator = toEnumMethod.GetILGenerator();
-            toEnumGenerator.DeclareLocal(enumType);
-            toEnumGenerator.Emit(OpCodes.Ldarg_0);
-            toEnumGenerator.Emit(OpCodes.Stloc_0);
-            toEnumGenerator.Emit(OpCodes.Ldloc_0);
-            toEnumGenerator.Emit(OpCodes.Ret);
-            toEnum = toEnumMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType));
-#else
-            var enumParam = Expression.Parameter(enumType, "x");
-            var enumParamConvert = Expression.Convert(enumParam, underlyingType);
-            toInt = Expression.Lambda(enumParamConvert, enumParam).Compile();
-            var intParam = Expression.Parameter(underlyingType, "y");
-            var intParamConvert = Expression.Convert(intParam, enumType);
-            toEnum = Expression.Lambda(intParamConvert, intParam).Compile();
-#endif
-            typeCode = Type.GetTypeCode(underlyingType);
-            switch (typeCode)
-            {
-                case TypeCode.Int32:
-                    cache = new EnumsCache<int>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<int>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.UInt32:
-                    cache = new EnumsCache<uint>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<uint>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.Int64:
-                    cache = new EnumsCache<long>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<long>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.UInt64:
-                    cache = new EnumsCache<ulong>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ulong>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.SByte:
-                    cache = new EnumsCache<sbyte>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<sbyte>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.Byte:
-                    cache = new EnumsCache<byte>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<byte>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.Int16:
-                    cache = new EnumsCache<short>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<short>, string>>)getCustomEnumFormatter);
-                    break;
-                case TypeCode.UInt16:
-                    cache = new EnumsCache<ushort>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ushort>, string>>)getCustomEnumFormatter);
-                    break;
-                default:
-                    Debug.Fail("Unknown Enum TypeCode");
-                    cache = null;
-                    break;
-            }
-        }
-
-        internal static string DescriptionEnumFormatter(IEnumMemberInfo info) => info.Description;
-
         internal static string GetDescription(Attribute[] attributes) => attributes.Length > 0 ? (attributes[0] as DescriptionAttribute)?.Description : null;
 
         internal static TAttribute GetAttribute<TAttribute>(Attribute[] attributes)

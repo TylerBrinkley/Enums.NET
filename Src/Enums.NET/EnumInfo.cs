@@ -1,39 +1,50 @@
-﻿using System;
+﻿// Enums.NET
+// Copyright 2016 Tyler Brinkley. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//	  http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#define USE_EMIT
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+
+#if NET20 || USE_EMIT
+using System.Reflection.Emit;
+#else
+using System.Linq.Expressions;
+#endif
 
 namespace EnumsNET
 {
     internal class EnumInfo<TEnum, TInt> : IEnumInfo<TEnum>
         where TInt : struct
     {
-        private static readonly TypeCode _typeCode;
+        private static readonly TypeCode _typeCode = Type.GetTypeCode(typeof(TInt));
 
-        private static readonly Type _underlyingType;
+        private static readonly Type _underlyingType = typeof(TInt);
 
-        private static readonly EnumsCache<TInt> _cache;
+        private static readonly EnumsCache<TInt> _cache = (EnumsCache<TInt>)EnumInfo.Cache(typeof(TEnum), typeof(TInt), (Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>>)InternalGetCustomEnumFormatter);
 
-        private static readonly Func<TEnum, TInt> _toInt;
+        private static readonly Func<TEnum, TInt> _toInt = (Func<TEnum, TInt>)EnumInfo.ToInt(typeof(TEnum), typeof(TInt));
 
         private static int _lastCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMemberInfo<TEnum>, string>> _customEnumFormatters;
 
-        internal static readonly Func<TInt, TEnum> ToEnum;
-
-        static EnumInfo()
-        {
-            Debug.Assert(typeof(TEnum).IsEnum);
-            object cache;
-            Delegate toEnum;
-            Delegate toInt;
-            Enums.InitializeCache(typeof(TEnum), (Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>>)InternalGetCustomEnumFormatter, out _typeCode, out _underlyingType, out cache, out toEnum, out toInt);
-            _cache = (EnumsCache<TInt>)cache;
-            ToEnum = (Func<TInt, TEnum>)toEnum;
-            _toInt = (Func<TEnum, TInt>)toInt;
-        }
+        internal static readonly Func<TInt, TEnum> ToEnum = (Func<TInt, TEnum>)EnumInfo.ToEnum(typeof(TEnum), typeof(TInt));
 
         #region Enums
         #region Properties
@@ -159,7 +170,7 @@ namespace EnumsNET
 
         public int GetHashCode(TEnum value) => _toInt(value).GetHashCode();
 
-        public bool Equals(TEnum value, TEnum other) => EnumsCache<TInt>.Equal(_toInt(value), _toInt(other));
+        public bool Equals(TEnum value, TEnum other) => EnumsCache<TInt>.Equals(_toInt(value), _toInt(other));
         #endregion
 
         #region Defined Values Main Methods
@@ -435,5 +446,76 @@ namespace EnumsNET
             return null;
         }
         #endregion
+    }
+
+    internal static class EnumInfo
+    {
+        internal static object Cache(Type enumType, Type underlyingType, Delegate getCustomEnumFormatter)
+        {
+            switch (Type.GetTypeCode(underlyingType))
+            {
+                case TypeCode.Int32:
+                    return new EnumsCache<int>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<int>, string>>)getCustomEnumFormatter);
+                case TypeCode.UInt32:
+                    return new EnumsCache<uint>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<uint>, string>>)getCustomEnumFormatter);
+                case TypeCode.Int64:
+                    return new EnumsCache<long>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<long>, string>>)getCustomEnumFormatter);
+                case TypeCode.UInt64:
+                    return new EnumsCache<ulong>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ulong>, string>>)getCustomEnumFormatter);
+                case TypeCode.SByte:
+                    return new EnumsCache<sbyte>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<sbyte>, string>>)getCustomEnumFormatter);
+                case TypeCode.Byte:
+                    return new EnumsCache<byte>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<byte>, string>>)getCustomEnumFormatter);
+                case TypeCode.Int16:
+                    return new EnumsCache<short>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<short>, string>>)getCustomEnumFormatter);
+                case TypeCode.UInt16:
+                    return new EnumsCache<ushort>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ushort>, string>>)getCustomEnumFormatter);
+                default:
+                    Debug.Fail("Unknown Enum TypeCode");
+                    return null;
+            }
+        }
+
+        internal static Delegate ToEnum(Type enumType, Type underlyingType)
+        {
+#if NET20 || USE_EMIT
+            var toEnumMethod = new DynamicMethod(underlyingType.Name + "_ToEnum",
+                                       enumType,
+                                       new[] { underlyingType },
+                                       underlyingType, true);
+            var toEnumGenerator = toEnumMethod.GetILGenerator();
+            toEnumGenerator.DeclareLocal(enumType);
+            toEnumGenerator.Emit(OpCodes.Ldarg_0);
+            toEnumGenerator.Emit(OpCodes.Stloc_0);
+            toEnumGenerator.Emit(OpCodes.Ldloc_0);
+            toEnumGenerator.Emit(OpCodes.Ret);
+            return toEnumMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType));
+#else
+            var intParam = Expression.Parameter(underlyingType, "y");
+            var intParamConvert = Expression.Convert(intParam, enumType);
+            return Expression.Lambda(intParamConvert, intParam).Compile();
+#endif
+        }
+
+        internal static Delegate ToInt(Type enumType, Type underlyingType)
+        {
+#if NET20 || USE_EMIT
+            var toIntMethod = new DynamicMethod(enumType.Name + "_ToInt",
+                                       underlyingType,
+                                       new[] { enumType },
+                                       enumType, true);
+            var toIntGenerator = toIntMethod.GetILGenerator();
+            toIntGenerator.DeclareLocal(underlyingType);
+            toIntGenerator.Emit(OpCodes.Ldarg_0);
+            toIntGenerator.Emit(OpCodes.Stloc_0);
+            toIntGenerator.Emit(OpCodes.Ldloc_0);
+            toIntGenerator.Emit(OpCodes.Ret);
+            return toIntMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType));
+#else
+            var enumParam = Expression.Parameter(enumType, "x");
+            var enumParamConvert = Expression.Convert(enumParam, underlyingType);
+            return Expression.Lambda(enumParamConvert, enumParam).Compile();
+#endif
+        }
     }
 }

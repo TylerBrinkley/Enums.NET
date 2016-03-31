@@ -141,7 +141,7 @@ namespace EnumsNET
 
         public ulong ToUInt64() => EnumsCache<TInt>.ToUInt64(Value);
 
-        public override int GetHashCode() => EnumsCache<TInt>.GetHashCodeMethod(Value);
+        public override int GetHashCode() => Value.GetHashCode();
 
         public int CompareTo(InternalEnumMemberInfo<TInt> obj) => EnumsCache<TInt>.Compare(Value, obj.Value);
 

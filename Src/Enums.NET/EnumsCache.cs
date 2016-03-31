@@ -32,71 +32,61 @@ namespace EnumsNET
         where TInt : struct
     {
         #region Static
-        internal static Func<TInt, TInt, bool> Equal;
+        internal new static readonly Func<TInt, TInt, bool> Equals = (Func<TInt, TInt, bool>)EnumsCache.Equals(typeof(TInt));
 
-        internal static Func<TInt, TInt, bool> GreaterThan;
+        internal static readonly Func<TInt, TInt, bool> GreaterThan = (Func<TInt, TInt, bool>)EnumsCache.GreaterThan(typeof(TInt));
 
-        internal static Func<TInt, TInt, TInt> And;
+        internal static readonly Func<TInt, TInt, TInt> And = (Func<TInt, TInt, TInt>)EnumsCache.And(typeof(TInt));
 
-        internal static Func<TInt, TInt, TInt> Or;
+        internal static readonly Func<TInt, TInt, TInt> Or = (Func<TInt, TInt, TInt>)EnumsCache.Or(typeof(TInt));
 
-        internal static Func<TInt, TInt, TInt> Xor;
+        internal static readonly Func<TInt, TInt, TInt> Xor = (Func<TInt, TInt, TInt>)EnumsCache.Xor(typeof(TInt));
 
-        internal static Func<TInt, int, TInt> LeftShift;
+        internal static readonly Func<TInt, int, TInt> LeftShift = (Func<TInt, int, TInt>)EnumsCache.LeftShift(typeof(TInt));
 
-        //internal static Func<TInt, int, TInt> RightShift;
+        internal static readonly Func<TInt, TInt, TInt> Add = (Func<TInt, TInt, TInt>)EnumsCache.Add(typeof(TInt));
 
-        internal static Func<TInt, TInt, TInt> Add;
+        internal static readonly Func<TInt, TInt, TInt> Subtract = (Func<TInt, TInt, TInt>)EnumsCache.Subtract(typeof(TInt));
 
-        internal static Func<TInt, TInt, TInt> Subtract;
+        internal static bool IsPowerOfTwo(TInt x) => Equals(And(x, Subtract(x, One)), Zero);
 
-        internal static bool IsPowerOfTwo(TInt x) => Equal(And(x, Subtract(x, One)), Zero);
+        internal static readonly Func<long, TInt> FromInt64 = (Func<long, TInt>)EnumsCache.FromInt64(typeof(TInt));
 
-        internal static Func<long, TInt> FromInt64;
+        internal static readonly Func<ulong, TInt> FromUInt64 = (Func<ulong, TInt>)EnumsCache.FromUInt64(typeof(TInt));
 
-        internal static Func<ulong, TInt> FromUInt64;
+        internal static readonly Func<long, bool> Int64IsInValueRange = (Func<long, bool>)EnumsCache.Int64IsInValueRange(typeof(TInt));
 
-        internal static Func<long, bool> Int64IsInValueRange;
+        internal static readonly Func<ulong, bool> UInt64IsInValueRange = (Func<ulong, bool>)EnumsCache.UInt64IsInValueRange(typeof(TInt));
 
-        internal static Func<ulong, bool> UInt64IsInValueRange;
+        internal static readonly Func<TInt, sbyte> ToSByte = (Func<TInt, sbyte>)EnumsCache.ToSByte(typeof(TInt));
 
-        internal static Func<TInt, sbyte> ToSByte;
+        internal static readonly Func<TInt, byte> ToByte = (Func<TInt, byte>)EnumsCache.ToByte(typeof(TInt));
 
-        internal static Func<TInt, byte> ToByte;
+        internal static readonly Func<TInt, short> ToInt16 = (Func<TInt, short>)EnumsCache.ToInt16(typeof(TInt));
 
-        internal static Func<TInt, short> ToInt16;
+        internal static readonly Func<TInt, ushort> ToUInt16 = (Func<TInt, ushort>)EnumsCache.ToUInt16(typeof(TInt));
 
-        internal static Func<TInt, ushort> ToUInt16;
+        internal static readonly Func<TInt, int> ToInt32 = (Func<TInt, int>)EnumsCache.ToInt32(typeof(TInt));
 
-        internal static Func<TInt, int> ToInt32;
+        internal static readonly Func<TInt, uint> ToUInt32 = (Func<TInt, uint>)EnumsCache.ToUInt32(typeof(TInt));
 
-        internal static Func<TInt, uint> ToUInt32;
+        internal static readonly Func<TInt, long> ToInt64 = (Func<TInt, long>)EnumsCache.ToInt64(typeof(TInt));
 
-        internal static Func<TInt, long> ToInt64;
+        internal static readonly Func<TInt, ulong> ToUInt64 = (Func<TInt, ulong>)EnumsCache.ToUInt64(typeof(TInt));
 
-        internal static Func<TInt, ulong> ToUInt64;
+        internal static readonly Func<TInt, string, string> ToStringFormat = (Func<TInt, string, string>)EnumsCache.ToStringFormat(typeof(TInt));
 
-        internal static Func<TInt, string, string> ToStringFormat;
+        internal static readonly IntegralTryParse<TInt> TryParseMethod = (IntegralTryParse<TInt>)EnumsCache.TryParseMethod(typeof(TInt));
 
-        internal static IntegralTryParse TryParseMethod;
+        internal static readonly string HexFormatString = EnumsCache.HexFormatString(typeof(TInt));
 
-        internal static string HexFormatString;
+        internal static readonly TInt Zero = (TInt)EnumsCache.Zero(typeof(TInt));
 
-        internal static TInt Zero;
+        internal static readonly TInt One = (TInt)EnumsCache.One(typeof(TInt));
 
-        internal static TInt One;
-
-        internal static TypeCode TypeCode;
+        internal static readonly TypeCode TypeCode = Type.GetTypeCode(typeof(TInt));
 
         internal static int Compare(TInt x, TInt y) => GreaterThan(x, y) ? 1 : (GreaterThan(y, x) ? -1 : 0);
-
-        internal static Func<TInt, int> GetHashCodeMethod;
-
-        static EnumsCache()
-        {
-            TypeCode = Type.GetTypeCode(typeof(TInt));
-            EnumsCache.Populate(TypeCode);
-        }
         #endregion
 
         #region Fields
@@ -246,7 +236,7 @@ namespace EnumsNET
             }
             _maxDefined = _valueMap.GetFirstAt(_valueMap.Count - 1);
             _minDefined = _valueMap.GetFirstAt(0);
-            IsContiguous = Equal(Subtract(_maxDefined, FromInt64(_valueMap.Count - 1)), _minDefined);
+            IsContiguous = Equals(Subtract(_maxDefined, FromInt64(_valueMap.Count - 1)), _minDefined);
 
             _valueMap.TrimExcess();
             if (duplicateValues.Count > 0)
@@ -838,7 +828,7 @@ namespace EnumsNET
 
         #region Flag Enum Operations
         #region Main Methods
-        public bool IsValidFlagCombination(TInt value) => Equal(And(AllFlags, value), value);
+        public bool IsValidFlagCombination(TInt value) => Equals(And(AllFlags, value), value);
 
         public string FormatAsFlags(TInt value, string delimiter, EnumFormat[] formats) => InternalFormatAsFlags(GetEnumMemberInfo(value), delimiter, formats);
 
@@ -859,7 +849,7 @@ namespace EnumsNET
                 formats = Enums.DefaultFormatOrder;
             }
             
-            if (info.IsDefined || Equal(info.Value, Zero))
+            if (info.IsDefined || Equals(info.Value, Zero))
             {
                 return InternalFormat(info, formats);
             }
@@ -877,7 +867,7 @@ namespace EnumsNET
         private IEnumerable<TInt> InternalGetFlags(TInt value)
         {
             var isLessThanZero = GreaterThan(Zero, value);
-            for (var currentValue = One; (isLessThanZero || !GreaterThan(currentValue, value)) && !Equal(currentValue, Zero); currentValue = LeftShift(currentValue, 1))
+            for (var currentValue = One; (isLessThanZero || !GreaterThan(currentValue, value)) && !Equals(currentValue, Zero); currentValue = LeftShift(currentValue, 1))
             {
                 if (IsValidFlagCombination(currentValue) && InternalHasAnyFlags(value, currentValue))
                 {
@@ -889,7 +879,7 @@ namespace EnumsNET
         public bool HasAnyFlags(TInt value)
         {
             ValidateFlagCombination(value, nameof(value));
-            return !Equal(value, Zero);
+            return !Equals(value, Zero);
         }
 
         private void ValidateFlagCombination(TInt value, string paramName)
@@ -907,19 +897,19 @@ namespace EnumsNET
             return InternalHasAnyFlags(value, flagMask);
         }
 
-        private bool InternalHasAnyFlags(TInt value, TInt flagMask) => !Equal(And(value, flagMask), Zero);
+        private bool InternalHasAnyFlags(TInt value, TInt flagMask) => !Equals(And(value, flagMask), Zero);
 
         public bool HasAllFlags(TInt value)
         {
             ValidateFlagCombination(value, nameof(value));
-            return Equal(value, AllFlags);
+            return Equals(value, AllFlags);
         }
 
         public bool HasAllFlags(TInt value, TInt flagMask)
         {
             ValidateFlagCombination(value, nameof(value));
             ValidateFlagCombination(flagMask, nameof(flagMask));
-            return Equal(And(value, flagMask), flagMask);
+            return Equals(And(value, flagMask), flagMask);
         }
 
         public TInt ToggleFlags(TInt value)
@@ -1089,8 +1079,6 @@ namespace EnumsNET
         #endregion
 
         #region Nested Types
-        internal delegate bool IntegralTryParse(string value, NumberStyles styles, IFormatProvider provider, out TInt result);
-
         internal sealed class EnumParser
         {
             private readonly Dictionary<string, TInt> _formatValueMap;
@@ -1135,245 +1123,604 @@ namespace EnumsNET
         #endregion
     }
 
+    internal delegate bool IntegralTryParse<TInt>(string value, NumberStyles styles, IFormatProvider provider, out TInt result);
+
     internal static class EnumsCache
     {
-        internal static void Populate(TypeCode typeCode)
+        internal static Delegate Equals(Type type)
         {
-            switch (typeCode)
+            switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Int32:
-                    EnumsCache<int>.Equal = (x, y) => x == y;
-                    EnumsCache<int>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<int>.And = (x, y) => x & y;
-                    EnumsCache<int>.Or = (x, y) => x | y;
-                    EnumsCache<int>.Xor = (x, y) => x ^ y;
-                    EnumsCache<int>.LeftShift = (x, n) => x << n;
-                    //IntegralOperators<int>.RightShift = (x, n) => x >> n;
-                    EnumsCache<int>.Add = (x, y) => x + y;
-                    EnumsCache<int>.Subtract = (x, y) => x - y;
-                    EnumsCache<int>.FromInt64 = x => (int)x;
-                    EnumsCache<int>.FromUInt64 = x => (int)x;
-                    EnumsCache<int>.Int64IsInValueRange = x => x >= int.MinValue && x <= int.MaxValue;
-                    EnumsCache<int>.UInt64IsInValueRange = x => x <= int.MaxValue;
-                    EnumsCache<int>.ToSByte = Convert.ToSByte;
-                    EnumsCache<int>.ToByte = Convert.ToByte;
-                    EnumsCache<int>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<int>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<int>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<int>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<int>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<int>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<int>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<int>.TryParseMethod = int.TryParse;
-                    EnumsCache<int>.HexFormatString = "X8";
-                    EnumsCache<int>.Zero = 0;
-                    EnumsCache<int>.One = 1;
-                    EnumsCache<int>.GetHashCodeMethod = x => x;
-                    break;
-                case TypeCode.UInt32:
-                    EnumsCache<uint>.Equal = (x, y) => x == y;
-                    EnumsCache<uint>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<uint>.And = (x, y) => x & y;
-                    EnumsCache<uint>.Or = (x, y) => x | y;
-                    EnumsCache<uint>.Xor = (x, y) => x ^ y;
-                    EnumsCache<uint>.LeftShift = (x, n) => x << n;
-                    //IntegralOperators<uint>.RightShift = (x, n) => x >> n;
-                    EnumsCache<uint>.Add = (x, y) => x + y;
-                    EnumsCache<uint>.Subtract = (x, y) => x - y;
-                    EnumsCache<uint>.FromInt64 = x => (uint)x;
-                    EnumsCache<uint>.FromUInt64 = x => (uint)x;
-                    EnumsCache<uint>.Int64IsInValueRange = x => x >= uint.MinValue && x <= uint.MaxValue;
-                    EnumsCache<uint>.UInt64IsInValueRange = x => x <= uint.MaxValue;
-                    EnumsCache<uint>.ToSByte = Convert.ToSByte;
-                    EnumsCache<uint>.ToByte = Convert.ToByte;
-                    EnumsCache<uint>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<uint>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<uint>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<uint>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<uint>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<uint>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<uint>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<uint>.TryParseMethod = uint.TryParse;
-                    EnumsCache<uint>.HexFormatString = "X8";
-                    EnumsCache<uint>.Zero = 0U;
-                    EnumsCache<uint>.One = 1U;
-                    EnumsCache<uint>.GetHashCodeMethod = x => x.GetHashCode();
-                    break;
-                case TypeCode.Int64:
-                    EnumsCache<long>.Equal = (x, y) => x == y;
-                    EnumsCache<long>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<long>.And = (x, y) => x & y;
-                    EnumsCache<long>.Or = (x, y) => x | y;
-                    EnumsCache<long>.Xor = (x, y) => x ^ y;
-                    EnumsCache<long>.LeftShift = (x, n) => x << n;
-                    //IntegralOperators<long>.RightShift = (x, n) => x >> n;
-                    EnumsCache<long>.Add = (x, y) => x + y;
-                    EnumsCache<long>.Subtract = (x, y) => x - y;
-                    EnumsCache<long>.FromInt64 = x => x;
-                    EnumsCache<long>.FromUInt64 = x => (long)x;
-                    EnumsCache<long>.Int64IsInValueRange = x => true;
-                    EnumsCache<long>.UInt64IsInValueRange = x => x <= long.MaxValue;
-                    EnumsCache<long>.ToSByte = Convert.ToSByte;
-                    EnumsCache<long>.ToByte = Convert.ToByte;
-                    EnumsCache<long>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<long>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<long>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<long>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<long>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<long>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<long>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<long>.TryParseMethod = long.TryParse;
-                    EnumsCache<long>.HexFormatString = "X16";
-                    EnumsCache<long>.Zero = 0L;
-                    EnumsCache<long>.One = 1L;
-                    EnumsCache<long>.GetHashCodeMethod = x => x.GetHashCode();
-                    break;
-                case TypeCode.UInt64:
-                    EnumsCache<ulong>.Equal = (x, y) => x == y;
-                    EnumsCache<ulong>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<ulong>.And = (x, y) => x & y;
-                    EnumsCache<ulong>.Or = (x, y) => x | y;
-                    EnumsCache<ulong>.Xor = (x, y) => x ^ y;
-                    EnumsCache<ulong>.LeftShift = (x, n) => x << n;
-                    //IntegralOperators<ulong>.RightShift = (x, n) => x >> n;
-                    EnumsCache<ulong>.Add = (x, y) => x + y;
-                    EnumsCache<ulong>.Subtract = (x, y) => x - y;
-                    EnumsCache<ulong>.FromInt64 = x => (ulong)x;
-                    EnumsCache<ulong>.FromUInt64 = x => x;
-                    EnumsCache<ulong>.Int64IsInValueRange = x => x >= 0L;
-                    EnumsCache<ulong>.UInt64IsInValueRange = x => true;
-                    EnumsCache<ulong>.ToSByte = Convert.ToSByte;
-                    EnumsCache<ulong>.ToByte = Convert.ToByte;
-                    EnumsCache<ulong>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<ulong>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<ulong>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<ulong>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<ulong>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<ulong>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<ulong>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<ulong>.TryParseMethod = ulong.TryParse;
-                    EnumsCache<ulong>.HexFormatString = "X16";
-                    EnumsCache<ulong>.Zero = 0UL;
-                    EnumsCache<ulong>.One = 1UL;
-                    EnumsCache<ulong>.GetHashCodeMethod = x => x.GetHashCode();
-                    break;
                 case TypeCode.SByte:
-                    EnumsCache<sbyte>.Equal = (x, y) => x == y;
-                    EnumsCache<sbyte>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<sbyte>.And = (x, y) => (sbyte)(x & y);
-                    EnumsCache<sbyte>.Or = (x, y) => (sbyte)(x | y);
-                    EnumsCache<sbyte>.Xor = (x, y) => (sbyte)(x ^ y);
-                    EnumsCache<sbyte>.LeftShift = (x, n) => (sbyte)(x << n);
-                    //IntegralOperators<sbyte>.RightShift = (x, n) => (sbyte)(x >> n);
-                    EnumsCache<sbyte>.Add = (x, y) => (sbyte)(x + y);
-                    EnumsCache<sbyte>.Subtract = (x, y) => (sbyte)(x - y);
-                    EnumsCache<sbyte>.FromInt64 = x => (sbyte)x;
-                    EnumsCache<sbyte>.FromUInt64 = x => (sbyte)x;
-                    EnumsCache<sbyte>.Int64IsInValueRange = x => x >= sbyte.MinValue && x <= sbyte.MaxValue;
-                    EnumsCache<sbyte>.UInt64IsInValueRange = x => x <= (ulong)sbyte.MaxValue;
-                    EnumsCache<sbyte>.ToSByte = Convert.ToSByte;
-                    EnumsCache<sbyte>.ToByte = Convert.ToByte;
-                    EnumsCache<sbyte>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<sbyte>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<sbyte>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<sbyte>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<sbyte>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<sbyte>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<sbyte>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<sbyte>.TryParseMethod = sbyte.TryParse;
-                    EnumsCache<sbyte>.HexFormatString = "X2";
-                    EnumsCache<sbyte>.Zero = 0;
-                    EnumsCache<sbyte>.One = 1;
-                    EnumsCache<sbyte>.GetHashCodeMethod = x => x;
-                    break;
+                    return (Func<sbyte, sbyte, bool>)((a, b) => a == b);
                 case TypeCode.Byte:
-                    EnumsCache<byte>.Equal = (x, y) => x == y;
-                    EnumsCache<byte>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<byte>.And = (x, y) => (byte)(x & y);
-                    EnumsCache<byte>.Or = (x, y) => (byte)(x | y);
-                    EnumsCache<byte>.Xor = (x, y) => (byte)(x ^ y);
-                    EnumsCache<byte>.LeftShift = (x, n) => (byte)(x << n);
-                    //IntegralOperators<byte>.RightShift = (x, n) => (byte)(x >> n);
-                    EnumsCache<byte>.Add = (x, y) => (byte)(x + y);
-                    EnumsCache<byte>.Subtract = (x, y) => (byte)(x - y);
-                    EnumsCache<byte>.FromInt64 = x => (byte)x;
-                    EnumsCache<byte>.FromUInt64 = x => (byte)x;
-                    EnumsCache<byte>.Int64IsInValueRange = x => x >= byte.MinValue && x <= byte.MaxValue;
-                    EnumsCache<byte>.UInt64IsInValueRange = x => x <= byte.MaxValue;
-                    EnumsCache<byte>.ToSByte = Convert.ToSByte;
-                    EnumsCache<byte>.ToByte = Convert.ToByte;
-                    EnumsCache<byte>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<byte>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<byte>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<byte>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<byte>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<byte>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<byte>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<byte>.TryParseMethod = byte.TryParse;
-                    EnumsCache<byte>.HexFormatString = "X2";
-                    EnumsCache<byte>.Zero = 0;
-                    EnumsCache<byte>.One = 1;
-                    EnumsCache<byte>.GetHashCodeMethod = x => x;
-                    break;
+                    return (Func<byte, byte, bool>)((a, b) => a == b);
                 case TypeCode.Int16:
-                    EnumsCache<short>.Equal = (x, y) => x == y;
-                    EnumsCache<short>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<short>.And = (x, y) => (short)(x & y);
-                    EnumsCache<short>.Or = (x, y) => (short)(x | y);
-                    EnumsCache<short>.Xor = (x, y) => (short)(x ^ y);
-                    EnumsCache<short>.LeftShift = (x, n) => (short)(x << n);
-                    //IntegralOperators<short>.RightShift = (x, n) => (short)(x >> n);
-                    EnumsCache<short>.Add = (x, y) => (short)(x + y);
-                    EnumsCache<short>.Subtract = (x, y) => (short)(x - y);
-                    EnumsCache<short>.FromInt64 = x => (short)x;
-                    EnumsCache<short>.FromUInt64 = x => (short)x;
-                    EnumsCache<short>.Int64IsInValueRange = x => x >= short.MinValue && x <= short.MaxValue;
-                    EnumsCache<short>.UInt64IsInValueRange = x => x <= (ulong)short.MaxValue;
-                    EnumsCache<short>.ToSByte = Convert.ToSByte;
-                    EnumsCache<short>.ToByte = Convert.ToByte;
-                    EnumsCache<short>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<short>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<short>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<short>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<short>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<short>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<short>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<short>.TryParseMethod = short.TryParse;
-                    EnumsCache<short>.HexFormatString = "X4";
-                    EnumsCache<short>.Zero = 0;
-                    EnumsCache<short>.One = 1;
-                    EnumsCache<short>.GetHashCodeMethod = x => x;
-                    break;
+                    return (Func<short, short, bool>)((a, b) => a == b);
                 case TypeCode.UInt16:
-                    EnumsCache<ushort>.Equal = (x, y) => x == y;
-                    EnumsCache<ushort>.GreaterThan = (x, y) => x > y;
-                    EnumsCache<ushort>.And = (x, y) => (ushort)(x & y);
-                    EnumsCache<ushort>.Or = (x, y) => (ushort)(x | y);
-                    EnumsCache<ushort>.Xor = (x, y) => (ushort)(x ^ y);
-                    EnumsCache<ushort>.LeftShift = (x, n) => (ushort)(x << n);
-                    //IntegralOperators<ushort>.RightShift = (x, n) => (ushort)(x >> n);
-                    EnumsCache<ushort>.Add = (x, y) => (ushort)(x + y);
-                    EnumsCache<ushort>.Subtract = (x, y) => (ushort)(x - y);
-                    EnumsCache<ushort>.FromInt64 = x => (ushort)x;
-                    EnumsCache<ushort>.FromUInt64 = x => (ushort)x;
-                    EnumsCache<ushort>.Int64IsInValueRange = x => x >= ushort.MinValue && x <= ushort.MaxValue;
-                    EnumsCache<ushort>.UInt64IsInValueRange = x => x <= ushort.MaxValue;
-                    EnumsCache<ushort>.ToSByte = Convert.ToSByte;
-                    EnumsCache<ushort>.ToByte = Convert.ToByte;
-                    EnumsCache<ushort>.ToInt16 = Convert.ToInt16;
-                    EnumsCache<ushort>.ToUInt16 = Convert.ToUInt16;
-                    EnumsCache<ushort>.ToInt32 = Convert.ToInt32;
-                    EnumsCache<ushort>.ToUInt32 = Convert.ToUInt32;
-                    EnumsCache<ushort>.ToInt64 = Convert.ToInt64;
-                    EnumsCache<ushort>.ToUInt64 = Convert.ToUInt64;
-                    EnumsCache<ushort>.ToStringFormat = (x, format) => x.ToString(format);
-                    EnumsCache<ushort>.TryParseMethod = ushort.TryParse;
-                    EnumsCache<ushort>.HexFormatString = "X4";
-                    EnumsCache<ushort>.Zero = 0;
-                    EnumsCache<ushort>.One = 1;
-                    EnumsCache<ushort>.GetHashCodeMethod = x => x;
-                    break;
+                    return (Func<ushort, ushort, bool>)((a, b) => a == b);
+                case TypeCode.Int32:
+                    return (Func<int, int, bool>)((a, b) => a == b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, bool>)((a, b) => a == b);
+                case TypeCode.Int64:
+                    return (Func<long, long, bool>)((a, b) => a == b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, bool>)((a, b) => a == b);
             }
+            return null;
+        }
+
+        internal static Delegate GreaterThan(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte, bool>)((a, b) => a > b);
+                case TypeCode.Byte:
+                    return (Func<byte, byte, bool>)((a, b) => a > b);
+                case TypeCode.Int16:
+                    return (Func<short, short, bool>)((a, b) => a > b);
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort, bool>)((a, b) => a > b);
+                case TypeCode.Int32:
+                    return (Func<int, int, bool>)((a, b) => a > b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, bool>)((a, b) => a > b);
+                case TypeCode.Int64:
+                    return (Func<long, long, bool>)((a, b) => a > b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, bool>)((a, b) => a > b);
+            }
+            return null;
+        }
+
+        internal static Delegate And(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte, sbyte>)((a, b) => (sbyte)(a & b));
+                case TypeCode.Byte:
+                    return (Func<byte, byte, byte>)((a, b) => (byte)(a & b));
+                case TypeCode.Int16:
+                    return (Func<short, short, short>)((a, b) => (short)(a & b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort, ushort>)((a, b) => (ushort)(a & b));
+                case TypeCode.Int32:
+                    return (Func<int, int, int>)((a, b) => a & b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, uint>)((a, b) => a & b);
+                case TypeCode.Int64:
+                    return (Func<long, long, long>)((a, b) => a & b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, ulong>)((a, b) => a & b);
+            }
+            return null;
+        }
+
+        internal static Delegate Or(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte, sbyte>)((a, b) => (sbyte)(a | b));
+                case TypeCode.Byte:
+                    return (Func<byte, byte, byte>)((a, b) => (byte)(a | b));
+                case TypeCode.Int16:
+                    return (Func<short, short, short>)((a, b) => (short)(a | b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort, ushort>)((a, b) => (ushort)(a | b));
+                case TypeCode.Int32:
+                    return (Func<int, int, int>)((a, b) => a | b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, uint>)((a, b) => a | b);
+                case TypeCode.Int64:
+                    return (Func<long, long, long>)((a, b) => a | b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, ulong>)((a, b) => a | b);
+            }
+            return null;
+        }
+
+        internal static Delegate Xor(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte, sbyte>)((a, b) => (sbyte)(a ^ b));
+                case TypeCode.Byte:
+                    return (Func<byte, byte, byte>)((a, b) => (byte)(a ^ b));
+                case TypeCode.Int16:
+                    return (Func<short, short, short>)((a, b) => (short)(a ^ b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort, ushort>)((a, b) => (ushort)(a ^ b));
+                case TypeCode.Int32:
+                    return (Func<int, int, int>)((a, b) => a ^ b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, uint>)((a, b) => a ^ b);
+                case TypeCode.Int64:
+                    return (Func<long, long, long>)((a, b) => a ^ b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, ulong>)((a, b) => a ^ b);
+            }
+            return null;
+        }
+
+        internal static Delegate LeftShift(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, int, sbyte>)((a, b) => (sbyte)(a << b));
+                case TypeCode.Byte:
+                    return (Func<byte, int, byte>)((a, b) => (byte)(a << b));
+                case TypeCode.Int16:
+                    return (Func<short, int, short>)((a, b) => (short)(a << b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, int, ushort>)((a, b) => (ushort)(a << b));
+                case TypeCode.Int32:
+                    return (Func<int, int, int>)((a, b) => a << b);
+                case TypeCode.UInt32:
+                    return (Func<uint, int, uint>)((a, b) => a << b);
+                case TypeCode.Int64:
+                    return (Func<long, int, long>)((a, b) => a << b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, int, ulong>)((a, b) => a << b);
+            }
+            return null;
+        }
+
+        internal static Delegate Add(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte, sbyte>)((a, b) => (sbyte)(a + b));
+                case TypeCode.Byte:
+                    return (Func<byte, byte, byte>)((a, b) => (byte)(a + b));
+                case TypeCode.Int16:
+                    return (Func<short, short, short>)((a, b) => (short)(a + b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort, ushort>)((a, b) => (ushort)(a + b));
+                case TypeCode.Int32:
+                    return (Func<int, int, int>)((a, b) => a + b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, uint>)((a, b) => a + b);
+                case TypeCode.Int64:
+                    return (Func<long, long, long>)((a, b) => a + b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, ulong>)((a, b) => a + b);
+            }
+            return null;
+        }
+
+        internal static Delegate Subtract(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte, sbyte>)((a, b) => (sbyte)(a - b));
+                case TypeCode.Byte:
+                    return (Func<byte, byte, byte>)((a, b) => (byte)(a - b));
+                case TypeCode.Int16:
+                    return (Func<short, short, short>)((a, b) => (short)(a - b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort, ushort>)((a, b) => (ushort)(a - b));
+                case TypeCode.Int32:
+                    return (Func<int, int, int>)((a, b) => a - b);
+                case TypeCode.UInt32:
+                    return (Func<uint, uint, uint>)((a, b) => a - b);
+                case TypeCode.Int64:
+                    return (Func<long, long, long>)((a, b) => a - b);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong, ulong>)((a, b) => a - b);
+            }
+            return null;
+        }
+
+        internal static Delegate FromInt64(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<long, sbyte>)(a => (sbyte)a);
+                case TypeCode.Byte:
+                    return (Func<long, byte>)(a => (byte)a);
+                case TypeCode.Int16:
+                    return (Func<long, short>)(a => (short)a);
+                case TypeCode.UInt16:
+                    return (Func<long, ushort>)(a => (ushort)a);
+                case TypeCode.Int32:
+                    return (Func<long, int>)(a => (int)a);
+                case TypeCode.UInt32:
+                    return (Func<long, uint>)(a => (uint)a);
+                case TypeCode.Int64:
+                    return (Func<long, long>)(a => a);
+                case TypeCode.UInt64:
+                    return (Func<long, ulong>)(a => (ulong)a);
+            }
+            return null;
+        }
+
+        internal static Delegate FromUInt64(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<ulong, sbyte>)(a => (sbyte)a);
+                case TypeCode.Byte:
+                    return (Func<ulong, byte>)(a => (byte)a);
+                case TypeCode.Int16:
+                    return (Func<ulong, short>)(a => (short)a);
+                case TypeCode.UInt16:
+                    return (Func<ulong, ushort>)(a => (ushort)a);
+                case TypeCode.Int32:
+                    return (Func<ulong, int>)(a => (int)a);
+                case TypeCode.UInt32:
+                    return (Func<ulong, uint>)(a => (uint)a);
+                case TypeCode.Int64:
+                    return (Func<ulong, long>)(a => (long)a);
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong>)(a => a);
+            }
+            return null;
+        }
+
+        internal static Delegate Int64IsInValueRange(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<long, bool>)(a => a >= sbyte.MinValue && a <= sbyte.MaxValue);
+                case TypeCode.Byte:
+                    return (Func<long, bool>)(a => a >= byte.MinValue && a <= byte.MaxValue);
+                case TypeCode.Int16:
+                    return (Func<long, bool>)(a => a >= short.MinValue && a <= short.MaxValue);
+                case TypeCode.UInt16:
+                    return (Func<long, bool>)(a => a >= ushort.MinValue && a <= ushort.MaxValue);
+                case TypeCode.Int32:
+                    return (Func<long, bool>)(a => a >= int.MinValue && a <= int.MaxValue);
+                case TypeCode.UInt32:
+                    return (Func<long, bool>)(a => a >= uint.MinValue && a <= uint.MaxValue);
+                case TypeCode.Int64:
+                    return (Func<long, bool>)(a => true);
+                case TypeCode.UInt64:
+                    return (Func<long, bool>)(a => a >= 0L);
+            }
+            return null;
+        }
+
+        internal static Delegate UInt64IsInValueRange(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<ulong, bool>)(a => a <= (ulong)sbyte.MaxValue);
+                case TypeCode.Byte:
+                    return (Func<ulong, bool>)(a => a <= byte.MaxValue);
+                case TypeCode.Int16:
+                    return (Func<ulong, bool>)(a => a <= (ulong)short.MaxValue);
+                case TypeCode.UInt16:
+                    return (Func<ulong, bool>)(a => a <= ushort.MaxValue);
+                case TypeCode.Int32:
+                    return (Func<ulong, bool>)(a => a <= int.MaxValue);
+                case TypeCode.UInt32:
+                    return (Func<ulong, bool>)(a => a <= uint.MaxValue);
+                case TypeCode.Int64:
+                    return (Func<ulong, bool>)(a => a <= long.MaxValue);
+                case TypeCode.UInt64:
+                    return (Func<ulong, bool>)(a => true);
+            }
+            return null;
+        }
+
+        internal static Delegate ToSByte(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, sbyte>)Convert.ToSByte;
+                case TypeCode.Byte:
+                    return (Func<byte, sbyte>)Convert.ToSByte;
+                case TypeCode.Int16:
+                    return (Func<short, sbyte>)Convert.ToSByte;
+                case TypeCode.UInt16:
+                    return (Func<ushort, sbyte>)Convert.ToSByte;
+                case TypeCode.Int32:
+                    return (Func<int, sbyte>)Convert.ToSByte;
+                case TypeCode.UInt32:
+                    return (Func<uint, sbyte>)Convert.ToSByte;
+                case TypeCode.Int64:
+                    return (Func<long, sbyte>)Convert.ToSByte;
+                case TypeCode.UInt64:
+                    return (Func<ulong, sbyte>)Convert.ToSByte;
+            }
+            return null;
+        }
+
+        internal static Delegate ToByte(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, byte>)Convert.ToByte;
+                case TypeCode.Byte:
+                    return (Func<byte, byte>)Convert.ToByte;
+                case TypeCode.Int16:
+                    return (Func<short, byte>)Convert.ToByte;
+                case TypeCode.UInt16:
+                    return (Func<ushort, byte>)Convert.ToByte;
+                case TypeCode.Int32:
+                    return (Func<int, byte>)Convert.ToByte;
+                case TypeCode.UInt32:
+                    return (Func<uint, byte>)Convert.ToByte;
+                case TypeCode.Int64:
+                    return (Func<long, byte>)Convert.ToByte;
+                case TypeCode.UInt64:
+                    return (Func<ulong, byte>)Convert.ToByte;
+            }
+            return null;
+        }
+
+        internal static Delegate ToInt16(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, short>)Convert.ToInt16;
+                case TypeCode.Byte:
+                    return (Func<byte, short>)Convert.ToInt16;
+                case TypeCode.Int16:
+                    return (Func<short, short>)Convert.ToInt16;
+                case TypeCode.UInt16:
+                    return (Func<ushort, short>)Convert.ToInt16;
+                case TypeCode.Int32:
+                    return (Func<int, short>)Convert.ToInt16;
+                case TypeCode.UInt32:
+                    return (Func<uint, short>)Convert.ToInt16;
+                case TypeCode.Int64:
+                    return (Func<long, short>)Convert.ToInt16;
+                case TypeCode.UInt64:
+                    return (Func<ulong, short>)Convert.ToInt16;
+            }
+            return null;
+        }
+
+        internal static Delegate ToUInt16(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, ushort>)Convert.ToUInt16;
+                case TypeCode.Byte:
+                    return (Func<byte, ushort>)Convert.ToUInt16;
+                case TypeCode.Int16:
+                    return (Func<short, ushort>)Convert.ToUInt16;
+                case TypeCode.UInt16:
+                    return (Func<ushort, ushort>)Convert.ToUInt16;
+                case TypeCode.Int32:
+                    return (Func<int, ushort>)Convert.ToUInt16;
+                case TypeCode.UInt32:
+                    return (Func<uint, ushort>)Convert.ToUInt16;
+                case TypeCode.Int64:
+                    return (Func<long, ushort>)Convert.ToUInt16;
+                case TypeCode.UInt64:
+                    return (Func<ulong, ushort>)Convert.ToUInt16;
+            }
+            return null;
+        }
+
+        internal static Delegate ToInt32(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, int>)Convert.ToInt32;
+                case TypeCode.Byte:
+                    return (Func<byte, int>)Convert.ToInt32;
+                case TypeCode.Int16:
+                    return (Func<short, int>)Convert.ToInt32;
+                case TypeCode.UInt16:
+                    return (Func<ushort, int>)Convert.ToInt32;
+                case TypeCode.Int32:
+                    return (Func<int, int>)Convert.ToInt32;
+                case TypeCode.UInt32:
+                    return (Func<uint, int>)Convert.ToInt32;
+                case TypeCode.Int64:
+                    return (Func<long, int>)Convert.ToInt32;
+                case TypeCode.UInt64:
+                    return (Func<ulong, int>)Convert.ToInt32;
+            }
+            return null;
+        }
+
+        internal static Delegate ToUInt32(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, uint>)Convert.ToUInt32;
+                case TypeCode.Byte:
+                    return (Func<byte, uint>)Convert.ToUInt32;
+                case TypeCode.Int16:
+                    return (Func<short, uint>)Convert.ToUInt32;
+                case TypeCode.UInt16:
+                    return (Func<ushort, uint>)Convert.ToUInt32;
+                case TypeCode.Int32:
+                    return (Func<int, uint>)Convert.ToUInt32;
+                case TypeCode.UInt32:
+                    return (Func<uint, uint>)Convert.ToUInt32;
+                case TypeCode.Int64:
+                    return (Func<long, uint>)Convert.ToUInt32;
+                case TypeCode.UInt64:
+                    return (Func<ulong, uint>)Convert.ToUInt32;
+            }
+            return null;
+        }
+
+        internal static Delegate ToInt64(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, long>)Convert.ToInt64;
+                case TypeCode.Byte:
+                    return (Func<byte, long>)Convert.ToInt64;
+                case TypeCode.Int16:
+                    return (Func<short, long>)Convert.ToInt64;
+                case TypeCode.UInt16:
+                    return (Func<ushort, long>)Convert.ToInt64;
+                case TypeCode.Int32:
+                    return (Func<int, long>)Convert.ToInt64;
+                case TypeCode.UInt32:
+                    return (Func<uint, long>)Convert.ToInt64;
+                case TypeCode.Int64:
+                    return (Func<long, long>)Convert.ToInt64;
+                case TypeCode.UInt64:
+                    return (Func<ulong, long>)Convert.ToInt64;
+            }
+            return null;
+        }
+
+        internal static Delegate ToUInt64(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, ulong>)Convert.ToUInt64;
+                case TypeCode.Byte:
+                    return (Func<byte, ulong>)Convert.ToUInt64;
+                case TypeCode.Int16:
+                    return (Func<short, ulong>)Convert.ToUInt64;
+                case TypeCode.UInt16:
+                    return (Func<ushort, ulong>)Convert.ToUInt64;
+                case TypeCode.Int32:
+                    return (Func<int, ulong>)Convert.ToUInt64;
+                case TypeCode.UInt32:
+                    return (Func<uint, ulong>)Convert.ToUInt64;
+                case TypeCode.Int64:
+                    return (Func<long, ulong>)Convert.ToUInt64;
+                case TypeCode.UInt64:
+                    return (Func<ulong, ulong>)Convert.ToUInt64;
+            }
+            return null;
+        }
+
+        internal static Delegate ToStringFormat(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (Func<sbyte, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.Byte:
+                    return (Func<byte, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.Int16:
+                    return (Func<short, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.UInt16:
+                    return (Func<ushort, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.Int32:
+                    return (Func<int, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.UInt32:
+                    return (Func<uint, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.Int64:
+                    return (Func<long, string, string>)((a, b) => a.ToString(b));
+                case TypeCode.UInt64:
+                    return (Func<ulong, string, string>)((a, b) => a.ToString(b));
+            }
+            return null;
+        }
+
+        internal static Delegate TryParseMethod(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (IntegralTryParse<sbyte>)sbyte.TryParse;
+                case TypeCode.Byte:
+                    return (IntegralTryParse<byte>)byte.TryParse;
+                case TypeCode.Int16:
+                    return (IntegralTryParse<short>)short.TryParse;
+                case TypeCode.UInt16:
+                    return (IntegralTryParse<ushort>)ushort.TryParse;
+                case TypeCode.Int32:
+                    return (IntegralTryParse<int>)int.TryParse;
+                case TypeCode.UInt32:
+                    return (IntegralTryParse<uint>)uint.TryParse;
+                case TypeCode.Int64:
+                    return (IntegralTryParse<long>)long.TryParse;
+                case TypeCode.UInt64:
+                    return (IntegralTryParse<ulong>)ulong.TryParse;
+            }
+            return null;
+        }
+
+        internal static string HexFormatString(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                case TypeCode.Byte:
+                    return "X2";
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                    return "X4";
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                    return "X8";
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    return "X16";
+            }
+            return null;
+        }
+
+        internal static object Zero(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (sbyte)0;
+                case TypeCode.Byte:
+                    return (byte)0;
+                case TypeCode.Int16:
+                    return (short)0;
+                case TypeCode.UInt16:
+                    return (ushort)0;
+                case TypeCode.Int32:
+                    return 0;
+                case TypeCode.UInt32:
+                    return 0U;
+                case TypeCode.Int64:
+                    return 0L;
+                case TypeCode.UInt64:
+                    return 0UL;
+            }
+            return null;
+        }
+
+        internal static object One(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return (sbyte)1;
+                case TypeCode.Byte:
+                    return (byte)1;
+                case TypeCode.Int16:
+                    return (short)1;
+                case TypeCode.UInt16:
+                    return (ushort)1;
+                case TypeCode.Int32:
+                    return 1;
+                case TypeCode.UInt32:
+                    return 1U;
+                case TypeCode.Int64:
+                    return 1L;
+                case TypeCode.UInt64:
+                    return 1UL;
+            }
+            return null;
         }
     }
 }
