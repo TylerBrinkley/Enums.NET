@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -107,7 +108,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is an invalid type</exception>
         [Pure]
-        public static object[] GetFlags(Type enumType, object value)
+        public static IEnumerable<object> GetFlags(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
             var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);

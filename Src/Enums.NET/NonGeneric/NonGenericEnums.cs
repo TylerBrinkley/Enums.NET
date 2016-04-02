@@ -1524,7 +1524,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is invalid</exception>
         [Pure]
-        public static Attribute[] GetAttributes(Type enumType, object value)
+        public static IEnumerable<Attribute> GetAttributes(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
             var enumInfo = GetInfo(enumType, isNullable);

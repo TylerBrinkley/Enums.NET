@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace EnumsNET
 {
@@ -28,23 +29,7 @@ namespace EnumsNET
 
         public string Name { get; }
 
-        public Attribute[] Attributes
-        {
-            get
-            {
-                if (!IsDefined)
-                {
-                    return null;
-                }
-                if (_attributes == null)
-                {
-                    return Enums.EmptyAttributes;
-                }
-                var copiedAttributes = new Attribute[_attributes.Length];
-                _attributes.CopyTo(copiedAttributes, 0);
-                return copiedAttributes;
-            }
-        }
+        public IEnumerable<Attribute> Attributes => IsDefined ? new ReadOnlyCollection<Attribute>(_attributes ?? Enums.EmptyAttributes) : null;
 
         public string Description => _attributes != null ? Enums.GetDescription(_attributes) : null;
 

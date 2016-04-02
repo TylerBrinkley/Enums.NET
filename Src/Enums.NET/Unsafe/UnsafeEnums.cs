@@ -1428,7 +1428,7 @@ namespace EnumsNET.Unsafe
         /// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static Attribute[] GetAttributes<TEnum>(TEnum value)
+        public static IEnumerable<Attribute> GetAttributes<TEnum>(TEnum value)
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.GetAttributes(value);

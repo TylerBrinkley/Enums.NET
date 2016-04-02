@@ -210,7 +210,7 @@ namespace EnumsNET
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value)
             where TAttribute : Attribute => _cache.GetAttributes<TAttribute>(_toInt(value));
 
-        public Attribute[] GetAttributes(TEnum value) => _cache.GetAttributes(_toInt(value));
+        public IEnumerable<Attribute> GetAttributes(TEnum value) => _cache.GetAttributes(_toInt(value));
         #endregion
 
         #region Parsing
@@ -238,7 +238,7 @@ namespace EnumsNET
 
         public string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formats) => _cache.FormatAsFlags(_toInt(value), delimiter, formats);
 
-        public TEnum[] GetFlags(TEnum value) => _cache.GetFlags(_toInt(value))?.Select(flag => ToEnum(flag)).ToArray();
+        public IEnumerable<TEnum> GetFlags(TEnum value) => _cache.GetFlags(_toInt(value))?.Select(flag => ToEnum(flag));
 
         public bool HasAnyFlags(TEnum value) => _cache.HasAnyFlags(_toInt(value));
 
@@ -309,7 +309,7 @@ namespace EnumsNET
 
         public string FormatAsFlags(object value, string delimiter, EnumFormat[] formats) => FormatAsFlags(ToObject(value), delimiter, formats);
 
-        public Attribute[] GetAttributes(object value) => GetAttributes(ToObject(value));
+        public IEnumerable<Attribute> GetAttributes(object value) => GetAttributes(ToObject(value));
 
         public string GetDescription(object value) => GetDescription(ToObject(value));
 
@@ -319,7 +319,7 @@ namespace EnumsNET
 
         IEnumerable<EnumMemberInfo> IEnumInfo.GetEnumMemberInfos(bool uniqueValued) => GetEnumMemberInfos(uniqueValued);
 
-        public object[] GetFlags(object value) => GetFlags(ToObject(value)).Select(flag => (object)flag).ToArray();
+        public IEnumerable<object> GetFlags(object value) => GetFlags(ToObject(value)).Select(flag => (object)flag);
 
         public string GetName(object value) => GetName(ToObject(value));
 

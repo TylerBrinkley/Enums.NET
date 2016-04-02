@@ -693,7 +693,7 @@ namespace EnumsNET
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TInt value)
             where TAttribute : Attribute => GetEnumMemberInfo(value).GetAttributes<TAttribute>();
 
-        public Attribute[] GetAttributes(TInt value) => GetEnumMemberInfo(value).Attributes;
+        public IEnumerable<Attribute> GetAttributes(TInt value) => GetEnumMemberInfo(value).Attributes;
         #endregion
 
         #region Parsing

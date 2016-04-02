@@ -23,7 +23,7 @@ namespace EnumsNET
         bool IsDefined { get; }
         object Value { get; }
         string Name { get; }
-        Attribute[] Attributes { get; }
+        IEnumerable<Attribute> Attributes { get; }
         string Description { get; }
         object UnderlyingValue { get; }
 

@@ -1298,7 +1298,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
         [Pure]
-        public static Attribute[] GetAttributes<[EnumConstraint] TEnum>(this TEnum value)
+        public static IEnumerable<Attribute> GetAttributes<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetAttributes(value);
         #endregion
 

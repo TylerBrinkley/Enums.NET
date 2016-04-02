@@ -39,7 +39,7 @@ namespace EnumsNET
         /// <summary>
         /// The defined enum member's attributes
         /// </summary>
-        public Attribute[] Attributes => _info.Attributes;
+        public IEnumerable<Attribute> Attributes => _info.Attributes;
 
         /// <summary>
         /// The defined enum member's <see cref="DescriptionAttribute.Description"/> if applied else null.

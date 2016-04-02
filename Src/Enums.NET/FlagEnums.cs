@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using ExtraConstraints;
 
@@ -99,7 +100,7 @@ namespace EnumsNET
         /// <returns>Array of the flags that compose <paramref name="value"/>.
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         [Pure]
-        public static TEnum[] GetFlags<[EnumConstraint] TEnum>(this TEnum value)
+        public static IEnumerable<TEnum> GetFlags<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetFlags(value);
 
         /// <summary>

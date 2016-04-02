@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace EnumsNET.Unsafe
@@ -113,7 +114,7 @@ namespace EnumsNET.Unsafe
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum[] GetFlags<TEnum>(TEnum value)
+        public static IEnumerable<TEnum> GetFlags<TEnum>(TEnum value)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.GetFlags(value);
