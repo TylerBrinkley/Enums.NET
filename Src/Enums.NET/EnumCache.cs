@@ -28,61 +28,61 @@ using System.Collections.Concurrent;
 
 namespace EnumsNET
 {
-    internal sealed class EnumsCache<TInt>
+    internal sealed class EnumCache<TInt>
         where TInt : struct
     {
         #region Static
-        internal new static readonly Func<TInt, TInt, bool> Equals = (Func<TInt, TInt, bool>)EnumsCache.Equals(typeof(TInt));
+        internal new static readonly Func<TInt, TInt, bool> Equals = (Func<TInt, TInt, bool>)EnumCache.Equals(typeof(TInt));
 
-        internal static readonly Func<TInt, TInt, bool> GreaterThan = (Func<TInt, TInt, bool>)EnumsCache.GreaterThan(typeof(TInt));
+        internal static readonly Func<TInt, TInt, bool> GreaterThan = (Func<TInt, TInt, bool>)EnumCache.GreaterThan(typeof(TInt));
 
-        internal static readonly Func<TInt, TInt, TInt> And = (Func<TInt, TInt, TInt>)EnumsCache.And(typeof(TInt));
+        internal static readonly Func<TInt, TInt, TInt> And = (Func<TInt, TInt, TInt>)EnumCache.And(typeof(TInt));
 
-        internal static readonly Func<TInt, TInt, TInt> Or = (Func<TInt, TInt, TInt>)EnumsCache.Or(typeof(TInt));
+        internal static readonly Func<TInt, TInt, TInt> Or = (Func<TInt, TInt, TInt>)EnumCache.Or(typeof(TInt));
 
-        internal static readonly Func<TInt, TInt, TInt> Xor = (Func<TInt, TInt, TInt>)EnumsCache.Xor(typeof(TInt));
+        internal static readonly Func<TInt, TInt, TInt> Xor = (Func<TInt, TInt, TInt>)EnumCache.Xor(typeof(TInt));
 
-        internal static readonly Func<TInt, int, TInt> LeftShift = (Func<TInt, int, TInt>)EnumsCache.LeftShift(typeof(TInt));
+        internal static readonly Func<TInt, int, TInt> LeftShift = (Func<TInt, int, TInt>)EnumCache.LeftShift(typeof(TInt));
 
-        internal static readonly Func<TInt, TInt, TInt> Add = (Func<TInt, TInt, TInt>)EnumsCache.Add(typeof(TInt));
+        internal static readonly Func<TInt, TInt, TInt> Add = (Func<TInt, TInt, TInt>)EnumCache.Add(typeof(TInt));
 
-        internal static readonly Func<TInt, TInt, TInt> Subtract = (Func<TInt, TInt, TInt>)EnumsCache.Subtract(typeof(TInt));
+        internal static readonly Func<TInt, TInt, TInt> Subtract = (Func<TInt, TInt, TInt>)EnumCache.Subtract(typeof(TInt));
 
         internal static bool IsPowerOfTwo(TInt x) => Equals(And(x, Subtract(x, One)), Zero);
 
-        internal static readonly Func<long, TInt> FromInt64 = (Func<long, TInt>)EnumsCache.FromInt64(typeof(TInt));
+        internal static readonly Func<long, TInt> FromInt64 = (Func<long, TInt>)EnumCache.FromInt64(typeof(TInt));
 
-        internal static readonly Func<ulong, TInt> FromUInt64 = (Func<ulong, TInt>)EnumsCache.FromUInt64(typeof(TInt));
+        internal static readonly Func<ulong, TInt> FromUInt64 = (Func<ulong, TInt>)EnumCache.FromUInt64(typeof(TInt));
 
-        internal static readonly Func<long, bool> Int64IsInValueRange = (Func<long, bool>)EnumsCache.Int64IsInValueRange(typeof(TInt));
+        internal static readonly Func<long, bool> Int64IsInValueRange = EnumCache.Int64IsInValueRange(typeof(TInt));
 
-        internal static readonly Func<ulong, bool> UInt64IsInValueRange = (Func<ulong, bool>)EnumsCache.UInt64IsInValueRange(typeof(TInt));
+        internal static readonly Func<ulong, bool> UInt64IsInValueRange = EnumCache.UInt64IsInValueRange(typeof(TInt));
 
-        internal static readonly Func<TInt, sbyte> ToSByte = (Func<TInt, sbyte>)EnumsCache.ToSByte(typeof(TInt));
+        internal static readonly Func<TInt, sbyte> ToSByte = (Func<TInt, sbyte>)EnumCache.ToSByte(typeof(TInt));
 
-        internal static readonly Func<TInt, byte> ToByte = (Func<TInt, byte>)EnumsCache.ToByte(typeof(TInt));
+        internal static readonly Func<TInt, byte> ToByte = (Func<TInt, byte>)EnumCache.ToByte(typeof(TInt));
 
-        internal static readonly Func<TInt, short> ToInt16 = (Func<TInt, short>)EnumsCache.ToInt16(typeof(TInt));
+        internal static readonly Func<TInt, short> ToInt16 = (Func<TInt, short>)EnumCache.ToInt16(typeof(TInt));
 
-        internal static readonly Func<TInt, ushort> ToUInt16 = (Func<TInt, ushort>)EnumsCache.ToUInt16(typeof(TInt));
+        internal static readonly Func<TInt, ushort> ToUInt16 = (Func<TInt, ushort>)EnumCache.ToUInt16(typeof(TInt));
 
-        internal static readonly Func<TInt, int> ToInt32 = (Func<TInt, int>)EnumsCache.ToInt32(typeof(TInt));
+        internal static readonly Func<TInt, int> ToInt32 = (Func<TInt, int>)EnumCache.ToInt32(typeof(TInt));
 
-        internal static readonly Func<TInt, uint> ToUInt32 = (Func<TInt, uint>)EnumsCache.ToUInt32(typeof(TInt));
+        internal static readonly Func<TInt, uint> ToUInt32 = (Func<TInt, uint>)EnumCache.ToUInt32(typeof(TInt));
 
-        internal static readonly Func<TInt, long> ToInt64 = (Func<TInt, long>)EnumsCache.ToInt64(typeof(TInt));
+        internal static readonly Func<TInt, long> ToInt64 = (Func<TInt, long>)EnumCache.ToInt64(typeof(TInt));
 
-        internal static readonly Func<TInt, ulong> ToUInt64 = (Func<TInt, ulong>)EnumsCache.ToUInt64(typeof(TInt));
+        internal static readonly Func<TInt, ulong> ToUInt64 = (Func<TInt, ulong>)EnumCache.ToUInt64(typeof(TInt));
 
-        internal static readonly Func<TInt, string, string> ToStringFormat = (Func<TInt, string, string>)EnumsCache.ToStringFormat(typeof(TInt));
+        internal static readonly Func<TInt, string, string> ToStringFormat = (Func<TInt, string, string>)EnumCache.ToStringFormat(typeof(TInt));
 
-        internal static readonly IntegralTryParse<TInt> TryParseMethod = (IntegralTryParse<TInt>)EnumsCache.TryParseMethod(typeof(TInt));
+        internal static readonly IntegralTryParse<TInt> TryParseMethod = (IntegralTryParse<TInt>)EnumCache.TryParseMethod(typeof(TInt));
 
-        internal static readonly string HexFormatString = EnumsCache.HexFormatString(typeof(TInt));
+        internal static readonly string HexFormatString = EnumCache.HexFormatString(typeof(TInt));
 
-        internal static readonly TInt Zero = (TInt)EnumsCache.Zero(typeof(TInt));
+        internal static readonly TInt Zero = (TInt)EnumCache.Zero(typeof(TInt));
 
-        internal static readonly TInt One = (TInt)EnumsCache.One(typeof(TInt));
+        internal static readonly TInt One = (TInt)EnumCache.One(typeof(TInt));
 
         internal static readonly TypeCode TypeCode = Type.GetTypeCode(typeof(TInt));
 
@@ -147,7 +147,7 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumsCache(Type enumType, Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>> getCustomFormatter)
+        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>> getCustomFormatter)
         {
             Debug.Assert(enumType != null);
             Debug.Assert(enumType.IsEnum);
@@ -1105,7 +1105,7 @@ namespace EnumsNET
                 }
             }
 
-            public EnumParser(Func<InternalEnumMemberInfo<TInt>, string> formatter, EnumsCache<TInt> enumsCache)
+            public EnumParser(Func<InternalEnumMemberInfo<TInt>, string> formatter, EnumCache<TInt> enumsCache)
             {
                 _formatValueMap = new Dictionary<string, TInt>(enumsCache.GetDefinedCount(false));
                 foreach (var info in enumsCache.GetEnumMemberInfos(false))
@@ -1125,7 +1125,7 @@ namespace EnumsNET
 
     internal delegate bool IntegralTryParse<TInt>(string value, NumberStyles styles, IFormatProvider provider, out TInt result);
 
-    internal static class EnumsCache
+    internal static class EnumCache
     {
         internal static Delegate Equals(Type type)
         {
@@ -1367,50 +1367,50 @@ namespace EnumsNET
             return null;
         }
 
-        internal static Delegate Int64IsInValueRange(Type type)
+        internal static Func<long, bool> Int64IsInValueRange(Type type)
         {
             switch (Type.GetTypeCode(type))
             {
                 case TypeCode.SByte:
-                    return (Func<long, bool>)(a => a >= sbyte.MinValue && a <= sbyte.MaxValue);
+                    return a => a >= sbyte.MinValue && a <= sbyte.MaxValue;
                 case TypeCode.Byte:
-                    return (Func<long, bool>)(a => a >= byte.MinValue && a <= byte.MaxValue);
+                    return a => a >= byte.MinValue && a <= byte.MaxValue;
                 case TypeCode.Int16:
-                    return (Func<long, bool>)(a => a >= short.MinValue && a <= short.MaxValue);
+                    return a => a >= short.MinValue && a <= short.MaxValue;
                 case TypeCode.UInt16:
-                    return (Func<long, bool>)(a => a >= ushort.MinValue && a <= ushort.MaxValue);
+                    return a => a >= ushort.MinValue && a <= ushort.MaxValue;
                 case TypeCode.Int32:
-                    return (Func<long, bool>)(a => a >= int.MinValue && a <= int.MaxValue);
+                    return a => a >= int.MinValue && a <= int.MaxValue;
                 case TypeCode.UInt32:
-                    return (Func<long, bool>)(a => a >= uint.MinValue && a <= uint.MaxValue);
+                    return a => a >= uint.MinValue && a <= uint.MaxValue;
                 case TypeCode.Int64:
-                    return (Func<long, bool>)(a => true);
+                    return a => true;
                 case TypeCode.UInt64:
-                    return (Func<long, bool>)(a => a >= 0L);
+                    return a => a >= 0L;
             }
             return null;
         }
 
-        internal static Delegate UInt64IsInValueRange(Type type)
+        internal static Func<ulong, bool> UInt64IsInValueRange(Type type)
         {
             switch (Type.GetTypeCode(type))
             {
                 case TypeCode.SByte:
-                    return (Func<ulong, bool>)(a => a <= (ulong)sbyte.MaxValue);
+                    return a => a <= (ulong)sbyte.MaxValue;
                 case TypeCode.Byte:
-                    return (Func<ulong, bool>)(a => a <= byte.MaxValue);
+                    return a => a <= byte.MaxValue;
                 case TypeCode.Int16:
-                    return (Func<ulong, bool>)(a => a <= (ulong)short.MaxValue);
+                    return a => a <= (ulong)short.MaxValue;
                 case TypeCode.UInt16:
-                    return (Func<ulong, bool>)(a => a <= ushort.MaxValue);
+                    return a => a <= ushort.MaxValue;
                 case TypeCode.Int32:
-                    return (Func<ulong, bool>)(a => a <= int.MaxValue);
+                    return a => a <= int.MaxValue;
                 case TypeCode.UInt32:
-                    return (Func<ulong, bool>)(a => a <= uint.MaxValue);
+                    return a => a <= uint.MaxValue;
                 case TypeCode.Int64:
-                    return (Func<ulong, bool>)(a => a <= long.MaxValue);
+                    return a => a <= long.MaxValue;
                 case TypeCode.UInt64:
-                    return (Func<ulong, bool>)(a => true);
+                    return a => true;
             }
             return null;
         }

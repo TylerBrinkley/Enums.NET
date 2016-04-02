@@ -22,7 +22,7 @@ namespace EnumsNET
     /// <summary>
     /// Represents an enum member's Name, Value, and Attributes
     /// </summary>
-    public abstract class EnumMemberInfo : IEnumMemberInfo, IComparable<EnumMemberInfo>
+    public abstract class EnumMemberInfo : IEnumMemberInfo, IComparable<EnumMemberInfo>, IEquatable<EnumMemberInfo>
     {
         internal readonly IEnumMemberInfo _info;
 
@@ -257,6 +257,8 @@ namespace EnumsNET
         /// <returns></returns>
         public sealed override int GetHashCode() => _info.GetHashCode();
 
+        public abstract bool Equals(EnumMemberInfo info);
+
         internal abstract object GetValue();
 
         #region Explicit Interface Implementation
@@ -306,7 +308,7 @@ namespace EnumsNET
     /// Represents a <typeparamref name="TEnum"/> member's Name, Value, and Attributes
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public abstract class EnumMemberInfo<TEnum> : EnumMemberInfo, IComparable<EnumMemberInfo<TEnum>>
+    public abstract class EnumMemberInfo<TEnum> : EnumMemberInfo, IComparable<EnumMemberInfo<TEnum>>, IEquatable<EnumMemberInfo<TEnum>>
     {
         /// <summary>
         /// The defined enum member's value
@@ -318,6 +320,8 @@ namespace EnumsNET
         {
         }
 
+        public abstract bool Equals(EnumMemberInfo<TEnum> info);
+
         internal abstract TEnum GetGenericValue();
 
         internal sealed override object GetValue() => GetGenericValue();
@@ -327,7 +331,11 @@ namespace EnumsNET
         #endregion
     }
 
+    // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+    // Handled in base class
+#pragma warning disable CS0659
     internal sealed class EnumMemberInfo<TEnum, TInt> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>
+#pragma warning restore CS0659
         where TInt : struct
     {
         private new InternalEnumMemberInfo<TInt> _info;
@@ -337,6 +345,12 @@ namespace EnumsNET
         {
             _info = info;
         }
+
+        public override bool Equals(EnumMemberInfo<TEnum> info) => Equals((EnumMemberInfo)info);
+
+        public override bool Equals(EnumMemberInfo info) => info != null && EnumCache<TInt>.Equals(_info.Value, ((EnumMemberInfo<TEnum, TInt>)info)._info.Value) && Name == info.Name;
+
+        public override bool Equals(object obj) => Equals(obj as EnumMemberInfo);
 
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt>.ToEnum(_info.Value);
 

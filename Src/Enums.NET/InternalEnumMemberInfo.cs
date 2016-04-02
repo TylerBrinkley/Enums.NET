@@ -22,7 +22,7 @@ namespace EnumsNET
         where TInt : struct
     {
         private readonly Attribute[] _attributes;
-        private readonly EnumsCache<TInt> _enumsCache;
+        private readonly EnumCache<TInt> _enumsCache;
 
         public TInt Value { get; }
 
@@ -50,7 +50,7 @@ namespace EnumsNET
 
         public bool IsDefined => Name != null;
 
-        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumsCache<TInt> enumsCache)
+        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumCache<TInt> enumsCache)
         {
             Value = value;
             Name = name;
@@ -125,30 +125,30 @@ namespace EnumsNET
             return _enumsCache.InternalFormat(this, formats);
         }
 
-        public sbyte ToSByte() => EnumsCache<TInt>.ToSByte(Value);
+        public sbyte ToSByte() => EnumCache<TInt>.ToSByte(Value);
 
-        public byte ToByte() => EnumsCache<TInt>.ToByte(Value);
+        public byte ToByte() => EnumCache<TInt>.ToByte(Value);
 
-        public short ToInt16() => EnumsCache<TInt>.ToInt16(Value);
+        public short ToInt16() => EnumCache<TInt>.ToInt16(Value);
 
-        public ushort ToUInt16() => EnumsCache<TInt>.ToUInt16(Value);
+        public ushort ToUInt16() => EnumCache<TInt>.ToUInt16(Value);
 
-        public int ToInt32() => EnumsCache<TInt>.ToInt32(Value);
+        public int ToInt32() => EnumCache<TInt>.ToInt32(Value);
 
-        public uint ToUInt32() => EnumsCache<TInt>.ToUInt32(Value);
+        public uint ToUInt32() => EnumCache<TInt>.ToUInt32(Value);
 
-        public long ToInt64() => EnumsCache<TInt>.ToInt64(Value);
+        public long ToInt64() => EnumCache<TInt>.ToInt64(Value);
 
-        public ulong ToUInt64() => EnumsCache<TInt>.ToUInt64(Value);
+        public ulong ToUInt64() => EnumCache<TInt>.ToUInt64(Value);
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public int CompareTo(InternalEnumMemberInfo<TInt> obj) => EnumsCache<TInt>.Compare(Value, obj.Value);
+        public int CompareTo(InternalEnumMemberInfo<TInt> obj) => EnumCache<TInt>.Compare(Value, obj.Value);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
-        TypeCode IConvertible.GetTypeCode() => EnumsCache<TInt>.TypeCode;
+        TypeCode IConvertible.GetTypeCode() => EnumCache<TInt>.TypeCode;
 
         bool IConvertible.ToBoolean(IFormatProvider provider) => Convert.ToBoolean(Value);
 

@@ -40,7 +40,7 @@
     <Compile Include="EnumInfo.cs" />
     <Compile Include="EnumMemberInfo.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="EnumsCache.cs" />
+    <Compile Include="EnumCache.cs" />
     <Compile Include="FlagEnums.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="IEnumInfo.cs" />
