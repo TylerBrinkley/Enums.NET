@@ -257,7 +257,19 @@ namespace EnumsNET
         /// <returns></returns>
         public sealed override int GetHashCode() => _info.GetHashCode();
 
+        /// <summary>
+        /// Determines whether the specified <see cref="EnumMemberInfo"/> is equal to the current <see cref="EnumMemberInfo"/>.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
         public abstract bool Equals(EnumMemberInfo info);
+
+        /// <summary>
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public sealed override bool Equals(object obj) => Equals(obj as EnumMemberInfo);
 
         internal abstract object GetValue();
 
@@ -320,6 +332,11 @@ namespace EnumsNET
         {
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="EnumMemberInfo{TEnum}"/> is equal to the current <see cref="EnumMemberInfo{TEnum}"/>
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
         public abstract bool Equals(EnumMemberInfo<TEnum> info);
 
         internal abstract TEnum GetGenericValue();
@@ -346,11 +363,9 @@ namespace EnumsNET
             _info = info;
         }
 
-        public override bool Equals(EnumMemberInfo<TEnum> info) => Equals((EnumMemberInfo)info);
+        public override bool Equals(EnumMemberInfo<TEnum> info) => info != null && EnumCache<TInt>.Equals(_info.Value, ((EnumMemberInfo<TEnum, TInt>)info)._info.Value) && Name == info.Name;
 
-        public override bool Equals(EnumMemberInfo info) => info != null && EnumCache<TInt>.Equals(_info.Value, ((EnumMemberInfo<TEnum, TInt>)info)._info.Value) && Name == info.Name;
-
-        public override bool Equals(object obj) => Equals(obj as EnumMemberInfo);
+        public override bool Equals(EnumMemberInfo info) => Equals(info as EnumMemberInfo<TEnum>);
 
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt>.ToEnum(_info.Value);
 

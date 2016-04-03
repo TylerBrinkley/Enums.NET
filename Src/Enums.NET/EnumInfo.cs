@@ -38,10 +38,6 @@ namespace EnumsNET
     internal class EnumInfo<TEnum, TInt> : IEnumInfo<TEnum>
         where TInt : struct
     {
-        private static readonly TypeCode _typeCode = Type.GetTypeCode(typeof(TInt));
-
-        private static readonly Type _underlyingType = typeof(TInt);
-
         private static int _lastCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMemberInfo<TEnum>, string>> _customEnumFormatters;
@@ -54,9 +50,9 @@ namespace EnumsNET
 
         #region Enums
         #region Properties
-        public TypeCode TypeCode => _typeCode;
+        public TypeCode TypeCode => Type.GetTypeCode(typeof(TInt));
 
-        public Type UnderlyingType => _underlyingType;
+        public Type UnderlyingType => typeof(TInt);
 
         public bool IsContiguous => Cache.IsContiguous;
         #endregion
@@ -102,7 +98,7 @@ namespace EnumsNET
         #endregion
 
         #region ToObject
-        public TEnum ToObject(object value, bool validate = false) => ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(object value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
         public TEnum ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 

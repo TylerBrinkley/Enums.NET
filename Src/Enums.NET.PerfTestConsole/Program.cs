@@ -21,22 +21,23 @@ namespace EnumsNET.PerfTestConsole
             }
             Console.WriteLine(enumTypes.Count);
 
-            const int iterations = 100000000;
+            const int iterations = 10000000;
 
             var dayOfWeekType = typeof(DayOfWeek);
+            var dayOfWeekArray = new DayOfWeek[14];
+            var dayOfWeekObjectArray = new object[dayOfWeekArray.Length];
+            for (var i = 0; i < dayOfWeekArray.Length; ++i)
+            {
+                dayOfWeekObjectArray[i] = dayOfWeekArray[i] = (DayOfWeek)i;
+            }
             using (new OperationTimer("Enum.IsDefined Performance"))
             {
                 for (var i = 0; i < iterations; ++i)
                 {
-                    Enum.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
-                }
-            }
-
-            using (new OperationTimer("NonGenericEnums.IsDefined Performance"))
-            {
-                for (var i = 0; i < iterations; ++i)
-                {
-                    NonGenericEnums.IsDefined(dayOfWeekType, (DayOfWeek)(i % 14));
+                    for (var j = 0; j < dayOfWeekArray.Length; ++j)
+                    {
+                        Enum.IsDefined(dayOfWeekType, dayOfWeekArray[j]);
+                    }
                 }
             }
 
@@ -44,7 +45,32 @@ namespace EnumsNET.PerfTestConsole
             {
                 for (var i = 0; i < iterations; ++i)
                 {
-                    ((DayOfWeek)(i % 14)).IsDefined();
+                    for (var j = 0; j < dayOfWeekArray.Length; ++j)
+                    {
+                        dayOfWeekArray[j].IsDefined();
+                    }
+                }
+            }
+
+            using (new OperationTimer("Enum.IsDefined Performance"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    for (var j = 0; j < dayOfWeekObjectArray.Length; ++j)
+                    {
+                        Enum.IsDefined(dayOfWeekType, dayOfWeekObjectArray[j]);
+                    }
+                }
+            }
+
+            using (new OperationTimer("NonGenericEnums.IsDefined Performance"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    for (var j = 0; j < dayOfWeekObjectArray.Length; ++j)
+                    {
+                        NonGenericEnums.IsDefined(dayOfWeekType, dayOfWeekObjectArray[j]);
+                    }
                 }
             }
 

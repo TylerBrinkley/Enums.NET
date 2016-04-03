@@ -7,10 +7,6 @@ namespace EnumsNET.NonGeneric
     internal class NonGenericEnumInfo<TEnum, TInt> : IEnumInfo
         where TInt : struct
     {
-        private static readonly TypeCode _typeCode = Type.GetTypeCode(typeof(TInt));
-
-        private static readonly Type _underlyingType = typeof(TInt);
-
         private static readonly EnumCache<TInt> Cache = EnumInfo<TEnum, TInt>.Cache;
 
         private static readonly Func<TEnum, TInt> ToInt = EnumInfo<TEnum, TInt>.ToInt;
@@ -18,9 +14,9 @@ namespace EnumsNET.NonGeneric
         private static readonly Func<TInt, TEnum> ToEnum = EnumInfo<TEnum, TInt>.ToEnum;
 
         #region Properties
-        public TypeCode TypeCode => _typeCode;
+        public TypeCode TypeCode => Type.GetTypeCode(typeof(TInt));
 
-        public Type UnderlyingType => _underlyingType;
+        public Type UnderlyingType => typeof(TInt);
 
         public bool IsContiguous => Cache.IsContiguous;
 
