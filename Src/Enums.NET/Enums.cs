@@ -1484,7 +1484,7 @@ namespace EnumsNET
         #region Internal Methods
         private static Type _openEnumInfoType = typeof(EnumInfo<,>);
 
-        internal static IEnumInfo InitializeEnumInfo(Type enumType) => (IEnumInfo)Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, Enum.GetUnderlyingType(enumType)));
+        internal static object InitializeEnumInfo(Type enumType) => Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, Enum.GetUnderlyingType(enumType)));
 
         internal static string GetDescription(Attribute[] attributes) => attributes.Length > 0 ? (attributes[0] as DescriptionAttribute)?.Description : null;
 

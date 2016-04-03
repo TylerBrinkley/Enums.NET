@@ -10,11 +10,13 @@ namespace EnumsNET.PerfTestConsole
         static void Main(string[] args)
         {
             var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
+            var methodInfo = typeof(Enums).GetMethod("IsContiguous");
             using (new OperationTimer("All Available Enums Caching Performance"))
             {
                 foreach (var enumType in enumTypes)
                 {
-                    NonGenericEnums.IsContiguous(enumType);
+                    methodInfo.MakeGenericMethod(enumType).Invoke(null, null);
+                    //NonGenericEnums.IsContiguous(enumType);
                 }
             }
             Console.WriteLine(enumTypes.Count);

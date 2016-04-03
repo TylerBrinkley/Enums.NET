@@ -18,7 +18,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using System.Reflection;
 
 namespace EnumsNET.NonGeneric
 {
@@ -62,7 +61,7 @@ namespace EnumsNET.NonGeneric
             if (!_enumInfosDictionary.TryGetValue(enumType, out enumInfo))
             {
                 var underlyingType = Enum.GetUnderlyingType(enumType);
-                enumInfo = (IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+                enumInfo = (IEnumInfo)Activator.CreateInstance(typeof(NonGenericEnumInfo<,>).MakeGenericType(enumType, underlyingType));
 #if NET20 || NET35
                 _enumInfosDictionary.Add(enumType, enumInfo);
 #else

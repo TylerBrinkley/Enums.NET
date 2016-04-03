@@ -18,13 +18,29 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal interface IEnumInfo
+    internal interface ICommonEnumInfo
     {
         TypeCode TypeCode { get; }
         Type UnderlyingType { get; }
-        object AllFlags { get; }
         bool IsContiguous { get; }
         bool IsFlagEnum { get; }
+
+        int GetDefinedCount(bool uniqueValued);
+        IEnumerable<string> GetNames(bool uniqueValued);
+        bool IsDefined(object value);
+        bool IsDefined(ulong value);
+        bool IsDefined(long value);
+        bool IsDefined(string name, bool ignoreCase);
+        bool IsInValueRange(ulong value);
+        bool IsInValueRange(long value);
+        bool IsValid(ulong value);
+        bool IsValid(object value);
+        bool IsValid(long value);
+    }
+
+    internal interface IEnumInfo : ICommonEnumInfo
+    {
+        object AllFlags { get; }
 
         string AsString(object value);
         string AsString(object value, string format);
@@ -40,29 +56,18 @@ namespace EnumsNET
         string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string FormatAsFlags(object value, string delimiter, EnumFormat[] formats);
         IEnumerable<Attribute> GetAttributes(object value);
-        int GetDefinedCount(bool uniqueValued);
         string GetDescription(object value);
         EnumMemberInfo GetEnumMemberInfo(object value);
         EnumMemberInfo GetEnumMemberInfo(string name, bool ignoreCase);
         IEnumerable<EnumMemberInfo> GetEnumMemberInfos(bool uniqueValued);
         IEnumerable<object> GetFlags(object value);
         string GetName(object value);
-        IEnumerable<string> GetNames(bool uniqueValued);
         object GetUnderlyingValue(object value);
         IEnumerable<object> GetValues(bool uniqueValued);
         bool HasAllFlags(object value);
         bool HasAllFlags(object value, object flagMask);
         bool HasAnyFlags(object value);
         bool HasAnyFlags(object value, object flagMask);
-        bool IsDefined(object value);
-        bool IsDefined(ulong value);
-        bool IsDefined(long value);
-        bool IsDefined(string name, bool ignoreCase);
-        bool IsInValueRange(ulong value);
-        bool IsInValueRange(long value);
-        bool IsValid(ulong value);
-        bool IsValid(object value);
-        bool IsValid(long value);
         bool IsValidFlagCombination(object value);
         object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         object Parse(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
@@ -90,9 +95,9 @@ namespace EnumsNET
         object Validate(object value, string paramName);
     }
 
-    internal interface IEnumInfo<TEnum> : IEnumInfo
+    internal interface IEnumInfo<TEnum> : ICommonEnumInfo
     {
-        new TEnum AllFlags { get; }
+        TEnum AllFlags { get; }
 
         string AsString(TEnum value);
         string AsString(TEnum value, string format);
@@ -113,13 +118,13 @@ namespace EnumsNET
         TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue) where TAttribute : Attribute;
         string GetDescription(TEnum value);
         EnumMemberInfo<TEnum> GetEnumMemberInfo(TEnum value);
-        new EnumMemberInfo<TEnum> GetEnumMemberInfo(string name, bool ignoreCase);
-        new IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos(bool uniqueValued);
+        EnumMemberInfo<TEnum> GetEnumMemberInfo(string name, bool ignoreCase);
+        IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos(bool uniqueValued);
         IEnumerable<TEnum> GetFlags(TEnum value);
         int GetHashCode(TEnum value);
         string GetName(TEnum value);
         object GetUnderlyingValue(TEnum value);
-        new IEnumerable<TEnum> GetValues(bool uniqueValued);
+        IEnumerable<TEnum> GetValues(bool uniqueValued);
         bool HasAllFlags(TEnum value);
         bool HasAllFlags(TEnum value, TEnum flagMask);
         bool HasAnyFlags(TEnum value);
@@ -127,8 +132,8 @@ namespace EnumsNET
         bool IsDefined(TEnum value);
         bool IsValid(TEnum value);
         bool IsValidFlagCombination(TEnum value);
-        new TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
-        new TEnum Parse(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
+        TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
+        TEnum Parse(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo<TEnum>, string> formatter);
         TEnum SetFlags(TEnum[] flags);
         TEnum SetFlags(TEnum flag0, TEnum flag1);
@@ -141,9 +146,9 @@ namespace EnumsNET
         short ToInt16(TEnum value);
         int ToInt32(TEnum value);
         long ToInt64(TEnum value);
-        new TEnum ToObject(ulong value, bool validate);
-        new TEnum ToObject(object value, bool validate);
-        new TEnum ToObject(long value, bool validate);
+        TEnum ToObject(ulong value, bool validate);
+        TEnum ToObject(object value, bool validate);
+        TEnum ToObject(long value, bool validate);
         sbyte ToSByte(TEnum value);
         ushort ToUInt16(TEnum value);
         uint ToUInt32(TEnum value);
