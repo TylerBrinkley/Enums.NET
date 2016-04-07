@@ -271,7 +271,7 @@ namespace EnumsNET.Unsafe
         public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3);
+            return Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3, flag4);
         }
 
         [Pure]

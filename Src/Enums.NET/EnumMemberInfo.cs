@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
@@ -262,16 +263,18 @@ namespace EnumsNET
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public abstract bool Equals(EnumMemberInfo info);
+        public bool Equals(EnumMemberInfo info) => EqualsMethod(info);
 
         /// <summary>
         /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public sealed override bool Equals(object obj) => Equals(obj as EnumMemberInfo);
+        public sealed override bool Equals(object obj) => EqualsMethod(obj as EnumMemberInfo);
 
         internal abstract object GetValue();
+
+        internal abstract bool EqualsMethod(EnumMemberInfo info);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => _info.ToString(format, formatProvider);
@@ -312,7 +315,7 @@ namespace EnumsNET
 
         int IComparable.CompareTo(object obj) => _info.CompareTo((obj as EnumMemberInfo)?._info);
 
-        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(other?._info);
+        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => 0;
         #endregion
     }
 
@@ -337,42 +340,41 @@ namespace EnumsNET
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>
-        public abstract bool Equals(EnumMemberInfo<TEnum> info);
+        public bool Equals(EnumMemberInfo<TEnum> info) => GenericEqualsMethod(info);
 
         internal abstract TEnum GetGenericValue();
 
+        internal abstract bool GenericEqualsMethod(EnumMemberInfo<TEnum> info);
+
         internal sealed override object GetValue() => GetGenericValue();
 
+        internal sealed override bool EqualsMethod(EnumMemberInfo info) => GenericEqualsMethod(info as EnumMemberInfo<TEnum>);
+
         #region Explicit Interface Implementation
-        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(other?._info);
+        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => 0;
         #endregion
     }
 
-    // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-    // Handled in base class
-#pragma warning disable CS0659
-    internal sealed class EnumMemberInfo<TEnum, TInt> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>
-#pragma warning restore CS0659
-        where TInt : struct
+    internal sealed class EnumMemberInfo<TEnum, TInt, TIntProvider> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>
+        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TIntProvider : struct, INumericProvider<TInt>
     {
-        private new InternalEnumMemberInfo<TInt> _info;
+        private new InternalEnumMemberInfo<TInt, TIntProvider> _info;
 
-        internal EnumMemberInfo(InternalEnumMemberInfo<TInt> info)
+        internal EnumMemberInfo(InternalEnumMemberInfo<TInt, TIntProvider> info)
             : base(info)
         {
             _info = info;
         }
 
-        public override bool Equals(EnumMemberInfo<TEnum> info) => info != null && EnumCache<TInt>.Equals(_info.Value, ((EnumMemberInfo<TEnum, TInt>)info)._info.Value) && Name == info.Name;
+        internal override bool GenericEqualsMethod(EnumMemberInfo<TEnum> info) => info != null && _info.Value.Equals(((EnumMemberInfo<TEnum, TInt, TIntProvider>)info)._info.Value) && Name == info.Name;
 
-        public override bool Equals(EnumMemberInfo info) => Equals(info as EnumMemberInfo<TEnum>);
-
-        internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt>.ToEnum(_info.Value);
+        internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(_info.Value);
 
         #region Explicit Interface Implementation
-        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt>)other)._info);
+        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt, TIntProvider>)other)._info);
 
-        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt>)other)._info);
+        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt, TIntProvider>)other)._info);
         #endregion
     }
 }

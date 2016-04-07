@@ -16,14 +16,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TInt> : IEnumMemberInfo, IComparable<InternalEnumMemberInfo<TInt>>
-        where TInt : struct
+    internal struct InternalEnumMemberInfo<TInt, TIntProvider> : IEnumMemberInfo, IComparable<InternalEnumMemberInfo<TInt, TIntProvider>>
+        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TIntProvider : struct, INumericProvider<TInt>
     {
         private readonly Attribute[] _attributes;
-        private readonly EnumCache<TInt> _enumsCache;
+        private readonly EnumCache<TInt, TIntProvider> _enumsCache;
 
         public TInt Value { get; }
 
@@ -35,7 +37,7 @@ namespace EnumsNET
 
         public bool IsDefined => Name != null;
 
-        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumCache<TInt> enumsCache)
+        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumsCache)
         {
             Value = value;
             Name = name;
@@ -110,71 +112,68 @@ namespace EnumsNET
             return _enumsCache.InternalFormat(this, formats);
         }
 
-        public sbyte ToSByte() => EnumCache<TInt>.ToSByte(Value);
+        public sbyte ToSByte() => Value.ToSByte(null);
 
-        public byte ToByte() => EnumCache<TInt>.ToByte(Value);
+        public byte ToByte() => Value.ToByte(null);
 
-        public short ToInt16() => EnumCache<TInt>.ToInt16(Value);
+        public short ToInt16() => Value.ToInt16(null);
 
-        public ushort ToUInt16() => EnumCache<TInt>.ToUInt16(Value);
+        public ushort ToUInt16() => Value.ToUInt16(null);
 
-        public int ToInt32() => EnumCache<TInt>.ToInt32(Value);
+        public int ToInt32() => Value.ToInt32(null);
 
-        public uint ToUInt32() => EnumCache<TInt>.ToUInt32(Value);
+        public uint ToUInt32() => Value.ToUInt32(null);
 
-        public long ToInt64() => EnumCache<TInt>.ToInt64(Value);
+        public long ToInt64() => Value.ToInt64(null);
 
-        public ulong ToUInt64() => EnumCache<TInt>.ToUInt64(Value);
+        public ulong ToUInt64() => Value.ToUInt64(null);
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public int CompareTo(InternalEnumMemberInfo<TInt> obj) => EnumCache<TInt>.Compare(Value, obj.Value);
+        public int CompareTo(InternalEnumMemberInfo<TInt, TIntProvider> obj) => Value.CompareTo(obj.Value);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
-        TypeCode IConvertible.GetTypeCode() => EnumCache<TInt>.TypeCode;
+        TypeCode IConvertible.GetTypeCode() => Value.GetTypeCode();
 
-        bool IConvertible.ToBoolean(IFormatProvider provider) => Convert.ToBoolean(Value);
+        bool IConvertible.ToBoolean(IFormatProvider provider) => Value.ToBoolean(provider);
 
-        char IConvertible.ToChar(IFormatProvider provider) => Convert.ToChar(Value);
+        char IConvertible.ToChar(IFormatProvider provider) => Value.ToChar(provider);
 
-        sbyte IConvertible.ToSByte(IFormatProvider provider) => ToSByte();
+        sbyte IConvertible.ToSByte(IFormatProvider provider) => Value.ToSByte(provider);
 
-        byte IConvertible.ToByte(IFormatProvider provider) => ToByte();
+        byte IConvertible.ToByte(IFormatProvider provider) => Value.ToByte(provider);
 
-        short IConvertible.ToInt16(IFormatProvider provider) => ToInt16();
+        short IConvertible.ToInt16(IFormatProvider provider) => Value.ToInt16(provider);
 
-        ushort IConvertible.ToUInt16(IFormatProvider provider) => ToUInt16();
+        ushort IConvertible.ToUInt16(IFormatProvider provider) => Value.ToUInt16(provider);
 
-        int IConvertible.ToInt32(IFormatProvider provider) => ToInt32();
+        int IConvertible.ToInt32(IFormatProvider provider) => Value.ToInt32(provider);
 
-        uint IConvertible.ToUInt32(IFormatProvider provider) => ToUInt32();
+        uint IConvertible.ToUInt32(IFormatProvider provider) => Value.ToUInt32(provider);
 
-        long IConvertible.ToInt64(IFormatProvider provider) => ToInt64();
+        long IConvertible.ToInt64(IFormatProvider provider) => Value.ToInt64(provider);
 
-        ulong IConvertible.ToUInt64(IFormatProvider provider) => ToUInt64();
+        ulong IConvertible.ToUInt64(IFormatProvider provider) => Value.ToUInt64(provider);
 
-        float IConvertible.ToSingle(IFormatProvider provider) => Convert.ToSingle(Value);
+        float IConvertible.ToSingle(IFormatProvider provider) => Value.ToSingle(provider);
 
-        double IConvertible.ToDouble(IFormatProvider provider) => Convert.ToDouble(Value);
+        double IConvertible.ToDouble(IFormatProvider provider) => Value.ToDouble(provider);
 
-        decimal IConvertible.ToDecimal(IFormatProvider provider) => Convert.ToDecimal(Value);
+        decimal IConvertible.ToDecimal(IFormatProvider provider) => Value.ToDecimal(provider);
 
-        DateTime IConvertible.ToDateTime(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
+        DateTime IConvertible.ToDateTime(IFormatProvider provider) => Value.ToDateTime(provider);
 
         string IConvertible.ToString(IFormatProvider provider) => ToString();
 
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Convert.ChangeType(Value, conversionType, provider);
+        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
 
         int IComparable.CompareTo(object obj)
         {
-            if (obj is InternalEnumMemberInfo<TInt>)
+            if (obj is InternalEnumMemberInfo<TInt, TIntProvider>)
             {
-                return CompareTo((InternalEnumMemberInfo<TInt>)obj);
+                return CompareTo((InternalEnumMemberInfo<TInt, TIntProvider>)obj);
             }
             return 1;
         }

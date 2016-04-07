@@ -45,6 +45,15 @@
     <Compile Include="HashHelper.cs" />
     <Compile Include="IEnumInfo.cs" />
     <Compile Include="IEnumMemberInfo.cs" />
+    <Compile Include="Numerics\IlNumericProvider.cs" />
+    <Compile Include="Numerics\ByteNumericProvider.cs" />
+    <Compile Include="Numerics\SByteNumericProvider.cs" />
+    <Compile Include="Numerics\UInt16NumericProvider.cs" />
+    <Compile Include="Numerics\Int16NumericProvider.cs" />
+    <Compile Include="Numerics\UInt64NumericProvider.cs" />
+    <Compile Include="Numerics\Int64NumericProvider.cs" />
+    <Compile Include="Numerics\UInt32NumericProvider.cs" />
+    <Compile Include="Numerics\Int32NumericProvider.cs" />
     <Compile Include="InternalEnumMemberInfo.cs" />
     <Compile Include="MainDuplicateAttribute.cs" />
     <Compile Include="NameAndAttributes.cs" />

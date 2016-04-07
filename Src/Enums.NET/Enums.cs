@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Threading;
+using EnumsNET.Numerics;
 using ExtraConstraints;
 
 namespace EnumsNET
@@ -1482,9 +1483,32 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        private static Type _openEnumInfoType = typeof(EnumInfo<,>);
+        private static Type _openEnumInfoType = typeof(EnumInfo<,,>);
 
-        internal static object InitializeEnumInfo(Type enumType) => Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, Enum.GetUnderlyingType(enumType)));
+        internal static object InitializeEnumInfo(Type enumType)
+        {
+            var underlyingType = Enum.GetUnderlyingType(enumType);
+            switch (Type.GetTypeCode(underlyingType))
+            {
+                case TypeCode.SByte:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(SByteNumericProvider)));
+                case TypeCode.Byte:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(ByteNumericProvider)));
+                case TypeCode.Int16:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int16NumericProvider)));
+                case TypeCode.UInt16:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt16NumericProvider)));
+                case TypeCode.Int32:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int32NumericProvider)));
+                case TypeCode.UInt32:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt32NumericProvider)));
+                case TypeCode.Int64:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int64NumericProvider)));
+                case TypeCode.UInt64:
+                    return Activator.CreateInstance(_openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt64NumericProvider)));
+            }
+            throw new InvalidOperationException("Unknown enum underlying type");
+        }
 
         internal static string GetDescription(Attribute[] attributes) => attributes.Length > 0 ? (attributes[0] as DescriptionAttribute)?.Description : null;
 

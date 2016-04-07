@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using EnumsNET.Numerics;
 
 #if NET20 || USE_EMIT
 using System.Reflection.Emit;
@@ -35,14 +36,16 @@ namespace EnumsNET
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
-    internal class EnumInfo<TEnum, TInt> : IEnumInfo<TEnum>
-        where TInt : struct
+    /// <typeparam name="TIntProvider"></typeparam>
+    internal class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
+        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TIntProvider : struct, INumericProvider<TInt>
     {
         private static int _lastCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMemberInfo<TEnum>, string>> _customEnumFormatters;
 
-        internal static readonly EnumCache<TInt> Cache = (EnumCache<TInt>)EnumInfo.Cache(typeof(TEnum), typeof(TInt), (Func<EnumFormat, Func<InternalEnumMemberInfo<TInt>, string>>)InternalGetCustomEnumFormatter);
+        internal static readonly EnumCache<TInt, TIntProvider> Cache = (EnumCache<TInt, TIntProvider>)EnumInfo.Cache(typeof(TEnum), typeof(TInt), (Func<EnumFormat, Func<InternalEnumMemberInfo<TInt, TIntProvider>, string>>)InternalGetCustomEnumFormatter);
 
         internal static readonly Func<TEnum, TInt> ToInt = (Func<TEnum, TInt>)EnumInfo.ToInt(typeof(TEnum), typeof(TInt));
 
@@ -50,7 +53,7 @@ namespace EnumsNET
 
         #region Enums
         #region Properties
-        public TypeCode TypeCode => Type.GetTypeCode(typeof(TInt));
+        public TypeCode TypeCode => new TInt().GetTypeCode();
 
         public Type UnderlyingType => typeof(TInt);
 
@@ -60,13 +63,13 @@ namespace EnumsNET
         #region Type Methods
         public int GetDefinedCount(bool uniqueValued) => Cache.GetDefinedCount(uniqueValued);
 
-        public IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos(bool uniqueValued) => Cache.GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum, TInt>(info));
+        public IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos(bool uniqueValued) => Cache.GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum, TInt, TIntProvider>(info));
 
         public IEnumerable<string> GetNames(bool uniqueValued) => Cache.GetNames(uniqueValued);
 
         public IEnumerable<TEnum> GetValues(bool uniqueValued) => Cache.GetValues(uniqueValued).Select(value => ToEnum(value));
 
-        public int Compare(TEnum x, TEnum y) => EnumCache<TInt>.Compare(ToInt(x), ToInt(y));
+        public int Compare(TEnum x, TEnum y) => ToInt(x).CompareTo(ToInt(y));
         #endregion
 
         #region IsValid
@@ -92,9 +95,9 @@ namespace EnumsNET
         #endregion
 
         #region IsInValueRange
-        public bool IsInValueRange(long value) => EnumCache<TInt>.Int64IsInValueRange(value);
+        public bool IsInValueRange(long value) => EnumCache<TInt, TIntProvider>.Provider.IsInValueRange(value);
 
-        public bool IsInValueRange(ulong value) => EnumCache<TInt>.UInt64IsInValueRange(value);
+        public bool IsInValueRange(ulong value) => EnumCache<TInt, TIntProvider>.Provider.IsInValueRange(value);
         #endregion
 
         #region ToObject
@@ -154,38 +157,38 @@ namespace EnumsNET
 
         public object GetUnderlyingValue(TEnum value) => ToInt(value);
 
-        public sbyte ToSByte(TEnum value) => EnumCache<TInt>.ToSByte(ToInt(value));
+        public sbyte ToSByte(TEnum value) => ToInt(value).ToSByte(null);
 
-        public byte ToByte(TEnum value) => EnumCache<TInt>.ToByte(ToInt(value));
+        public byte ToByte(TEnum value) => ToInt(value).ToByte(null);
 
-        public short ToInt16(TEnum value) => EnumCache<TInt>.ToInt16(ToInt(value));
+        public short ToInt16(TEnum value) => ToInt(value).ToInt16(null);
 
-        public ushort ToUInt16(TEnum value) => EnumCache<TInt>.ToUInt16(ToInt(value));
+        public ushort ToUInt16(TEnum value) => ToInt(value).ToUInt16(null);
 
-        public int ToInt32(TEnum value) => EnumCache<TInt>.ToInt32(ToInt(value));
+        public int ToInt32(TEnum value) => ToInt(value).ToInt32(null);
 
-        public uint ToUInt32(TEnum value) => EnumCache<TInt>.ToUInt32(ToInt(value));
+        public uint ToUInt32(TEnum value) => ToInt(value).ToUInt32(null);
 
-        public long ToInt64(TEnum value) => EnumCache<TInt>.ToInt64(ToInt(value));
+        public long ToInt64(TEnum value) => ToInt(value).ToInt64(null);
 
-        public ulong ToUInt64(TEnum value) => EnumCache<TInt>.ToUInt64(ToInt(value));
+        public ulong ToUInt64(TEnum value) => ToInt(value).ToUInt64(null);
 
         public int GetHashCode(TEnum value) => ToInt(value).GetHashCode();
 
-        public bool Equals(TEnum value, TEnum other) => EnumCache<TInt>.Equals(ToInt(value), ToInt(other));
+        public bool Equals(TEnum value, TEnum other) => ToInt(value).Equals(ToInt(other));
         #endregion
 
         #region Defined Values Main Methods
         public EnumMemberInfo<TEnum> GetEnumMemberInfo(TEnum value)
         {
             var info = Cache.GetEnumMemberInfo(ToInt(value));
-            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt>(info) : null;
+            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt, TIntProvider>(info) : null;
         }
 
         public EnumMemberInfo<TEnum> GetEnumMemberInfo(string name, bool ignoreCase)
         {
             var info = Cache.GetEnumMemberInfo(name, ignoreCase);
-            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt>(info) : null;
+            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt, TIntProvider>(info) : null;
         }
 
         public string GetName(TEnum value) => Cache.GetName(ToInt(value));
@@ -296,10 +299,10 @@ namespace EnumsNET
             return (EnumFormat)(index + Enums.StartingGenericCustomEnumFormatValue);
         }
 
-        internal static Func<InternalEnumMemberInfo<TInt>, string> InternalGetCustomEnumFormatter(EnumFormat format)
+        internal static Func<InternalEnumMemberInfo<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
         {
             var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
-            return formatter != null ? info => formatter(new EnumMemberInfo<TEnum, TInt>(info)) : (Func<InternalEnumMemberInfo<TInt>, string>)null;
+            return formatter != null ? info => formatter(new EnumMemberInfo<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMemberInfo<TInt, TIntProvider>, string>)null;
         }
 
         private static Func<EnumMemberInfo<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
@@ -321,25 +324,23 @@ namespace EnumsNET
             switch (Type.GetTypeCode(underlyingType))
             {
                 case TypeCode.Int32:
-                    return new EnumCache<int>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<int>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<int, Int32NumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<int, Int32NumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.UInt32:
-                    return new EnumCache<uint>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<uint>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<uint, UInt32NumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<uint, UInt32NumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.Int64:
-                    return new EnumCache<long>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<long>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<long, Int64NumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<long, Int64NumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.UInt64:
-                    return new EnumCache<ulong>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ulong>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<ulong, UInt64NumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ulong, UInt64NumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.SByte:
-                    return new EnumCache<sbyte>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<sbyte>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<sbyte, SByteNumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<sbyte, SByteNumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.Byte:
-                    return new EnumCache<byte>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<byte>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<byte, ByteNumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<byte, ByteNumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.Int16:
-                    return new EnumCache<short>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<short>, string>>)getCustomEnumFormatter);
+                    return new EnumCache<short, Int16NumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<short, Int16NumericProvider>, string>>)getCustomEnumFormatter);
                 case TypeCode.UInt16:
-                    return new EnumCache<ushort>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ushort>, string>>)getCustomEnumFormatter);
-                default:
-                    Debug.Fail("Unknown Enum TypeCode");
-                    return null;
+                    return new EnumCache<ushort, UInt16NumericProvider>(enumType, (Func<EnumFormat, Func<InternalEnumMemberInfo<ushort, UInt16NumericProvider>, string>>)getCustomEnumFormatter);
             }
+            throw new InvalidOperationException("Unknown underlying enum type");
         }
 
         internal static Delegate ToEnum(Type enumType, Type underlyingType)
