@@ -13,19 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define USE_EMIT
+#define USE_IL
+//#define USE_EMIT
+// else uses expression trees
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using EnumsNET.Numerics;
 
+#if !USE_IL
 #if NET20 || USE_EMIT
 using System.Reflection.Emit;
 #else
 using System.Linq.Expressions;
+#endif
 #endif
 
 namespace EnumsNET
@@ -345,16 +348,15 @@ namespace EnumsNET
 
         internal static Delegate ToEnum(Type enumType, Type underlyingType)
         {
-#if NET20 || USE_EMIT
+#if USE_IL
+            return Delegate.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType), typeof(UnsafeEnumCasting).GetMethod("ToEnum", new[] { underlyingType }).MakeGenericMethod(enumType));
+#elif NET20 || USE_EMIT
             var toEnumMethod = new DynamicMethod(underlyingType.Name + "_ToEnum",
                                        enumType,
                                        new[] { underlyingType },
                                        underlyingType, true);
             var toEnumGenerator = toEnumMethod.GetILGenerator();
-            toEnumGenerator.DeclareLocal(enumType);
             toEnumGenerator.Emit(OpCodes.Ldarg_0);
-            toEnumGenerator.Emit(OpCodes.Stloc_0);
-            toEnumGenerator.Emit(OpCodes.Ldloc_0);
             toEnumGenerator.Emit(OpCodes.Ret);
             return toEnumMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType));
 #else
@@ -366,16 +368,15 @@ namespace EnumsNET
 
         internal static Delegate ToInt(Type enumType, Type underlyingType)
         {
-#if NET20 || USE_EMIT
+#if USE_IL
+            return Delegate.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType), typeof(UnsafeEnumCasting).GetMethod("To" + underlyingType.Name).MakeGenericMethod(enumType));
+#elif NET20 || USE_EMIT
             var toIntMethod = new DynamicMethod(enumType.Name + "_ToInt",
                                        underlyingType,
                                        new[] { enumType },
                                        enumType, true);
             var toIntGenerator = toIntMethod.GetILGenerator();
-            toIntGenerator.DeclareLocal(underlyingType);
             toIntGenerator.Emit(OpCodes.Ldarg_0);
-            toIntGenerator.Emit(OpCodes.Stloc_0);
-            toIntGenerator.Emit(OpCodes.Ldloc_0);
             toIntGenerator.Emit(OpCodes.Ret);
             return toIntMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType));
 #else
