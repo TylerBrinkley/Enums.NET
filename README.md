@@ -1,5 +1,5 @@
 # Enums.NET
-Enums.NET is an efficient type-safe .NET enum utility library which caches enums' names, values, and attributes and provides most capabilities as C# extension methods for ease of use.
+Enums.NET is a high performance type-safe .NET enum utility library which caches enums' names, values, and attributes and provides most capabilities as C# extension methods for ease of use.
 
 ## Supports
 Descriptions through the use of the DescriptionAttribute
