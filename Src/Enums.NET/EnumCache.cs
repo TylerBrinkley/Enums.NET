@@ -1043,10 +1043,7 @@ namespace EnumsNET
                         var formatIgnoreCase = new Dictionary<string, TInt>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
                         foreach (var pair in _formatValueMap)
                         {
-                            if (!formatIgnoreCase.ContainsKey(pair.Key))
-                            {
-                                formatIgnoreCase.Add(pair.Key, pair.Value);
-                            }
+                            formatIgnoreCase[pair.Key] = pair.Value;
                         }
                         
                         _formatIgnoreCase = formatIgnoreCase;
@@ -1055,20 +1052,20 @@ namespace EnumsNET
                 }
             }
 
-            public EnumParser(Func<InternalEnumMemberInfo<TInt, TIntProvider>, string> formatter, EnumCache<TInt, TIntProvider> enumsCache)
+            public EnumParser(Func<InternalEnumMemberInfo<TInt, TIntProvider>, string> formatter, EnumCache<TInt, TIntProvider> enumCache)
             {
-                _formatValueMap = new Dictionary<string, TInt>(enumsCache.GetDefinedCount(false));
-                foreach (var info in enumsCache.GetEnumMemberInfos(false))
+                _formatValueMap = new Dictionary<string, TInt>(enumCache.GetDefinedCount(false));
+                foreach (var info in enumCache.GetEnumMemberInfos(false))
                 {
-                    var format = formatter(info);
-                    if (format != null)
+                    var formattedValue = formatter(info);
+                    if (formattedValue != null)
                     {
-                        _formatValueMap[format] = info.Value;
+                        _formatValueMap[formattedValue] = info.Value;
                     }
                 }
             }
 
-            internal bool TryParse(string format, bool ignoreCase, out TInt result) => _formatValueMap.TryGetValue(format, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(format, out result));
+            internal bool TryParse(string formattedValue, bool ignoreCase, out TInt result) => _formatValueMap.TryGetValue(formattedValue, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(formattedValue, out result));
         }
         #endregion
     }

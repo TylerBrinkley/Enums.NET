@@ -20,12 +20,12 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TInt, TIntProvider> : IEnumMemberInfo, IComparable<InternalEnumMemberInfo<TInt, TIntProvider>>
+    internal struct InternalEnumMemberInfo<TInt, TIntProvider> : IEnumMemberInfo
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
         private readonly Attribute[] _attributes;
-        private readonly EnumCache<TInt, TIntProvider> _enumsCache;
+        private readonly EnumCache<TInt, TIntProvider> _enumCache;
 
         public TInt Value { get; }
 
@@ -37,12 +37,12 @@ namespace EnumsNET
 
         public bool IsDefined => Name != null;
 
-        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumsCache)
+        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
             Name = name;
             _attributes = attributes;
-            _enumsCache = enumsCache;
+            _enumCache = enumCache;
         }
 
         public bool HasAttribute<TAttribute>()
@@ -80,11 +80,11 @@ namespace EnumsNET
             return false;
         }
 
-        public override string ToString() => _enumsCache.InternalAsString(this);
+        public override string ToString() => _enumCache.InternalAsString(this);
 
-        public string ToString(string format) => _enumsCache.InternalAsString(this, format);
+        public string ToString(string format) => _enumCache.InternalAsString(this, format);
 
-        public string ToString(params EnumFormat[] formats) => _enumsCache.InternalAsString(this, formats);
+        public string ToString(params EnumFormat[] formats) => _enumCache.InternalAsString(this, formats);
 
         public string AsString() => ToString();
 
@@ -96,20 +96,20 @@ namespace EnumsNET
         {
             Preconditions.NotNull(format, nameof(format));
 
-            return _enumsCache.InternalFormat(this, format);
+            return _enumCache.InternalFormat(this, format);
         }
 
-        public string Format(EnumFormat format) => _enumsCache.InternalFormat(this, format);
+        public string Format(EnumFormat format) => _enumCache.InternalFormat(this, format);
 
-        public string Format(EnumFormat format0, EnumFormat format1) => _enumsCache.InternalFormat(this, format0, format1);
+        public string Format(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(this, format0, format1);
 
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumsCache.InternalFormat(this, format0, format1, format2);
+        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(this, format0, format1, format2);
 
         public string Format(params EnumFormat[] formats)
         {
             Preconditions.NotNull(formats, nameof(formats));
 
-            return _enumsCache.InternalFormat(this, formats);
+            return _enumCache.InternalFormat(this, formats);
         }
 
         public sbyte ToSByte() => Value.ToSByte(null);
@@ -130,7 +130,7 @@ namespace EnumsNET
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public int CompareTo(InternalEnumMemberInfo<TInt, TIntProvider> obj) => Value.CompareTo(obj.Value);
+        internal int CompareTo(InternalEnumMemberInfo<TInt, TIntProvider> obj) => Value.CompareTo(obj.Value);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
@@ -169,14 +169,7 @@ namespace EnumsNET
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
 
-        int IComparable.CompareTo(object obj)
-        {
-            if (obj is InternalEnumMemberInfo<TInt, TIntProvider>)
-            {
-                return CompareTo((InternalEnumMemberInfo<TInt, TIntProvider>)obj);
-            }
-            return 1;
-        }
+        int IComparable.CompareTo(object obj) => obj is InternalEnumMemberInfo<TInt, TIntProvider> ? CompareTo((InternalEnumMemberInfo<TInt, TIntProvider>)obj) : 1;
 
         object IEnumMemberInfo.Value => Value;
 

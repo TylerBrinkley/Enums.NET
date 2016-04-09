@@ -1542,11 +1542,7 @@ namespace EnumsNET
         internal static Func<EnumMemberInfo, string> GetCustomEnumFormatter(EnumFormat format)
         {
             var index = (int)format - _startingCustomEnumFormatValue;
-            if (index >= 0 && index < _customEnumFormatters?.Count)
-            {
-                return _customEnumFormatters[index];
-            }
-            return null;
+            return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
 
         internal static bool IsNumeric(string value)

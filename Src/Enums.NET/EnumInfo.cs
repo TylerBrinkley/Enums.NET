@@ -309,7 +309,7 @@ namespace EnumsNET
             return (EnumFormat)(index + Enums.StartingGenericCustomEnumFormatValue);
         }
 
-        internal static Func<InternalEnumMemberInfo<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
+        private static Func<InternalEnumMemberInfo<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
         {
             var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
             return formatter != null ? info => formatter(new EnumMemberInfo<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMemberInfo<TInt, TIntProvider>, string>)null;
@@ -318,11 +318,7 @@ namespace EnumsNET
         private static Func<EnumMemberInfo<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
         {
             var index = (int)format - Enums.StartingGenericCustomEnumFormatValue;
-            if (index >= 0 && index < _customEnumFormatters?.Count)
-            {
-                return _customEnumFormatters[index];
-            }
-            return null;
+            return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
         #endregion
     }

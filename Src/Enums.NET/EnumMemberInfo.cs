@@ -67,7 +67,7 @@ namespace EnumsNET
         /// Converts <see cref="Value"/> to its equivalent string representation.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => _info.ToString();
+        public sealed override string ToString() => _info.ToString();
 
         /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
@@ -315,6 +315,7 @@ namespace EnumsNET
 
         int IComparable.CompareTo(object obj) => _info.CompareTo((obj as EnumMemberInfo)?._info);
 
+        // implemented in derived class
         int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => 0;
         #endregion
     }
@@ -351,6 +352,7 @@ namespace EnumsNET
         internal sealed override bool EqualsMethod(EnumMemberInfo info) => GenericEqualsMethod(info as EnumMemberInfo<TEnum>);
 
         #region Explicit Interface Implementation
+        // Implemented in derived class
         int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => 0;
         #endregion
     }
@@ -372,9 +374,13 @@ namespace EnumsNET
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(_info.Value);
 
         #region Explicit Interface Implementation
-        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt, TIntProvider>)other)._info);
+        int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other)
+        {
+            var otherInfo = other as EnumMemberInfo<TEnum, TInt, TIntProvider>;
+            return otherInfo != null ? _info.CompareTo(otherInfo._info) : 1;
+        }
 
-        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => _info.CompareTo(((EnumMemberInfo<TEnum, TInt, TIntProvider>)other)._info);
+        int IComparable<EnumMemberInfo<TEnum>>.CompareTo(EnumMemberInfo<TEnum> other) => other != null ? _info.CompareTo(((EnumMemberInfo<TEnum, TInt, TIntProvider>)other)._info) : 1;
         #endregion
     }
 }
