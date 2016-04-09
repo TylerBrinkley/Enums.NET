@@ -9,7 +9,11 @@ namespace EnumsNET.NonGeneric
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private static readonly EnumCache<TInt, TIntProvider> Cache = EnumInfo<TEnum, TInt, TIntProvider>.Cache;
+        private static EnumCache<TInt, TIntProvider> Cache => EnumInfo<TEnum, TInt, TIntProvider>.Cache;
+
+        private static TEnum ToEnum(TInt value) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(value);
+
+        private static TInt ToObject(object value) => Cache.ToObject(value, false);
 
         #region Properties
         public TypeCode TypeCode => new TInt().GetTypeCode();
@@ -52,7 +56,7 @@ namespace EnumsNET.NonGeneric
         #endregion
 
         #region NonGeneric
-        public object AllFlags => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.AllFlags);
+        public object AllFlags => ToEnum(Cache.AllFlags);
 
         public string AsString(object value) => Cache.AsString(ToObject(value));
 
@@ -60,9 +64,9 @@ namespace EnumsNET.NonGeneric
 
         public string AsString(object value, EnumFormat[] formats) => Cache.AsString(ToObject(value), formats);
 
-        public object ClearFlags(object value, object flagMask) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ClearFlags(ToObject(value), ToObject(flagMask)));
+        public object ClearFlags(object value, object flagMask) => ToEnum(Cache.ClearFlags(ToObject(value), ToObject(flagMask)));
 
-        public object CommonFlags(object value, object flagMask) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.CommonFlags(ToObject(value), ToObject(flagMask)));
+        public object CommonFlags(object value, object flagMask) => ToEnum(Cache.CommonFlags(ToObject(value), ToObject(flagMask)));
 
         public int Compare(object x, object y) => ToObject(x).CompareTo(ToObject(y));
 
@@ -98,13 +102,13 @@ namespace EnumsNET.NonGeneric
 
         public IEnumerable<EnumMemberInfo> GetEnumMemberInfos(bool uniqueValued) => Cache.GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum, TInt, TIntProvider>(info));
 
-        public IEnumerable<object> GetFlags(object value) => Cache.GetFlags(ToObject(value)).Select(flag => (object)EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(flag));
+        public IEnumerable<object> GetFlags(object value) => Cache.GetFlags(ToObject(value)).Select(flag => (object)ToEnum(flag));
 
         public string GetName(object value) => Cache.GetName(ToObject(value));
 
         public object GetUnderlyingValue(object value) => ToObject(value);
 
-        public IEnumerable<object> GetValues(bool uniqueValued) => Cache.GetValues(uniqueValued).Select(value => (object)EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(value));
+        public IEnumerable<object> GetValues(bool uniqueValued) => Cache.GetValues(uniqueValued).Select(value => (object)ToEnum(value));
 
         public bool HasAllFlags(object value) => Cache.HasAllFlags(ToObject(value));
 
@@ -116,21 +120,21 @@ namespace EnumsNET.NonGeneric
 
         public bool IsValidFlagCombination(object value) => Cache.IsValidFlagCombination(ToObject(value));
 
-        public object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.Parse(value, ignoreCase, parseFormatOrder));
+        public object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ToEnum(Cache.Parse(value, ignoreCase, parseFormatOrder));
 
-        public object Parse(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
+        public object Parse(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
 
         public EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo, string> formatter) => Enums<TEnum>.Info.RegisterCustomEnumFormat(formatter);
 
-        public object SetFlags(IEnumerable<object> flags) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.SetFlags(flags.Select(flag => ToObject(flag))));
+        public object SetFlags(IEnumerable<object> flags) => ToEnum(Cache.SetFlags(flags.Select(flag => ToObject(flag))));
 
-        public object SetFlags(object flag0, object flag1) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.SetFlags(ToObject(flag0), ToObject(flag1)));
+        public object SetFlags(object flag0, object flag1) => ToEnum(Cache.SetFlags(ToObject(flag0), ToObject(flag1)));
 
         public byte ToByte(object value) => ToObject(value).ToByte(null);
 
-        public object ToggleFlags(object value) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ToggleFlags(ToObject(value)));
+        public object ToggleFlags(object value) => ToEnum(Cache.ToggleFlags(ToObject(value)));
 
-        public object ToggleFlags(object value, object flagMask) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ToggleFlags(ToObject(value), ToObject(flagMask)));
+        public object ToggleFlags(object value, object flagMask) => ToEnum(Cache.ToggleFlags(ToObject(value), ToObject(flagMask)));
 
         public short ToInt16(object value) => ToObject(value).ToInt16(null);
 
@@ -138,11 +142,11 @@ namespace EnumsNET.NonGeneric
 
         public long ToInt64(object value) => ToObject(value).ToInt64(null);
 
-        public object ToObject(ulong value, bool validate) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ToObject(value, validate));
+        public object ToObject(ulong value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
-        public object ToObject(object value, bool validate) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ToObject(value, validate));
+        public object ToObject(object value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
-        public object ToObject(long value, bool validate) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Cache.ToObject(value, validate));
+        public object ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
         public sbyte ToSByte(object value) => ToObject(value).ToSByte(null);
 
@@ -156,7 +160,7 @@ namespace EnumsNET.NonGeneric
         {
             TInt resultAsTInt;
             var success = Cache.TryParse(value, ignoreCase, out resultAsTInt, parseFormatOrder);
-            result = EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(resultAsTInt);
+            result = ToEnum(resultAsTInt);
             return success;
         }
 
@@ -164,7 +168,7 @@ namespace EnumsNET.NonGeneric
         {
             TInt resultAsTInt;
             var success = Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsTInt, parseFormatOrder);
-            result = EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(resultAsTInt);
+            result = ToEnum(resultAsTInt);
             return success;
         }
 
@@ -172,7 +176,7 @@ namespace EnumsNET.NonGeneric
         {
             TInt resultAsTInt;
             var success = Cache.TryToObject(value, out resultAsTInt, validate);
-            result = EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(resultAsTInt);
+            result = ToEnum(resultAsTInt);
             return success;
         }
 
@@ -180,7 +184,7 @@ namespace EnumsNET.NonGeneric
         {
             TInt resultAsTInt;
             var success = Cache.TryToObject(value, out resultAsTInt, validate);
-            result = EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(resultAsTInt);
+            result = ToEnum(resultAsTInt);
             return success;
         }
 
@@ -188,7 +192,7 @@ namespace EnumsNET.NonGeneric
         {
             TInt resultAsTInt;
             var success = Cache.TryToObject(value, out resultAsTInt, validate);
-            result = EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(resultAsTInt);
+            result = ToEnum(resultAsTInt);
             return success;
         }
 
@@ -196,10 +200,8 @@ namespace EnumsNET.NonGeneric
         {
             var valueAsTInt = ToObject(value);
             Cache.Validate(valueAsTInt, paramName);
-            return EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(valueAsTInt);
+            return ToEnum(valueAsTInt);
         }
         #endregion
-
-        private TInt ToObject(object value) => Cache.ToObject(value, false);
     }
 }
