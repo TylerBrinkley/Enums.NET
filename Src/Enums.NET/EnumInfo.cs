@@ -20,16 +20,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using EnumsNET.Numerics;
 
-#if !USE_IL
-#if NET20 || USE_EMIT
+#if USE_IL
+using System.Runtime.CompilerServices;
+#elif NET20 || USE_EMIT
 using System.Reflection.Emit;
 #else
 using System.Linq.Expressions;
-#endif
 #endif
 
 namespace EnumsNET
