@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using EnumsNET.Numerics;
 
@@ -50,18 +51,15 @@ namespace EnumsNET
 
         internal static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter);
 
-        internal static readonly Func<TEnum, TInt> ToInt =
 #if USE_IL
-            UnsafeEnumCasting.Cast<TEnum, TInt>;
-#else
-            (Func<TEnum, TInt>)EnumInfo.ToInt(typeof(TEnum), typeof(TInt));
-#endif
+        [MethodImpl(MethodImplOptions.ForwardRef)]
+        internal static extern TInt ToInt(TEnum value);
 
-        internal static readonly Func<TInt, TEnum> ToEnum =
-#if USE_IL
-            UnsafeEnumCasting.Cast<TInt, TEnum>;
+        [MethodImpl(MethodImplOptions.ForwardRef)]
+        internal static extern TEnum ToEnum(TInt value);
 #else
-            (Func<TInt, TEnum>)EnumInfo.ToEnum(typeof(TEnum), typeof(TInt));
+        internal static readonly Func<TEnum, TInt> ToInt = (Func<TEnum, TInt>)EnumInfo.ToInt(typeof(TEnum), typeof(TInt));
+        internal static readonly Func<TInt, TEnum> ToEnum = (Func<TInt, TEnum>)EnumInfo.ToEnum(typeof(TEnum), typeof(TInt));
 #endif
 
         #region Enums
