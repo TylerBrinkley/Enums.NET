@@ -277,9 +277,9 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public TEnum Parse(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
+        public TEnum ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
 
-        public bool TryParse(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder)
+        public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder)
         {
             TInt resultAsInt;
             var success = Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt, parseFormatOrder);

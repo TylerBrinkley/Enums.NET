@@ -386,7 +386,7 @@ namespace EnumsNET.Unsafe
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.Parse(value, ignoreCase, delimiter, parseFormatOrder);
+            return Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace EnumsNET.Unsafe
         public static bool TryParse<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder);
+            return Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         }
         #endregion
     }

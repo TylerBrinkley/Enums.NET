@@ -36,7 +36,7 @@ namespace EnumsNET
         #region Static
         internal static TIntProvider Provider = new TIntProvider();
 
-        internal static bool IsPowerOfTwo(TInt x) => Provider.And(x, Provider.Subtract(x, Provider.One)).Equals(Provider.Zero);
+        private static bool IsPowerOfTwo(TInt x) => Provider.And(x, Provider.Subtract(x, Provider.One)).Equals(Provider.Zero);
         #endregion
 
         #region Fields
@@ -728,18 +728,17 @@ namespace EnumsNET
 #endif
                             if (_customEnumFormatParsers?.TryGetValue(format, out parser) != true)
                             {
-                                switch (format)
+                                if (format == EnumFormat.Description)
                                 {
-                                    case EnumFormat.Description:
-                                        parser = new EnumParser(internalInfo => internalInfo.Description, this);
-                                        break;
-                                    default:
-                                        var customEnumFormatter = _getCustomFormatter(format);
-                                        if (customEnumFormatter != null)
-                                        {
-                                            parser = new EnumParser(customEnumFormatter, this);
-                                        }
-                                        break;
+                                    parser = new EnumParser(internalInfo => internalInfo.Description, this);
+                                }
+                                else
+                                {
+                                    var customEnumFormatter = _getCustomFormatter(format);
+                                    if (customEnumFormatter != null)
+                                    {
+                                        parser = new EnumParser(customEnumFormatter, this);
+                                    }
                                 }
                                 if (parser != null)
                                 {

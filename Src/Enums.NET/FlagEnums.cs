@@ -313,7 +313,7 @@ namespace EnumsNET
 
         [Pure]
         public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => Enums<TEnum>.Info.Parse(value, ignoreCase, delimiter, parseFormatOrder);
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -467,7 +467,7 @@ namespace EnumsNET
 
         [Pure]
         public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => Enums<TEnum>.Info.TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder);
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         #endregion
     }
 }

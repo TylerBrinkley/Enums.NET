@@ -1,20 +1,16 @@
 ﻿namespace EnumsNET
 {
-    internal class OptionalOutParameter<T>
+    internal struct OptionalOutParameter<T>
         where T : struct
     {
-        public T Result;
+        public T Value;
 
-        public OptionalOutParameter()
+        public OptionalOutParameter(T value)
         {
+            Value = value;
         }
 
-        public OptionalOutParameter(T result)
-        {
-            Result = result;
-        }
-
-        public static implicit operator T(OptionalOutParameter<T> o) => o?.Result ?? default(T);
+        public static implicit operator T(OptionalOutParameter<T> o) => o.Value;
 
         public static implicit operator OptionalOutParameter<T>(T o) => new OptionalOutParameter<T>(o);
     }

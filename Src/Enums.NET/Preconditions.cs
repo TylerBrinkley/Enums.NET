@@ -28,24 +28,6 @@ namespace EnumsNET
             }
         }
 
-        public static void NotNullOrEmpty(string value, string paramName)
-        {
-            NotNull(value, paramName);
-            if (value.Length == 0)
-            {
-                throw new ArgumentException("cannot be empty", paramName);
-            }
-        }
-
-        public static void NotNullOrEmpty<T>(T[] array, string paramName)
-        {
-            NotNull(array, paramName);
-            if (array.Length == 0)
-            {
-                throw new ArgumentException("cannot be empty", paramName);
-            }
-        }
-
         public static void GreaterThanOrEqual(int value, string paramName, int comparisonValue)
         {
             if (value < comparisonValue)

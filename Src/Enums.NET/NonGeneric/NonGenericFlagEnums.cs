@@ -522,7 +522,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return enumInfo.Parse(value, ignoreCase, delimiter, parseFormatOrder);
+            return enumInfo.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
         }
 
         /// <summary>
@@ -688,7 +688,7 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            return enumInfo.TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder);
+            return enumInfo.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         }
         #endregion
     }

@@ -313,7 +313,8 @@ namespace EnumsNET
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => _info.ToType(conversionType, provider);
 
-        int IComparable.CompareTo(object obj) => _info.CompareTo((obj as EnumMemberInfo)?._info);
+        // implemented in derived class
+        int IComparable.CompareTo(object obj) => 0;
 
         // implemented in derived class
         int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other) => 0;
@@ -357,7 +358,7 @@ namespace EnumsNET
         #endregion
     }
 
-    internal sealed class EnumMemberInfo<TEnum, TInt, TIntProvider> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>
+    internal sealed class EnumMemberInfo<TEnum, TInt, TIntProvider> : EnumMemberInfo<TEnum>, IComparable<EnumMemberInfo<TEnum>>, IComparable<EnumMemberInfo>, IComparable
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
@@ -374,6 +375,12 @@ namespace EnumsNET
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(_info.Value);
 
         #region Explicit Interface Implementation
+        int IComparable.CompareTo(object obj)
+        {
+            var otherInfo = obj as EnumMemberInfo<TEnum, TInt, TIntProvider>;
+            return otherInfo != null ? _info.CompareTo(otherInfo._info) : 1;
+        }
+
         int IComparable<EnumMemberInfo>.CompareTo(EnumMemberInfo other)
         {
             var otherInfo = other as EnumMemberInfo<TEnum, TInt, TIntProvider>;

@@ -36,7 +36,7 @@ namespace EnumsNET.NonGeneric
 
         private static readonly Type _openNonGenericEnumInfoType = typeof(NonGenericEnumInfo<,,>);
 
-        internal static IEnumInfo GetInfo(Type enumType, OptionalOutParameter<bool> isNullable = null)
+        internal static IEnumInfo GetInfo(Type enumType, OptionalOutParameter<bool> isNullable = default(OptionalOutParameter<bool>))
         {
             Preconditions.NotNull(enumType, nameof(enumType));
             if (!enumType.IsEnum)
@@ -46,14 +46,11 @@ namespace EnumsNET.NonGeneric
                 {
                     throw new ArgumentException("must be an enum type", nameof(enumType));
                 }
-                else if (isNullable != null)
-                {
-                    isNullable.Result = true;
-                }
+                isNullable.Value = true;
             }
-            else if (isNullable != null)
+            else
             {
-                isNullable.Result = false;
+                isNullable.Value = false;
             }
 
             IEnumInfo enumInfo;
