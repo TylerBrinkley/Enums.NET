@@ -831,14 +831,6 @@ namespace EnumsNET
             return !value.Equals(Provider.Zero);
         }
 
-        private void ValidateFlagCombination(TInt value, string paramName)
-        {
-            if (!IsValidFlagCombination(value))
-            {
-                throw new ArgumentException("must be valid flag combination", paramName);
-            }
-        }
-
         public bool HasAnyFlags(TInt value, TInt flagMask)
         {
             ValidateFlagCombination(value, nameof(value));
@@ -935,6 +927,14 @@ namespace EnumsNET
             ValidateFlagCombination(flagMask, nameof(flagMask));
             return Provider.And(value, Provider.Xor(flagMask, AllFlags));
         }
+
+        private void ValidateFlagCombination(TInt value, string paramName)
+        {
+            if (!IsValidFlagCombination(value))
+            {
+                throw new ArgumentException("must be valid flag combination", paramName);
+            }
+        }
         #endregion
 
         #region Parsing
@@ -952,7 +952,6 @@ namespace EnumsNET
             {
                 effectiveDelimiter = delimiter;
             }
-            var split = value.Split(new[] { effectiveDelimiter }, StringSplitOptions.None);
 
             if (!(parseFormatOrder?.Length > 0))
             {
@@ -960,11 +959,27 @@ namespace EnumsNET
             }
 
             var result = Provider.Zero;
-            foreach (var indValue in split)
+            var startIndex = 0;
+            var valueLength = value.Length;
+            while (startIndex < valueLength)
             {
-                var trimmedIndValue = indValue.Trim();
+                while (startIndex < valueLength && char.IsWhiteSpace(value[startIndex]))
+                {
+                    ++startIndex;
+                }
+                var delimiterIndex = value.IndexOf(effectiveDelimiter, startIndex, StringComparison.Ordinal);
+                if (delimiterIndex < 0)
+                {
+                    delimiterIndex = valueLength;
+                }
+                var newStartIndex = delimiterIndex + effectiveDelimiter.Length;
+                while (delimiterIndex > startIndex && char.IsWhiteSpace(value[delimiterIndex - 1]))
+                {
+                    --delimiterIndex;
+                }
+                var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
                 TInt indValueAsInt;
-                if (InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsInt, parseFormatOrder))
+                if (InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder))
                 {
                     if (!IsValidFlagCombination(indValueAsInt))
                     {
@@ -974,12 +989,13 @@ namespace EnumsNET
                 }
                 else
                 {
-                    if (Enums.IsNumeric(trimmedIndValue))
+                    if (Enums.IsNumeric(indValue))
                     {
                         throw Enums.GetOverflowException();
                     }
                     throw new ArgumentException("value is not a valid combination of flag enum values");
                 }
+                startIndex = newStartIndex;
             }
             return result;
         }
@@ -1002,7 +1018,6 @@ namespace EnumsNET
             {
                 effectiveDelimiter = delimiter;
             }
-            var split = value.Split(new[] { effectiveDelimiter }, StringSplitOptions.None);
 
             if (!(parseFormatOrder?.Length > 0))
             {
@@ -1010,16 +1025,33 @@ namespace EnumsNET
             }
 
             var resultAsInt = Provider.Zero;
-            foreach (var indValue in split)
+            var startIndex = 0;
+            var valueLength = value.Length;
+            while (startIndex < valueLength)
             {
-                var trimmedIndValue = indValue.Trim();
+                while (startIndex < valueLength && char.IsWhiteSpace(value[startIndex]))
+                {
+                    ++startIndex;
+                }
+                var delimiterIndex = value.IndexOf(effectiveDelimiter, startIndex, StringComparison.Ordinal);
+                if (delimiterIndex < 0)
+                {
+                    delimiterIndex = valueLength;
+                }
+                var newStartIndex = delimiterIndex + effectiveDelimiter.Length;
+                while (delimiterIndex > startIndex && char.IsWhiteSpace(value[delimiterIndex - 1]))
+                {
+                    --delimiterIndex;
+                }
+                var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
                 TInt indValueAsInt;
-                if (!InternalTryParse(trimmedIndValue, ignoreCase, out indValueAsInt, parseFormatOrder) || !IsValidFlagCombination(indValueAsInt))
+                if (!InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder) || !IsValidFlagCombination(indValueAsInt))
                 {
                     result = Provider.Zero;
                     return false;
                 }
                 resultAsInt = Provider.Or(resultAsInt, indValueAsInt);
+                startIndex = newStartIndex;
             }
             result = resultAsInt;
             return true;
