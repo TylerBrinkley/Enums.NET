@@ -1,26 +1,37 @@
-﻿// Enums.NET
-// Copyright 2016 Tyler Brinkley. All rights reserved.
+﻿#region License
+// Copyright (c) 2016 Tyler Brinkley
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+#endregion
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMemberInfo<TInt, TIntProvider> : IEnumMemberInfo
+    internal struct InternalEnumMember<TInt, TIntProvider> : IEnumMember
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
@@ -33,11 +44,11 @@ namespace EnumsNET
 
         public IEnumerable<Attribute> Attributes => IsDefined ? new ReadOnlyCollection<Attribute>(_attributes ?? Enums.EmptyAttributes) : null;
 
-        public string Description => _attributes != null ? Enums.GetDescription(_attributes) : null;
+        public string Description => _attributes?.Length > 0 ? (_attributes[0] as DescriptionAttribute)?.Description : null;
 
         public bool IsDefined => Name != null;
 
-        public InternalEnumMemberInfo(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
+        public InternalEnumMember(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
             Name = name;
@@ -49,10 +60,44 @@ namespace EnumsNET
             where TAttribute : Attribute => GetAttribute<TAttribute>() != null;
 
         public TAttribute GetAttribute<TAttribute>()
-            where TAttribute : Attribute => _attributes != null ? Enums.GetAttribute<TAttribute>(_attributes) : null;
+            where TAttribute : Attribute
+        {
+            if (_attributes != null)
+            {
+                foreach (var attribute in _attributes)
+                {
+                    var castedAttr = attribute as TAttribute;
+                    if (castedAttr != null)
+                    {
+                        return castedAttr;
+                    }
+                }
+            }
+            return null;
+        }
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>()
-            where TAttribute : Attribute => IsDefined ? (_attributes != null ? Enums.GetAttributes<TAttribute>(_attributes) : new TAttribute[0]) : null;
+            where TAttribute : Attribute
+        {
+            if (!IsDefined)
+            {
+                return null;
+            }
+            if (_attributes == null)
+            {
+                return new TAttribute[0];
+            }
+            var attributes = new List<TAttribute>();
+            foreach (var attribute in _attributes)
+            {
+                var castedAttr = attribute as TAttribute;
+                if (castedAttr != null)
+                {
+                    attributes.Add(castedAttr);
+                }
+            }
+            return attributes;
+        }
 
         public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute
@@ -130,7 +175,7 @@ namespace EnumsNET
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        internal int CompareTo(InternalEnumMemberInfo<TInt, TIntProvider> obj) => Value.CompareTo(obj.Value);
+        internal int CompareTo(InternalEnumMember<TInt, TIntProvider> other) => Value.CompareTo(other.Value);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
@@ -169,11 +214,11 @@ namespace EnumsNET
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
 
-        int IComparable.CompareTo(object obj) => obj is InternalEnumMemberInfo<TInt, TIntProvider> ? CompareTo((InternalEnumMemberInfo<TInt, TIntProvider>)obj) : 1;
+        int IComparable.CompareTo(object other) => other is InternalEnumMember<TInt, TIntProvider> ? CompareTo((InternalEnumMember<TInt, TIntProvider>)other) : 1;
 
-        object IEnumMemberInfo.Value => Value;
+        object IEnumMember.Value => Value;
 
-        object IEnumMemberInfo.UnderlyingValue => Value;
+        object IEnumMember.UnderlyingValue => Value;
         #endregion
     }
 }

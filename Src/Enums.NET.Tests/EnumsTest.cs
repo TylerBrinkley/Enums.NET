@@ -100,33 +100,33 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetEnumMemberInfos()
+        public void GetEnumMembers()
         {
-            Assert.AreEqual(0, GetEnumMemberInfos<ByteEnum>().Count());
-            Assert.AreEqual(38, GetEnumMemberInfos<DateFilterOperator>().Count());
-            Assert.AreEqual(6, GetEnumMemberInfos<ColorFlagEnum>().Count());
-            Assert.AreEqual(10, GetEnumMemberInfos<NumericFilterOperator>().Count());
+            Assert.AreEqual(0, GetEnumMembers<ByteEnum>().Count());
+            Assert.AreEqual(38, GetEnumMembers<DateFilterOperator>().Count());
+            Assert.AreEqual(6, GetEnumMembers<ColorFlagEnum>().Count());
+            Assert.AreEqual(10, GetEnumMembers<NumericFilterOperator>().Count());
 
-            Assert.AreEqual(0, GetEnumMemberInfos<ByteEnum>(true).Count());
-            Assert.AreEqual(38, GetEnumMemberInfos<DateFilterOperator>(true).Count());
-            Assert.AreEqual(6, GetEnumMemberInfos<ColorFlagEnum>(true).Count());
-            Assert.AreEqual(8, GetEnumMemberInfos<NumericFilterOperator>(true).Count()); // Has 2 duplicates
+            Assert.AreEqual(0, GetEnumMembers<ByteEnum>(true).Count());
+            Assert.AreEqual(38, GetEnumMembers<DateFilterOperator>(true).Count());
+            Assert.AreEqual(6, GetEnumMembers<ColorFlagEnum>(true).Count());
+            Assert.AreEqual(8, GetEnumMembers<NumericFilterOperator>(true).Count()); // Has 2 duplicates
 
-            var enumMemberInfos = GetEnumMemberInfos<ColorFlagEnum>().ToList();
-            AssertEnumMemberInfoIsCorrect(enumMemberInfos[0], ColorFlagEnum.Black, "Black");
-            AssertEnumMemberInfoIsCorrect(enumMemberInfos[1], ColorFlagEnum.Red, "Red");
-            AssertEnumMemberInfoIsCorrect(enumMemberInfos[2], ColorFlagEnum.Green, "Green");
-            AssertEnumMemberInfoIsCorrect(enumMemberInfos[3], ColorFlagEnum.Blue, "Blue");
-            AssertEnumMemberInfoIsCorrect(enumMemberInfos[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
-            AssertEnumMemberInfoIsCorrect(enumMemberInfos[5], ColorFlagEnum.All, "All");
+            var enumMembers = GetEnumMembers<ColorFlagEnum>().ToList();
+            AssertEnumMemberIsCorrect(enumMembers[0], ColorFlagEnum.Black, "Black");
+            AssertEnumMemberIsCorrect(enumMembers[1], ColorFlagEnum.Red, "Red");
+            AssertEnumMemberIsCorrect(enumMembers[2], ColorFlagEnum.Green, "Green");
+            AssertEnumMemberIsCorrect(enumMembers[3], ColorFlagEnum.Blue, "Blue");
+            AssertEnumMemberIsCorrect(enumMembers[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
+            AssertEnumMemberIsCorrect(enumMembers[5], ColorFlagEnum.All, "All");
         }
 
-        public void AssertEnumMemberInfoIsCorrect<TEnum>(EnumMemberInfo<TEnum> info, TEnum value, string name, params Attribute[] attributes)
+        public void AssertEnumMemberIsCorrect<TEnum>(EnumMember<TEnum> member, TEnum value, string name, params Attribute[] attributes)
         {
-            Assert.IsNotNull(info);
-            Assert.AreEqual(value, info.Value);
-            Assert.AreEqual(name, info.Name);
-            CollectionAssert.AreEquivalent(attributes, info.Attributes);
+            Assert.IsNotNull(member);
+            Assert.AreEqual(value, member.Value);
+            Assert.AreEqual(name, member.Name);
+            CollectionAssert.AreEquivalent(attributes, member.Attributes);
         }
 
         [Test]
@@ -164,22 +164,22 @@ namespace EnumsNET.Tests
         [Test]
         public void GetDescriptionsAlternative()
         {
-            CollectionAssert.AreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetEnumMemberInfos<ColorFlagEnum>().Select(info => info.Description).ToArray());
-            CollectionAssert.AreEqual(new string[0], GetEnumMemberInfos<ByteEnum>().Select(info => info.Description).ToArray());
+            CollectionAssert.AreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetEnumMembers<ColorFlagEnum>().Select(member => member.Description).ToArray());
+            CollectionAssert.AreEqual(new string[0], GetEnumMembers<ByteEnum>().Select(member => member.Description).ToArray());
         }
 
         [Test]
         public void GetAttributes1Alternative()
         {
-            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetEnumMemberInfos<ColorFlagEnum>().Select(info => info.Attributes));
-            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetEnumMemberInfos<ByteEnum>().Select(info => info.Attributes));
+            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetEnumMembers<ColorFlagEnum>().Select(member => member.Attributes));
+            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetEnumMembers<ByteEnum>().Select(member => member.Attributes));
         }
 
         [Test]
         public void GetAttributes2Alternative()
         {
-            CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetEnumMemberInfos<ColorFlagEnum>().Select(info => info.GetAttribute<DescriptionAttribute>()).ToArray());
-            CollectionAssert.AreEqual(new DescriptionAttribute[0], GetEnumMemberInfos<ByteEnum>().Select(info => info.GetAttribute<DescriptionAttribute>()).ToArray());
+            CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetEnumMembers<ColorFlagEnum>().Select(member => member.GetAttribute<DescriptionAttribute>()).ToArray());
+            CollectionAssert.AreEqual(new DescriptionAttribute[0], GetEnumMembers<ByteEnum>().Select(member => member.GetAttribute<DescriptionAttribute>()).ToArray());
         }
         #endregion
 
@@ -1060,11 +1060,11 @@ namespace EnumsNET.Tests
         [Test]
         public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
         {
-            var customFormat = RegisterCustomEnumFormat(info => info.GetAttribute<EnumMemberAttribute>()?.Value);
-            Assert.AreEqual("a", EnumMemberAttributeEnum.A.Format(customFormat));
-            var getDescriptionOrNameFormat = RegisterCustomEnumFormat(info => info.Description ?? info.Name);
-            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.Format(getDescriptionOrNameFormat));
-            Assert.AreEqual("Red", ColorFlagEnum.Red.Format(getDescriptionOrNameFormat));
+            var enumMemberValueFormat = RegisterCustomEnumFormat(member => member.GetAttribute<EnumMemberAttribute>()?.Value);
+            Assert.AreEqual("aye", EnumMemberAttributeEnum.A.Format(enumMemberValueFormat));
+            var descriptionOrNameFormat = RegisterCustomEnumFormat(member => member.Description ?? member.Name);
+            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.Format(descriptionOrNameFormat));
+            Assert.AreEqual("Red", ColorFlagEnum.Red.Format(descriptionOrNameFormat));
         }
 
         [Test]

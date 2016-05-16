@@ -1,4 +1,29 @@
-﻿using System;
+﻿#region License
+// Copyright (c) 2016 Tyler Brinkley
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EnumsNET.Numerics;
@@ -6,6 +31,7 @@ using EnumsNET.Numerics;
 namespace EnumsNET.NonGeneric
 {
     internal class NonGenericEnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo
+        where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
@@ -13,7 +39,7 @@ namespace EnumsNET.NonGeneric
 
         private static TEnum ToEnum(TInt value) => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(value);
 
-        private static TInt ToInt(object value) => Cache.ToObject(value, false);
+        private static TInt ToInt(object value) => value is TEnum || value is TEnum? ? EnumInfo<TEnum, TInt, TIntProvider>.ToInt((TEnum)value) : Cache.ToObject(value, false);
 
         #region Properties
         public TypeCode TypeCode => new TInt().GetTypeCode();
@@ -32,7 +58,7 @@ namespace EnumsNET.NonGeneric
         #endregion
 
         #region IsValid
-        public bool IsValid(object value) => Cache.IsValid(value);
+        public bool IsValid(object value) => value is TEnum || value is TEnum? ? Cache.IsValid(EnumInfo<TEnum, TInt, TIntProvider>.ToInt((TEnum)value)) : Cache.IsValid(value);
 
         public bool IsValid(long value) => Cache.IsValid(value);
 
@@ -40,7 +66,7 @@ namespace EnumsNET.NonGeneric
         #endregion
 
         #region IsDefined
-        public bool IsDefined(object value) => Cache.IsDefined(value);
+        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? Cache.IsDefined(EnumInfo<TEnum, TInt, TIntProvider>.ToInt((TEnum)value)) : Cache.IsDefined(value);
 
         public bool IsDefined(string name, bool ignoreCase) => Cache.IsDefined(name, ignoreCase);
 
@@ -88,19 +114,19 @@ namespace EnumsNET.NonGeneric
 
         public string GetDescription(object value) => Cache.GetDescription(ToInt(value));
 
-        public EnumMemberInfo GetEnumMemberInfo(object value)
+        public EnumMember GetEnumMember(object value)
         {
-            var info = Cache.GetEnumMemberInfo(ToInt(value));
-            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt, TIntProvider>(info) : null;
+            var info = Cache.GetEnumMember(ToInt(value));
+            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
         }
 
-        public EnumMemberInfo GetEnumMemberInfo(string name, bool ignoreCase)
+        public EnumMember GetEnumMember(string name, bool ignoreCase)
         {
-            var info = Cache.GetEnumMemberInfo(name, ignoreCase);
-            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt, TIntProvider>(info) : null;
+            var info = Cache.GetEnumMember(name, ignoreCase);
+            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
         }
 
-        public IEnumerable<EnumMemberInfo> GetEnumMemberInfos(bool uniqueValued) => Cache.GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum, TInt, TIntProvider>(info));
+        public IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(info => new EnumMember<TEnum, TInt, TIntProvider>(info));
 
         public IEnumerable<object> GetFlags(object value) => Cache.GetFlags(ToInt(value)).Select(flag => (object)ToEnum(flag));
 
@@ -124,7 +150,7 @@ namespace EnumsNET.NonGeneric
 
         public object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
 
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo, string> formatter) => Enums<TEnum>.Info.RegisterCustomEnumFormat(formatter);
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter) => Enums<TEnum>.Info.RegisterCustomEnumFormat(formatter);
 
         public object SetFlags(IEnumerable<object> flags) => ToEnum(Cache.SetFlags(flags.Select(flag => ToInt(flag))));
 
@@ -144,7 +170,7 @@ namespace EnumsNET.NonGeneric
 
         public object ToObject(ulong value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
-        public object ToObject(object value, bool validate) => ToEnum(Cache.ToObject(value, validate));
+        public object ToObject(object value, bool validate) => value is TEnum || value is TEnum? ? (TEnum)value : ToEnum(Cache.ToObject(value, validate));
 
         public object ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
@@ -182,6 +208,11 @@ namespace EnumsNET.NonGeneric
 
         public bool TryToObject(object value, out object result, bool validate)
         {
+            if (value is TEnum || value is TEnum?)
+            {
+                result = (TEnum)value;
+                return true;
+            }
             TInt resultAsTInt;
             var success = Cache.TryToObject(value, out resultAsTInt, validate);
             result = ToEnum(resultAsTInt);

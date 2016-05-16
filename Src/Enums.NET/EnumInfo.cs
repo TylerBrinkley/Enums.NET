@@ -1,35 +1,34 @@
-﻿// Enums.NET
-// Copyright 2016 Tyler Brinkley. All rights reserved.
+﻿#region License
+// Copyright (c) 2016 Tyler Brinkley
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#define USE_IL
-//#define USE_EMIT
-// else uses expression trees
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+#endregion
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using EnumsNET.Numerics;
-
-#if USE_IL
-using System.Runtime.CompilerServices;
-#elif NET20 || USE_EMIT
-using System.Reflection.Emit;
-#else
-using System.Linq.Expressions;
-#endif
 
 namespace EnumsNET
 {
@@ -41,25 +40,21 @@ namespace EnumsNET
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
     internal class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
+        where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
         private static int _lastCustomEnumFormatIndex = -1;
 
-        private static List<Func<EnumMemberInfo<TEnum>, string>> _customEnumFormatters;
+        private static List<Func<EnumMember<TEnum>, string>> _customEnumFormatters;
 
         internal static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter);
 
-#if USE_IL
         [MethodImpl(MethodImplOptions.ForwardRef)]
         internal static extern TInt ToInt(TEnum value);
 
         [MethodImpl(MethodImplOptions.ForwardRef)]
         internal static extern TEnum ToEnum(TInt value);
-#else
-        internal static readonly Func<TEnum, TInt> ToInt = (Func<TEnum, TInt>)EnumInfo.ToInt(typeof(TEnum), typeof(TInt));
-        internal static readonly Func<TInt, TEnum> ToEnum = (Func<TInt, TEnum>)EnumInfo.ToEnum(typeof(TEnum), typeof(TInt));
-#endif
 
         #region Enums
         #region Properties
@@ -73,17 +68,17 @@ namespace EnumsNET
         #region Type Methods
         public int GetDefinedCount(bool uniqueValued) => Cache.GetDefinedCount(uniqueValued);
 
-        public IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos(bool uniqueValued) => Cache.GetEnumMemberInfos(uniqueValued).Select(info => new EnumMemberInfo<TEnum, TInt, TIntProvider>(info));
+        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member => new EnumMember<TEnum, TInt, TIntProvider>(member));
 
         public IEnumerable<string> GetNames(bool uniqueValued) => Cache.GetNames(uniqueValued);
 
-        public IEnumerable<TEnum> GetValues(bool uniqueValued) => Cache.GetValues(uniqueValued).Select(value => ToEnum(value));
+        public IEnumerable<TEnum> GetValues(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member => ToEnum(member.Value));
 
         public int Compare(TEnum x, TEnum y) => ToInt(x).CompareTo(ToInt(y));
         #endregion
 
         #region IsValid
-        public bool IsValid(object value) => Cache.IsValid(value);
+        public bool IsValid(object value) => value is TEnum || value is TEnum? ? Cache.IsValid(ToInt((TEnum)value)) : Cache.IsValid(value);
 
         public bool IsValid(TEnum value) => Cache.IsValid(ToInt(value));
 
@@ -93,7 +88,7 @@ namespace EnumsNET
         #endregion
 
         #region IsDefined
-        public bool IsDefined(object value) => Cache.IsDefined(value);
+        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? Cache.IsDefined(ToInt((TEnum)value)) : Cache.IsDefined(value);
 
         public bool IsDefined(TEnum value) => Cache.IsDefined(ToInt(value));
 
@@ -111,7 +106,7 @@ namespace EnumsNET
         #endregion
 
         #region ToObject
-        public TEnum ToObject(object value, bool validate) => ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(object value, bool validate) => value is TEnum || value is TEnum? ? (TEnum)value : ToEnum(Cache.ToObject(value, validate));
 
         public TEnum ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
@@ -119,6 +114,11 @@ namespace EnumsNET
 
         public bool TryToObject(object value, out TEnum result, bool validate)
         {
+            if (value is TEnum || value is TEnum?)
+            {
+                result = (TEnum)value;
+                return true;
+            }
             TInt resultAsInt;
             var success = Cache.TryToObject(value, out resultAsInt, validate);
             result = ToEnum(resultAsInt);
@@ -189,16 +189,16 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMemberInfo<TEnum> GetEnumMemberInfo(TEnum value)
+        public EnumMember<TEnum> GetEnumMember(TEnum value)
         {
-            var info = Cache.GetEnumMemberInfo(ToInt(value));
-            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt, TIntProvider>(info) : null;
+            var info = Cache.GetEnumMember(ToInt(value));
+            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
         }
 
-        public EnumMemberInfo<TEnum> GetEnumMemberInfo(string name, bool ignoreCase)
+        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase)
         {
-            var info = Cache.GetEnumMemberInfo(name, ignoreCase);
-            return info.IsDefined ? new EnumMemberInfo<TEnum, TInt, TIntProvider>(info) : null;
+            var info = Cache.GetEnumMember(name, ignoreCase);
+            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
         }
 
         public string GetName(TEnum value) => Cache.GetName(ToInt(value));
@@ -271,7 +271,7 @@ namespace EnumsNET
 
         public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.SetFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
 
-        public TEnum SetFlags(TEnum[] flags) => ToEnum(Cache.SetFlags(flags.Select(flag => ToInt(flag))));
+        public TEnum SetFlags(TEnum[] flags) => ToEnum(Cache.SetFlags(flags?.Select(flag => ToInt(flag))));
 
         public TEnum ClearFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.ClearFlags(ToInt(value), ToInt(flagMask)));
         #endregion
@@ -290,14 +290,14 @@ namespace EnumsNET
         #endregion
 
         #region CustomEnumFormatters
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo<TEnum>, string> formatter)
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter)
         {
             Preconditions.NotNull(formatter, nameof(formatter));
 
             var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
             if (index == 0)
             {
-                _customEnumFormatters = new List<Func<EnumMemberInfo<TEnum>, string>>();
+                _customEnumFormatters = new List<Func<EnumMember<TEnum>, string>>();
             }
             else
             {
@@ -309,58 +309,17 @@ namespace EnumsNET
             return (EnumFormat)(index + Enums.StartingGenericCustomEnumFormatValue);
         }
 
-        private static Func<InternalEnumMemberInfo<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
+        private static Func<InternalEnumMember<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
         {
             var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
-            return formatter != null ? info => formatter(new EnumMemberInfo<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMemberInfo<TInt, TIntProvider>, string>)null;
+            return formatter != null ? info => formatter(new EnumMember<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
         }
 
-        private static Func<EnumMemberInfo<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
+        private static Func<EnumMember<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
         {
             var index = (int)format - Enums.StartingGenericCustomEnumFormatValue;
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
         #endregion
     }
-
-#if !USE_IL
-    internal static class EnumInfo
-    {
-        internal static Delegate ToEnum(Type enumType, Type underlyingType)
-        {
-#if NET20 || USE_EMIT
-            var toEnumMethod = new DynamicMethod(underlyingType.Name + "_ToEnum",
-                                       enumType,
-                                       new[] { underlyingType },
-                                       underlyingType, true);
-            var toEnumGenerator = toEnumMethod.GetILGenerator();
-            toEnumGenerator.Emit(OpCodes.Ldarg_0);
-            toEnumGenerator.Emit(OpCodes.Ret);
-            return toEnumMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(underlyingType, enumType));
-#else
-            var intParam = Expression.Parameter(underlyingType, "y");
-            var intParamConvert = Expression.Convert(intParam, enumType);
-            return Expression.Lambda(intParamConvert, intParam).Compile();
-#endif
-        }
-
-        internal static Delegate ToInt(Type enumType, Type underlyingType)
-        {
-#if NET20 || USE_EMIT
-            var toIntMethod = new DynamicMethod(enumType.Name + "_ToInt",
-                                       underlyingType,
-                                       new[] { enumType },
-                                       enumType, true);
-            var toIntGenerator = toIntMethod.GetILGenerator();
-            toIntGenerator.Emit(OpCodes.Ldarg_0);
-            toIntGenerator.Emit(OpCodes.Ret);
-            return toIntMethod.CreateDelegate(typeof(Func<,>).MakeGenericType(enumType, underlyingType));
-#else
-            var enumParam = Expression.Parameter(enumType, "x");
-            var enumParamConvert = Expression.Convert(enumParam, underlyingType);
-            return Expression.Lambda(enumParamConvert, enumParam).Compile();
-#endif
-        }
-    }
-#endif
 }

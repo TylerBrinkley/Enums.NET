@@ -4,13 +4,13 @@ namespace EnumsNET.Tests.TestEnums
 {
     public enum EnumMemberAttributeEnum
     {
-        [EnumMember(Value = "a")]
+        [EnumMember(Value = "aye")]
         A,
-        [EnumMember(Value = "b")]
+        [EnumMember(Value = "bee")]
         B,
-        [EnumMember(Value = "c")]
+        [EnumMember(Value = "cee")]
         C,
-        [EnumMember(Value = "d")]
+        [EnumMember(Value = "dee")]
         D
     }
 }

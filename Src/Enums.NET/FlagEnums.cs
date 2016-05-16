@@ -1,17 +1,27 @@
-﻿// Enums.NET
-// Copyright 2016 Tyler Brinkley. All rights reserved.
+﻿#region License
+// Copyright (c) 2016 Tyler Brinkley
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -71,6 +81,14 @@ namespace EnumsNET
         public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => FormatAsFlags(value, null, null);
 
+        /// <summary>
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
+        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="formats"></param>
+        /// <returns></returns>
         [Pure]
         public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats)
             where TEnum : struct => FormatAsFlags(value, null, formats);
@@ -87,6 +105,15 @@ namespace EnumsNET
         public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter)
             where TEnum : struct => FormatAsFlags(value, delimiter, null);
 
+        /// <summary>
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="delimiter"></param>
+        /// <param name="formats"></param>
+        /// <returns></returns>
         [Pure]
         public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter, params EnumFormat[] formats)
             where TEnum : struct => Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formats);
@@ -196,22 +223,67 @@ namespace EnumsNET
         public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1)
             where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1);
 
+        /// <summary>
+        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> and <paramref name="flag2"/> set.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0">Must be a valid flag combination.</param>
+        /// <param name="flag1">Must be a valid flag combination.</param>
+        /// <param name="flag2">Must be a valid flag combination.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="flag0"/>, <paramref name="flag1"/>, or <paramref name="flag2"/> is not a valid flag combination.</exception>
         [Pure]
         public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2)
             where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2);
 
+        /// <summary>
+        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/> set.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0">Must be a valid flag combination.</param>
+        /// <param name="flag1">Must be a valid flag combination.</param>
+        /// <param name="flag2">Must be a valid flag combination.</param>
+        /// <param name="flag3">Must be a valid flag combination.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, or <paramref name="flag3"/> is not a valid flag combination.</exception>
         [Pure]
         public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
             where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3);
 
+        /// <summary>
+        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/> set.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0">Must be a valid flag combination.</param>
+        /// <param name="flag1">Must be a valid flag combination.</param>
+        /// <param name="flag2">Must be a valid flag combination.</param>
+        /// <param name="flag3">Must be a valid flag combination.</param>
+        /// <param name="flag4">Must be a valid flag combination.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, or <paramref name="flag4"/> is not a valid flag combination.</exception>
         [Pure]
         public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
             where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3, flag4);
 
+        /// <summary>
+        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="otherFlags"/> set.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0">Must be a valid flag combination.</param>
+        /// <param name="otherFlags">Must be valid flag combinations.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="flag0"/> or any of <paramref name="otherFlags"/> is not a valid flag combination.</exception>
         [Pure]
         public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, params TEnum[] otherFlags)
             where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, Enums<TEnum>.Info.SetFlags(otherFlags));
 
+        /// <summary>
+        /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flags">Must be valid flag combinations.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">Any of <paramref name="flags"/> is not a valid flag combination.</exception>
         [Pure]
         public static TEnum SetFlags<[EnumConstraint] TEnum>(params TEnum[] flags)
             where TEnum : struct => Enums<TEnum>.Info.SetFlags(flags);

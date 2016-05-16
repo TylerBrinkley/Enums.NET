@@ -1,17 +1,27 @@
-﻿// Enums.NET
-// Copyright 2016 Tyler Brinkley. All rights reserved.
+﻿#region License
+// Copyright (c) 2016 Tyler Brinkley
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
-//	  http://www.apache.org/licenses/LICENSE-2.0
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -57,9 +67,9 @@ namespace EnumsNET
         string FormatAsFlags(object value, string delimiter, EnumFormat[] formats);
         IEnumerable<Attribute> GetAttributes(object value);
         string GetDescription(object value);
-        EnumMemberInfo GetEnumMemberInfo(object value);
-        EnumMemberInfo GetEnumMemberInfo(string name, bool ignoreCase);
-        IEnumerable<EnumMemberInfo> GetEnumMemberInfos(bool uniqueValued);
+        EnumMember GetEnumMember(object value);
+        EnumMember GetEnumMember(string name, bool ignoreCase);
+        IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued);
         IEnumerable<object> GetFlags(object value);
         string GetName(object value);
         object GetUnderlyingValue(object value);
@@ -71,7 +81,7 @@ namespace EnumsNET
         bool IsValidFlagCombination(object value);
         object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
-        EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo, string> formatter);
+        EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter);
         object SetFlags(IEnumerable<object> flags);
         object SetFlags(object flag0, object flag1);
         byte ToByte(object value);
@@ -117,9 +127,9 @@ namespace EnumsNET
         IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value) where TAttribute : Attribute;
         TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue) where TAttribute : Attribute;
         string GetDescription(TEnum value);
-        EnumMemberInfo<TEnum> GetEnumMemberInfo(TEnum value);
-        EnumMemberInfo<TEnum> GetEnumMemberInfo(string name, bool ignoreCase);
-        IEnumerable<EnumMemberInfo<TEnum>> GetEnumMemberInfos(bool uniqueValued);
+        EnumMember<TEnum> GetEnumMember(TEnum value);
+        EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase);
+        IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued);
         IEnumerable<TEnum> GetFlags(TEnum value);
         int GetHashCode(TEnum value);
         string GetName(TEnum value);
@@ -134,7 +144,7 @@ namespace EnumsNET
         bool IsValidFlagCombination(TEnum value);
         TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         TEnum ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
-        EnumFormat RegisterCustomEnumFormat(Func<EnumMemberInfo<TEnum>, string> formatter);
+        EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
         TEnum SetFlags(TEnum[] flags);
         TEnum SetFlags(TEnum flag0, TEnum flag1);
         TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2);

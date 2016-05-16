@@ -1,17 +1,27 @@
-﻿// Enums.NET
-// Copyright 2016 Tyler Brinkley. All rights reserved.
+﻿#region License
+// Copyright (c) 2016 Tyler Brinkley
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+#endregion
 
 using System;
 using System.Collections.Concurrent;
@@ -33,8 +43,6 @@ namespace EnumsNET.NonGeneric
 #else
         private static readonly ConcurrentDictionary<Type, IEnumInfo> _enumInfosDictionary = new ConcurrentDictionary<Type, IEnumInfo>();
 #endif
-
-        private static readonly Type _openNonGenericEnumInfoType = typeof(NonGenericEnumInfo<,,>);
 
         internal static IEnumInfo GetInfo(Type enumType, OptionalOutParameter<bool> isNullable = null)
         {
@@ -64,31 +72,32 @@ namespace EnumsNET.NonGeneric
             if (!_enumInfosDictionary.TryGetValue(enumType, out enumInfo))
             {
                 var underlyingType = Enum.GetUnderlyingType(enumType);
+                var openNonGenericEnumInfoType = typeof(NonGenericEnumInfo<,,>);
                 switch (Type.GetTypeCode(underlyingType))
                 {
                     case TypeCode.SByte:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(SByteNumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(SByteNumericProvider)));
                         break;
                     case TypeCode.Byte:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(ByteNumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(ByteNumericProvider)));
                         break;
                     case TypeCode.Int16:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int16NumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int16NumericProvider)));
                         break;
                     case TypeCode.UInt16:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt16NumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt16NumericProvider)));
                         break;
                     case TypeCode.Int32:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int32NumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int32NumericProvider)));
                         break;
                     case TypeCode.UInt32:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt32NumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt32NumericProvider)));
                         break;
                     case TypeCode.Int64:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int64NumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int64NumericProvider)));
                         break;
                     case TypeCode.UInt64:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(_openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt64NumericProvider)));
+                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt64NumericProvider)));
                         break;
                     default:
                         throw new InvalidOperationException("Unknown underlying enum type");
@@ -159,7 +168,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static IEnumerable<EnumMemberInfo> GetEnumMemberInfos(Type enumType, bool uniqueValued = false) => GetInfo(enumType).GetEnumMemberInfos(uniqueValued);
+        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool uniqueValued = false) => GetInfo(enumType).GetEnumMembers(uniqueValued);
 
         /// <summary>
         /// Retrieves an array of <paramref name="enumType"/>'s defined constants' names in value order.
@@ -233,7 +242,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<EnumMemberInfo, string> formatter) => GetInfo(enumType).RegisterCustomEnumFormat(formatter);
+        public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<EnumMember, string> formatter) => GetInfo(enumType).RegisterCustomEnumFormat(formatter);
         #endregion
 
         #region IsValid
@@ -1462,7 +1471,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is invalid</exception>
         [Pure]
-        public static EnumMemberInfo GetEnumMemberInfo(Type enumType, object value)
+        public static EnumMember GetEnumMember(Type enumType, object value)
         {
             var isNullable = new OptionalOutParameter<bool>();
             var enumInfo = GetInfo(enumType, isNullable);
@@ -1472,7 +1481,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return enumInfo.GetEnumMemberInfo(value);
+            return enumInfo.GetEnumMember(value);
         }
 
         /// <summary>
@@ -1487,7 +1496,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Pure]
-        public static EnumMemberInfo GetEnumMemberInfo(Type enumType, string name, bool ignoreCase = false) => GetInfo(enumType).GetEnumMemberInfo(name, ignoreCase);
+        public static EnumMember GetEnumMember(Type enumType, string name, bool ignoreCase = false) => GetInfo(enumType).GetEnumMember(name, ignoreCase);
 
         /// <summary>
         /// Retrieves the name of the constant in <paramref name="enumType"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
