@@ -28,7 +28,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using EnumsNET.Numerics;
 
 namespace EnumsNET.NonGeneric
 {
@@ -72,36 +71,8 @@ namespace EnumsNET.NonGeneric
             if (!_enumInfosDictionary.TryGetValue(enumType, out enumInfo))
             {
                 var underlyingType = Enum.GetUnderlyingType(enumType);
-                var openNonGenericEnumInfoType = typeof(NonGenericEnumInfo<,,>);
-                switch (Type.GetTypeCode(underlyingType))
-                {
-                    case TypeCode.SByte:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(SByteNumericProvider)));
-                        break;
-                    case TypeCode.Byte:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(ByteNumericProvider)));
-                        break;
-                    case TypeCode.Int16:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int16NumericProvider)));
-                        break;
-                    case TypeCode.UInt16:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt16NumericProvider)));
-                        break;
-                    case TypeCode.Int32:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int32NumericProvider)));
-                        break;
-                    case TypeCode.UInt32:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt32NumericProvider)));
-                        break;
-                    case TypeCode.Int64:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int64NumericProvider)));
-                        break;
-                    case TypeCode.UInt64:
-                        enumInfo = (IEnumInfo)Activator.CreateInstance(openNonGenericEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt64NumericProvider)));
-                        break;
-                    default:
-                        throw new InvalidOperationException("Unknown underlying enum type");
-                }
+                var numericProviderType = Enums.GetNumericProviderType(underlyingType);
+                enumInfo = (IEnumInfo)Activator.CreateInstance(typeof(NonGenericEnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
 #if NET20 || NET35
                 _enumInfosDictionary.Add(enumType, enumInfo);
 #else

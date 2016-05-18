@@ -1493,36 +1493,41 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static object InitializeEnumInfo(Type enumType)
-        {
-            var underlyingType = Enum.GetUnderlyingType(enumType);
-            var openEnumInfoType = typeof(EnumInfo<,,>);
-            switch (Type.GetTypeCode(underlyingType))
-            {
-                case TypeCode.SByte:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(SByteNumericProvider)));
-                case TypeCode.Byte:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(ByteNumericProvider)));
-                case TypeCode.Int16:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int16NumericProvider)));
-                case TypeCode.UInt16:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt16NumericProvider)));
-                case TypeCode.Int32:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int32NumericProvider)));
-                case TypeCode.UInt32:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt32NumericProvider)));
-                case TypeCode.Int64:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(Int64NumericProvider)));
-                case TypeCode.UInt64:
-                    return Activator.CreateInstance(openEnumInfoType.MakeGenericType(enumType, underlyingType, typeof(UInt64NumericProvider)));
-            }
-            throw new InvalidOperationException("Unknown enum underlying type");
-        }
-
         internal static Func<EnumMember, string> GetCustomEnumFormatter(EnumFormat format)
         {
             var index = (int)format - _startingCustomEnumFormatValue;
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
+        }
+
+        internal static object InitializeEnumInfo(Type enumType)
+        {
+            var underlyingType = Enum.GetUnderlyingType(enumType);
+            var numericProviderType = GetNumericProviderType(underlyingType);
+            return Activator.CreateInstance(typeof(EnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
+        }
+
+        internal static Type GetNumericProviderType(Type underlyingType)
+        {
+            switch (Type.GetTypeCode(underlyingType))
+            {
+                case TypeCode.SByte:
+                    return typeof(SByteNumericProvider);
+                case TypeCode.Byte:
+                    return typeof(ByteNumericProvider);
+                case TypeCode.Int16:
+                    return typeof(Int16NumericProvider);
+                case TypeCode.UInt16:
+                    return typeof(UInt16NumericProvider);
+                case TypeCode.Int32:
+                    return typeof(Int32NumericProvider);
+                case TypeCode.UInt32:
+                    return typeof(UInt32NumericProvider);
+                case TypeCode.Int64:
+                    return typeof(Int64NumericProvider);
+                case TypeCode.UInt64:
+                    return typeof(UInt64NumericProvider);
+            }
+            throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
         }
         #endregion
     }
