@@ -24,10 +24,10 @@
 #endregion
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using EnumsNET.Collections;
 
 namespace EnumsNET.NonGeneric
 {
@@ -37,11 +37,7 @@ namespace EnumsNET.NonGeneric
     /// </summary>
     public static class NonGenericEnums
     {
-#if NET20 || NET35
-        private static readonly Dictionary<Type, IEnumInfo> _enumInfosDictionary = new Dictionary<Type, IEnumInfo>();
-#else
-        private static readonly ConcurrentDictionary<Type, IEnumInfo> _enumInfosDictionary = new ConcurrentDictionary<Type, IEnumInfo>();
-#endif
+        private static readonly ThreadSafeDictionary<Type, IEnumInfo> _enumInfosDictionary = new ThreadSafeDictionary<Type, IEnumInfo>();
 
         internal static IEnumInfo GetInfo(Type enumType, OptionalOutParameter<bool> isNullable = null)
         {
@@ -64,24 +60,14 @@ namespace EnumsNET.NonGeneric
             }
 
             IEnumInfo enumInfo;
-#if NET20 || NET35
-            lock (_enumInfosDictionary)
-            {
-#endif
+
             if (!_enumInfosDictionary.TryGetValue(enumType, out enumInfo))
             {
                 var underlyingType = Enum.GetUnderlyingType(enumType);
                 var numericProviderType = Enums.GetNumericProviderType(underlyingType);
                 enumInfo = (IEnumInfo)Activator.CreateInstance(typeof(NonGenericEnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
-#if NET20 || NET35
-                _enumInfosDictionary.Add(enumType, enumInfo);
-#else
                 _enumInfosDictionary.TryAdd(enumType, enumInfo);
-#endif
             }
-#if NET20 || NET35
-            }
-#endif
             return enumInfo;
         }
 

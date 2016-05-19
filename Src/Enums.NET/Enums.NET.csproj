@@ -36,6 +36,7 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Collections\ThreadSafeDictionary.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumInfo.cs" />

@@ -34,10 +34,6 @@ using System.Threading;
 using EnumsNET.Collections;
 using EnumsNET.Numerics;
 
-#if !(NET20 || NET35)
-using System.Collections.Concurrent;
-#endif
-
 namespace EnumsNET
 {
     internal sealed class EnumCache<TInt, TIntProvider>
@@ -83,7 +79,7 @@ namespace EnumsNET
 #if NET20 || NET35
         private Dictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
 #else
-        private ConcurrentDictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
+        private ThreadSafeDictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
 #endif
         #endregion
 
@@ -739,46 +735,29 @@ namespace EnumsNET
                         break;
                     default:
                         EnumParser parser = null;
-#if NET20
-                        lock (_valueMap)
+                        if (_customEnumFormatParsers?.TryGetValue(format, out parser) != true)
                         {
-#endif
-                            if (_customEnumFormatParsers?.TryGetValue(format, out parser) != true)
+                            if (format == EnumFormat.Description)
                             {
-                                if (format == EnumFormat.Description)
+                                parser = new EnumParser(internalMember => internalMember.Description, this);
+                            }
+                            else
+                            {
+                                var customEnumFormatter = _getCustomFormatter(format);
+                                if (customEnumFormatter != null)
                                 {
-                                    parser = new EnumParser(internalMember => internalMember.Description, this);
-                                }
-                                else
-                                {
-                                    var customEnumFormatter = _getCustomFormatter(format);
-                                    if (customEnumFormatter != null)
-                                    {
-                                        parser = new EnumParser(customEnumFormatter, this);
-                                    }
-                                }
-                                if (parser != null)
-                                {
-                                    if (_customEnumFormatParsers == null)
-                                    {
-                                        Interlocked.CompareExchange(ref _customEnumFormatParsers,
-#if NET20
-                                            new Dictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>()),
-#else
-                                            new ConcurrentDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>()),
-#endif
-                                            null);
-                                    }
-#if NET20
-                                    _customEnumFormatParsers.Add(format, parser);
-#else
-                                    _customEnumFormatParsers.TryAdd(format, parser);
-#endif
+                                    parser = new EnumParser(customEnumFormatter, this);
                                 }
                             }
-#if NET20
+                            if (parser != null)
+                            {
+                                if (_customEnumFormatParsers == null)
+                                {
+                                    Interlocked.CompareExchange(ref _customEnumFormatParsers, new ThreadSafeDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>()), null);
+                                }
+                                _customEnumFormatParsers.TryAdd(format, parser);
+                            }
                         }
-#endif
                         success = parser?.TryParse(value, ignoreCase, out result) ?? false;
                         break;
                 }
