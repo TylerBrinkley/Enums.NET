@@ -32,7 +32,7 @@ namespace EnumsNET
 {
     /// <summary>
     /// Static class that provides efficient type-safe flag enum operations through the use of cached enum names, values, and attributes.
-    /// Many operations are exposed as extension methods for convenience.
+    /// Many operations are exposed as C# extension methods for convenience.
     /// </summary>
     public static class FlagEnums
     {

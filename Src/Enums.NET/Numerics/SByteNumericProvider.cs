@@ -50,6 +50,8 @@ namespace EnumsNET.Numerics
 
         public bool LessThan(sbyte left, sbyte right) => left < right;
 
+        public sbyte Not(sbyte value) => (sbyte)~value;
+
         public sbyte Or(sbyte left, sbyte right) => (sbyte)(left | right);
 
         public sbyte Subtract(sbyte left, sbyte right) => (sbyte)(left - right);

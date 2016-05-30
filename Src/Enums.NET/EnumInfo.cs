@@ -68,7 +68,11 @@ namespace EnumsNET
         #region Type Methods
         public int GetDefinedCount(bool uniqueValued) => Cache.GetDefinedCount(uniqueValued);
 
-        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member => new EnumMember<TEnum, TInt, TIntProvider>(member));
+        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select
+#if NET20 || NET35
+            <InternalEnumMember<TInt, TIntProvider>, EnumMember<TEnum>>
+#endif
+            (member => new EnumMember<TEnum, TInt, TIntProvider>(member));
 
         public IEnumerable<string> GetNames(bool uniqueValued) => Cache.GetNames(uniqueValued);
 
@@ -311,8 +315,18 @@ namespace EnumsNET
 
         private static Func<InternalEnumMember<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
         {
+#if NET20 || NET35
+            var formatter1 = Enums.GetCustomEnumFormatter(format);
+            if (formatter1 != null)
+            {
+                return info => formatter1(new EnumMember<TEnum, TInt, TIntProvider>(info));
+            }
+            var formatter2 = GetCustomEnumFormatter(format);
+            return formatter2 != null ? info => formatter2(new EnumMember<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
+#else
             var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
             return formatter != null ? info => formatter(new EnumMember<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
+#endif
         }
 
         private static Func<EnumMember<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
@@ -320,6 +334,6 @@ namespace EnumsNET
             var index = (int)format - Enums.StartingGenericCustomEnumFormatValue;
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
-        #endregion
+#endregion
     }
 }

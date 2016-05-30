@@ -39,6 +39,8 @@ namespace EnumsNET.Numerics
 
         TInt Xor(TInt left, TInt right);
 
+        TInt Not(TInt value);
+
         TInt LeftShift(TInt value, int amount);
 
         TInt Subtract(TInt left, TInt right);

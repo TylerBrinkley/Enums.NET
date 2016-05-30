@@ -50,6 +50,8 @@ namespace EnumsNET.Numerics
 
         public bool LessThan(ulong left, ulong right) => left < right;
 
+        public ulong Not(ulong value) => ~value;
+
         public ulong Or(ulong left, ulong right) => left | right;
 
         public ulong Subtract(ulong left, ulong right) => left - right;

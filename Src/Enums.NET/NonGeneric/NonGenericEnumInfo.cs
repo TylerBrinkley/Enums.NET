@@ -126,7 +126,11 @@ namespace EnumsNET.NonGeneric
             return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
         }
 
-        public IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(info => new EnumMember<TEnum, TInt, TIntProvider>(info));
+        public IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select
+#if NET20 || NET35
+            <InternalEnumMember<TInt, TIntProvider>, EnumMember>
+#endif
+            (info => new EnumMember<TEnum, TInt, TIntProvider>(info));
 
         public IEnumerable<object> GetFlags(object value) => Cache.GetFlags(ToInt(value)).Select(flag => (object)ToEnum(flag));
 
@@ -150,7 +154,15 @@ namespace EnumsNET.NonGeneric
 
         public object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
 
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter) => Enums<TEnum>.Info.RegisterCustomEnumFormat(formatter);
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter)
+        {
+            return Enums<TEnum>.Info.RegisterCustomEnumFormat(
+#if NET20 || NET35
+                member => formatter(member));
+#else
+                formatter);
+#endif
+        }
 
         public object SetFlags(IEnumerable<object> flags) => ToEnum(Cache.SetFlags(flags.Select(flag => ToInt(flag))));
 
@@ -233,6 +245,6 @@ namespace EnumsNET.NonGeneric
             Cache.Validate(valueAsTInt, paramName);
             return ToEnum(valueAsTInt);
         }
-        #endregion
+#endregion
     }
 }

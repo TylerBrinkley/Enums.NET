@@ -43,6 +43,20 @@ namespace System.Linq
             }
         }
 
+        public static IEnumerable<T> Where<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            Preconditions.NotNull(source, nameof(source));
+            Preconditions.NotNull(predicate, nameof(predicate));
+
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                {
+                    yield return item;
+                }
+            }
+        }
+
         public static bool Any<T>(this IEnumerable<T> source)
         {
             Preconditions.NotNull(source, nameof(source));

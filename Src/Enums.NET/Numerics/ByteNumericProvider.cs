@@ -50,6 +50,8 @@ namespace EnumsNET.Numerics
 
         public bool LessThan(byte left, byte right) => left < right;
 
+        public byte Not(byte value) => (byte)~value;
+
         public byte Or(byte left, byte right) => (byte)(left | right);
 
         public byte Subtract(byte left, byte right) => (byte)(left - right);

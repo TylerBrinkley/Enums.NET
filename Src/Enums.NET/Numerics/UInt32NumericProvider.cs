@@ -50,6 +50,8 @@ namespace EnumsNET.Numerics
 
         public bool LessThan(uint left, uint right) => left < right;
 
+        public uint Not(uint value) => ~value;
+
         public uint Or(uint left, uint right) => left | right;
 
         public uint Subtract(uint left, uint right) => left - right;

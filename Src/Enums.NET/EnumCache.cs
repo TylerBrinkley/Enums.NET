@@ -76,11 +76,7 @@ namespace EnumsNET
 
         private Dictionary<string, string> _ignoreCaseSet;
 
-#if NET20 || NET35
-        private Dictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
-#else
         private ThreadSafeDictionary<EnumFormat, EnumParser> _customEnumFormatParsers;
-#endif
         #endregion
 
         #region Properties
@@ -207,7 +203,7 @@ namespace EnumsNET
                 // Makes sure is in increasing order, due to no removals
 #if NET20
                 var dupes = duplicateValues.ToArray();
-                Array.Sort(dupes, (first, second) => InternalCompare(first.Value.Value, second.Value.Value));
+                Array.Sort(dupes, (first, second) => first.Value.Value.CompareTo(second.Value.Value));
 #else
                 var dupes = duplicateValues.OrderBy(pair => pair.Value.Value).ToList();
 #endif
@@ -921,7 +917,7 @@ namespace EnumsNET
         {
             ValidateFlagCombination(value, nameof(value));
             ValidateFlagCombination(flagMask, nameof(flagMask));
-            return Provider.And(value, Provider.Xor(flagMask, AllFlags));
+            return Provider.And(value, Provider.Not(flagMask));
         }
 
         private void ValidateFlagCombination(TInt value, string paramName)
