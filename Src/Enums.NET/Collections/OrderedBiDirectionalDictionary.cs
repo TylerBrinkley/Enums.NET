@@ -34,6 +34,12 @@ namespace EnumsNET.Collections
     [DebuggerDisplay("Count = {Count}")]
     internal sealed class OrderedBiDirectionalDictionary<TFirst, TSecond> : IList<Pair<TFirst, TSecond>>
     {
+        #region Static
+        private static readonly bool _cannotUseIndexIndexer = typeof(TFirst) == typeof(int) || typeof(TSecond) == typeof(int);
+        private static readonly bool _cannotUseFirstIndexer = typeof(TFirst) == typeof(int) || typeof(TSecond) == typeof(TFirst);
+        private static readonly bool _cannotUseSecondIndexer = typeof(TFirst) == typeof(TSecond) || typeof(TSecond) == typeof(int);
+        #endregion
+
         #region Fields
         private int[] _firstBuckets;
         private int[] _secondBuckets;
@@ -42,9 +48,6 @@ namespace EnumsNET.Collections
         private SecondCollection _secondItems;
         private ForwardDictionary _forward;
         private ReverseDictionary _reverse;
-        private readonly bool _cannotUseIndexIndexer;
-        private readonly bool _cannotUseFirstIndexer;
-        private readonly bool _cannotUseSecondIndexer;
         private int _version;
         #endregion
 
@@ -182,15 +185,6 @@ namespace EnumsNET.Collections
             Count = 0;
             FirstComparer = firstComparer ?? EqualityComparer<TFirst>.Default;
             SecondComparer = secondComparer ?? EqualityComparer<TSecond>.Default;
-            var firstType = typeof(TFirst);
-            var secondType = typeof(TSecond);
-            var intType = typeof(int);
-            var typesMatch = firstType == secondType;
-            var firstIsInt = firstType == intType;
-            var secondIsInt = secondType == intType;
-            _cannotUseIndexIndexer = firstIsInt || secondIsInt;
-            _cannotUseFirstIndexer = firstIsInt || typesMatch;
-            _cannotUseSecondIndexer = secondIsInt || typesMatch;
         }
         #endregion
 
