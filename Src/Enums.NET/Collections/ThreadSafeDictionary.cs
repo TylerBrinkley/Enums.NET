@@ -22,13 +22,14 @@ namespace EnumsNET.Collections
             set
             {
                 Dictionary<TKey, TValue> oldDictionary;
-                Dictionary<TKey, TValue> newDictionary;
+                var originalDictionary = _dictionary;
                 do
                 {
-                    oldDictionary = _dictionary;
-                    newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
+                    oldDictionary = originalDictionary;
+                    var newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
                     newDictionary[key] = value;
-                } while (Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary) != oldDictionary);
+                    originalDictionary = Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary);
+                } while (originalDictionary != oldDictionary);
             }
         }
 
@@ -61,17 +62,18 @@ namespace EnumsNET.Collections
         public bool TryAdd(TKey key, TValue value)
         {
             Dictionary<TKey, TValue> oldDictionary;
-            Dictionary<TKey, TValue> newDictionary;
+            var originalDictionary = _dictionary;
             do
             {
-                oldDictionary = _dictionary;
+                oldDictionary = originalDictionary;
                 if (oldDictionary.ContainsKey(key))
                 {
                     return false;
                 }
-                newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
+                var newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
                 newDictionary.Add(key, value);
-            } while (Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary) != oldDictionary);
+                originalDictionary = Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary);
+            } while (originalDictionary != oldDictionary);
             return true;
         }
 
@@ -89,16 +91,17 @@ namespace EnumsNET.Collections
             if (_dictionary.ContainsKey(key))
             {
                 Dictionary<TKey, TValue> oldDictionary;
-                Dictionary<TKey, TValue> newDictionary;
+                var originalDictionary = _dictionary;
                 do
                 {
-                    oldDictionary = _dictionary;
-                    newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
+                    oldDictionary = originalDictionary;
+                    var newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
                     if (!newDictionary.Remove(key))
                     {
                         return false;
                     }
-                } while (Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary) != oldDictionary);
+                    originalDictionary = Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary);
+                } while (originalDictionary != oldDictionary);
                 return true;
             }
             return false;
@@ -116,13 +119,14 @@ namespace EnumsNET.Collections
         void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
         {
             Dictionary<TKey, TValue> oldDictionary;
-            Dictionary<TKey, TValue> newDictionary;
+            var originalDictionary = _dictionary;
             do
             {
-                oldDictionary = _dictionary;
-                newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
+                oldDictionary = originalDictionary;
+                var newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
                 newDictionary.Add(key, value);
-            } while (Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary) != oldDictionary);
+                originalDictionary = Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary);
+            } while (originalDictionary != oldDictionary);
         }
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)

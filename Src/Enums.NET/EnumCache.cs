@@ -747,11 +747,13 @@ namespace EnumsNET
                             }
                             if (parser != null)
                             {
-                                if (_customEnumFormatParsers == null)
+                                var customEnumFormatParsers = _customEnumFormatParsers;
+                                if (customEnumFormatParsers == null)
                                 {
-                                    Interlocked.CompareExchange(ref _customEnumFormatParsers, new ThreadSafeDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>()), null);
+                                    customEnumFormatParsers = new ThreadSafeDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>());
+                                    customEnumFormatParsers = Interlocked.CompareExchange(ref _customEnumFormatParsers, customEnumFormatParsers, null) ?? customEnumFormatParsers;
                                 }
-                                _customEnumFormatParsers.TryAdd(format, parser);
+                                customEnumFormatParsers.TryAdd(format, parser);
                             }
                         }
                         success = parser?.TryParse(value, ignoreCase, out result) ?? false;
