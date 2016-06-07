@@ -90,7 +90,7 @@ namespace EnumsNET.NonGeneric
 
         public string AsString(object value, EnumFormat[] formats) => Cache.AsString(ToInt(value), formats);
 
-        public object ClearFlags(object value, object flagMask) => ToEnum(Cache.ClearFlags(ToInt(value), ToInt(flagMask)));
+        public object ExcludeFlags(object value, object flagMask) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(flagMask)));
 
         public object CommonFlags(object value, object flagMask) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(flagMask)));
 
@@ -126,11 +126,11 @@ namespace EnumsNET.NonGeneric
             return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
         }
 
-        public IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select
+        public IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member =>
 #if NET20 || NET35
-            <InternalEnumMember<TInt, TIntProvider>, EnumMember>
+            (EnumMember)
 #endif
-            (info => new EnumMember<TEnum, TInt, TIntProvider>(info));
+            new EnumMember<TEnum, TInt, TIntProvider>(member));
 
         public IEnumerable<object> GetFlags(object value) => Cache.GetFlags(ToInt(value)).Select(flag => (object)ToEnum(flag));
 
@@ -164,9 +164,9 @@ namespace EnumsNET.NonGeneric
 #endif
         }
 
-        public object SetFlags(IEnumerable<object> flags) => ToEnum(Cache.SetFlags(flags.Select(flag => ToInt(flag))));
+        public object CombineFlags(IEnumerable<object> flags) => ToEnum(Cache.CombineFlags(flags.Select(flag => ToInt(flag))));
 
-        public object SetFlags(object flag0, object flag1) => ToEnum(Cache.SetFlags(ToInt(flag0), ToInt(flag1)));
+        public object CombineFlags(object flag0, object flag1) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1)));
 
         public byte ToByte(object value) => ToInt(value).ToByte(null);
 

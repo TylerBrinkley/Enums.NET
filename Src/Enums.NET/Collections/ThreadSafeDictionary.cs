@@ -118,15 +118,10 @@ namespace EnumsNET.Collections
 
         void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
         {
-            Dictionary<TKey, TValue> oldDictionary;
-            var originalDictionary = _dictionary;
-            do
+            if (!TryAdd(key, value))
             {
-                oldDictionary = originalDictionary;
-                var newDictionary = new Dictionary<TKey, TValue>(oldDictionary, oldDictionary.Comparer);
-                newDictionary.Add(key, value);
-                originalDictionary = Interlocked.CompareExchange(ref _dictionary, newDictionary, oldDictionary);
-            } while (originalDictionary != oldDictionary);
+                throw new ArgumentException("key already exists in ThreadSafeDictionary");
+            }
         }
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)

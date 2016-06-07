@@ -55,7 +55,7 @@ namespace EnumsNET
         string AsString(object value);
         string AsString(object value, string format);
         string AsString(object value, EnumFormat[] formats);
-        object ClearFlags(object value, object flagMask);
+        object ExcludeFlags(object value, object flagMask);
         object CommonFlags(object value, object flagMask);
         int Compare(object x, object y);
         bool Equals(object value, object other);
@@ -82,8 +82,8 @@ namespace EnumsNET
         object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter);
-        object SetFlags(IEnumerable<object> flags);
-        object SetFlags(object flag0, object flag1);
+        object CombineFlags(IEnumerable<object> flags);
+        object CombineFlags(object flag0, object flag1);
         byte ToByte(object value);
         object ToggleFlags(object value);
         object ToggleFlags(object value, object flagMask);
@@ -112,7 +112,7 @@ namespace EnumsNET
         string AsString(TEnum value);
         string AsString(TEnum value, string format);
         string AsString(TEnum value, EnumFormat[] formats);
-        TEnum ClearFlags(TEnum value, TEnum flagMask);
+        TEnum ExcludeFlags(TEnum value, TEnum flagMask);
         TEnum CommonFlags(TEnum value, TEnum flagMask);
         int Compare(TEnum x, TEnum y);
         bool Equals(TEnum value, TEnum other);
@@ -145,11 +145,11 @@ namespace EnumsNET
         TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         TEnum ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
-        TEnum SetFlags(TEnum[] flags);
-        TEnum SetFlags(TEnum flag0, TEnum flag1);
-        TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2);
-        TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3);
-        TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4);
+        TEnum CombineFlags(TEnum[] flags);
+        TEnum CombineFlags(TEnum flag0, TEnum flag1);
+        TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2);
+        TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3);
+        TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4);
         byte ToByte(TEnum value);
         TEnum ToggleFlags(TEnum value);
         TEnum ToggleFlags(TEnum value, TEnum flagMask);

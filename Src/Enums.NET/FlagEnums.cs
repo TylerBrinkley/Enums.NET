@@ -220,8 +220,8 @@ namespace EnumsNET
         /// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
         /// <exception cref="ArgumentException"><paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1)
-            where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1);
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1);
 
         /// <summary>
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> and <paramref name="flag2"/> set.
@@ -233,8 +233,8 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentException"><paramref name="flag0"/>, <paramref name="flag1"/>, or <paramref name="flag2"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2)
-            where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2);
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2);
 
         /// <summary>
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/> set.
@@ -247,8 +247,8 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentException"><paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, or <paramref name="flag3"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
-            where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3);
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3);
 
         /// <summary>
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/> set.
@@ -262,8 +262,8 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentException"><paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, or <paramref name="flag4"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
-            where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3, flag4);
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3, flag4);
 
         /// <summary>
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="otherFlags"/> set.
@@ -274,8 +274,8 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentException"><paramref name="flag0"/> or any of <paramref name="otherFlags"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<[EnumConstraint] TEnum>(this TEnum flag0, params TEnum[] otherFlags)
-            where TEnum : struct => Enums<TEnum>.Info.SetFlags(flag0, Enums<TEnum>.Info.SetFlags(otherFlags));
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, params TEnum[] otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, Enums<TEnum>.Info.CombineFlags(otherFlags));
 
         /// <summary>
         /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
@@ -285,8 +285,8 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentException">Any of <paramref name="flags"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<[EnumConstraint] TEnum>(params TEnum[] flags)
-            where TEnum : struct => Enums<TEnum>.Info.SetFlags(flags);
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(params TEnum[] flags)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flags);
 
         /// <summary>
         /// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
@@ -297,8 +297,8 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.</returns>
         /// <exception cref="ArgumentException"><paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum ClearFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
-            where TEnum : struct => Enums<TEnum>.Info.ClearFlags(value, flagMask);
+        public static TEnum ExcludeFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
+            where TEnum : struct => Enums<TEnum>.Info.ExcludeFlags(value, flagMask);
         #endregion
 
         #region Parsing

@@ -867,14 +867,14 @@ namespace EnumsNET
             return Provider.And(value, flagMask);
         }
 
-        public TInt SetFlags(TInt flag0, TInt flag1)
+        public TInt CombineFlags(TInt flag0, TInt flag1)
         {
             ValidateFlagCombination(flag0, nameof(flag0));
             ValidateFlagCombination(flag1, nameof(flag1));
             return Provider.Or(flag0, flag1);
         }
 
-        public TInt SetFlags(TInt flag0, TInt flag1, TInt flag2)
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2)
         {
             ValidateFlagCombination(flag0, nameof(flag0));
             ValidateFlagCombination(flag1, nameof(flag1));
@@ -882,7 +882,7 @@ namespace EnumsNET
             return Provider.Or(Provider.Or(flag0, flag1), flag2);
         }
 
-        public TInt SetFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3)
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3)
         {
             ValidateFlagCombination(flag0, nameof(flag0));
             ValidateFlagCombination(flag1, nameof(flag1));
@@ -891,7 +891,7 @@ namespace EnumsNET
             return Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3);
         }
 
-        public TInt SetFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4)
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4)
         {
             ValidateFlagCombination(flag0, nameof(flag0));
             ValidateFlagCombination(flag1, nameof(flag1));
@@ -901,7 +901,7 @@ namespace EnumsNET
             return Provider.Or(Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3), flag4);
         }
 
-        public TInt SetFlags(IEnumerable<TInt> flags)
+        public TInt CombineFlags(IEnumerable<TInt> flags)
         {
             var combinedFlags = Provider.Zero;
             if (flags != null)
@@ -915,7 +915,7 @@ namespace EnumsNET
             return combinedFlags;
         }
 
-        public TInt ClearFlags(TInt value, TInt flagMask)
+        public TInt ExcludeFlags(TInt value, TInt flagMask)
         {
             ValidateFlagCombination(value, nameof(value));
             ValidateFlagCombination(flagMask, nameof(flagMask));

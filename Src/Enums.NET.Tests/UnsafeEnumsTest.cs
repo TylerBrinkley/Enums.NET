@@ -16,13 +16,7 @@
 using System;
 using EnumsNET.Tests.TestEnums;
 using EnumsNET.Unsafe;
-#if NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
-using Test = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestMethodAttribute;
-#else
 using NUnit.Framework;
-#endif
 
 namespace EnumsNET.Tests
 {

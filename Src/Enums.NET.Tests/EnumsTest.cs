@@ -15,18 +15,12 @@
 
 using System;
 using System.Linq;
-using System.Runtime.Serialization;
-using static EnumsNET.Enums;
-using EnumsNET.Tests.TestEnums;
-using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 using System.Reflection;
-#if NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
-using Test = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestMethodAttribute;
-#else
+using System.Runtime.Serialization;
+using EnumsNET.Tests.TestEnums;
 using NUnit.Framework;
-#endif
+using static EnumsNET.Enums;
+using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
 namespace EnumsNET.Tests
 {

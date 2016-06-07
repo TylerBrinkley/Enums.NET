@@ -68,11 +68,11 @@ namespace EnumsNET
         #region Type Methods
         public int GetDefinedCount(bool uniqueValued) => Cache.GetDefinedCount(uniqueValued);
 
-        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select
+        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member =>
 #if NET20 || NET35
-            <InternalEnumMember<TInt, TIntProvider>, EnumMember<TEnum>>
+            (EnumMember<TEnum>)
 #endif
-            (member => new EnumMember<TEnum, TInt, TIntProvider>(member));
+            new EnumMember<TEnum, TInt, TIntProvider>(member));
 
         public IEnumerable<string> GetNames(bool uniqueValued) => Cache.GetNames(uniqueValued);
 
@@ -267,17 +267,17 @@ namespace EnumsNET
 
         public TEnum CommonFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(flagMask)));
 
-        public TEnum SetFlags(TEnum flag0, TEnum flag1) => ToEnum(Cache.SetFlags(ToInt(flag0), ToInt(flag1)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1)));
 
-        public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2) => ToEnum(Cache.SetFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2)));
 
-        public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) => ToEnum(Cache.SetFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3)));
 
-        public TEnum SetFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.SetFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
 
-        public TEnum SetFlags(TEnum[] flags) => ToEnum(Cache.SetFlags(flags?.Select(flag => ToInt(flag))));
+        public TEnum CombineFlags(TEnum[] flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
-        public TEnum ClearFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.ClearFlags(ToInt(value), ToInt(flagMask)));
+        public TEnum ExcludeFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(flagMask)));
         #endregion
 
         #region Parsing

@@ -1,13 +1,7 @@
 ﻿using System;
 using EnumsNET.NonGeneric;
 using EnumsNET.Tests.TestEnums;
-#if NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
-using Test = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestMethodAttribute;
-#else
 using NUnit.Framework;
-#endif
 
 namespace EnumsNET.Tests
 {

@@ -413,7 +413,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
         [Pure]
-        public static object SetFlags(Type enumType, object flag0, object flag1)
+        public static object CombineFlags(Type enumType, object flag0, object flag1)
         {
             var isNullable = new OptionalOutParameter<bool>();
             var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
@@ -430,7 +430,7 @@ namespace EnumsNET.NonGeneric
                 }
             }
 
-            return enumInfo.SetFlags(flag0, flag1);
+            return enumInfo.CombineFlags(flag0, flag1);
         }
 
         /// <summary>
@@ -440,12 +440,12 @@ namespace EnumsNET.NonGeneric
         /// <param name="flags">Must be valid flag combinations.</param>
         /// <returns></returns>
         [Pure]
-        public static object SetFlags(Type enumType, params object[] flags)
+        public static object CombineFlags(Type enumType, params object[] flags)
         {
             Preconditions.NotNull(flags, nameof(flags));
 
             var isNullable = new OptionalOutParameter<bool>();
-            return NonGenericEnums.GetInfo(enumType, isNullable).SetFlags(isNullable ? flags.Where(flag => flag != null) : flags);
+            return NonGenericEnums.GetInfo(enumType, isNullable).CombineFlags(isNullable ? flags.Where(flag => flag != null) : flags);
         }
 
         /// <summary>
@@ -462,7 +462,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
         [Pure]
-        public static object ClearFlags(Type enumType, object value, object flagMask)
+        public static object ExcludeFlags(Type enumType, object value, object flagMask)
         {
             var isNullable = new OptionalOutParameter<bool>();
             var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
@@ -483,7 +483,7 @@ namespace EnumsNET.NonGeneric
                 }
             }
 
-            return enumInfo.ClearFlags(value, flagMask);
+            return enumInfo.ExcludeFlags(value, flagMask);
         }
         #endregion
 

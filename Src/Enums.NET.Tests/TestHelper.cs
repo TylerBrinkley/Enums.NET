@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-#if NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-#else
 using NUnit.Framework;
-#endif
 
 namespace EnumsNET.Tests
 {

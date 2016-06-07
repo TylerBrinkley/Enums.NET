@@ -273,10 +273,10 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1)
+        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.SetFlags(flag0, flag1);
+            return Enums<TEnum>.Info.CombineFlags(flag0, flag1);
         }
 
         /// <summary>
@@ -291,10 +291,10 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="flag0"/>, <paramref name="flag1"/>, or <paramref name="flag2"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
+        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2);
+            return Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2);
         }
 
         /// <summary>
@@ -310,10 +310,10 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, or <paramref name="flag3"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
+        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3);
+            return Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3);
         }
 
         /// <summary>
@@ -330,10 +330,10 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, or <paramref name="flag4"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
+        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.SetFlags(flag0, flag1, flag2, flag3, flag4);
+            return Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3, flag4);
         }
 
         /// <summary>
@@ -346,10 +346,10 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// any of <paramref name="flags"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum SetFlags<TEnum>(params TEnum[] flags)
+        public static TEnum CombineFlags<TEnum>(params TEnum[] flags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.SetFlags(flags);
+            return Enums<TEnum>.Info.CombineFlags(flags);
         }
 
         /// <summary>
@@ -363,10 +363,10 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
         [Pure]
-        public static TEnum ClearFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum flagMask)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ClearFlags(value, flagMask);
+            return Enums<TEnum>.Info.ExcludeFlags(value, flagMask);
         }
         #endregion
 

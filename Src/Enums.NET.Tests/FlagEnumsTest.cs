@@ -15,13 +15,7 @@
 
 using System;
 using EnumsNET.Tests.TestEnums;
-#if NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-using TestFixture = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestClassAttribute;
-using Test = Microsoft.VisualStudio.TestPlatform.UnitTestFramework.TestMethodAttribute;
-#else
 using NUnit.Framework;
-#endif
 
 namespace EnumsNET.Tests
 {
@@ -256,46 +250,46 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void SetFlags()
+        public void CombineFlags()
         {
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, ColorFlagEnum.Red.SetFlags(ColorFlagEnum.Green));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, ColorFlagEnum.Green.SetFlags(ColorFlagEnum.Red));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, ColorFlagEnum.Green.SetFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ColorFlagEnum.Blue.SetFlags(ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, ColorFlagEnum.Red.CombineFlags(ColorFlagEnum.Green));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, ColorFlagEnum.Green.CombineFlags(ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, ColorFlagEnum.Green.CombineFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Blue, ColorFlagEnum.Blue.CombineFlags(ColorFlagEnum.Blue));
         }
 
         [Test]
-        public void SetFlags_ThrowsArgumentException_WhenUsingInvalidValue()
+        public void CombineFlags_ThrowsArgumentException_WhenUsingInvalidValue()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).SetFlags(ColorFlagEnum.Red));
+            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).CombineFlags(ColorFlagEnum.Red));
         }
 
         [Test]
-        public void SetFlags_ThrowsArgumentException_WhenUsingInvalidFlagMask()
+        public void CombineFlags_ThrowsArgumentException_WhenUsingInvalidFlagMask()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ColorFlagEnum.Red.SetFlags((ColorFlagEnum)16));
+            TestHelper.ExpectException<ArgumentException>(() => ColorFlagEnum.Red.CombineFlags((ColorFlagEnum)16));
         }
 
         [Test]
-        public void ClearFlags()
+        public void ExcludeFlags()
         {
-            Assert.AreEqual(ColorFlagEnum.Red, (ColorFlagEnum.Red | ColorFlagEnum.Green).ClearFlags(ColorFlagEnum.Green));
-            Assert.AreEqual(ColorFlagEnum.Green, ColorFlagEnum.Green.ClearFlags(ColorFlagEnum.Red));
-            Assert.AreEqual(ColorFlagEnum.Green, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ClearFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ClearFlags(ColorFlagEnum.Red | ColorFlagEnum.UltraViolet));
-            Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Blue.ClearFlags(ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Red, (ColorFlagEnum.Red | ColorFlagEnum.Green).ExcludeFlags(ColorFlagEnum.Green));
+            Assert.AreEqual(ColorFlagEnum.Green, ColorFlagEnum.Green.ExcludeFlags(ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Green, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ExcludeFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ExcludeFlags(ColorFlagEnum.Red | ColorFlagEnum.UltraViolet));
+            Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Blue.ExcludeFlags(ColorFlagEnum.Blue));
         }
 
         [Test]
-        public void ClearFlags_ThrowsArgumentException_WhenUsingInvalidValue()
+        public void ExcludeFlags_ThrowsArgumentException_WhenUsingInvalidValue()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).ClearFlags(ColorFlagEnum.Red));
+            TestHelper.ExpectException<ArgumentException>(() => ((ColorFlagEnum)16).ExcludeFlags(ColorFlagEnum.Red));
         }
 
         [Test]
-        public void ClearFlags_ThrowsArgumentException_WhenUsingInvalidFlagMask()
+        public void ExcludeFlags_ThrowsArgumentException_WhenUsingInvalidFlagMask()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ColorFlagEnum.Red.ClearFlags((ColorFlagEnum)16));
+            TestHelper.ExpectException<ArgumentException>(() => ColorFlagEnum.Red.ExcludeFlags((ColorFlagEnum)16));
         }
         #endregion
 
