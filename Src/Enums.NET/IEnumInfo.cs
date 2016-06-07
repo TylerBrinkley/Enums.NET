@@ -85,7 +85,7 @@ namespace EnumsNET
         object CombineFlags(IEnumerable<object> flags);
         object CombineFlags(object flag0, object flag1);
         byte ToByte(object value);
-        object ToggleFlags(object value);
+        object ToggleFlags(object value, bool toggleValidFlagsOnly);
         object ToggleFlags(object value, object flagMask);
         short ToInt16(object value);
         int ToInt32(object value);
@@ -151,7 +151,7 @@ namespace EnumsNET
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3);
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4);
         byte ToByte(TEnum value);
-        TEnum ToggleFlags(TEnum value);
+        TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly);
         TEnum ToggleFlags(TEnum value, TEnum flagMask);
         short ToInt16(TEnum value);
         int ToInt32(TEnum value);

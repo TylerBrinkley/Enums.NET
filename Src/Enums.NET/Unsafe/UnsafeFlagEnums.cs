@@ -82,7 +82,7 @@ namespace EnumsNET.Unsafe
         /// If <paramref name="value"/> is not a valid flag combination null is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>The names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
@@ -94,7 +94,7 @@ namespace EnumsNET.Unsafe
         /// or if empty return the zero flag formatted with <paramref name="formats"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <param name="formats"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
@@ -105,7 +105,7 @@ namespace EnumsNET.Unsafe
         /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <param name="delimiter">The delimiter to use to separate individual flag names. Cannot be null or empty.</param>
         /// <returns>The names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
@@ -118,7 +118,7 @@ namespace EnumsNET.Unsafe
         /// or if empty return the zero flag formatted with <paramref name="formats"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <param name="delimiter"></param>
         /// <param name="formats"></param>
         /// <returns></returns>
@@ -135,7 +135,7 @@ namespace EnumsNET.Unsafe
         /// If <paramref name="value"/> is not a valid flag combination null is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>Array of the flags that compose <paramref name="value"/>.
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
@@ -150,11 +150,9 @@ namespace EnumsNET.Unsafe
         /// Indicates if <paramref name="value"/> has any flags set.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>Indication if <paramref name="value"/> has any flags set.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static bool HasAnyFlags<TEnum>(TEnum value)
         {
@@ -166,12 +164,10 @@ namespace EnumsNET.Unsafe
         /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static bool HasAnyFlags<TEnum>(TEnum value, TEnum flagMask)
         {
@@ -183,11 +179,9 @@ namespace EnumsNET.Unsafe
         /// Indicates if <paramref name="value"/> has all flags set that are defined in <typeparamref name="TEnum"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>Indication if <paramref name="value"/> has all flags set that are defined in <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static bool HasAllFlags<TEnum>(TEnum value)
         {
@@ -199,12 +193,10 @@ namespace EnumsNET.Unsafe
         /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static bool HasAllFlags<TEnum>(TEnum value, TEnum flagMask)
         {
@@ -216,28 +208,40 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum ToggleFlags<TEnum>(TEnum value)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ToggleFlags(value);
+            return Enums<TEnum>.Info.ToggleFlags(value, true);
+        }
+
+        /// <summary>
+        /// Returns <paramref name="value"/> with all of it's flags toggled. If <paramref name="toggleValidFlagsOnly"/> is <c>true</c> then equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>
+        /// else is equivalent to the bitwise "not" operator.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="toggleValidFlagsOnly"></param>
+        /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ToggleFlags<TEnum>(TEnum value, bool toggleValidFlagsOnly)
+        {
+            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
+            return Enums<TEnum>.Info.ToggleFlags(value, toggleValidFlagsOnly);
         }
 
         /// <summary>
         /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum flagMask)
         {
@@ -249,12 +253,10 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>. Equivalent to the bitwise "and" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum CommonFlags<TEnum>(TEnum value, TEnum flagMask)
         {
@@ -266,12 +268,10 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0">Must be a valid flag combination.</param>
-        /// <param name="flag1">Must be a valid flag combination.</param>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
         /// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1)
         {
@@ -283,13 +283,11 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> and <paramref name="flag2"/> set.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0">Must be a valid flag combination.</param>
-        /// <param name="flag1">Must be a valid flag combination.</param>
-        /// <param name="flag2">Must be a valid flag combination.</param>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
+        /// <param name="flag2"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="flag0"/>, <paramref name="flag1"/>, or <paramref name="flag2"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
         {
@@ -301,14 +299,12 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/> set.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0">Must be a valid flag combination.</param>
-        /// <param name="flag1">Must be a valid flag combination.</param>
-        /// <param name="flag2">Must be a valid flag combination.</param>
-        /// <param name="flag3">Must be a valid flag combination.</param>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
+        /// <param name="flag2"></param>
+        /// <param name="flag3"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, or <paramref name="flag3"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
         {
@@ -320,15 +316,13 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/> set.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0">Must be a valid flag combination.</param>
-        /// <param name="flag1">Must be a valid flag combination.</param>
-        /// <param name="flag2">Must be a valid flag combination.</param>
-        /// <param name="flag3">Must be a valid flag combination.</param>
-        /// <param name="flag4">Must be a valid flag combination.</param>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
+        /// <param name="flag2"></param>
+        /// <param name="flag3"></param>
+        /// <param name="flag4"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, or <paramref name="flag4"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
         {
@@ -342,9 +336,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="flags">Must be valid flag combinations.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// any of <paramref name="flags"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum CombineFlags<TEnum>(params TEnum[] flags)
         {
@@ -356,12 +348,10 @@ namespace EnumsNET.Unsafe
         /// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum flagMask)
         {

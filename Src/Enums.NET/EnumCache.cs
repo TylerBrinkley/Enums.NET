@@ -289,7 +289,7 @@ namespace EnumsNET
             return TryToObject(value, out result, true);
         }
 
-        public bool IsValid(TInt value) => IsFlagEnum ? IsValidFlagCombination(value) : IsDefined(value);
+        public bool IsValid(TInt value) => IsFlagEnum ? IsValidFlagCombination(value) || IsDefined(value) : IsDefined(value);
 
         public bool IsValid(long value) => Provider.IsInValueRange(value) && IsValid(Provider.Create(value));
 
@@ -471,18 +471,7 @@ namespace EnumsNET
 
         public string AsString(TInt value) => InternalAsString(GetEnumMember(value));
 
-        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member)
-        {
-            if (IsFlagEnum)
-            {
-                var str = InternalFormatAsFlags(member, null, null);
-                if (str != null)
-                {
-                    return str;
-                }
-            }
-            return InternalFormat(member, EnumFormat.Name, EnumFormat.DecimalValue);
-        }
+        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatAsFlags(member, null, null) : InternalFormat(member, EnumFormat.Name, EnumFormat.DecimalValue);
 
         public string AsString(TInt value, EnumFormat[] formats) => InternalAsString(GetEnumMember(value), formats);
 
@@ -521,7 +510,7 @@ namespace EnumsNET
                     return InternalAsString(member);
                 case "F":
                 case "f":
-                    return InternalFormatAsFlags(member, null, null) ?? InternalFormat(member, EnumFormat.Name, EnumFormat.DecimalValue);
+                    return InternalFormatAsFlags(member, null, null);
                 case "D":
                 case "d":
                     return member.Value.ToString("D", null);
@@ -777,9 +766,14 @@ namespace EnumsNET
 
         private string InternalFormatAsFlags(InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formats)
         {
-            if (!IsValidFlagCombination(member.Value))
+            if (!(formats?.Length > 0))
             {
-                return null;
+                formats = Enums.DefaultFormatOrder;
+            }
+
+            if (member.IsDefined || member.Value.Equals(Provider.Zero) || !IsValidFlagCombination(member.Value))
+            {
+                return InternalFormat(member, formats);
             }
 
             if (string.IsNullOrEmpty(delimiter))
@@ -787,119 +781,47 @@ namespace EnumsNET
                 delimiter = FlagEnums.DefaultDelimiter;
             }
 
-            if (!(formats?.Length > 0))
-            {
-                formats = Enums.DefaultFormatOrder;
-            }
-            
-            if (member.IsDefined || member.Value.Equals(Provider.Zero))
-            {
-                return InternalFormat(member, formats);
-            }
-
             return string.Join(delimiter,
-                InternalGetFlags(member.Value).Select(flag => InternalFormat(GetEnumMember(flag), formats))
+                GetFlags(member.Value).Select(flag => InternalFormat(GetEnumMember(flag), formats))
 #if NET20 || NET35
                 .ToArray()
 #endif
                 );
         }
 
-        public IEnumerable<TInt> GetFlags(TInt value) => IsValidFlagCombination(value) ? InternalGetFlags(value) : null;
-
-        private IEnumerable<TInt> InternalGetFlags(TInt value)
+        public IEnumerable<TInt> GetFlags(TInt value)
         {
             var isLessThanZero = Provider.LessThan(value, Provider.Zero);
             for (var currentValue = Provider.One; (isLessThanZero || !Provider.LessThan(value, currentValue)) && !currentValue.Equals(Provider.Zero); currentValue = Provider.LeftShift(currentValue, 1))
             {
-                if (IsValidFlagCombination(currentValue) && InternalHasAnyFlags(value, currentValue))
+                if (HasAnyFlags(value, currentValue))
                 {
                     yield return currentValue;
                 }
             }
         }
 
-        public bool HasAnyFlags(TInt value)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            return !value.Equals(Provider.Zero);
-        }
+        public bool HasAnyFlags(TInt value) => !value.Equals(Provider.Zero);
 
-        public bool HasAnyFlags(TInt value, TInt flagMask)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            ValidateFlagCombination(flagMask, nameof(flagMask));
-            return InternalHasAnyFlags(value, flagMask);
-        }
+        public bool HasAnyFlags(TInt value, TInt flagMask) => !Provider.And(value, flagMask).Equals(Provider.Zero);
 
-        private bool InternalHasAnyFlags(TInt value, TInt flagMask) => !Provider.And(value, flagMask).Equals(Provider.Zero);
+        public bool HasAllFlags(TInt value) => HasAllFlags(value, AllFlags);
 
-        public bool HasAllFlags(TInt value)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            return value.Equals(AllFlags);
-        }
+        public bool HasAllFlags(TInt value, TInt flagMask) => Provider.And(value, flagMask).Equals(flagMask);
 
-        public bool HasAllFlags(TInt value, TInt flagMask)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            ValidateFlagCombination(flagMask, nameof(flagMask));
-            return Provider.And(value, flagMask).Equals(flagMask);
-        }
+        public TInt ToggleFlags(TInt value, bool toggleValidFlagsOnly) => toggleValidFlagsOnly ? Provider.Xor(value, AllFlags) : Provider.Not(value);
 
-        public TInt ToggleFlags(TInt value)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            return Provider.Xor(value, AllFlags);
-        }
+        public TInt ToggleFlags(TInt value, TInt flagMask) => Provider.Xor(value, flagMask);
 
-        public TInt ToggleFlags(TInt value, TInt flagMask)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            ValidateFlagCombination(flagMask, nameof(flagMask));
-            return Provider.Xor(value, flagMask);
-        }
+        public TInt CommonFlags(TInt value, TInt flagMask) => Provider.And(value, flagMask);
 
-        public TInt CommonFlags(TInt value, TInt flagMask)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            ValidateFlagCombination(flagMask, nameof(flagMask));
-            return Provider.And(value, flagMask);
-        }
+        public TInt CombineFlags(TInt flag0, TInt flag1) => Provider.Or(flag0, flag1);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1)
-        {
-            ValidateFlagCombination(flag0, nameof(flag0));
-            ValidateFlagCombination(flag1, nameof(flag1));
-            return Provider.Or(flag0, flag1);
-        }
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2) => Provider.Or(Provider.Or(flag0, flag1), flag2);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2)
-        {
-            ValidateFlagCombination(flag0, nameof(flag0));
-            ValidateFlagCombination(flag1, nameof(flag1));
-            ValidateFlagCombination(flag2, nameof(flag2));
-            return Provider.Or(Provider.Or(flag0, flag1), flag2);
-        }
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3) => Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3)
-        {
-            ValidateFlagCombination(flag0, nameof(flag0));
-            ValidateFlagCombination(flag1, nameof(flag1));
-            ValidateFlagCombination(flag2, nameof(flag2));
-            ValidateFlagCombination(flag3, nameof(flag3));
-            return Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3);
-        }
-
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4)
-        {
-            ValidateFlagCombination(flag0, nameof(flag0));
-            ValidateFlagCombination(flag1, nameof(flag1));
-            ValidateFlagCombination(flag2, nameof(flag2));
-            ValidateFlagCombination(flag3, nameof(flag3));
-            ValidateFlagCombination(flag4, nameof(flag4));
-            return Provider.Or(Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3), flag4);
-        }
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4) => Provider.Or(Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3), flag4);
 
         public TInt CombineFlags(IEnumerable<TInt> flags)
         {
@@ -908,27 +830,13 @@ namespace EnumsNET
             {
                 foreach (var flag in flags)
                 {
-                    ValidateFlagCombination(flag, nameof(flags) + " must contain all valid flag combinations");
                     combinedFlags = Provider.Or(combinedFlags, flag);
                 }
             }
             return combinedFlags;
         }
 
-        public TInt ExcludeFlags(TInt value, TInt flagMask)
-        {
-            ValidateFlagCombination(value, nameof(value));
-            ValidateFlagCombination(flagMask, nameof(flagMask));
-            return Provider.And(value, Provider.Not(flagMask));
-        }
-
-        private void ValidateFlagCombination(TInt value, string paramName)
-        {
-            if (!IsValidFlagCombination(value))
-            {
-                throw new ArgumentException("must be valid flag combination", paramName);
-            }
-        }
+        public TInt ExcludeFlags(TInt value, TInt flagMask) => Provider.And(value, Provider.Not(flagMask));
         #endregion
 
         #region Parsing
@@ -975,10 +883,6 @@ namespace EnumsNET
                 TInt indValueAsInt;
                 if (InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder))
                 {
-                    if (!IsValidFlagCombination(indValueAsInt))
-                    {
-                        throw new ArgumentException("All individual enum values within value must be valid");
-                    }
                     result = Provider.Or(result, indValueAsInt);
                 }
                 else
@@ -1039,7 +943,7 @@ namespace EnumsNET
                 }
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
                 TInt indValueAsInt;
-                if (!InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder) || !IsValidFlagCombination(indValueAsInt))
+                if (!InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder))
                 {
                     result = Provider.Zero;
                     return false;

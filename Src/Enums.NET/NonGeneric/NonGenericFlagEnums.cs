@@ -157,7 +157,7 @@ namespace EnumsNET.NonGeneric
         /// If <paramref name="value"/> is not a valid flag combination null is returned.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Should be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>Array of the flags that compose <paramref name="value"/>.
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
@@ -182,14 +182,12 @@ namespace EnumsNET.NonGeneric
         /// Indicates if <paramref name="value"/> has any flags set.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>Indication if <paramref name="value"/> has any flags set.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value)
         {
@@ -208,15 +206,13 @@ namespace EnumsNET.NonGeneric
         /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value, object flagMask)
         {
@@ -243,14 +239,12 @@ namespace EnumsNET.NonGeneric
         /// Indicates if <paramref name="value"/> has all flags set that are defined in <paramref name="enumType"/>.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns>Indication if <paramref name="value"/> has all flags set that are defined in <paramref name="enumType"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static bool HasAllFlags(Type enumType, object value)
         {
@@ -269,15 +263,13 @@ namespace EnumsNET.NonGeneric
         /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static bool HasAllFlags(Type enumType, object value, object flagMask)
         {
@@ -304,14 +296,12 @@ namespace EnumsNET.NonGeneric
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags(Type)"/>.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static object ToggleFlags(Type enumType, object value)
         {
@@ -323,22 +313,50 @@ namespace EnumsNET.NonGeneric
                 return enumInfo.AllFlags;
             }
 
-            return enumInfo.ToggleFlags(value);
+            return enumInfo.ToggleFlags(value, true);
+        }
+
+        /// <summary>
+        /// Returns <paramref name="value"/> with all of it's flags toggled. If <paramref name="toggleValidFlagsOnly"/> is <c>true</c> then equivalent to the bitwise "xor" operator with <see cref="GetAllFlags(Type)"/>
+        /// else is equivalent to the bitwise "not" operator.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="toggleValidFlagsOnly"></param>
+        /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is an invalid type.</exception>
+        [Pure]
+        public static object ToggleFlags(Type enumType, object value, bool toggleValidFlagsOnly)
+        {
+            var isNullable = new OptionalOutParameter<bool>();
+            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+
+            if (value == null && isNullable)
+            {
+                if (toggleValidFlagsOnly)
+                {
+                    return enumInfo.AllFlags;
+                }
+                value = enumInfo.ToObject(0, false);
+            }
+
+            return enumInfo.ToggleFlags(value, toggleValidFlagsOnly);
         }
 
         /// <summary>
         /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static object ToggleFlags(Type enumType, object value, object flagMask)
         {
@@ -364,15 +382,13 @@ namespace EnumsNET.NonGeneric
         /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>. Equivalent to the bitwise "and" operation.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static object CommonFlags(Type enumType, object value, object flagMask)
         {
@@ -403,15 +419,13 @@ namespace EnumsNET.NonGeneric
         /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="flag0">Must be a valid flag combination.</param>
-        /// <param name="flag1">Must be a valid flag combination.</param>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
         /// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="flag0"/> is an invalid type
-        /// -or-
-        /// <paramref name="flag0"/> or <paramref name="flag1"/> is not a valid flag combination.</exception>
+        /// <paramref name="flag0"/> is an invalid type.</exception>
         [Pure]
         public static object CombineFlags(Type enumType, object flag0, object flag1)
         {
@@ -439,6 +453,10 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType"></param>
         /// <param name="flags">Must be valid flag combinations.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="flags"/> contains an object that is an invalid type.</exception>
         [Pure]
         public static object CombineFlags(Type enumType, params object[] flags)
         {
@@ -452,15 +470,13 @@ namespace EnumsNET.NonGeneric
         /// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="value">Must be a valid flag combination.</param>
-        /// <param name="flagMask">Must be a valid flag combination.</param>
+        /// <param name="value"></param>
+        /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
-        /// -or-
-        /// <paramref name="value"/> or <paramref name="flagMask"/> is not a valid flag combination.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
         public static object ExcludeFlags(Type enumType, object value, object flagMask)
         {
