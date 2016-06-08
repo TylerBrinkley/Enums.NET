@@ -30,7 +30,7 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET.NonGeneric
 {
-    internal class NonGenericEnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo
+    internal sealed class NonGenericEnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo
         where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
@@ -116,14 +116,14 @@ namespace EnumsNET.NonGeneric
 
         public EnumMember GetEnumMember(object value)
         {
-            var info = Cache.GetEnumMember(ToInt(value));
-            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
+            var member = Cache.GetEnumMember(ToInt(value));
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
         }
 
         public EnumMember GetEnumMember(string name, bool ignoreCase)
         {
-            var info = Cache.GetEnumMember(name, ignoreCase);
-            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
+            var member = Cache.GetEnumMember(name, ignoreCase);
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
         }
 
         public IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member =>
@@ -156,7 +156,7 @@ namespace EnumsNET.NonGeneric
 
         public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter)
         {
-            return Enums<TEnum>.Info.RegisterCustomEnumFormat(
+            return EnumInfo<TEnum, TInt, TIntProvider>.InternalRegisterCustomEnumFormat(
 #if NET20 || NET35
                 member => formatter(member));
 #else
@@ -245,6 +245,6 @@ namespace EnumsNET.NonGeneric
             Cache.Validate(valueAsTInt, paramName);
             return ToEnum(valueAsTInt);
         }
-#endregion
+        #endregion
     }
 }

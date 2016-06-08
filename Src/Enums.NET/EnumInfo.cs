@@ -39,7 +39,7 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
-    internal class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
+    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
         where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
@@ -195,14 +195,14 @@ namespace EnumsNET
         #region Defined Values Main Methods
         public EnumMember<TEnum> GetEnumMember(TEnum value)
         {
-            var info = Cache.GetEnumMember(ToInt(value));
-            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
+            var member = Cache.GetEnumMember(ToInt(value));
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
         }
 
         public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase)
         {
-            var info = Cache.GetEnumMember(name, ignoreCase);
-            return info.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(info) : null;
+            var member = Cache.GetEnumMember(name, ignoreCase);
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
         }
 
         public string GetName(TEnum value) => Cache.GetName(ToInt(value));
@@ -269,12 +269,6 @@ namespace EnumsNET
 
         public TEnum CombineFlags(TEnum flag0, TEnum flag1) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1)));
 
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2)));
-
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3)));
-
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
-
         public TEnum CombineFlags(TEnum[] flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
         public TEnum ExcludeFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(flagMask)));
@@ -294,7 +288,9 @@ namespace EnumsNET
         #endregion
 
         #region CustomEnumFormatters
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter)
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter) => InternalRegisterCustomEnumFormat(formatter);
+
+        internal static EnumFormat InternalRegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter)
         {
             Preconditions.NotNull(formatter, nameof(formatter));
 
@@ -319,13 +315,13 @@ namespace EnumsNET
             var formatter1 = Enums.GetCustomEnumFormatter(format);
             if (formatter1 != null)
             {
-                return info => formatter1(new EnumMember<TEnum, TInt, TIntProvider>(info));
+                return member => formatter1(new EnumMember<TEnum, TInt, TIntProvider>(member));
             }
             var formatter2 = GetCustomEnumFormatter(format);
-            return formatter2 != null ? info => formatter2(new EnumMember<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
+            return formatter2 != null ? member => formatter2(new EnumMember<TEnum, TInt, TIntProvider>(member)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
 #else
             var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
-            return formatter != null ? info => formatter(new EnumMember<TEnum, TInt, TIntProvider>(info)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
+            return formatter != null ? member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
 #endif
         }
 
@@ -334,6 +330,6 @@ namespace EnumsNET
             var index = (int)format - Enums.StartingGenericCustomEnumFormatValue;
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
-#endregion
+        #endregion
     }
 }

@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace EnumsNET.Collections
 {
-    internal class ThreadSafeDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    internal sealed class ThreadSafeDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         private Dictionary<TKey, TValue> _dictionary;
         private KeyCollection _keys;

@@ -25,7 +25,7 @@
 
 namespace EnumsNET
 {
-    internal class OptionalOutParameter<T>
+    internal sealed class OptionalOutParameter<T>
         where T : struct
     {
         public T Value;

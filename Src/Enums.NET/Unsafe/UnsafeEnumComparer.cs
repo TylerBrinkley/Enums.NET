@@ -32,7 +32,7 @@ namespace EnumsNET.Unsafe
     /// An efficient type-unsafe enum comparer which doesn't box the values for use with generics
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
+    public sealed class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
     {
         /// <summary>
         /// Constructor for an efficient type-unsafe enum comparer which doesn't box the values for use with generics

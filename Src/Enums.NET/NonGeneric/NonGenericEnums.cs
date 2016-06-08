@@ -110,7 +110,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         public static TypeCode GetTypeCode(Type enumType) => GetInfo(enumType).TypeCode;
-#endregion
+        #endregion
 
         #region Type Methods
         /// <summary>
@@ -329,7 +329,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         [CLSCompliant(false)]
         public static bool IsValid(Type enumType, ulong value) => GetInfo(enumType).IsValid(value);
-#endregion
+        #endregion
 
         #region IsDefined
         /// <summary>
@@ -460,7 +460,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         [CLSCompliant(false)]
         public static bool IsDefined(Type enumType, ulong value) => GetInfo(enumType).IsDefined(value);
-#endregion
+        #endregion
 
         #region IsInValueRange
         /// <summary>
@@ -554,7 +554,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         [CLSCompliant(false)]
         public static bool IsInValueRange(Type enumType, ulong value) => GetInfo(enumType).IsInValueRange(value);
-#endregion
+        #endregion
 
         #region ToObject
         /// <summary>
@@ -1019,7 +1019,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject(Type enumType, ulong value, out object result, bool validate = false) => GetInfo(enumType).TryToObject(value, out result, validate);
-#endregion
+        #endregion
 
         #region All Values Main Methods
         /// <summary>
@@ -1422,7 +1422,7 @@ namespace EnumsNET.NonGeneric
 
             return enumInfo.Equals(x, y);
         }
-#endregion
+        #endregion
 
         #region Defined Values Main Methods
         /// <summary>
@@ -1515,7 +1515,7 @@ namespace EnumsNET.NonGeneric
 
             return enumInfo.GetDescription(value);
         }
-#endregion
+        #endregion
 
         #region Attributes
         /// <summary>
@@ -1541,7 +1541,7 @@ namespace EnumsNET.NonGeneric
 
             return enumInfo.GetAttributes(value);
         }
-#endregion
+        #endregion
 
         #region Parsing
         /// <summary>
@@ -1755,6 +1755,6 @@ namespace EnumsNET.NonGeneric
 
             return enumInfo.TryParse(value, ignoreCase, out result, parseFormatOrder);
         }
-#endregion
+        #endregion
     }
 }

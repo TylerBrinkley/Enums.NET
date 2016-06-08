@@ -228,56 +228,6 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1);
 
         /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> and <paramref name="flag2"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <param name="flag2"></param>
-        /// <returns></returns>
-        [Pure]
-        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2)
-            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2);
-
-        /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <param name="flag2"></param>
-        /// <param name="flag3"></param>
-        /// <returns></returns>
-        [Pure]
-        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
-            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3);
-
-        /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <param name="flag2"></param>
-        /// <param name="flag3"></param>
-        /// <param name="flag4"></param>
-        /// <returns></returns>
-        [Pure]
-        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
-            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3, flag4);
-
-        /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="otherFlags"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="otherFlags">Must be valid flag combinations.</param>
-        /// <returns></returns>
-        [Pure]
-        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, params TEnum[] otherFlags)
-            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, Enums<TEnum>.Info.CombineFlags(otherFlags));
-
-        /// <summary>
         /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>

@@ -147,9 +147,6 @@ namespace EnumsNET
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
         TEnum CombineFlags(TEnum[] flags);
         TEnum CombineFlags(TEnum flag0, TEnum flag1);
-        TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2);
-        TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3);
-        TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4);
         byte ToByte(TEnum value);
         TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly);
         TEnum ToggleFlags(TEnum value, TEnum flagMask);

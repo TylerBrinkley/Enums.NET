@@ -817,12 +817,6 @@ namespace EnumsNET
 
         public TInt CombineFlags(TInt flag0, TInt flag1) => Provider.Or(flag0, flag1);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2) => Provider.Or(Provider.Or(flag0, flag1), flag2);
-
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3) => Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3);
-
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4) => Provider.Or(Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3), flag4);
-
         public TInt CombineFlags(IEnumerable<TInt> flags)
         {
             var combinedFlags = Provider.Zero;

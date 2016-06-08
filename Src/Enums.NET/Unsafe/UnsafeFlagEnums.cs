@@ -280,57 +280,6 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> and <paramref name="flag2"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <param name="flag2"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2);
-        }
-
-        /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <param name="flag2"></param>
-        /// <param name="flag3"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3);
-        }
-
-        /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/> set.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <param name="flag2"></param>
-        /// <param name="flag3"></param>
-        /// <param name="flag4"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3, flag4);
-        }
-
-        /// <summary>
         /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>

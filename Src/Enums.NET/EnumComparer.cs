@@ -33,7 +33,7 @@ namespace EnumsNET
     /// An efficient type-safe enum comparer which doesn't box the values
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
+    public sealed class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
         where TEnum : struct
     {
         /// <summary>
