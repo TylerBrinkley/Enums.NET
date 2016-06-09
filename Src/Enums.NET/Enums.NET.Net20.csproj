@@ -47,7 +47,7 @@
     <Compile Include="Collections\HashHelper.cs" />
     <Compile Include="IEnumInfo.cs" />
     <Compile Include="IEnumMemberInfo.cs" />
-    <Compile Include="Numerics\IlNumericProvider.cs" />
+    <Compile Include="Numerics\INumericProvider.cs" />
     <Compile Include="Numerics\ByteNumericProvider.cs" />
     <Compile Include="Numerics\SByteNumericProvider.cs" />
     <Compile Include="Numerics\UInt16NumericProvider.cs" />
