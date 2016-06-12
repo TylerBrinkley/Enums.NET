@@ -43,41 +43,41 @@ namespace EnumsNET.NonGeneric
     public static class NonGenericEnums
     {
 #if NET20 || NET35 || NETSTANDARD10
-        private static readonly ThreadSafeDictionary<Type, IEnumInfo> _enumInfosDictionary = new ThreadSafeDictionary<Type, IEnumInfo>();
+        private static readonly ThreadSafeDictionary<Type, EnumInfoAndIsNullable> _enumInfosDictionary = new ThreadSafeDictionary<Type, EnumInfoAndIsNullable>();
 #else
-        private static readonly ConcurrentDictionary<Type, IEnumInfo> _enumInfosDictionary = new ConcurrentDictionary<Type, IEnumInfo>();
+        private static readonly ConcurrentDictionary<Type, EnumInfoAndIsNullable> _enumInfosDictionary = new ConcurrentDictionary<Type, EnumInfoAndIsNullable>();
 #endif
 
-        internal static IEnumInfo GetInfo(Type enumType, OptionalOutParameter<bool> isNullable = null)
+        internal static EnumInfoAndIsNullable GetInfo(Type enumType)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
-            if (!enumType.IsEnum)
+            
+            EnumInfoAndIsNullable info;
+            if (!_enumInfosDictionary.TryGetValue(enumType, out info))
             {
-                enumType = Nullable.GetUnderlyingType(enumType);
-                if (enumType?.IsEnum != true)
+                info = new EnumInfoAndIsNullable();
+                if (enumType.IsEnum)
                 {
-                    throw new ArgumentException("must be an enum type", nameof(enumType));
+                    var underlyingType = Enum.GetUnderlyingType(enumType);
+                    var numericProviderType = Enums.GetNumericProviderType(underlyingType);
+                    info.EnumInfo = (IEnumInfo)Activator.CreateInstance(typeof(NonGenericEnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
                 }
-                if (isNullable != null)
+                else
                 {
-                    isNullable.Value = true;
+                    var nonNullableEnumType = Nullable.GetUnderlyingType(enumType);
+                    if (nonNullableEnumType?.IsEnum != true)
+                    {
+                        throw new ArgumentException("must be an enum type", nameof(enumType));
+                    }
+                    info.EnumInfo = GetInfo(nonNullableEnumType).EnumInfo;
+                    info.IsNullable = true;
+                }
+                if (!_enumInfosDictionary.TryAdd(enumType, info))
+                {
+                    info = _enumInfosDictionary[enumType];
                 }
             }
-            else if (isNullable != null)
-            {
-                isNullable.Value = false;
-            }
-
-            IEnumInfo enumInfo;
-
-            if (!_enumInfosDictionary.TryGetValue(enumType, out enumInfo))
-            {
-                var underlyingType = Enum.GetUnderlyingType(enumType);
-                var numericProviderType = Enums.GetNumericProviderType(underlyingType);
-                enumInfo = (IEnumInfo)Activator.CreateInstance(typeof(NonGenericEnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
-                _enumInfosDictionary.TryAdd(enumType, enumInfo);
-            }
-            return enumInfo;
+            return info;
         }
 
         #region "Properties"
@@ -89,7 +89,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsContiguous(Type enumType) => GetInfo(enumType).IsContiguous;
+        public static bool IsContiguous(Type enumType) => GetInfo(enumType).EnumInfo.IsContiguous;
 
         /// <summary>
         /// Retrieves the underlying type of <paramref name="enumType"/>.
@@ -99,7 +99,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static Type GetUnderlyingType(Type enumType) => GetInfo(enumType).UnderlyingType;
+        public static Type GetUnderlyingType(Type enumType) => GetInfo(enumType).EnumInfo.UnderlyingType;
 
         /// <summary>
         /// Gets <paramref name="enumType"/>'s underlying type's <see cref="TypeCode"/>.
@@ -109,7 +109,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static TypeCode GetTypeCode(Type enumType) => GetInfo(enumType).TypeCode;
+        public static TypeCode GetTypeCode(Type enumType) => GetInfo(enumType).EnumInfo.TypeCode;
         #endregion
 
         #region Type Methods
@@ -122,7 +122,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static int GetDefinedCount(Type enumType, bool uniqueValued = false) => GetInfo(enumType).GetDefinedCount(uniqueValued);
+        public static int GetDefinedCount(Type enumType, bool uniqueValued = false) => GetInfo(enumType).EnumInfo.GetDefinedCount(uniqueValued);
 
         /// <summary>
         /// Retrieves in value order an array of info on <paramref name="enumType"/>'s members.
@@ -134,7 +134,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool uniqueValued = false) => GetInfo(enumType).GetEnumMembers(uniqueValued);
+        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool uniqueValued = false) => GetInfo(enumType).EnumInfo.GetEnumMembers(uniqueValued);
 
         /// <summary>
         /// Retrieves an array of <paramref name="enumType"/>'s defined constants' names in value order.
@@ -145,7 +145,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static IEnumerable<string> GetNames(Type enumType, bool uniqueValued = false) => GetInfo(enumType).GetNames(uniqueValued);
+        public static IEnumerable<string> GetNames(Type enumType, bool uniqueValued = false) => GetInfo(enumType).EnumInfo.GetNames(uniqueValued);
 
         /// <summary>
         /// Retrieves an array of <paramref name="enumType"/> defined constants' values in value order.
@@ -156,7 +156,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static IEnumerable<object> GetValues(Type enumType, bool uniqueValued = false) => GetInfo(enumType).GetValues(uniqueValued);
+        public static IEnumerable<object> GetValues(Type enumType, bool uniqueValued = false) => GetInfo(enumType).EnumInfo.GetValues(uniqueValued);
 
         /// <summary>
         /// Returns -1 if <paramref name="x"/> is less than <paramref name="y"/> and returns 0 if <paramref name="x"/> equals <paramref name="y"/>
@@ -175,10 +175,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static int Compare(Type enumType, object x, object y)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (x == null)
                 {
@@ -208,7 +208,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<EnumMember, string> formatter) => GetInfo(enumType).RegisterCustomEnumFormat(formatter);
+        public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<EnumMember, string> formatter) => GetInfo(enumType).EnumInfo.RegisterCustomEnumFormat(formatter);
         #endregion
 
         #region IsValid
@@ -227,15 +227,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsValid(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return true;
             }
 
-            return enumInfo.IsValid(value);
+            return info.EnumInfo.IsValid(value);
         }
 
         /// <summary>
@@ -316,7 +315,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsValid(Type enumType, long value) => GetInfo(enumType).IsValid(value);
+        public static bool IsValid(Type enumType, long value) => GetInfo(enumType).EnumInfo.IsValid(value);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> is valid for <paramref name="enumType"/>.
@@ -328,7 +327,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool IsValid(Type enumType, ulong value) => GetInfo(enumType).IsValid(value);
+        public static bool IsValid(Type enumType, ulong value) => GetInfo(enumType).EnumInfo.IsValid(value);
         #endregion
 
         #region IsDefined
@@ -345,15 +344,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsDefined(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return false;
             }
 
-            return enumInfo.IsDefined(value);
+            return info.EnumInfo.IsDefined(value);
         }
 
         /// <summary>
@@ -367,7 +365,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsDefined(Type enumType, string name, bool ignoreCase = false) => GetInfo(enumType).IsDefined(name, ignoreCase);
+        public static bool IsDefined(Type enumType, string name, bool ignoreCase = false) => GetInfo(enumType).EnumInfo.IsDefined(name, ignoreCase);
 
         /// <summary>
         /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
@@ -447,7 +445,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsDefined(Type enumType, long value) => GetInfo(enumType).IsDefined(value);
+        public static bool IsDefined(Type enumType, long value) => GetInfo(enumType).EnumInfo.IsDefined(value);
 
         /// <summary>
         /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
@@ -459,7 +457,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool IsDefined(Type enumType, ulong value) => GetInfo(enumType).IsDefined(value);
+        public static bool IsDefined(Type enumType, ulong value) => GetInfo(enumType).EnumInfo.IsDefined(value);
         #endregion
 
         #region IsInValueRange
@@ -541,7 +539,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsInValueRange(Type enumType, long value) => GetInfo(enumType).IsInValueRange(value);
+        public static bool IsInValueRange(Type enumType, long value) => GetInfo(enumType).EnumInfo.IsInValueRange(value);
 
         /// <summary>
         /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
@@ -553,7 +551,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool IsInValueRange(Type enumType, ulong value) => GetInfo(enumType).IsInValueRange(value);
+        public static bool IsInValueRange(Type enumType, ulong value) => GetInfo(enumType).EnumInfo.IsInValueRange(value);
         #endregion
 
         #region ToObject
@@ -575,15 +573,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToObject(Type enumType, object value, bool validate = false)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.ToObject(value, validate);
+            return info.EnumInfo.ToObject(value, validate);
         }
 
         /// <summary>
@@ -699,7 +696,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
-        public static object ToObject(Type enumType, long value, bool validate = false) => GetInfo(enumType).ToObject(value, validate);
+        public static object ToObject(Type enumType, long value, bool validate = false) => GetInfo(enumType).EnumInfo.ToObject(value, validate);
 
         /// <summary>
         /// Converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -716,157 +713,157 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ulong value, bool validate = false) => GetInfo(enumType).ToObject(value, validate);
+        public static object ToObject(Type enumType, ulong value, bool validate = false) => GetInfo(enumType).EnumInfo.ToObject(value, validate);
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ToObjectOrDefault(Type enumType, object value, object defaultEnum = null, bool validate = false)
+        public static object ToObjectOrDefault(Type enumType, object value, object defaultValue = null, bool validate = false)
         {
             object result;
-            return TryToObject(enumType, value, out result, validate) ? result : defaultEnum;
+            return TryToObject(enumType, value, out result, validate) ? result : defaultValue;
         }
 
         /// <summary>
         /// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static object ToObjectOrDefault(Type enumType, sbyte value, object defaultEnum = null, bool validate = false) => ToObjectOrDefault(enumType, (long)value, defaultEnum, validate);
+        public static object ToObjectOrDefault(Type enumType, sbyte value, object defaultValue = null, bool validate = false) => ToObjectOrDefault(enumType, (long)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ToObjectOrDefault(Type enumType, byte value, object defaultEnum = null, bool validate = false) => ToObjectOrDefault(enumType, (ulong)value, defaultEnum, validate);
+        public static object ToObjectOrDefault(Type enumType, byte value, object defaultValue = null, bool validate = false) => ToObjectOrDefault(enumType, (ulong)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ToObjectOrDefault(Type enumType, short value, object defaultEnum = null, bool validate = false) => ToObjectOrDefault(enumType, (long)value, defaultEnum, validate);
+        public static object ToObjectOrDefault(Type enumType, short value, object defaultValue = null, bool validate = false) => ToObjectOrDefault(enumType, (long)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static object ToObjectOrDefault(Type enumType, ushort value, object defaultEnum = null, bool validate = false) => ToObjectOrDefault(enumType, (ulong)value, defaultEnum, validate);
+        public static object ToObjectOrDefault(Type enumType, ushort value, object defaultValue = null, bool validate = false) => ToObjectOrDefault(enumType, (ulong)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ToObjectOrDefault(Type enumType, int value, object defaultEnum = null, bool validate = false) => ToObjectOrDefault(enumType, (long)value, defaultEnum, validate);
+        public static object ToObjectOrDefault(Type enumType, int value, object defaultValue = null, bool validate = false) => ToObjectOrDefault(enumType, (long)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static object ToObjectOrDefault(Type enumType, uint value, object defaultEnum = null, bool validate = false) => ToObjectOrDefault(enumType, (ulong)value, defaultEnum, validate);
+        public static object ToObjectOrDefault(Type enumType, uint value, object defaultValue = null, bool validate = false) => ToObjectOrDefault(enumType, (ulong)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ToObjectOrDefault(Type enumType, long value, object defaultEnum = null, bool validate = false)
+        public static object ToObjectOrDefault(Type enumType, long value, object defaultValue = null, bool validate = false)
         {
             object result;
-            return TryToObject(enumType, value, out result, validate) ? result : defaultEnum;
+            return TryToObject(enumType, value, out result, validate) ? result : defaultValue;
         }
 
         /// <summary>
         /// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static object ToObjectOrDefault(Type enumType, ulong value, object defaultEnum = null, bool validate = false)
+        public static object ToObjectOrDefault(Type enumType, ulong value, object defaultValue = null, bool validate = false)
         {
             object result;
-            return TryToObject(enumType, value, out result, validate) ? result : defaultEnum;
+            return TryToObject(enumType, value, out result, validate) ? result : defaultValue;
         }
 
         /// <summary>
@@ -884,16 +881,15 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryToObject(Type enumType, object value, out object result, bool validate = false)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 result = null;
                 return true;
             }
 
-            return enumInfo.TryToObject(value, out result, validate);
+            return info.EnumInfo.TryToObject(value, out result, validate);
         }
 
         /// <summary>
@@ -1002,7 +998,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool TryToObject(Type enumType, long value, out object result, bool validate = false) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, long value, out object result, bool validate = false) => GetInfo(enumType).EnumInfo.TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
@@ -1018,7 +1014,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ulong value, out object result, bool validate = false) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, ulong value, out object result, bool validate = false) => GetInfo(enumType).EnumInfo.TryToObject(value, out result, validate);
         #endregion
 
         #region All Values Main Methods
@@ -1036,15 +1032,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Validate(Type enumType, object value, string paramName)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
-                return value;
+                return null;
             }
 
-            return enumInfo.Validate(value, paramName);
+            return info.EnumInfo.Validate(value, paramName);
         }
 
         /// <summary>
@@ -1060,15 +1055,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.AsString(value);
+            return info.EnumInfo.AsString(value);
         }
 
         /// <summary>
@@ -1086,38 +1080,36 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, string format)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.AsString(value, format);
+            return info.EnumInfo.AsString(value, format);
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static string AsString(Type enumType, object value, params EnumFormat[] formats)
+        public static string AsString(Type enumType, object value, params EnumFormat[] formatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.AsString(value, formats);
+            return info.EnumInfo.AsString(value, formatOrder);
         }
 
         /// <summary>
@@ -1135,15 +1127,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, string format)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.Format(value, format);
+            return info.EnumInfo.Format(value, format);
         }
 
         /// <summary>
@@ -1160,15 +1151,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.Format(value, format);
+            return info.EnumInfo.Format(value, format);
         }
 
         /// <summary>
@@ -1186,15 +1176,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.Format(value, format0, format1);
+            return info.EnumInfo.Format(value, format0, format1);
         }
 
         /// <summary>
@@ -1213,40 +1202,38 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.Format(value, format0, format1, format2);
+            return info.EnumInfo.Format(value, format0, format1, format2);
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="formats"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="formatOrder"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is invalid.</exception>
         [Pure]
-        public static string Format(Type enumType, object value, params EnumFormat[] formats)
+        public static string Format(Type enumType, object value, params EnumFormat[] formatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.Format(value, formats);
+            return info.EnumInfo.Format(value, formatOrder);
         }
 
         /// <summary>
@@ -1262,15 +1249,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object GetUnderlyingValue(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.GetUnderlyingValue(value);
+            return info.EnumInfo.GetUnderlyingValue(value);
         }
 
         /// <summary>
@@ -1286,7 +1272,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static sbyte ToSByte(Type enumType, object value) => GetInfo(enumType).ToSByte(value);
+        public static sbyte ToSByte(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToSByte(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to a <see cref="byte"/>.
@@ -1300,7 +1286,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="value"/> is invalid</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="byte"/>'s value range without overflowing</exception>
         [Pure]
-        public static byte ToByte(Type enumType, object value) => GetInfo(enumType).ToByte(value);
+        public static byte ToByte(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToByte(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to an <see cref="short"/>.
@@ -1314,7 +1300,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="value"/> is invalid</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="short"/>'s value range without overflowing</exception>
         [Pure]
-        public static short ToInt16(Type enumType, object value) => GetInfo(enumType).ToInt16(value);
+        public static short ToInt16(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToInt16(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to a <see cref="ushort"/>.
@@ -1329,7 +1315,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static ushort ToUInt16(Type enumType, object value) => GetInfo(enumType).ToUInt16(value);
+        public static ushort ToUInt16(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToUInt16(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to an <see cref="int"/>.
@@ -1343,7 +1329,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="value"/> is invalid</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="int"/>'s value range without overflowing</exception>
         [Pure]
-        public static int ToInt32(Type enumType, object value) => GetInfo(enumType).ToInt32(value);
+        public static int ToInt32(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToInt32(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to a <see cref="uint"/>.
@@ -1358,7 +1344,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static uint ToUInt32(Type enumType, object value) => GetInfo(enumType).ToUInt32(value);
+        public static uint ToUInt32(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToUInt32(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to an <see cref="long"/>.
@@ -1372,7 +1358,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="value"/> is invalid</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="long"/>'s value range without overflowing</exception>
         [Pure]
-        public static long ToInt64(Type enumType, object value) => GetInfo(enumType).ToInt64(value);
+        public static long ToInt64(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToInt64(value);
 
         /// <summary>
         /// Tries to convert <paramref name="value"/> to a <see cref="ulong"/>.
@@ -1387,7 +1373,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static ulong ToUInt64(Type enumType, object value) => GetInfo(enumType).ToUInt64(value);
+        public static ulong ToUInt64(Type enumType, object value) => GetInfo(enumType).EnumInfo.ToUInt64(value);
 
         /// <summary>
         /// Indicates if the two values are equal to each other
@@ -1399,10 +1385,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool Equals(Type enumType, object x, object y)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (x == null)
                 {
@@ -1439,15 +1425,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static EnumMember GetEnumMember(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.GetEnumMember(value);
+            return info.EnumInfo.GetEnumMember(value);
         }
 
         /// <summary>
@@ -1462,7 +1447,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Pure]
-        public static EnumMember GetEnumMember(Type enumType, string name, bool ignoreCase = false) => GetInfo(enumType).GetEnumMember(name, ignoreCase);
+        public static EnumMember GetEnumMember(Type enumType, string name, bool ignoreCase = false) => GetInfo(enumType).EnumInfo.GetEnumMember(name, ignoreCase);
 
         /// <summary>
         /// Retrieves the name of the constant in <paramref name="enumType"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
@@ -1479,15 +1464,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string GetName(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.GetName(value);
+            return info.EnumInfo.GetName(value);
         }
 
         /// <summary>
@@ -1505,15 +1489,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string GetDescription(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.GetDescription(value);
+            return info.EnumInfo.GetDescription(value);
         }
         #endregion
 
@@ -1531,15 +1514,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static IEnumerable<Attribute> GetAttributes(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.GetAttributes(value);
+            return info.EnumInfo.GetAttributes(value);
         }
         #endregion
 
@@ -1615,15 +1597,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Parse(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (string.IsNullOrEmpty(value) && isNullable)
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.Parse(value, ignoreCase, parseFormatOrder);
+            return info.EnumInfo.Parse(value, ignoreCase, parseFormatOrder);
         }
 
         /// <summary>
@@ -1632,12 +1613,12 @@ namespace EnumsNET.NonGeneric
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, object defaultEnum = null) => ParseOrDefault(enumType, value, false, defaultEnum, null);
+        public static object ParseOrDefault(Type enumType, string value, object defaultValue = null) => ParseOrDefault(enumType, value, false, defaultValue, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1645,13 +1626,13 @@ namespace EnumsNET.NonGeneric
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, object defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, false, defaultEnum, parseFormatOrder);
+        public static object ParseOrDefault(Type enumType, string value, object defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, false, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -1661,12 +1642,12 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType"></param>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum = null) => ParseOrDefault(enumType, value, ignoreCase, defaultEnum, null);
+        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultValue = null) => ParseOrDefault(enumType, value, ignoreCase, defaultValue, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1675,16 +1656,16 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType"></param>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum, params EnumFormat[] parseFormatOrder)
+        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultValue, params EnumFormat[] parseFormatOrder)
         {
             object result;
-            return TryParse(enumType, value, ignoreCase, out result, parseFormatOrder) ? result : defaultEnum;
+            return TryParse(enumType, value, ignoreCase, out result, parseFormatOrder) ? result : defaultValue;
         }
 
         /// <summary>
@@ -1744,16 +1725,15 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = GetInfo(enumType, isNullable);
+            var info = GetInfo(enumType);
 
-            if (string.IsNullOrEmpty(value) && isNullable)
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
                 result = null;
                 return true;
             }
 
-            return enumInfo.TryParse(value, ignoreCase, out result, parseFormatOrder);
+            return info.EnumInfo.TryParse(value, ignoreCase, out result, parseFormatOrder);
         }
         #endregion
     }

@@ -46,7 +46,8 @@
     <Compile Include="FlagEnums.cs" />
     <Compile Include="Collections\HashHelper.cs" />
     <Compile Include="IEnumInfo.cs" />
-    <Compile Include="IEnumMemberInfo.cs" />
+    <Compile Include="IEnumMember.cs" />
+    <Compile Include="NonGeneric\EnumInfoAndIsNullable.cs" />
     <Compile Include="Numerics\INumericProvider.cs" />
     <Compile Include="Numerics\ByteNumericProvider.cs" />
     <Compile Include="Numerics\SByteNumericProvider.cs" />
@@ -66,7 +67,6 @@
     <Compile Include="NonGeneric\NonGenericEnumInfo.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
-    <Compile Include="OptionalOutParameter.cs" />
     <Compile Include="Collections\OrderedBiDirectionalDictionary.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,6 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.1.30.0-beta01\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.30.0-beta01\build\portable-net+sl+win+wpa+wp\Fody.targets')" />

@@ -88,7 +88,7 @@ namespace EnumsNET.NonGeneric
 
         public string AsString(object value, string format) => Cache.AsString(ToInt(value), format);
 
-        public string AsString(object value, EnumFormat[] formats) => Cache.AsString(ToInt(value), formats);
+        public string AsString(object value, EnumFormat[] formatOrder) => Cache.AsString(ToInt(value), formatOrder);
 
         public object ExcludeFlags(object value, object flagMask) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(flagMask)));
 
@@ -100,7 +100,7 @@ namespace EnumsNET.NonGeneric
 
         public string Format(object value, string format) => Cache.Format(ToInt(value), format);
 
-        public string Format(object value, EnumFormat[] formats) => Cache.Format(ToInt(value), formats);
+        public string Format(object value, EnumFormat[] formatOrder) => Cache.Format(ToInt(value), formatOrder);
 
         public string Format(object value, EnumFormat format) => Cache.Format(ToInt(value), format);
 
@@ -108,7 +108,7 @@ namespace EnumsNET.NonGeneric
 
         public string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Cache.Format(ToInt(value), format0, format1, format2);
 
-        public string FormatAsFlags(object value, string delimiter, EnumFormat[] formats) => Cache.FormatAsFlags(ToInt(value), delimiter, formats);
+        public string FormatAsFlags(object value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatAsFlags(ToInt(value), delimiter, formatOrder);
 
         public IEnumerable<Attribute> GetAttributes(object value) => Cache.GetAttributes(ToInt(value));
 

@@ -88,11 +88,11 @@ namespace EnumsNET
         public string ToString(string format) => _member.ToString(format);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
-        public string ToString(params EnumFormat[] formats) => _member.ToString(formats);
+        public string ToString(params EnumFormat[] formatOrder) => _member.ToString(formatOrder);
 
         /// <summary>
         /// Converts the specified <see cref="Value"/> to its equivalent string representation.
@@ -109,11 +109,11 @@ namespace EnumsNET
         public string AsString(string format) => _member.AsString(format);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
-        public string AsString(params EnumFormat[] formats) => _member.AsString(formats);
+        public string AsString(params EnumFormat[] formatOrder) => _member.AsString(formatOrder);
 
         /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
@@ -149,12 +149,12 @@ namespace EnumsNET
         public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _member.Format(format0, format1, format2);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is null.</exception>
-        public string Format(params EnumFormat[] formats) => _member.Format(formats);
+        /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
+        public string Format(params EnumFormat[] formatOrder) => _member.Format(formatOrder);
 
         /// <summary>
         /// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.

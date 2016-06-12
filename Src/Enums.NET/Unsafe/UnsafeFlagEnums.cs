@@ -90,16 +90,16 @@ namespace EnumsNET.Unsafe
         public static string FormatAsFlags<TEnum>(TEnum value) => FormatAsFlags(value, null, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with commas
+        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string FormatAsFlags<TEnum>(TEnum value, params EnumFormat[] formats) => FormatAsFlags(value, null, formats);
+        public static string FormatAsFlags<TEnum>(TEnum value, params EnumFormat[] formatOrder) => FormatAsFlags(value, null, formatOrder);
 
         /// <summary>
         /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -114,20 +114,20 @@ namespace EnumsNET.Unsafe
         public static string FormatAsFlags<TEnum>(TEnum value, string delimiter) => FormatAsFlags(value, delimiter, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
-        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="delimiter"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string FormatAsFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formats)
+        public static string FormatAsFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formats);
+            return Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formatOrder);
         }
 
         /// <summary>
@@ -405,14 +405,14 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum) => ParseOrDefault(value, false, null, defaultEnum, null);
+        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue) => ParseOrDefault(value, false, null, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, null, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, null, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -422,14 +422,14 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum) => ParseOrDefault(value, ignoreCase, null, defaultEnum, null);
+        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue) => ParseOrDefault(value, ignoreCase, null, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, ignoreCase, null, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, ignoreCase, null, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -439,17 +439,17 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="delimiter"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="delimiter"/> is an empty string.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultEnum) => ParseOrDefault(value, false, delimiter, defaultEnum, null);
+        public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultValue) => ParseOrDefault(value, false, delimiter, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, delimiter, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, delimiter, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -460,20 +460,20 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
         /// <param name="delimiter"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="delimiter"/> is an empty string.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum) => ParseOrDefault(value, ignoreCase, delimiter, defaultEnum, null);
+        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue) => ParseOrDefault(value, ignoreCase, delimiter, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
         {
             TEnum result;
-            return TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultEnum;
+            return TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
         }
 
         /// <summary>

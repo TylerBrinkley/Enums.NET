@@ -157,7 +157,7 @@ namespace EnumsNET
 
         public string AsString(TEnum value, string format) => Cache.AsString(ToInt(value), format);
 
-        public string AsString(TEnum value, EnumFormat[] formats) => Cache.AsString(ToInt(value), formats);
+        public string AsString(TEnum value, EnumFormat[] formatOrder) => Cache.AsString(ToInt(value), formatOrder);
 
         public string Format(TEnum value, string format) => Cache.Format(ToInt(value), format);
 
@@ -167,7 +167,7 @@ namespace EnumsNET
 
         public string Format(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Cache.Format(ToInt(value), format0, format1, format2);
 
-        public string Format(TEnum value, EnumFormat[] formats) => Cache.Format(ToInt(value), formats);
+        public string Format(TEnum value, EnumFormat[] formatOrder) => Cache.Format(ToInt(value), formatOrder);
 
         public object GetUnderlyingValue(TEnum value) => ToInt(value);
 
@@ -249,7 +249,7 @@ namespace EnumsNET
         #region Main Methods
         public bool IsValidFlagCombination(TEnum value) => Cache.IsValidFlagCombination(ToInt(value));
 
-        public string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formats) => Cache.FormatAsFlags(ToInt(value), delimiter, formats);
+        public string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatAsFlags(ToInt(value), delimiter, formatOrder);
 
         public IEnumerable<TEnum> GetFlags(TEnum value) => Cache.GetFlags(ToInt(value))?.Select(flag => ToEnum(flag));
 

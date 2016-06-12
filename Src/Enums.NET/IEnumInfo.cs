@@ -54,17 +54,17 @@ namespace EnumsNET
 
         string AsString(object value);
         string AsString(object value, string format);
-        string AsString(object value, EnumFormat[] formats);
+        string AsString(object value, EnumFormat[] formatOrder);
         object ExcludeFlags(object value, object flagMask);
         object CommonFlags(object value, object flagMask);
         int Compare(object x, object y);
         bool Equals(object value, object other);
         string Format(object value, string format);
-        string Format(object value, EnumFormat[] formats);
+        string Format(object value, EnumFormat[] formatOrder);
         string Format(object value, EnumFormat format);
         string Format(object value, EnumFormat format0, EnumFormat format1);
         string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string FormatAsFlags(object value, string delimiter, EnumFormat[] formats);
+        string FormatAsFlags(object value, string delimiter, EnumFormat[] formatOrder);
         IEnumerable<Attribute> GetAttributes(object value);
         string GetDescription(object value);
         EnumMember GetEnumMember(object value);
@@ -111,17 +111,17 @@ namespace EnumsNET
 
         string AsString(TEnum value);
         string AsString(TEnum value, string format);
-        string AsString(TEnum value, EnumFormat[] formats);
+        string AsString(TEnum value, EnumFormat[] formatOrder);
         TEnum ExcludeFlags(TEnum value, TEnum flagMask);
         TEnum CommonFlags(TEnum value, TEnum flagMask);
         int Compare(TEnum x, TEnum y);
         bool Equals(TEnum value, TEnum other);
         string Format(TEnum value, string format);
-        string Format(TEnum value, EnumFormat[] formats);
+        string Format(TEnum value, EnumFormat[] formatOrder);
         string Format(TEnum value, EnumFormat format);
         string Format(TEnum value, EnumFormat format0, EnumFormat format1);
         string Format(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formats);
+        string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formatOrder);
         TAttribute GetAttribute<TAttribute>(TEnum value) where TAttribute : Attribute;
         IEnumerable<Attribute> GetAttributes(TEnum value);
         IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value) where TAttribute : Attribute;

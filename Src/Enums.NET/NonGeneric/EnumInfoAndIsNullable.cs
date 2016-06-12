@@ -23,24 +23,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace EnumsNET
+namespace EnumsNET.NonGeneric
 {
-    internal sealed class OptionalOutParameter<T>
-        where T : struct
+    internal struct EnumInfoAndIsNullable
     {
-        public T Value;
-
-        public OptionalOutParameter()
-        {
-        }
-
-        public OptionalOutParameter(T value)
-        {
-            Value = value;
-        }
-
-        public static implicit operator T(OptionalOutParameter<T> o) => o?.Value ?? default(T);
-
-        public static implicit operator OptionalOutParameter<T>(T o) => new OptionalOutParameter<T>(o);
+        public IEnumInfo EnumInfo;
+        public bool IsNullable;
     }
 }

@@ -82,16 +82,16 @@ namespace EnumsNET
             where TEnum : struct => FormatAsFlags(value, null, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with commas
+        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formats)
-            where TEnum : struct => FormatAsFlags(value, null, formats);
+        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formatOrder)
+            where TEnum : struct => FormatAsFlags(value, null, formatOrder);
 
         /// <summary>
         /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -106,17 +106,17 @@ namespace EnumsNET
             where TEnum : struct => FormatAsFlags(value, delimiter, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
-        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="delimiter"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formats);
+        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter, params EnumFormat[] formatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formatOrder);
 
         /// <summary>
         /// Returns an array of the flags that compose <paramref name="value"/>.
@@ -341,15 +341,15 @@ namespace EnumsNET
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum)
-            where TEnum : struct => ParseOrDefault(value, false, null, defaultEnum, null);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue)
+            where TEnum : struct => ParseOrDefault(value, false, null, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, false, null, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => ParseOrDefault(value, false, null, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -359,15 +359,15 @@ namespace EnumsNET
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, null, defaultEnum, null);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue)
+            where TEnum : struct => ParseOrDefault(value, ignoreCase, null, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, null, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => ParseOrDefault(value, ignoreCase, null, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -377,17 +377,17 @@ namespace EnumsNET
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="delimiter"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultEnum)
-            where TEnum : struct => ParseOrDefault(value, false, delimiter, defaultEnum, null);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue)
+            where TEnum : struct => ParseOrDefault(value, false, delimiter, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, false, delimiter, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => ParseOrDefault(value, false, delimiter, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -398,20 +398,20 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
         /// <param name="delimiter"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, delimiter, defaultEnum, null);
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue)
+            where TEnum : struct => ParseOrDefault(value, ignoreCase, delimiter, defaultValue, null);
 
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
             where TEnum : struct
         {
             TEnum result;
-            return TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultEnum;
+            return TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
         }
 
         /// <summary>

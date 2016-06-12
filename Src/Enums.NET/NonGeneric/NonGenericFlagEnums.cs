@@ -44,7 +44,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsFlagEnum(Type enumType) => NonGenericEnums.GetInfo(enumType).IsFlagEnum;
+        public static bool IsFlagEnum(Type enumType) => NonGenericEnums.GetInfo(enumType).EnumInfo.IsFlagEnum;
 
         /// <summary>
         /// Retrieves all the flags defined by <paramref name="enumType"/>.
@@ -54,7 +54,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object GetAllFlags(Type enumType) => NonGenericEnums.GetInfo(enumType).AllFlags;
+        public static object GetAllFlags(Type enumType) => NonGenericEnums.GetInfo(enumType).EnumInfo.AllFlags;
         #endregion
 
         #region Main Methods
@@ -71,15 +71,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsValidFlagCombination(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return true;
             }
 
-            return enumInfo.IsValidFlagCombination(value);
+            return info.EnumInfo.IsValidFlagCombination(value);
         }
 
         /// <summary>
@@ -97,19 +96,19 @@ namespace EnumsNET.NonGeneric
         public static string FormatAsFlags(Type enumType, object value) => FormatAsFlags(enumType, value, null, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with commas
+        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type</exception>
         [Pure]
-        public static string FormatAsFlags(Type enumType, object value, params EnumFormat[] formats) => FormatAsFlags(enumType, value, null, formats);
+        public static string FormatAsFlags(Type enumType, object value, params EnumFormat[] formatOrder) => FormatAsFlags(enumType, value, null, formatOrder);
 
         /// <summary>
         /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -126,30 +125,29 @@ namespace EnumsNET.NonGeneric
         public static string FormatAsFlags(Type enumType, object value, string delimiter) => FormatAsFlags(enumType, value, delimiter, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
-        /// or if empty return the zero flag formatted with <paramref name="formats"/>.
+        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
         /// <param name="delimiter"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type</exception>
         [Pure]
-        public static string FormatAsFlags(Type enumType, object value, string delimiter, params EnumFormat[] formats)
+        public static string FormatAsFlags(Type enumType, object value, string delimiter, params EnumFormat[] formatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.FormatAsFlags(value, delimiter, formats);
+            return info.EnumInfo.FormatAsFlags(value, delimiter, formatOrder);
         }
 
         /// <summary>
@@ -167,15 +165,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static IEnumerable<object> GetFlags(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return new object[0];
             }
 
-            return enumInfo.GetFlags(value);
+            return info.EnumInfo.GetFlags(value);
         }
 
         /// <summary>
@@ -191,15 +188,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return false;
             }
 
-            return enumInfo.HasAnyFlags(value);
+            return info.EnumInfo.HasAnyFlags(value);
         }
 
         /// <summary>
@@ -216,10 +212,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value, object flagMask)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (value == null)
                 {
@@ -248,15 +244,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAllFlags(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return false;
             }
 
-            return enumInfo.HasAllFlags(value);
+            return info.EnumInfo.HasAllFlags(value);
         }
 
         /// <summary>
@@ -273,10 +268,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAllFlags(Type enumType, object value, object flagMask)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (value == null)
                 {
@@ -305,10 +300,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 return enumInfo.AllFlags;
             }
@@ -331,10 +326,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value, bool toggleValidFlagsOnly)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (value == null && isNullable)
+            if (value == null && info.IsNullable)
             {
                 if (toggleValidFlagsOnly)
                 {
@@ -360,10 +355,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value, object flagMask)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (value == null)
                 {
@@ -392,10 +387,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object CommonFlags(Type enumType, object value, object flagMask)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (value == null)
                 {
@@ -429,10 +424,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object CombineFlags(Type enumType, object flag0, object flag1)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (flag0 == null)
                 {
@@ -462,8 +457,9 @@ namespace EnumsNET.NonGeneric
         {
             Preconditions.NotNull(flags, nameof(flags));
 
-            var isNullable = new OptionalOutParameter<bool>();
-            return NonGenericEnums.GetInfo(enumType, isNullable).CombineFlags(isNullable ? flags.Where(flag => flag != null) : flags);
+            var info = NonGenericEnums.GetInfo(enumType);
+            
+            return info.EnumInfo.CombineFlags(info.IsNullable ? flags.Where(flag => flag != null) : flags);
         }
 
         /// <summary>
@@ -480,10 +476,10 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ExcludeFlags(Type enumType, object value, object flagMask)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
+            var enumInfo = info.EnumInfo;
 
-            if (isNullable)
+            if (info.IsNullable)
             {
                 if (value == null)
                 {
@@ -593,15 +589,14 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Parse(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (string.IsNullOrEmpty(value) && isNullable)
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
                 return null;
             }
 
-            return enumInfo.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+            return info.EnumInfo.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
         }
 
         /// <summary>
@@ -610,15 +605,15 @@ namespace EnumsNET.NonGeneric
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, object defaultEnum = null) => ParseOrDefault(enumType, value, false, null, defaultEnum, null);
+        public static object ParseOrDefault(Type enumType, string value, object defaultValue = null) => ParseOrDefault(enumType, value, false, null, defaultValue, null);
 
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, object defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, false, null, defaultEnum, parseFormatOrder);
+        public static object ParseOrDefault(Type enumType, string value, object defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, false, null, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -628,15 +623,15 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType"></param>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum = null) => ParseOrDefault(enumType, value, ignoreCase, null, defaultEnum, null);
+        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultValue = null) => ParseOrDefault(enumType, value, ignoreCase, null, defaultValue, null);
 
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, ignoreCase, null, defaultEnum, parseFormatOrder);
+        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, object defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, ignoreCase, null, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -646,17 +641,17 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType"></param>
         /// <param name="value"></param>
         /// <param name="delimiter"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="delimiter"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="delimiter"/> is an empty string.</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, string delimiter, object defaultEnum = null) => ParseOrDefault(enumType, value, false, delimiter, defaultEnum, null);
+        public static object ParseOrDefault(Type enumType, string value, string delimiter, object defaultValue = null) => ParseOrDefault(enumType, value, false, delimiter, defaultValue, null);
 
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, string delimiter, object defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, false, delimiter, defaultEnum, parseFormatOrder);
+        public static object ParseOrDefault(Type enumType, string value, string delimiter, object defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(enumType, value, false, delimiter, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
@@ -667,20 +662,20 @@ namespace EnumsNET.NonGeneric
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
         /// <param name="delimiter"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="delimiter"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="delimiter"/> is an empty string.</exception>
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, string delimiter, object defaultEnum = null) => ParseOrDefault(enumType, value, ignoreCase, delimiter, defaultEnum, null);
+        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, string delimiter, object defaultValue = null) => ParseOrDefault(enumType, value, ignoreCase, delimiter, defaultValue, null);
 
         [Pure]
-        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, string delimiter, object defaultEnum, params EnumFormat[] parseFormatOrder)
+        public static object ParseOrDefault(Type enumType, string value, bool ignoreCase, string delimiter, object defaultValue, params EnumFormat[] parseFormatOrder)
         {
             object result;
-            return TryParse(enumType, value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultEnum;
+            return TryParse(enumType, value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
         }
 
         /// <summary>
@@ -758,16 +753,15 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParse(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var isNullable = new OptionalOutParameter<bool>();
-            var enumInfo = NonGenericEnums.GetInfo(enumType, isNullable);
+            var info = NonGenericEnums.GetInfo(enumType);
 
-            if (string.IsNullOrEmpty(value) && isNullable)
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
                 result = null;
                 return true;
             }
 
-            return enumInfo.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
+            return info.EnumInfo.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         }
         #endregion
     }

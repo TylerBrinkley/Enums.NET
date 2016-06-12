@@ -41,7 +41,7 @@ namespace EnumsNET
         where TIntProvider : struct, INumericProvider<TInt>
     {
         #region Static
-        internal static TIntProvider Provider = new TIntProvider();
+        internal static readonly TIntProvider Provider = new TIntProvider();
 
         private static bool IsPowerOfTwo(TInt x) => Provider.And(x, Provider.Subtract(x, Provider.One)).Equals(Provider.Zero);
 
@@ -473,9 +473,9 @@ namespace EnumsNET
 
         internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatAsFlags(member, null, null) : InternalFormat(member, EnumFormat.Name, EnumFormat.DecimalValue);
 
-        public string AsString(TInt value, EnumFormat[] formats) => InternalAsString(GetEnumMember(value), formats);
+        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(GetEnumMember(value), formatOrder);
 
-        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formats) => formats?.Length > 0 ? InternalFormat(member, formats) : InternalAsString(member);
+        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder) => formatOrder?.Length > 0 ? InternalFormat(member, formatOrder) : InternalAsString(member);
 
         public string AsString(TInt value, string format) => InternalAsString(GetEnumMember(value), format);
 
@@ -487,11 +487,11 @@ namespace EnumsNET
 
         public string Format(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(GetEnumMember(value), format0, format1, format2);
 
-        public string Format(TInt value, EnumFormat[] formats)
+        public string Format(TInt value, EnumFormat[] formatOrder)
         {
-            Preconditions.NotNull(formats, nameof(formats));
+            Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return InternalFormat(GetEnumMember(value), formats);
+            return InternalFormat(GetEnumMember(value), formatOrder);
         }
 
         public string Format(TInt value, string format)
@@ -548,19 +548,9 @@ namespace EnumsNET
             return InternalFormat(member, format0) ?? InternalFormat(member, format1) ?? InternalFormat(member, format2);
         }
 
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3)
+        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder)
         {
-            return InternalFormat(member, format0) ?? InternalFormat(member, format1) ?? InternalFormat(member, format2) ?? InternalFormat(member, format3);
-        }
-
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1, EnumFormat format2, EnumFormat format3, EnumFormat format4)
-        {
-            return InternalFormat(member, format0) ?? InternalFormat(member, format1) ?? InternalFormat(member, format2) ?? InternalFormat(member, format3) ?? InternalFormat(member, format4);
-        }
-
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formats)
-        {
-            foreach (var format in formats)
+            foreach (var format in formatOrder)
             {
                 var formattedValue = InternalFormat(member, format);
                 if (formattedValue != null)
@@ -762,18 +752,18 @@ namespace EnumsNET
         #region Main Methods
         public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
 
-        public string FormatAsFlags(TInt value, string delimiter, EnumFormat[] formats) => InternalFormatAsFlags(GetEnumMember(value), delimiter, formats);
+        public string FormatAsFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatAsFlags(GetEnumMember(value), delimiter, formatOrder);
 
-        private string InternalFormatAsFlags(InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formats)
+        private string InternalFormatAsFlags(InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
         {
-            if (!(formats?.Length > 0))
+            if (!(formatOrder?.Length > 0))
             {
-                formats = Enums.DefaultFormatOrder;
+                formatOrder = Enums.DefaultFormatOrder;
             }
 
             if (member.IsDefined || member.Value.Equals(Provider.Zero) || !IsValidFlagCombination(member.Value))
             {
-                return InternalFormat(member, formats);
+                return InternalFormat(member, formatOrder);
             }
 
             if (string.IsNullOrEmpty(delimiter))
@@ -782,7 +772,7 @@ namespace EnumsNET
             }
 
             return string.Join(delimiter,
-                GetFlags(member.Value).Select(flag => InternalFormat(GetEnumMember(flag), formats))
+                GetFlags(member.Value).Select(flag => InternalFormat(GetEnumMember(flag), formatOrder))
 #if NET20 || NET35
                 .ToArray()
 #endif

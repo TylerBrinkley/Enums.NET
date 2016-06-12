@@ -39,15 +39,15 @@ namespace EnumsNET
 
         string ToString();
         string ToString(string format);
-        string ToString(params EnumFormat[] formats);
+        string ToString(params EnumFormat[] formatOrder);
         string AsString();
         string AsString(string format);
-        string AsString(params EnumFormat[] formats);
+        string AsString(params EnumFormat[] formatOrder);
         string Format(string format);
         string Format(EnumFormat format);
         string Format(EnumFormat format0, EnumFormat format1);
         string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string Format(params EnumFormat[] formats);
+        string Format(params EnumFormat[] formatOrder);
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
         TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue) where TAttribute : Attribute;

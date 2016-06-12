@@ -129,13 +129,13 @@ namespace EnumsNET
 
         public string ToString(string format) => _enumCache.InternalAsString(this, format);
 
-        public string ToString(params EnumFormat[] formats) => _enumCache.InternalAsString(this, formats);
+        public string ToString(params EnumFormat[] formatOrder) => _enumCache.InternalAsString(this, formatOrder);
 
         public string AsString() => ToString();
 
         public string AsString(string format) => ToString(format);
 
-        public string AsString(params EnumFormat[] formats) => ToString(formats);
+        public string AsString(params EnumFormat[] formatOrder) => ToString(formatOrder);
 
         public string Format(string format)
         {
@@ -150,11 +150,11 @@ namespace EnumsNET
 
         public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(this, format0, format1, format2);
 
-        public string Format(params EnumFormat[] formats)
+        public string Format(params EnumFormat[] formatOrder)
         {
-            Preconditions.NotNull(formats, nameof(formats));
+            Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return _enumCache.InternalFormat(this, formats);
+            return _enumCache.InternalFormat(this, formatOrder);
         }
 
         public sbyte ToSByte() => Value.ToSByte(null);

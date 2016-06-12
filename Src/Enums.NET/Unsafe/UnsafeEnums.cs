@@ -681,143 +681,143 @@ namespace EnumsNET.Unsafe
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultEnum, bool validate = false)
+        public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultValue, bool validate = false)
         {
             TEnum result;
-            return TryToObject(value, out result, validate) ? result : defaultEnum;
+            return TryToObject(value, out result, validate) ? result : defaultValue;
         }
 
         /// <summary>
         /// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((long)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultValue, bool validate = false) => ToObjectOrDefault((long)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultValue, bool validate = false) => ToObjectOrDefault((ulong)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((long)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultValue, bool validate = false) => ToObjectOrDefault((long)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultValue, bool validate = false) => ToObjectOrDefault((ulong)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((long)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultValue, bool validate = false) => ToObjectOrDefault((long)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultEnum, bool validate = false) => ToObjectOrDefault((ulong)value, defaultEnum, validate);
+        public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultValue, bool validate = false) => ToObjectOrDefault((ulong)value, defaultValue, validate);
 
         /// <summary>
         /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultEnum, bool validate = false)
+        public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultValue, bool validate = false)
         {
             TEnum result;
-            return TryToObject(value, out result, validate) ? result : defaultEnum;
+            return TryToObject(value, out result, validate) ? result : defaultValue;
         }
 
         /// <summary>
         /// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
         /// underlying types value range. The optional parameter <paramref name="validate"/> indicates whether to check that the result is valid. If it fails
-        /// <paramref name="defaultEnum"/> is returned.
+        /// <paramref name="defaultValue"/> is returned.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultEnum, bool validate = false)
+        public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultValue, bool validate = false)
         {
             TEnum result;
-            return TryToObject(value, out result, validate) ? result : defaultEnum;
+            return TryToObject(value, out result, validate) ? result : defaultValue;
         }
 
         /// <summary>
@@ -1012,18 +1012,18 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string AsString<TEnum>(TEnum value, params EnumFormat[] formats)
+        public static string AsString<TEnum>(TEnum value, params EnumFormat[] formatOrder)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.AsString(value, formats);
+            return Enums<TEnum>.Info.AsString(value, formatOrder);
         }
 
         /// <summary>
@@ -1092,19 +1092,19 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formats"/>.
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="formats"></param>
+        /// <param name="formatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
-        public static string Format<TEnum>(TEnum value, params EnumFormat[] formats)
+        public static string Format<TEnum>(TEnum value, params EnumFormat[] formatOrder)
         {
             VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.Format(value, formats);
+            return Enums<TEnum>.Info.Format(value, formatOrder);
         }
 
         /// <summary>
@@ -1527,11 +1527,11 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum) => ParseOrDefault(value, false, defaultEnum, null);
+        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue) => ParseOrDefault(value, false, defaultValue, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1539,12 +1539,12 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultEnum, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, defaultEnum, parseFormatOrder);
+        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, defaultValue, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -1554,11 +1554,11 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum) => ParseOrDefault(value, ignoreCase, defaultEnum, null);
+        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue) => ParseOrDefault(value, ignoreCase, defaultValue, null);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1567,15 +1567,15 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="defaultEnum"></param>
+        /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultEnum, params EnumFormat[] parseFormatOrder)
+        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
         {
             TEnum result;
-            return TryParse(value, ignoreCase, out result, parseFormatOrder) ? result : defaultEnum;
+            return TryParse(value, ignoreCase, out result, parseFormatOrder) ? result : defaultValue;
         }
 
         /// <summary>
