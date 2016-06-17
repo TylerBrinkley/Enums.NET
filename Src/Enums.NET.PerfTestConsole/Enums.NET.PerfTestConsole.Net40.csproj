@@ -40,11 +40,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Enums.NET\Enums.NET.Net40.csproj">
-      <Project>{9072231E-05CC-4C88-B462-138D9E67DFDA}</Project>
+      <Project>{9072231e-05cc-4c88-b462-138d9e67dfda}</Project>
       <Name>Enums.NET</Name>
     </ProjectReference>
   </ItemGroup>

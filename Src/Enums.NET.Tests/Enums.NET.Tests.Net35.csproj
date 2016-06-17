@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}</ProjectGuid>
+    <ProjectGuid>{782A6460-6385-4A13-9B06-96E4B5C89916}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Enums.NET\Enums.NET.Net35.csproj">
-      <Project>{f2059370-3a4e-4885-8234-9aedade06108}</Project>
+      <Project>{585B5322-7E00-4DFA-8A0D-643E198E633C}</Project>
       <Name>Enums.NET</Name>
     </ProjectReference>
   </ItemGroup>

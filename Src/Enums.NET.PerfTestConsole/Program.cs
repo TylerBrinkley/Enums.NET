@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using EnumsNET.NonGeneric;
+
+#if NET20
+using System.Collections.Generic;
+#else
+using System.Linq;
+#endif
 
 namespace EnumsNET.PerfTestConsole
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
             //var methodInfo = typeof(Enums).GetMethod("IsContiguous");
@@ -119,3 +124,43 @@ namespace EnumsNET.PerfTestConsole
         }
     }
 }
+
+#if NET20
+namespace EnumsNET
+{
+    internal static class Enumerable
+    {
+        public static IEnumerable<TResult> SelectMany<T, TResult>(this IEnumerable<T> source, Func<T, IEnumerable<TResult>> selector)
+        {
+            foreach (var item in source)
+            {
+                foreach (var selectedItem in selector(item))
+                {
+                    yield return selectedItem;
+                }
+            }
+        }
+
+        public static IEnumerable<T> Where<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        public static List<T> ToList<T>(this IEnumerable<T> source) => new List<T>(source);
+    }
+}
+
+namespace System.Runtime.CompilerServices
+{
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
+    internal class ExtensionAttribute : Attribute
+    {
+    }
+}
+#endif

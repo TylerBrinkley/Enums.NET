@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5786F98C-F8FA-479A-8AE8-094B1287B385}</ProjectGuid>
+    <ProjectGuid>{B909EF0F-2DE0-4CD9-8DA6-6F5C43F9A8E5}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EnumsNET.PerfTestConsole</RootNamespace>
@@ -40,11 +40,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Enums.NET\Enums.NET.Net35.csproj">
-      <Project>{f2059370-3a4e-4885-8234-9aedade06108}</Project>
+      <Project>{585B5322-7E00-4DFA-8A0D-643E198E633C}</Project>
       <Name>Enums.NET</Name>
     </ProjectReference>
   </ItemGroup>

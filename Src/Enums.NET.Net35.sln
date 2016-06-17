@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Net35", "Enums.NET\Enums.NET.Net35.csproj", "{F2059370-3A4E-4885-8234-9AEDADE06108}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Net35", "Enums.NET\Enums.NET.Net35.csproj", "{585B5322-7E00-4DFA-8A0D-643E198E633C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0BE636C9-A909-431F-AED0-C6B7F25DE336} = {0BE636C9-A909-431F-AED0-C6B7F25DE336}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Tests.Net35", "Enums.NET.Tests\Enums.NET.Tests.Net35.csproj", "{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Tests.Net35", "Enums.NET.Tests\Enums.NET.Tests.Net35.csproj", "{782A6460-6385-4A13-9B06-96E4B5C89916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.PerfTestConsole.Net35", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.Net35.csproj", "{5786F98C-F8FA-479A-8AE8-094B1287B385}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.PerfTestConsole.Net35", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.Net35.csproj", "{B909EF0F-2DE0-4CD9-8DA6-6F5C43F9A8E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weavers", "Weavers\Weavers.csproj", "{0BE636C9-A909-431F-AED0-C6B7F25DE336}"
 EndProject
@@ -20,18 +20,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5786F98C-F8FA-479A-8AE8-094B1287B385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5786F98C-F8FA-479A-8AE8-094B1287B385}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5786F98C-F8FA-479A-8AE8-094B1287B385}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5786F98C-F8FA-479A-8AE8-094B1287B385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{585B5322-7E00-4DFA-8A0D-643E198E633C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{585B5322-7E00-4DFA-8A0D-643E198E633C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{585B5322-7E00-4DFA-8A0D-643E198E633C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{585B5322-7E00-4DFA-8A0D-643E198E633C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{782A6460-6385-4A13-9B06-96E4B5C89916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{782A6460-6385-4A13-9B06-96E4B5C89916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{782A6460-6385-4A13-9B06-96E4B5C89916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{782A6460-6385-4A13-9B06-96E4B5C89916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B909EF0F-2DE0-4CD9-8DA6-6F5C43F9A8E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B909EF0F-2DE0-4CD9-8DA6-6F5C43F9A8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B909EF0F-2DE0-4CD9-8DA6-6F5C43F9A8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B909EF0F-2DE0-4CD9-8DA6-6F5C43F9A8E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0BE636C9-A909-431F-AED0-C6B7F25DE336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0BE636C9-A909-431F-AED0-C6B7F25DE336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BE636C9-A909-431F-AED0-C6B7F25DE336}.Release|Any CPU.ActiveCfg = Release|Any CPU

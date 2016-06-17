@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Net40", "Enums.NET\Enums.NET.Net40.csproj", "{F2059370-3A4E-4885-8234-9AEDADE06108}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Net40", "Enums.NET\Enums.NET.Net40.csproj", "{9072231E-05CC-4C88-B462-138D9E67DFDA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0BE636C9-A909-431F-AED0-C6B7F25DE336} = {0BE636C9-A909-431F-AED0-C6B7F25DE336}
 	EndProjectSection
@@ -20,10 +20,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2059370-3A4E-4885-8234-9AEDADE06108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9072231E-05CC-4C88-B462-138D9E67DFDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9072231E-05CC-4C88-B462-138D9E67DFDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9072231E-05CC-4C88-B462-138D9E67DFDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9072231E-05CC-4C88-B462-138D9E67DFDA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51A74453-7B00-44C4-8051-55B676E0F541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51A74453-7B00-44C4-8051-55B676E0F541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51A74453-7B00-44C4-8051-55B676E0F541}.Release|Any CPU.ActiveCfg = Release|Any CPU
