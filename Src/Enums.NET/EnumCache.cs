@@ -127,7 +127,7 @@ namespace EnumsNET
                 var value = (TInt)field.GetValue(null);
                 var name = field.Name;
                 var attributes = Attribute.GetCustomAttributes(field, false);
-                var isMainDupe = false;
+                var isPrimaryDupe = false;
                 if (attributes.Length > 0)
                 {
                     var descriptionFound = false;
@@ -147,16 +147,16 @@ namespace EnumsNET
                                 if (descAttr.GetType() == typeof(DescriptionAttribute))
                                 {
                                     descriptionFound = true;
-                                    if (isMainDupe)
+                                    if (isPrimaryDupe)
                                     {
                                         break;
                                     }
                                 }
                             }
                         }
-                        if (!isMainDupe && (attr as MainDuplicateAttribute) != null)
+                        if (!isPrimaryDupe && (attr as PrimaryEnumMemberAttribute) != null)
                         {
-                            isMainDupe = true;
+                            isPrimaryDupe = true;
                             if (descriptionFound)
                             {
                                 break;
@@ -183,7 +183,7 @@ namespace EnumsNET
                 }
                 else
                 {
-                    if (isMainDupe)
+                    if (isPrimaryDupe)
                     {
                         var nameAndAttributes = _valueMap.GetSecondAt(index);
                         _valueMap.ReplaceSecondAt(index, new NameAndAttributes(name, attributes));

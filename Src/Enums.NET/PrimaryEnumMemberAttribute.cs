@@ -28,11 +28,11 @@ using System;
 namespace EnumsNET
 {
     /// <summary>
-    /// Used to indicate if the enum member should be the main enum member for duplicate values.
+    /// Used to indicate if the enum member should be the primary enum member for duplicate values.
     /// Extension methods will use the enum member marked with this attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class MainDuplicateAttribute : Attribute
+    public sealed class PrimaryEnumMemberAttribute : Attribute
     {
     }
 }

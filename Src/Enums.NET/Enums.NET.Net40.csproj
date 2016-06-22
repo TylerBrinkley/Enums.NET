@@ -58,7 +58,6 @@
     <Compile Include="Numerics\UInt32NumericProvider.cs" />
     <Compile Include="Numerics\Int32NumericProvider.cs" />
     <Compile Include="InternalEnumMember.cs" />
-    <Compile Include="MainDuplicateAttribute.cs" />
     <Compile Include="NameAndAttributes.cs" />
     <Compile Include="Net20\Enumerable.cs" />
     <Compile Include="Net20\ExtensionAttribute.cs" />
@@ -69,6 +68,7 @@
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
     <Compile Include="Collections\OrderedBiDirectionalDictionary.cs" />
     <Compile Include="Preconditions.cs" />
+    <Compile Include="PrimaryEnumMemberAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unsafe\UnsafeEnumComparer.cs" />
     <Compile Include="Unsafe\UnsafeEnums.cs" />
