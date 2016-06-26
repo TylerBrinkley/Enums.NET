@@ -35,12 +35,12 @@ namespace EnumsNET
         bool IsContiguous { get; }
         bool IsFlagEnum { get; }
 
-        int GetDefinedCount(bool uniqueValued);
-        IEnumerable<string> GetNames(bool uniqueValued);
+        int GetDefinedCount(bool uniqueValued = false);
+        IEnumerable<string> GetNames(bool uniqueValued = false);
         bool IsDefined(object value);
         bool IsDefined(ulong value);
         bool IsDefined(long value);
-        bool IsDefined(string name, bool ignoreCase);
+        bool IsDefined(string name, bool ignoreCase = false);
         bool IsInValueRange(ulong value);
         bool IsInValueRange(long value);
         bool IsValid(ulong value);
@@ -68,12 +68,12 @@ namespace EnumsNET
         IEnumerable<Attribute> GetAttributes(object value);
         string GetDescription(object value);
         EnumMember GetEnumMember(object value);
-        EnumMember GetEnumMember(string name, bool ignoreCase);
-        IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued);
+        EnumMember GetEnumMember(string name, bool ignoreCase = false);
+        IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued = false);
         IEnumerable<object> GetFlags(object value);
         string GetName(object value);
         object GetUnderlyingValue(object value);
-        IEnumerable<object> GetValues(bool uniqueValued);
+        IEnumerable<object> GetValues(bool uniqueValued = false);
         bool HasAllFlags(object value);
         bool HasAllFlags(object value, object flagMask);
         bool HasAnyFlags(object value);
@@ -85,23 +85,23 @@ namespace EnumsNET
         object CombineFlags(IEnumerable<object> flags);
         object CombineFlags(object flag0, object flag1);
         byte ToByte(object value);
-        object ToggleFlags(object value, bool toggleValidFlagsOnly);
+        object ToggleFlags(object value, bool toggleValidFlagsOnly = true);
         object ToggleFlags(object value, object flagMask);
         short ToInt16(object value);
         int ToInt32(object value);
         long ToInt64(object value);
-        object ToObject(ulong value, bool validate);
+        object ToObject(ulong value, bool validate = false);
         object ToObject(object value, bool validate = false);
-        object ToObject(long value, bool validate);
+        object ToObject(long value, bool validate = false);
         sbyte ToSByte(object value);
         ushort ToUInt16(object value);
         uint ToUInt32(object value);
         ulong ToUInt64(object value);
         bool TryParse(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] parseFormatOrder);
-        bool TryToObject(ulong value, out object result, bool validate);
-        bool TryToObject(object value, out object result, bool validate);
-        bool TryToObject(long value, out object result, bool validate);
+        bool TryToObject(ulong value, out object result, bool validate = false);
+        bool TryToObject(object value, out object result, bool validate = false);
+        bool TryToObject(long value, out object result, bool validate = false);
         object Validate(object value, string paramName);
     }
 
@@ -125,16 +125,16 @@ namespace EnumsNET
         TAttribute GetAttribute<TAttribute>(TEnum value) where TAttribute : Attribute;
         IEnumerable<Attribute> GetAttributes(TEnum value);
         IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value) where TAttribute : Attribute;
-        TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue) where TAttribute : Attribute;
+        TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute;
         string GetDescription(TEnum value);
         EnumMember<TEnum> GetEnumMember(TEnum value);
-        EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase);
-        IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued);
+        EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase = false);
+        IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued = false);
         IEnumerable<TEnum> GetFlags(TEnum value);
         int GetHashCode(TEnum value);
         string GetName(TEnum value);
         object GetUnderlyingValue(TEnum value);
-        IEnumerable<TEnum> GetValues(bool uniqueValued);
+        IEnumerable<TEnum> GetValues(bool uniqueValued = false);
         bool HasAllFlags(TEnum value);
         bool HasAllFlags(TEnum value, TEnum flagMask);
         bool HasAnyFlags(TEnum value);
@@ -148,14 +148,14 @@ namespace EnumsNET
         TEnum CombineFlags(TEnum[] flags);
         TEnum CombineFlags(TEnum flag0, TEnum flag1);
         byte ToByte(TEnum value);
-        TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly);
+        TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly = true);
         TEnum ToggleFlags(TEnum value, TEnum flagMask);
         short ToInt16(TEnum value);
         int ToInt32(TEnum value);
         long ToInt64(TEnum value);
-        TEnum ToObject(ulong value, bool validate);
-        TEnum ToObject(object value, bool validate);
-        TEnum ToObject(long value, bool validate);
+        TEnum ToObject(ulong value, bool validate = false);
+        TEnum ToObject(object value, bool validate = false);
+        TEnum ToObject(long value, bool validate = false);
         sbyte ToSByte(TEnum value);
         ushort ToUInt16(TEnum value);
         uint ToUInt32(TEnum value);
@@ -163,9 +163,9 @@ namespace EnumsNET
         bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
         bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder);
-        bool TryToObject(ulong value, out TEnum result, bool validate);
-        bool TryToObject(object value, out TEnum result, bool validate);
-        bool TryToObject(long value, out TEnum result, bool validate);
+        bool TryToObject(ulong value, out TEnum result, bool validate = false);
+        bool TryToObject(object value, out TEnum result, bool validate = false);
+        bool TryToObject(long value, out TEnum result, bool validate = false);
         TEnum Validate(TEnum value, string paramName);
     }
 }

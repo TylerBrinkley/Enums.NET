@@ -180,7 +180,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         [Pure]
         public static TEnum ToggleFlags<[EnumConstraint] TEnum>(this TEnum value)
-            where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value, true);
+            where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value);
 
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. If <paramref name="toggleValidFlagsOnly"/> is <c>true</c> then equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>

@@ -215,7 +215,7 @@ namespace EnumsNET.Unsafe
         public static TEnum ToggleFlags<TEnum>(TEnum value)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ToggleFlags(value, true);
+            return Enums<TEnum>.Info.ToggleFlags(value);
         }
 
         /// <summary>

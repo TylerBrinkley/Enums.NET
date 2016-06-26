@@ -308,7 +308,7 @@ namespace EnumsNET.NonGeneric
                 return enumInfo.AllFlags;
             }
 
-            return enumInfo.ToggleFlags(value, true);
+            return enumInfo.ToggleFlags(value);
         }
 
         /// <summary>

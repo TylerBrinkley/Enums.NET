@@ -154,15 +154,12 @@ namespace EnumsNET.NonGeneric
 
         public object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
 
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter)
-        {
-            return EnumInfo<TEnum, TInt, TIntProvider>.InternalRegisterCustomEnumFormat(
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter) => EnumInfo<TEnum, TInt, TIntProvider>.InternalRegisterCustomEnumFormat(
 #if NET20 || NET35
                 member => formatter(member));
 #else
                 formatter);
 #endif
-        }
 
         public object CombineFlags(IEnumerable<object> flags) => ToEnum(Cache.CombineFlags(flags.Select(flag => ToInt(flag))));
 
