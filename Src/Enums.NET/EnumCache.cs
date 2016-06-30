@@ -613,6 +613,10 @@ namespace EnumsNET
         public string GetName(TInt value) => GetEnumMember(value).Name;
 
         public string GetDescription(TInt value) => GetEnumMember(value).Description;
+
+        public string GetDescriptionOrName(TInt value) => GetEnumMember(value).GetDescriptionOrName();
+
+        public string GetDescriptionOrName(TInt value, Func<string, string> nameFormatter) => GetEnumMember(value).GetDescriptionOrName(nameFormatter);
         #endregion
 
         #region Attributes

@@ -208,6 +208,10 @@ namespace EnumsNET
         public string GetName(TEnum value) => Cache.GetName(ToInt(value));
 
         public string GetDescription(TEnum value) => Cache.GetDescription(ToInt(value));
+
+        public string GetDescriptionOrName(TEnum value) => Cache.GetDescriptionOrName(ToInt(value));
+
+        public string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter) => Cache.GetDescriptionOrName(ToInt(value), nameFormatter);
         #endregion
 
         #region Attributes

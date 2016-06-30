@@ -48,6 +48,8 @@ namespace EnumsNET
         string Format(EnumFormat format0, EnumFormat format1);
         string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string Format(params EnumFormat[] formatOrder);
+        string GetDescriptionOrName();
+        string GetDescriptionOrName(Func<string, string> nameFormatter);
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
         TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute;

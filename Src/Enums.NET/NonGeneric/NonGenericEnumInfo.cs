@@ -114,6 +114,10 @@ namespace EnumsNET.NonGeneric
 
         public string GetDescription(object value) => Cache.GetDescription(ToInt(value));
 
+        public string GetDescriptionOrName(object value) => Cache.GetDescriptionOrName(ToInt(value));
+
+        public string GetDescriptionOrName(object value, Func<string, string> nameFormatter) => Cache.GetDescriptionOrName(ToInt(value), nameFormatter);
+
         public EnumMember GetEnumMember(object value)
         {
             var member = Cache.GetEnumMember(ToInt(value));

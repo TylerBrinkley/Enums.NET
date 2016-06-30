@@ -157,6 +157,19 @@ namespace EnumsNET
         public string Format(params EnumFormat[] formatOrder) => _member.Format(formatOrder);
 
         /// <summary>
+        /// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/>.
+        /// </summary>
+        /// <returns></returns>
+        public string GetDescriptionOrName() => _member.GetDescriptionOrName();
+
+        /// <summary>
+        /// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/> that's been formatted with <paramref name="nameFormatter"/>.
+        /// </summary>
+        /// <param name="nameFormatter"></param>
+        /// <returns></returns>
+        public string GetDescriptionOrName(Func<string, string> nameFormatter) => _member.GetDescriptionOrName(nameFormatter);
+
+        /// <summary>
         /// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>

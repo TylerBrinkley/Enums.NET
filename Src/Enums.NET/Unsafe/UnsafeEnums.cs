@@ -1857,6 +1857,34 @@ namespace EnumsNET.Unsafe
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.GetDescription(value);
         }
+
+        /// <summary>
+        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static string GetDescriptionOrName<TEnum>(TEnum value)
+        {
+            VerifyTypeIsEnum(typeof(TEnum));
+            return Enums<TEnum>.Info.GetDescriptionOrName(value);
+        }
+
+        /// <summary>
+        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="nameFormatter"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        public static string GetDescriptionOrName<TEnum>(TEnum value, Func<string, string> nameFormatter)
+        {
+            VerifyTypeIsEnum(typeof(TEnum));
+            return Enums<TEnum>.Info.GetDescriptionOrName(value, nameFormatter);
+        }
         #endregion
 
         #region Attributes

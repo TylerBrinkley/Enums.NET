@@ -1951,6 +1951,53 @@ namespace EnumsNET.NonGeneric
 
             return info.EnumInfo.GetDescription(value);
         }
+
+        /// <summary>
+        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid</exception>
+        [Pure]
+        public static string GetDescriptionOrName(Type enumType, object value)
+        {
+            var info = GetInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.GetDescriptionOrName(value);
+        }
+
+        /// <summary>
+        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="nameFormatter"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is invalid</exception>
+        [Pure]
+        public static string GetDescriptionOrName(Type enumType, object value, Func<string, string> nameFormatter)
+        {
+            var info = GetInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.GetDescriptionOrName(value, nameFormatter);
+        }
         #endregion
 
         #region Attributes

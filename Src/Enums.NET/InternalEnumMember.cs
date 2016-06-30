@@ -56,6 +56,10 @@ namespace EnumsNET
             _enumCache = enumCache;
         }
 
+        public string GetDescriptionOrName() => Description ?? Name;
+
+        public string GetDescriptionOrName(Func<string, string> nameFormatter) => IsDefined ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
+
         public bool HasAttribute<TAttribute>()
             where TAttribute : Attribute => GetAttribute<TAttribute>() != null;
 

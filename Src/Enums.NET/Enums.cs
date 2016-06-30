@@ -1698,6 +1698,25 @@ namespace EnumsNET
         [Pure]
         public static string GetDescription<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetDescription(value);
+
+        /// <summary>
+        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [Pure]
+        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value);
+        /// <summary>
+        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="nameFormatter"></param>
+        /// <returns></returns>
+        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value, Func<string, string> nameFormatter)
+            where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value, nameFormatter);
         #endregion
 
         #region Attributes
