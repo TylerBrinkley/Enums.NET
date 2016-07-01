@@ -473,6 +473,12 @@ namespace EnumsNET
 
         internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatAsFlags(member, null, null) : InternalFormat(member, EnumFormat.Name, EnumFormat.DecimalValue);
 
+        public string AsString(TInt value, EnumFormat format) => InternalFormat(GetEnumMember(value), format);
+
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(GetEnumMember(value), format0, format1);
+
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(GetEnumMember(value), format0, format1, format2);
+
         public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(GetEnumMember(value), formatOrder);
 
         internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder) => formatOrder?.Length > 0 ? InternalFormat(member, formatOrder) : InternalAsString(member);
@@ -480,12 +486,6 @@ namespace EnumsNET
         public string AsString(TInt value, string format) => InternalAsString(GetEnumMember(value), format);
 
         internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? InternalAsString(member) : InternalFormat(member, format);
-
-        public string Format(TInt value, EnumFormat format) => InternalFormat(GetEnumMember(value), format);
-
-        public string Format(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(GetEnumMember(value), format0, format1);
-
-        public string Format(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(GetEnumMember(value), format0, format1, format2);
 
         public string Format(TInt value, EnumFormat[] formatOrder)
         {

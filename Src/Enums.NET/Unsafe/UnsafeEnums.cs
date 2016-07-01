@@ -1513,6 +1513,54 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static string AsString<TEnum>(TEnum value, EnumFormat format)
+        {
+            VerifyTypeIsEnum(typeof(TEnum));
+            return Enums<TEnum>.Info.AsString(value, format);
+        }
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
+        {
+            VerifyTypeIsEnum(typeof(TEnum));
+            return Enums<TEnum>.Info.AsString(value, format0, format1);
+        }
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+        {
+            VerifyTypeIsEnum(typeof(TEnum));
+            return Enums<TEnum>.Info.AsString(value, format0, format1, format2);
+        }
+
+        /// <summary>
         /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
@@ -1542,54 +1590,6 @@ namespace EnumsNET.Unsafe
         {
             VerifyTypeIsEnum(typeof(TEnum));
             return Enums<TEnum>.Info.Format(value, format);
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static string Format<TEnum>(TEnum value, EnumFormat format)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.Format(value, format);
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.Format(value, format0, format1);
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <param name="format2"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-        {
-            VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.Format(value, format0, format1, format2);
         }
 
         /// <summary>

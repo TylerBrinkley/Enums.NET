@@ -139,6 +139,12 @@ namespace EnumsNET
 
         public string AsString(string format) => ToString(format);
 
+        public string AsString(EnumFormat format) => _enumCache.InternalFormat(this, format);
+
+        public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(this, format0, format1);
+
+        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(this, format0, format1, format2);
+
         public string AsString(params EnumFormat[] formatOrder) => ToString(formatOrder);
 
         public string Format(string format)
@@ -147,12 +153,6 @@ namespace EnumsNET
 
             return _enumCache.InternalFormat(this, format);
         }
-
-        public string Format(EnumFormat format) => _enumCache.InternalFormat(this, format);
-
-        public string Format(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(this, format0, format1);
-
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(this, format0, format1, format2);
 
         public string Format(params EnumFormat[] formatOrder)
         {

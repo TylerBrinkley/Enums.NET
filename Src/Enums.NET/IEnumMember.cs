@@ -44,9 +44,9 @@ namespace EnumsNET
         string AsString(string format);
         string AsString(params EnumFormat[] formatOrder);
         string Format(string format);
-        string Format(EnumFormat format);
-        string Format(EnumFormat format0, EnumFormat format1);
-        string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2);
+        string AsString(EnumFormat format);
+        string AsString(EnumFormat format0, EnumFormat format1);
+        string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string Format(params EnumFormat[] formatOrder);
         string GetDescriptionOrName();
         string GetDescriptionOrName(Func<string, string> nameFormatter);

@@ -1441,6 +1441,42 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.AsString(value, format);
 
         /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        [Pure]
+        public static string AsString<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format)
+            where TEnum : struct => Enums<TEnum>.Info.AsString(value, format);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
+        [Pure]
+        public static string AsString<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => Enums<TEnum>.Info.AsString(value, format0, format1);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
+        [Pure]
+        public static string AsString<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => Enums<TEnum>.Info.AsString(value, format0, format1, format2);
+
+        /// <summary>
         /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
@@ -1461,44 +1497,8 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="format"/> is null.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, string format)
+        public static string Format<[EnumConstraint] TEnum>(TEnum value, string format)
             where TEnum : struct => Enums<TEnum>.Info.Format(value, format);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format)
-            where TEnum : struct => Enums<TEnum>.Info.Format(value, format);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <returns></returns>
-        [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct => Enums<TEnum>.Info.Format(value, format0, format1);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <param name="format2"></param>
-        /// <returns></returns>
-        [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct => Enums<TEnum>.Info.Format(value, format0, format1, format2);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
@@ -1509,7 +1509,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
         [Pure]
-        public static string Format<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formatOrder)
+        public static string Format<[EnumConstraint] TEnum>(TEnum value, params EnumFormat[] formatOrder)
             where TEnum : struct => Enums<TEnum>.Info.Format(value, formatOrder);
 
         /// <summary>
@@ -1519,7 +1519,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns></returns>
         [Pure]
-        public static object GetUnderlyingValue<[EnumConstraint] TEnum>(this TEnum value)
+        public static object GetUnderlyingValue<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetUnderlyingValue(value);
 
         /// <summary>
@@ -1531,7 +1531,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static sbyte ToSByte<[EnumConstraint] TEnum>(this TEnum value)
+        public static sbyte ToSByte<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToSByte(value);
 
         /// <summary>
@@ -1542,7 +1542,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="byte"/>'s value range without overflowing</exception>
         [Pure]
-        public static byte ToByte<[EnumConstraint] TEnum>(this TEnum value)
+        public static byte ToByte<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToByte(value);
 
         /// <summary>
@@ -1553,7 +1553,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="short"/>'s value range without overflowing</exception>
         [Pure]
-        public static short ToInt16<[EnumConstraint] TEnum>(this TEnum value)
+        public static short ToInt16<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToInt16(value);
 
         /// <summary>
@@ -1565,7 +1565,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static ushort ToUInt16<[EnumConstraint] TEnum>(this TEnum value)
+        public static ushort ToUInt16<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToUInt16(value);
 
         /// <summary>
@@ -1576,7 +1576,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="int"/>'s value range without overflowing</exception>
         [Pure]
-        public static int ToInt32<[EnumConstraint] TEnum>(this TEnum value)
+        public static int ToInt32<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToInt32(value);
 
         /// <summary>
@@ -1588,7 +1588,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static uint ToUInt32<[EnumConstraint] TEnum>(this TEnum value)
+        public static uint ToUInt32<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToUInt32(value);
 
         /// <summary>
@@ -1599,7 +1599,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="long"/>'s value range without overflowing</exception>
         [Pure]
-        public static long ToInt64<[EnumConstraint] TEnum>(this TEnum value)
+        public static long ToInt64<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToInt64(value);
 
         /// <summary>
@@ -1611,7 +1611,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing</exception>
         [Pure]
         [CLSCompliant(false)]
-        public static ulong ToUInt64<[EnumConstraint] TEnum>(this TEnum value)
+        public static ulong ToUInt64<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToUInt64(value);
 
         /// <summary>
@@ -1706,7 +1706,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns></returns>
         [Pure]
-        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value)
+        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value);
         /// <summary>
         /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
@@ -1715,7 +1715,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <param name="nameFormatter"></param>
         /// <returns></returns>
-        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(this TEnum value, Func<string, string> nameFormatter)
+        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(TEnum value, Func<string, string> nameFormatter)
             where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value, nameFormatter);
         #endregion
 
@@ -1756,7 +1756,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
         [Pure]
-        public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector)
+        public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector)
             where TAttribute : Attribute
             where TEnum : struct => Enums<TEnum>.Info.GetAttributeSelect(value, selector);
 
@@ -1773,7 +1773,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
         [Pure]
-        public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
+        public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute
             where TEnum : struct => Enums<TEnum>.Info.GetAttributeSelect(value, selector, defaultValue);
 
@@ -1791,7 +1791,7 @@ namespace EnumsNET
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
         [Pure]
-        public static bool TryGetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(this TEnum value, Func<TAttribute, TResult> selector, out TResult result)
+        public static bool TryGetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result)
             where TAttribute : Attribute
             where TEnum : struct => Enums<TEnum>.Info.TryGetAttributeSelect(value, selector, out result);
 

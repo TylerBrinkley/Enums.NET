@@ -1022,13 +1022,13 @@ namespace EnumsNET.Tests
                 for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
                 {
                     var value = (ColorFlagEnum)i;
-                    Assert.AreEqual(Enum.Format(typeof(ColorFlagEnum), value, format), value.Format(format));
+                    Assert.AreEqual(Enum.Format(typeof(ColorFlagEnum), value, format), Format(value, format));
                 }
 
                 for (int i = short.MinValue; i <= (int)DateFilterOperator.NextNumberOfBusinessDays; ++i)
                 {
                     var value = (DateFilterOperator)i;
-                    Assert.AreEqual(Enum.Format(typeof(DateFilterOperator), value, format), value.Format(format));
+                    Assert.AreEqual(Enum.Format(typeof(DateFilterOperator), value, format), Format(value, format));
                 }
             }
         }
@@ -1036,35 +1036,35 @@ namespace EnumsNET.Tests
         [Test]
         public void Format_ThrowsArgumentNullException_WhenUsingNullFormat()
         {
-            TestHelper.ExpectException<ArgumentNullException>(() => ColorFlagEnum.Blue.Format((string)null));
+            TestHelper.ExpectException<ArgumentNullException>(() => Format(ColorFlagEnum.Blue, (string)null));
         }
 
         [Test]
         public void Format_ThrowsFormatException_WhenUsingEmptyStringFormat()
         {
-            TestHelper.ExpectException<FormatException>(() => ColorFlagEnum.Blue.Format(string.Empty));
+            TestHelper.ExpectException<FormatException>(() => Format(ColorFlagEnum.Blue, string.Empty));
         }
 
         [Test]
         public void Format_ThrowsFormatException_WhenUsingInvalidStringFormat()
         {
-            TestHelper.ExpectException<FormatException>(() => ColorFlagEnum.Blue.Format("a"));
+            TestHelper.ExpectException<FormatException>(() => Format(ColorFlagEnum.Blue, "a"));
         }
 
         [Test]
         public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
         {
             var enumMemberValueFormat = RegisterCustomEnumFormat(member => member.GetAttribute<EnumMemberAttribute>()?.Value);
-            Assert.AreEqual("aye", EnumMemberAttributeEnum.A.Format(enumMemberValueFormat));
+            Assert.AreEqual("aye", Format(EnumMemberAttributeEnum.A, enumMemberValueFormat));
             var descriptionOrNameFormat = RegisterCustomEnumFormat(member => member.Description ?? member.Name);
-            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.Format(descriptionOrNameFormat));
-            Assert.AreEqual("Red", ColorFlagEnum.Red.Format(descriptionOrNameFormat));
+            Assert.AreEqual("Ultra-Violet", Format(ColorFlagEnum.UltraViolet, descriptionOrNameFormat));
+            Assert.AreEqual("Red", Format(ColorFlagEnum.Red, descriptionOrNameFormat));
         }
 
         [Test]
         public void GetUnderlyingValue_ReturnsExpected_OnAny()
         {
-            Assert.AreEqual(2, NumericFilterOperator.GreaterThan.GetUnderlyingValue());
+            Assert.AreEqual(2, GetUnderlyingValue(NumericFilterOperator.GreaterThan));
         }
         #endregion
 

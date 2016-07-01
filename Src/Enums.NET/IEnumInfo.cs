@@ -113,6 +113,9 @@ namespace EnumsNET
 
         string AsString(TEnum value);
         string AsString(TEnum value, string format);
+        string AsString(TEnum value, EnumFormat format);
+        string AsString(TEnum value, EnumFormat format0, EnumFormat format1);
+        string AsString(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string AsString(TEnum value, EnumFormat[] formatOrder);
         TEnum ExcludeFlags(TEnum value, TEnum flagMask);
         TEnum CommonFlags(TEnum value, TEnum flagMask);
@@ -120,9 +123,6 @@ namespace EnumsNET
         bool Equals(TEnum value, TEnum other);
         string Format(TEnum value, string format);
         string Format(TEnum value, EnumFormat[] formatOrder);
-        string Format(TEnum value, EnumFormat format);
-        string Format(TEnum value, EnumFormat format0, EnumFormat format1);
-        string Format(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formatOrder);
         TAttribute GetAttribute<TAttribute>(TEnum value) where TAttribute : Attribute;
         IEnumerable<Attribute> GetAttributes(TEnum value);

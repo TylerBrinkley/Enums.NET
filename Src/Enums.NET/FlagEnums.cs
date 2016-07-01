@@ -78,7 +78,7 @@ namespace EnumsNET
         /// <returns>The names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value)
+        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => FormatAsFlags(value, null, null);
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace EnumsNET
         /// <param name="formatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, params EnumFormat[] formatOrder)
+        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value, params EnumFormat[] formatOrder)
             where TEnum : struct => FormatAsFlags(value, null, formatOrder);
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace EnumsNET
         /// <returns>The names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter)
+        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter)
             where TEnum : struct => FormatAsFlags(value, delimiter, null);
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace EnumsNET
         /// <param name="formatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(this TEnum value, string delimiter, params EnumFormat[] formatOrder)
+        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder)
             where TEnum : struct => Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formatOrder);
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         [Pure]
-        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(this TEnum value)
+        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value);
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace EnumsNET
         /// <param name="toggleValidFlagsOnly"></param>
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         [Pure]
-        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(this TEnum value, bool toggleValidFlagsOnly)
+        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(TEnum value, bool toggleValidFlagsOnly)
             where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value, toggleValidFlagsOnly);
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace EnumsNET
         /// <param name="flagMask"></param>
         /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
         [Pure]
-        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
+        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(TEnum value, TEnum flagMask)
             where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value, flagMask);
 
         /// <summary>

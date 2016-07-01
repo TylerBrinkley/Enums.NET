@@ -109,6 +109,30 @@ namespace EnumsNET
         public string AsString(string format) => _member.AsString(format);
 
         /// <summary>
+        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public string AsString(EnumFormat format) => _member.AsString(format);
+
+        /// <summary>
+        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
+        public string AsString(EnumFormat format0, EnumFormat format1) => _member.AsString(format0, format1);
+
+        /// <summary>
+        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
+        /// </summary>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
+        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _member.AsString(format0, format1, format2);
+
+        /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <param name="formatOrder"></param>
@@ -123,30 +147,6 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="format"/> is null.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public string Format(string format) => _member.Format(format);
-
-        /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public string Format(EnumFormat format) => _member.Format(format);
-
-        /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <returns></returns>
-        public string Format(EnumFormat format0, EnumFormat format1) => _member.Format(format0, format1);
-
-        /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <param name="format2"></param>
-        /// <returns></returns>
-        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _member.Format(format0, format1, format2);
 
         /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
