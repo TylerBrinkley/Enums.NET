@@ -157,7 +157,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void HasAnyFlags1_ReturnsExpected_WhenUsingInvalidFlagMask()
+        public void HasAnyFlags1_ReturnsExpected_WhenUsingInvalidOtherFlags()
         {
             Assert.IsFalse(ColorFlagEnum.Red.HasAnyFlags((ColorFlagEnum)16));
             Assert.IsTrue(ColorFlagEnum.Red.HasAnyFlags(((ColorFlagEnum)16) | ColorFlagEnum.Red));
@@ -197,7 +197,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void HasAllFlags1_ReturnsExpected_WhenUsingInvalidFlagMask()
+        public void HasAllFlags1_ReturnsExpected_WhenUsingInvalidOtherFlags()
         {
             Assert.IsFalse(ColorFlagEnum.Red.HasAllFlags((ColorFlagEnum)16));
             Assert.IsTrue((ColorFlagEnum.Red | (ColorFlagEnum)16).HasAllFlags((ColorFlagEnum)16));
@@ -230,7 +230,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void ToggleFlags1_ReturnsExpected_WhenUsingInvalidFlagMask()
+        public void ToggleFlags1_ReturnsExpected_WhenUsingInvalidOtherFlags()
         {
             Assert.AreEqual((((ColorFlagEnum)16) | ColorFlagEnum.Blue), FlagEnums.ToggleFlags(ColorFlagEnum.Blue, (ColorFlagEnum)16));
         }
@@ -251,7 +251,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void CommonFlags_ReturnsExpected_WhenUsingInvalidFlagMask()
+        public void CommonFlags_ReturnsExpected_WhenUsingInvalidOtherFlags()
         {
             Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Red.CommonFlags((ColorFlagEnum)16));
             Assert.AreEqual(ColorFlagEnum.Red, ColorFlagEnum.Red.CommonFlags(((ColorFlagEnum)16) | ColorFlagEnum.Red));
@@ -273,7 +273,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void CombineFlags_ReturnsExpected_WhenUsingInvalidFlagMask()
+        public void CombineFlags_ReturnsExpected_WhenUsingInvalidOtherFlags()
         {
             Assert.AreEqual(((ColorFlagEnum)16) | ColorFlagEnum.Red, ColorFlagEnum.Red.CombineFlags((ColorFlagEnum)16));
         }
@@ -296,7 +296,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void ExcludeFlags_ThrowsArgumentException_WhenUsingInvalidFlagMask()
+        public void ExcludeFlags_ThrowsArgumentException_WhenUsingInvalidOtherFlags()
         {
             Assert.AreEqual(ColorFlagEnum.Red, ColorFlagEnum.Red.ExcludeFlags((ColorFlagEnum)16));
             Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Red.ExcludeFlags(((ColorFlagEnum)16) | ColorFlagEnum.Red));

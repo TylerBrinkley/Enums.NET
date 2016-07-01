@@ -199,18 +199,18 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.
+        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
-        public static bool HasAnyFlags(Type enumType, object value, object flagMask)
+        public static bool HasAnyFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetInfo(enumType);
             var enumInfo = info.EnumInfo;
@@ -219,16 +219,16 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    return !enumInfo.HasAnyFlags(flagMask);
+                    return !enumInfo.HasAnyFlags(otherFlags);
                 }
-                if (flagMask == null)
+                if (otherFlags == null)
                 {
                     enumInfo.ToObject(value);
                     return true;
                 }
             }
 
-            return enumInfo.HasAnyFlags(value, flagMask);
+            return enumInfo.HasAnyFlags(value, otherFlags);
         }
 
         /// <summary>
@@ -255,18 +255,18 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.
+        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
-        public static bool HasAllFlags(Type enumType, object value, object flagMask)
+        public static bool HasAllFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetInfo(enumType);
             var enumInfo = info.EnumInfo;
@@ -275,16 +275,16 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    return !enumInfo.HasAnyFlags(flagMask);
+                    return !enumInfo.HasAnyFlags(otherFlags);
                 }
-                if (flagMask == null)
+                if (otherFlags == null)
                 {
                     enumInfo.ToObject(value);
                     return true;
                 }
             }
 
-            return enumInfo.HasAllFlags(value, flagMask);
+            return enumInfo.HasAllFlags(value, otherFlags);
         }
 
         /// <summary>
@@ -342,18 +342,18 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
+        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
-        public static object ToggleFlags(Type enumType, object value, object flagMask)
+        public static object ToggleFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetInfo(enumType);
             var enumInfo = info.EnumInfo;
@@ -362,30 +362,30 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    return enumInfo.ToObject(flagMask);
+                    return enumInfo.ToObject(otherFlags);
                 }
-                if (flagMask == null)
+                if (otherFlags == null)
                 {
                     return enumInfo.ToObject(value);
                 }
             }
 
-            return enumInfo.ToggleFlags(value, flagMask);
+            return enumInfo.ToggleFlags(value, otherFlags);
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>. Equivalent to the bitwise "and" operation.
+        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
-        public static object CommonFlags(Type enumType, object value, object flagMask)
+        public static object CommonFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetInfo(enumType);
             var enumInfo = info.EnumInfo;
@@ -394,52 +394,52 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    if (flagMask != null)
+                    if (otherFlags != null)
                     {
-                        enumInfo.ToObject(flagMask);
+                        enumInfo.ToObject(otherFlags);
                     }
                     return null;
                 }
-                if (flagMask == null)
+                if (otherFlags == null)
                 {
                     enumInfo.ToObject(value);
                     return null;
                 }
             }
 
-            return enumInfo.CommonFlags(value, flagMask);
+            return enumInfo.CommonFlags(value, otherFlags);
         }
 
         /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
+        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set. Equivalent to the bitwise "or" operation.
         /// </summary>
         /// <param name="enumType"></param>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
+        /// <param name="value"></param>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="flag0"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
-        public static object CombineFlags(Type enumType, object flag0, object flag1)
+        public static object CombineFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
             {
-                if (flag0 == null)
+                if (value == null)
                 {
-                    return enumInfo.ToObject(flag1);
+                    return enumInfo.ToObject(otherFlags);
                 }
-                if (flag1 == null)
+                if (otherFlags == null)
                 {
-                    return enumInfo.ToObject(flag0);
+                    return enumInfo.ToObject(value);
                 }
             }
 
-            return enumInfo.CombineFlags(flag0, flag1);
+            return enumInfo.CombineFlags(value, otherFlags);
         }
 
         /// <summary>
@@ -463,18 +463,18 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
+        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type.</exception>
         [Pure]
-        public static object ExcludeFlags(Type enumType, object value, object flagMask)
+        public static object ExcludeFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetInfo(enumType);
             var enumInfo = info.EnumInfo;
@@ -483,19 +483,19 @@ namespace EnumsNET.NonGeneric
             {
                 if (value == null)
                 {
-                    if (flagMask != null)
+                    if (otherFlags != null)
                     {
-                        enumInfo.ToObject(flagMask);
+                        enumInfo.ToObject(otherFlags);
                     }
                     return null;
                 }
-                if (flagMask == null)
+                if (otherFlags == null)
                 {
                     return enumInfo.ToObject(value);
                 }
             }
 
-            return enumInfo.ExcludeFlags(value, flagMask);
+            return enumInfo.ExcludeFlags(value, otherFlags);
         }
         #endregion
 

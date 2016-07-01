@@ -161,18 +161,18 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.
+        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool HasAnyFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static bool HasAnyFlags<TEnum>(TEnum value, TEnum otherFlags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.HasAnyFlags(value, flagMask);
+            return Enums<TEnum>.Info.HasAnyFlags(value, otherFlags);
         }
 
         /// <summary>
@@ -190,18 +190,18 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.
+        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool HasAllFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static bool HasAllFlags<TEnum>(TEnum value, TEnum otherFlags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.HasAllFlags(value, flagMask);
+            return Enums<TEnum>.Info.HasAllFlags(value, otherFlags);
         }
 
         /// <summary>
@@ -235,48 +235,48 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
+        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum otherFlags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ToggleFlags(value, flagMask);
+            return Enums<TEnum>.Info.ToggleFlags(value, otherFlags);
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>. Equivalent to the bitwise "and" operation.
+        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum CommonFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static TEnum CommonFlags<TEnum>(TEnum value, TEnum otherFlags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CommonFlags(value, flagMask);
+            return Enums<TEnum>.Info.CommonFlags(value, otherFlags);
         }
 
         /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
+        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set. Equivalent to the bitwise "or" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
+        /// <param name="value"></param>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1)
+        public static TEnum CombineFlags<TEnum>(TEnum value, TEnum otherFlags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CombineFlags(flag0, flag1);
+            return Enums<TEnum>.Info.CombineFlags(value, otherFlags);
         }
 
         /// <summary>
@@ -294,18 +294,18 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
+        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum flagMask)
+        public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum otherFlags)
         {
             UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ExcludeFlags(value, flagMask);
+            return Enums<TEnum>.Info.ExcludeFlags(value, otherFlags);
         }
         #endregion
 

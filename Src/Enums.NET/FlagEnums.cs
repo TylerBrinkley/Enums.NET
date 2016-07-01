@@ -141,15 +141,15 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.HasAnyFlags(value);
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.
+        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.</returns>
         [Pure]
-        public static bool HasAnyFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
-            where TEnum : struct => Enums<TEnum>.Info.HasAnyFlags(value, flagMask);
+        public static bool HasAnyFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.HasAnyFlags(value, otherFlags);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has all flags set that are defined in <typeparamref name="TEnum"/>.
@@ -162,15 +162,15 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.HasAllFlags(value);
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.
+        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.</returns>
         [Pure]
-        public static bool HasAllFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
-            where TEnum : struct => Enums<TEnum>.Info.HasAllFlags(value, flagMask);
+        public static bool HasAllFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.HasAllFlags(value, otherFlags);
 
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
@@ -195,37 +195,37 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value, toggleValidFlagsOnly);
 
         /// <summary>
-        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>. Equivalent to the bitwise "xor" operator.
+        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>.</returns>
         [Pure]
-        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(TEnum value, TEnum flagMask)
-            where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value, flagMask);
+        public static TEnum ToggleFlags<[EnumConstraint] TEnum>(TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.ToggleFlags(value, otherFlags);
 
         /// <summary>
-        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>. Equivalent to the bitwise "and" operation.
+        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="flagMask"/>.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>.</returns>
         [Pure]
-        public static TEnum CommonFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
-            where TEnum : struct => Enums<TEnum>.Info.CommonFlags(value, flagMask);
+        public static TEnum CommonFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.CommonFlags(value, otherFlags);
 
         /// <summary>
-        /// Returns <paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set. Equivalent to the bitwise "or" operation.
+        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set. Equivalent to the bitwise "or" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="flag0"></param>
-        /// <param name="flag1"></param>
-        /// <returns><paramref name="flag0"/> with the flags specified in <paramref name="flag1"/> set.</returns>
+        /// <param name="value"></param>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set.</returns>
         [Pure]
-        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum flag0, TEnum flag1)
-            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1);
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(value, otherFlags);
 
         /// <summary>
         /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
@@ -238,15 +238,15 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flags);
 
         /// <summary>
-        /// Returns <paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.
+        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <param name="flagMask"></param>
-        /// <returns><paramref name="value"/> with the flags specified in <paramref name="flagMask"/> cleared.</returns>
+        /// <param name="otherFlags"></param>
+        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
         [Pure]
-        public static TEnum ExcludeFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum flagMask)
-            where TEnum : struct => Enums<TEnum>.Info.ExcludeFlags(value, flagMask);
+        public static TEnum ExcludeFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.ExcludeFlags(value, otherFlags);
         #endregion
 
         #region Parsing

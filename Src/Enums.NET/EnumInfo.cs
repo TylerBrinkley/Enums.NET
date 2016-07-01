@@ -259,23 +259,23 @@ namespace EnumsNET
 
         public bool HasAnyFlags(TEnum value) => Cache.HasAnyFlags(ToInt(value));
 
-        public bool HasAnyFlags(TEnum value, TEnum flagMask) => Cache.HasAnyFlags(ToInt(value), ToInt(flagMask));
+        public bool HasAnyFlags(TEnum value, TEnum otherFlags) => Cache.HasAnyFlags(ToInt(value), ToInt(otherFlags));
 
         public bool HasAllFlags(TEnum value) => Cache.HasAllFlags(ToInt(value));
 
-        public bool HasAllFlags(TEnum value, TEnum flagMask) => Cache.HasAllFlags(ToInt(value), ToInt(flagMask));
+        public bool HasAllFlags(TEnum value, TEnum otherFlags) => Cache.HasAllFlags(ToInt(value), ToInt(otherFlags));
 
         public TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly) => ToEnum(Cache.ToggleFlags(ToInt(value), toggleValidFlagsOnly));
 
-        public TEnum ToggleFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(flagMask)));
+        public TEnum ToggleFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(otherFlags)));
 
-        public TEnum CommonFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(flagMask)));
+        public TEnum CommonFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(otherFlags)));
 
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1)));
+        public TEnum CombineFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.CombineFlags(ToInt(value), ToInt(otherFlags)));
 
         public TEnum CombineFlags(TEnum[] flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
-        public TEnum ExcludeFlags(TEnum value, TEnum flagMask) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(flagMask)));
+        public TEnum ExcludeFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));
         #endregion
 
         #region Parsing

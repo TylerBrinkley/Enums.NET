@@ -90,9 +90,9 @@ namespace EnumsNET.NonGeneric
 
         public string AsString(object value, EnumFormat[] formatOrder) => Cache.AsString(ToInt(value), formatOrder);
 
-        public object ExcludeFlags(object value, object flagMask) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(flagMask)));
+        public object ExcludeFlags(object value, object otherFlags) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));
 
-        public object CommonFlags(object value, object flagMask) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(flagMask)));
+        public object CommonFlags(object value, object otherFlags) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(otherFlags)));
 
         public int Compare(object x, object y) => ToInt(x).CompareTo(ToInt(y));
 
@@ -146,11 +146,11 @@ namespace EnumsNET.NonGeneric
 
         public bool HasAllFlags(object value) => Cache.HasAllFlags(ToInt(value));
 
-        public bool HasAllFlags(object value, object flagMask) => Cache.HasAllFlags(ToInt(value), ToInt(flagMask));
+        public bool HasAllFlags(object value, object otherFlags) => Cache.HasAllFlags(ToInt(value), ToInt(otherFlags));
 
         public bool HasAnyFlags(object value) => Cache.HasAnyFlags(ToInt(value));
 
-        public bool HasAnyFlags(object value, object flagMask) => Cache.HasAnyFlags(ToInt(value), ToInt(flagMask));
+        public bool HasAnyFlags(object value, object otherFlags) => Cache.HasAnyFlags(ToInt(value), ToInt(otherFlags));
 
         public bool IsValidFlagCombination(object value) => Cache.IsValidFlagCombination(ToInt(value));
 
@@ -167,13 +167,13 @@ namespace EnumsNET.NonGeneric
 
         public object CombineFlags(IEnumerable<object> flags) => ToEnum(Cache.CombineFlags(flags.Select(flag => ToInt(flag))));
 
-        public object CombineFlags(object flag0, object flag1) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1)));
+        public object CombineFlags(object value, object otherFlags) => ToEnum(Cache.CombineFlags(ToInt(value), ToInt(otherFlags)));
 
         public byte ToByte(object value) => ToInt(value).ToByte(null);
 
         public object ToggleFlags(object value, bool toggleValidFlagsOnly) => ToEnum(Cache.ToggleFlags(ToInt(value), toggleValidFlagsOnly));
 
-        public object ToggleFlags(object value, object flagMask) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(flagMask)));
+        public object ToggleFlags(object value, object otherFlags) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(otherFlags)));
 
         public short ToInt16(object value) => ToInt(value).ToInt16(null);
 

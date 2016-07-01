@@ -797,19 +797,19 @@ namespace EnumsNET
 
         public bool HasAnyFlags(TInt value) => !value.Equals(Provider.Zero);
 
-        public bool HasAnyFlags(TInt value, TInt flagMask) => !Provider.And(value, flagMask).Equals(Provider.Zero);
+        public bool HasAnyFlags(TInt value, TInt otherFlags) => !Provider.And(value, otherFlags).Equals(Provider.Zero);
 
         public bool HasAllFlags(TInt value) => HasAllFlags(value, AllFlags);
 
-        public bool HasAllFlags(TInt value, TInt flagMask) => Provider.And(value, flagMask).Equals(flagMask);
+        public bool HasAllFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags).Equals(otherFlags);
 
         public TInt ToggleFlags(TInt value, bool toggleValidFlagsOnly) => toggleValidFlagsOnly ? Provider.Xor(value, AllFlags) : Provider.Not(value);
 
-        public TInt ToggleFlags(TInt value, TInt flagMask) => Provider.Xor(value, flagMask);
+        public TInt ToggleFlags(TInt value, TInt otherFlags) => Provider.Xor(value, otherFlags);
 
-        public TInt CommonFlags(TInt value, TInt flagMask) => Provider.And(value, flagMask);
+        public TInt CommonFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1) => Provider.Or(flag0, flag1);
+        public TInt CombineFlags(TInt value, TInt otherFlags) => Provider.Or(value, otherFlags);
 
         public TInt CombineFlags(IEnumerable<TInt> flags)
         {
@@ -824,7 +824,7 @@ namespace EnumsNET
             return combinedFlags;
         }
 
-        public TInt ExcludeFlags(TInt value, TInt flagMask) => Provider.And(value, Provider.Not(flagMask));
+        public TInt ExcludeFlags(TInt value, TInt otherFlags) => Provider.And(value, Provider.Not(otherFlags));
         #endregion
 
         #region Parsing
