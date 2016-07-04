@@ -80,7 +80,7 @@ namespace EnumsNET.Tests
 
         #region Type Methods
         [Test]
-        public void GetDefinedCount()
+        public void GetEnumMemberCount()
         {
             Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>());
             Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>());

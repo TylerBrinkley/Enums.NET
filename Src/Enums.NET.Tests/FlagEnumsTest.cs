@@ -55,7 +55,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FormatAsFlags_ReturnsValidString_WhenUsingValidValue()
+        public void FormatFlags_ReturnsValidString_WhenUsingValidValue()
         {
             Assert.AreEqual("Black", FlagEnums.FormatFlags(ColorFlagEnum.Black));
             Assert.AreEqual("Red", FlagEnums.FormatFlags(ColorFlagEnum.Red));
@@ -70,7 +70,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FormatAsFlags_ReturnsValidString_WhenUsingValidValueWithCustomDelimiter()
+        public void FormatFlags_ReturnsValidString_WhenUsingValidValueWithCustomDelimiter()
         {
             Assert.AreEqual("Black", FlagEnums.FormatFlags(ColorFlagEnum.Black, " | "));
             Assert.AreEqual("Red", FlagEnums.FormatFlags(ColorFlagEnum.Red, " | "));
@@ -85,20 +85,20 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FormatAsFlags_ReturnsValidString_WhenUsingInvalidValue()
+        public void FormatFlags_ReturnsValidString_WhenUsingInvalidValue()
         {
             Assert.AreEqual("16", FlagEnums.FormatFlags((ColorFlagEnum)16));
         }
 
         [Test]
-        public void FormatAsFlags_UsesDefaultDelimiter_WhenUsingValidValueWithNullDelimiter()
+        public void FormatFlags_UsesDefaultDelimiter_WhenUsingValidValueWithNullDelimiter()
         {
             var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
             Assert.AreEqual(FlagEnums.FormatFlags(value), FlagEnums.FormatFlags(value, (string)null));
         }
 
         [Test]
-        public void FormatAsFlags_UsesDefaultDelimiter_WhenUsingValidValueWithEmptyDelimiter()
+        public void FormatFlags_UsesDefaultDelimiter_WhenUsingValidValueWithEmptyDelimiter()
         {
             var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
             Assert.AreEqual(FlagEnums.FormatFlags(value), FlagEnums.FormatFlags(value, string.Empty));
