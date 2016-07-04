@@ -52,7 +52,7 @@ namespace EnumsNET.NonGeneric
         #endregion
 
         #region Type Methods
-        public int GetDefinedCount(bool uniqueValued) => Cache.GetDefinedCount(uniqueValued);
+        public int GetEnumMemberCount(bool uniqueValued) => Cache.GetEnumMemberCount(uniqueValued);
 
         public IEnumerable<string> GetNames(bool uniqueValued) => Cache.GetNames(uniqueValued);
         #endregion
@@ -94,7 +94,7 @@ namespace EnumsNET.NonGeneric
 
         public object CommonFlags(object value, object otherFlags) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(otherFlags)));
 
-        public int Compare(object x, object y) => ToInt(x).CompareTo(ToInt(y));
+        public int CompareTo(object x, object y) => ToInt(x).CompareTo(ToInt(y));
 
         public new bool Equals(object value, object other) => ToInt(value).Equals(ToInt(other));
 
@@ -108,7 +108,7 @@ namespace EnumsNET.NonGeneric
 
         public string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Cache.AsString(ToInt(value), format0, format1, format2);
 
-        public string FormatAsFlags(object value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatAsFlags(ToInt(value), delimiter, formatOrder);
+        public string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatFlags(ToInt(value), delimiter, formatOrder);
 
         public IEnumerable<Attribute> GetAttributes(object value) => Cache.GetAttributes(ToInt(value));
 
@@ -118,11 +118,7 @@ namespace EnumsNET.NonGeneric
 
         public string GetDescriptionOrName(object value, Func<string, string> nameFormatter) => Cache.GetDescriptionOrName(ToInt(value), nameFormatter);
 
-        public EnumMember GetEnumMember(object value)
-        {
-            var member = Cache.GetEnumMember(ToInt(value));
-            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
-        }
+        public EnumMember GetEnumMember(object value) => new EnumMember<TEnum, TInt, TIntProvider>(Cache.GetEnumMember(ToInt(value)));
 
         public EnumMember GetEnumMember(string name, bool ignoreCase)
         {

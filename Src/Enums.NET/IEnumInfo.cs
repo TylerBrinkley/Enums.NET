@@ -35,7 +35,7 @@ namespace EnumsNET
         bool IsContiguous { get; }
         bool IsFlagEnum { get; }
 
-        int GetDefinedCount(bool uniqueValued = false);
+        int GetEnumMemberCount(bool uniqueValued = false);
         IEnumerable<string> GetNames(bool uniqueValued = false);
         bool IsDefined(object value);
         bool IsDefined(ulong value);
@@ -57,14 +57,14 @@ namespace EnumsNET
         string AsString(object value, EnumFormat[] formatOrder);
         object ExcludeFlags(object value, object otherFlags);
         object CommonFlags(object value, object otherFlags);
-        int Compare(object x, object y);
+        int CompareTo(object x, object y);
         bool Equals(object value, object other);
         string Format(object value, string format);
         string Format(object value, EnumFormat[] formatOrder);
         string Format(object value, EnumFormat format);
         string Format(object value, EnumFormat format0, EnumFormat format1);
         string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string FormatAsFlags(object value, string delimiter, EnumFormat[] formatOrder);
+        string FormatFlags(object value, string delimiter = null, EnumFormat[] formatOrder = null);
         IEnumerable<Attribute> GetAttributes(object value);
         string GetDescription(object value);
         string GetDescriptionOrName(object value);
@@ -119,11 +119,11 @@ namespace EnumsNET
         string AsString(TEnum value, EnumFormat[] formatOrder);
         TEnum ExcludeFlags(TEnum value, TEnum otherFlags);
         TEnum CommonFlags(TEnum value, TEnum otherFlags);
-        int Compare(TEnum x, TEnum y);
+        int CompareTo(TEnum value, TEnum other);
         bool Equals(TEnum value, TEnum other);
         string Format(TEnum value, string format);
         string Format(TEnum value, EnumFormat[] formatOrder);
-        string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formatOrder);
+        string FormatFlags(TEnum value, string delimiter = null, EnumFormat[] formatOrder = null);
         TAttribute GetAttribute<TAttribute>(TEnum value) where TAttribute : Attribute;
         IEnumerable<Attribute> GetAttributes(TEnum value);
         IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value) where TAttribute : Attribute;
@@ -146,8 +146,8 @@ namespace EnumsNET
         bool IsDefined(TEnum value);
         bool IsValid(TEnum value);
         bool IsValidFlagCombination(TEnum value);
-        TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
-        TEnum ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
+        TEnum Parse(string value, bool ignoreCase = false, EnumFormat[] parseFormatOrder = null);
+        TEnum ParseFlags(string value, bool ignoreCase = false, string delimiter = null, EnumFormat[] parseFormatOrder = null);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
         TEnum CombineFlags(TEnum[] flags);
         TEnum CombineFlags(TEnum value, TEnum otherFlags);
@@ -165,8 +165,8 @@ namespace EnumsNET
         uint ToUInt32(TEnum value);
         ulong ToUInt64(TEnum value);
         bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
-        bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder);
-        bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder);
+        bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder = null);
+        bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder = null);
         bool TryToObject(ulong value, out TEnum result, bool validate = false);
         bool TryToObject(object value, out TEnum result, bool validate = false);
         bool TryToObject(long value, out TEnum result, bool validate = false);

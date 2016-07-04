@@ -42,11 +42,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication if <typeparamref name="TEnum"/> is marked with the <see cref="FlagsAttribute"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool IsFlagEnum<TEnum>()
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.IsFlagEnum;
-        }
+        public static bool IsFlagEnum<TEnum>() => UnsafeEnums.GetInfo<TEnum>().IsFlagEnum;
 
         /// <summary>
         /// Retrieves all the flags defined by <typeparamref name="TEnum"/>.
@@ -55,11 +51,7 @@ namespace EnumsNET.Unsafe
         /// <returns>All the flags defined by <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum GetAllFlags<TEnum>()
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.AllFlags;
-        }
+        public static TEnum GetAllFlags<TEnum>() => UnsafeEnums.GetInfo<TEnum>().AllFlags;
         #endregion
 
         #region Main Methods
@@ -71,11 +63,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication of whether <paramref name="value"/> is a valid flag combination of the defined enum values.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool IsValidFlagCombination<TEnum>(TEnum value)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.IsValidFlagCombination(value);
-        }
+        public static bool IsValidFlagCombination<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().IsValidFlagCombination(value);
 
         /// <summary>
         /// Returns the names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
@@ -87,7 +75,7 @@ namespace EnumsNET.Unsafe
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string FormatAsFlags<TEnum>(TEnum value) => FormatAsFlags(value, null, null);
+        public static string FormatFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().FormatFlags(value);
 
         /// <summary>
         /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with commas
@@ -99,7 +87,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string FormatAsFlags<TEnum>(TEnum value, params EnumFormat[] formatOrder) => FormatAsFlags(value, null, formatOrder);
+        public static string FormatFlags<TEnum>(TEnum value, params EnumFormat[] formatOrder) => UnsafeEnums.GetInfo<TEnum>().FormatFlags(value, null, formatOrder);
 
         /// <summary>
         /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -111,7 +99,7 @@ namespace EnumsNET.Unsafe
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string FormatAsFlags<TEnum>(TEnum value, string delimiter) => FormatAsFlags(value, delimiter, null);
+        public static string FormatFlags<TEnum>(TEnum value, string delimiter) => UnsafeEnums.GetInfo<TEnum>().FormatFlags(value, delimiter);
 
         /// <summary>
         /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with <paramref name="delimiter"/>
@@ -124,11 +112,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static string FormatAsFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formatOrder);
-        }
+        public static string FormatFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder) => UnsafeEnums.GetInfo<TEnum>().FormatFlags(value, delimiter, formatOrder);
 
         /// <summary>
         /// Returns an array of the flags that compose <paramref name="value"/>.
@@ -140,11 +124,7 @@ namespace EnumsNET.Unsafe
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static IEnumerable<TEnum> GetFlags<TEnum>(TEnum value)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.GetFlags(value);
-        }
+        public static IEnumerable<TEnum> GetFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().GetFlags(value);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags set.
@@ -154,11 +134,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication if <paramref name="value"/> has any flags set.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool HasAnyFlags<TEnum>(TEnum value)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.HasAnyFlags(value);
-        }
+        public static bool HasAnyFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().HasAnyFlags(value);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.
@@ -169,11 +145,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool HasAnyFlags<TEnum>(TEnum value, TEnum otherFlags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.HasAnyFlags(value, otherFlags);
-        }
+        public static bool HasAnyFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().HasAnyFlags(value, otherFlags);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has all flags set that are defined in <typeparamref name="TEnum"/>.
@@ -183,11 +155,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication if <paramref name="value"/> has all flags set that are defined in <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool HasAllFlags<TEnum>(TEnum value)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.HasAllFlags(value);
-        }
+        public static bool HasAllFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().HasAllFlags(value);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.
@@ -198,11 +166,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool HasAllFlags<TEnum>(TEnum value, TEnum otherFlags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.HasAllFlags(value, otherFlags);
-        }
+        public static bool HasAllFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().HasAllFlags(value, otherFlags);
 
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
@@ -212,11 +176,7 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToggleFlags<TEnum>(TEnum value)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ToggleFlags(value);
-        }
+        public static TEnum ToggleFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().ToggleFlags(value);
 
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. If <paramref name="toggleValidFlagsOnly"/> is <c>true</c> then equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>
@@ -228,11 +188,7 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToggleFlags<TEnum>(TEnum value, bool toggleValidFlagsOnly)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ToggleFlags(value, toggleValidFlagsOnly);
-        }
+        public static TEnum ToggleFlags<TEnum>(TEnum value, bool toggleValidFlagsOnly) => UnsafeEnums.GetInfo<TEnum>().ToggleFlags(value, toggleValidFlagsOnly);
 
         /// <summary>
         /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
@@ -243,11 +199,7 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum otherFlags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ToggleFlags(value, otherFlags);
-        }
+        public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().ToggleFlags(value, otherFlags);
 
         /// <summary>
         /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
@@ -258,11 +210,7 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum CommonFlags<TEnum>(TEnum value, TEnum otherFlags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CommonFlags(value, otherFlags);
-        }
+        public static TEnum CommonFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().CommonFlags(value, otherFlags);
 
         /// <summary>
         /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set. Equivalent to the bitwise "or" operation.
@@ -273,11 +221,7 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum CombineFlags<TEnum>(TEnum value, TEnum otherFlags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CombineFlags(value, otherFlags);
-        }
+        public static TEnum CombineFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().CombineFlags(value, otherFlags);
 
         /// <summary>
         /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
@@ -287,11 +231,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum CombineFlags<TEnum>(params TEnum[] flags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.CombineFlags(flags);
-        }
+        public static TEnum CombineFlags<TEnum>(params TEnum[] flags) => UnsafeEnums.GetInfo<TEnum>().CombineFlags(flags);
 
         /// <summary>
         /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.
@@ -302,17 +242,12 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum otherFlags)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ExcludeFlags(value, otherFlags);
-        }
+        public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().ExcludeFlags(value, otherFlags);
         #endregion
 
         #region Parsing
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated object.
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -325,14 +260,29 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<TEnum>(string value) => Parse<TEnum>(value, false, null, null);
-
-        [Pure]
-        public static TEnum Parse<TEnum>(string value, params EnumFormat[] parseFormatOrder) => Parse<TEnum>(value, false, null, parseFormatOrder);
+        public static TEnum ParseFlags<TEnum>(string value) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value);
 
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<TEnum>(string value, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, false, null, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -346,14 +296,30 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<TEnum>(string value, bool ignoreCase) => Parse<TEnum>(value, ignoreCase, null, null);
-
-        [Pure]
-        public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => Parse<TEnum>(value, ignoreCase, null, parseFormatOrder);
+        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, ignoreCase);
 
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// delimited with the specified delimiter to an equivalent enumerated object.
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, ignoreCase, null, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -367,15 +333,30 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<TEnum>(string value, string delimiter) => Parse<TEnum>(value, false, delimiter, null);
-
-        [Pure]
-        public static TEnum Parse<TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder) => Parse<TEnum>(value, false, delimiter, parseFormatOrder);
+        public static TEnum ParseFlags<TEnum>(string value, string delimiter) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, false, delimiter);
 
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// delimited with the specified delimiter to an equivalent enumerated object.
-        /// A parameter specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, false, delimiter, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -390,18 +371,32 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<TEnum>(string value, bool ignoreCase, string delimiter) => Parse<TEnum>(value, ignoreCase, delimiter, null);
-
-        [Pure]
-        public static TEnum Parse<TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
-        }
+        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, ignoreCase, delimiter);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -409,76 +404,141 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue) => ParseOrDefault(value, false, null, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, null, defaultValue, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
-        /// A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue) => ParseOrDefault(value, ignoreCase, null, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, ignoreCase, null, defaultValue, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object but if it fails
-        /// returns the specified enumerated value.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="delimiter"/> is an empty string.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultValue) => ParseOrDefault(value, false, delimiter, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder) => ParseOrDefault(value, false, delimiter, defaultValue, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object but if it fails
-        /// returns the specified enumerated value. A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="delimiter"/> is an empty string.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue) => ParseOrDefault(value, ignoreCase, delimiter, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, TEnum defaultValue)
         {
             TEnum result;
-            return TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, null, out result) ? result : defaultValue;
         }
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, null, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, null, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, string delimiter, TEnum defaultValue)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, delimiter, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, delimiter, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, delimiter, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            TEnum result;
+            return UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -486,15 +546,24 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryParse<TEnum>(string value, out TEnum result) => TryParse(value, false, null, out result, null);
-
-        [Pure]
-        public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) => TryParse(value, false, null, out result, parseFormatOrder);
+        public static bool TryParseFlags<TEnum>(string value, out TEnum result) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, null, out result);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
-        /// A parameter specifies whether the operation is case-insensitive.
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseFlags<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, null, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -503,14 +572,25 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result) => TryParse(value, ignoreCase, null, out result, null);
-
-        [Pure]
-        public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) => TryParse(value, ignoreCase, null, out result, parseFormatOrder);
+        public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, out TEnum result) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, null, out result);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
         /// indicates whether the conversion succeeded.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
@@ -518,20 +598,27 @@ namespace EnumsNET.Unsafe
         /// <param name="delimiter"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="delimiter"/> is an empty string.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryParse<TEnum>(string value, string delimiter, out TEnum result) => TryParse(value, false, delimiter, out result, null);
-
-        [Pure]
-        public static bool TryParse<TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder) => TryParse(value, false, delimiter, out result, parseFormatOrder);
+        public static bool TryParseFlags<TEnum>(string value, string delimiter, out TEnum result) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, delimiter, out result);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
-        /// indicates whether the conversion succeeded. A parameter specifies whether the operation is case-insensitive.
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseFlags<TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, false, delimiter, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -539,19 +626,25 @@ namespace EnumsNET.Unsafe
         /// <param name="delimiter"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="delimiter"/> is an empty string.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryParse<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result) => TryParse(value, ignoreCase, delimiter, out result, null);
+        public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, delimiter, out result);
 
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
-        public static bool TryParse<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
-        {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
-            return Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
-        }
+        public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder) => UnsafeEnums.GetInfo<TEnum>().TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         #endregion
     }
 }

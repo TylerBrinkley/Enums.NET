@@ -39,7 +39,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         public UnsafeEnumComparer()
         {
-            UnsafeEnums.VerifyTypeIsEnum(typeof(TEnum));
+            UnsafeEnums.GetInfo<TEnum>();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace EnumsNET.Unsafe
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int Compare(TEnum x, TEnum y) => Enums<TEnum>.Info.Compare(x, y);
+        public int Compare(TEnum x, TEnum y) => Enums<TEnum>.Info.CompareTo(x, y);
 
         #region Explicit Interface Implementation
         bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && Equals((TEnum)x, (TEnum)y);

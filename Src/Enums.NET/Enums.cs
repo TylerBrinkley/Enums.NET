@@ -111,8 +111,8 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members count.</returns>
         [Pure]
-        public static int GetDefinedCount<[EnumConstraint] TEnum>()
-            where TEnum : struct => Enums<TEnum>.Info.GetDefinedCount();
+        public static int GetEnumMemberCount<[EnumConstraint] TEnum>()
+            where TEnum : struct => Enums<TEnum>.Info.GetEnumMemberCount();
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members count.
@@ -122,8 +122,8 @@ namespace EnumsNET
         /// <param name="uniqueValued"></param>
         /// <returns><typeparamref name="TEnum"/>'s members count.</returns>
         [Pure]
-        public static int GetDefinedCount<[EnumConstraint] TEnum>(bool uniqueValued)
-            where TEnum : struct => Enums<TEnum>.Info.GetDefinedCount(uniqueValued);
+        public static int GetEnumMemberCount<[EnumConstraint] TEnum>(bool uniqueValued)
+            where TEnum : struct => Enums<TEnum>.Info.GetEnumMemberCount(uniqueValued);
 
         /// <summary>
         /// Retrieves in value order an array of info on <typeparamref name="TEnum"/>'s members.
@@ -184,18 +184,6 @@ namespace EnumsNET
         [Pure]
         public static IEnumerable<TEnum> GetValues<[EnumConstraint] TEnum>(bool uniqueValued)
             where TEnum : struct => Enums<TEnum>.Info.GetValues(uniqueValued);
-
-        /// <summary>
-        /// Compares two <typeparamref name="TEnum"/>'s for ordering.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
-        /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
-        [Pure]
-        public static int Compare<[EnumConstraint] TEnum>(TEnum x, TEnum y)
-            where TEnum : struct => Enums<TEnum>.Info.Compare(x, y);
 
         /// <summary>
         /// Registers a custom enum format for <typeparamref name="TEnum"/>.
@@ -1634,6 +1622,18 @@ namespace EnumsNET
         [Pure]
         public static bool Equals<[EnumConstraint] TEnum>(this TEnum value, TEnum other)
             where TEnum : struct => Enums<TEnum>.Info.Equals(value, other);
+
+        /// <summary>
+        /// Compares two <typeparamref name="TEnum"/>'s for ordering.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="other"></param>
+        /// <returns>1 if <paramref name="value"/> is greater than <paramref name="other"/>, 0 if <paramref name="value"/> equals <paramref name="other"/>,
+        /// and -1 if <paramref name="value"/> is less than <paramref name="other"/>.</returns>
+        [Pure]
+        public static int CompareTo<[EnumConstraint] TEnum>(this TEnum value, TEnum other)
+            where TEnum : struct => Enums<TEnum>.Info.CompareTo(value, other);
         #endregion
 
         #region Defined Values Main Methods
@@ -1833,7 +1833,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
         public static TEnum Parse<[EnumConstraint] TEnum>(string value)
-            where TEnum : struct => Parse<TEnum>(value, false, null);
+            where TEnum : struct => Enums<TEnum>.Info.Parse(value);
 
         /// <summary>
         /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -1849,7 +1849,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
         public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => Parse<TEnum>(value, false, parseFormatOrder);
+            where TEnum : struct => Enums<TEnum>.Info.Parse(value, false, parseFormatOrder);
 
         /// <summary>
         /// Converts the string representation of the name or numeric value of one or more enumerated constants
@@ -1866,7 +1866,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
         [Pure]
         public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase)
-            where TEnum : struct => Parse<TEnum>(value, ignoreCase);
+            where TEnum : struct => Enums<TEnum>.Info.Parse(value, ignoreCase);
 
         /// <summary>
         /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -1896,7 +1896,11 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue)
-            where TEnum : struct => ParseOrDefault(value, false, defaultValue, null);
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParse(value, false, out result) ? result : defaultValue;
+        }
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1909,7 +1913,11 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, false, defaultValue, parseFormatOrder);
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParse(value, false, out result, parseFormatOrder) ? result : defaultValue;
+        }
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -1923,7 +1931,11 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, defaultValue, null);
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParse(value, ignoreCase, out result) ? result : defaultValue;
+        }
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
@@ -1940,7 +1952,7 @@ namespace EnumsNET
             where TEnum : struct
         {
             TEnum result;
-            return TryParse(value, ignoreCase, out result, parseFormatOrder) ? result : defaultValue;
+            return Enums<TEnum>.Info.TryParse(value, ignoreCase, out result, parseFormatOrder) ? result : defaultValue;
         }
 
         /// <summary>
@@ -1953,7 +1965,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result)
-            where TEnum : struct => TryParse(value, false, out result, null);
+            where TEnum : struct => Enums<TEnum>.Info.TryParse(value, false, out result);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
@@ -1966,7 +1978,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => TryParse(value, false, out result, parseFormatOrder);
+            where TEnum : struct => Enums<TEnum>.Info.TryParse(value, false, out result, parseFormatOrder);
 
         /// <summary>
         /// Tries to convert the string representation of the name or numeric value of one or more enumerated
@@ -1980,7 +1992,7 @@ namespace EnumsNET
         /// <returns></returns>
         [Pure]
         public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result)
-            where TEnum : struct => TryParse(value, ignoreCase, out result, null);
+            where TEnum : struct => Enums<TEnum>.Info.TryParse(value, ignoreCase, out result);
 
         /// <summary>
         /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.

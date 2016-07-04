@@ -78,8 +78,8 @@ namespace EnumsNET
         /// <returns>The names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value)
-            where TEnum : struct => FormatAsFlags(value, null, null);
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value);
 
         /// <summary>
         /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with commas
@@ -90,8 +90,8 @@ namespace EnumsNET
         /// <param name="formatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value, params EnumFormat[] formatOrder)
-            where TEnum : struct => FormatAsFlags(value, null, formatOrder);
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, params EnumFormat[] formatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, null, formatOrder);
 
         /// <summary>
         /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -102,8 +102,8 @@ namespace EnumsNET
         /// <returns>The names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter)
-            where TEnum : struct => FormatAsFlags(value, delimiter, null);
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter);
 
         /// <summary>
         /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with <paramref name="delimiter"/>
@@ -115,8 +115,8 @@ namespace EnumsNET
         /// <param name="formatOrder"></param>
         /// <returns></returns>
         [Pure]
-        public static string FormatAsFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder)
-            where TEnum : struct => Enums<TEnum>.Info.FormatAsFlags(value, delimiter, formatOrder);
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, formatOrder);
 
         /// <summary>
         /// Returns an array of the flags that compose <paramref name="value"/>.
@@ -251,8 +251,7 @@ namespace EnumsNET
 
         #region Parsing
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated object.
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -263,16 +262,29 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value)
-            where TEnum : struct => Parse<TEnum>(value, false, null, null);
-
-        [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => Parse<TEnum>(value, false, null, parseFormatOrder);
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value);
 
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, false, null, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -284,43 +296,18 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase)
-            where TEnum : struct => Parse<TEnum>(value, ignoreCase, null, null);
-
-        [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => Parse<TEnum>(value, ignoreCase, null, parseFormatOrder);
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase);
 
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// delimited with the specified delimiter to an equivalent enumerated object.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="delimiter">The effective delimiter will be the <paramref name="delimiter"/> trimmed if it's not all whitespace.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, string delimiter)
-            where TEnum : struct => Parse<TEnum>(value, false, delimiter, null);
-
-        [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => Parse<TEnum>(value, false, delimiter, parseFormatOrder);
-
-        /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// delimited with the specified delimiter to an equivalent enumerated object.
-        /// A parameter specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="ignoreCase"></param>
-        /// <param name="delimiter">The effective delimiter will be the <paramref name="delimiter"/> trimmed if it's not all whitespace.</param>
+        /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
@@ -328,112 +315,251 @@ namespace EnumsNET
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter)
-            where TEnum : struct => Parse<TEnum>(value, ignoreCase, delimiter, null);
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, null, parseFormatOrder);
 
+        /// <summary>
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
-        public static TEnum Parse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, false, delimiter);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, false, delimiter, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter);
+
+        /// <summary>
+        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        [Pure]
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
         [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue)
-            where TEnum : struct => ParseOrDefault(value, false, null, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, false, null, defaultValue, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object but if it fails returns the specified enumerated value.
-        /// A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, null, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, null, defaultValue, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object but if it fails
-        /// returns the specified enumerated value.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue)
-            where TEnum : struct => ParseOrDefault(value, false, delimiter, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => ParseOrDefault(value, false, delimiter, defaultValue, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object but if it fails
-        /// returns the specified enumerated value. A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue)
-            where TEnum : struct => ParseOrDefault(value, ignoreCase, delimiter, defaultValue, null);
-
-        [Pure]
-        public static TEnum ParseOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue)
             where TEnum : struct
         {
             TEnum result;
-            return TryParse(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
+            return Enums<TEnum>.Info.TryParseFlags(value, false, null, out result) ? result : defaultValue;
         }
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, false, null, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value but if it fails
+        /// returns the specified <paramref name="defaultValue"/>. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct
+        {
+            TEnum result;
+            return Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result)
-            where TEnum : struct => TryParse(value, false, null, out result, null);
-
-        [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => TryParse(value, false, null, out result, parseFormatOrder);
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, null, out result);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
-        /// A parameter specifies whether the operation is case-insensitive.
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, null, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -441,16 +567,26 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result)
-            where TEnum : struct => TryParse(value, ignoreCase, null, out result, null);
-
-        [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => TryParse(value, ignoreCase, null, out result, parseFormatOrder);
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
+        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
         /// indicates whether the conversion succeeded.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
@@ -458,20 +594,27 @@ namespace EnumsNET
         /// <param name="delimiter"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result)
-            where TEnum : struct => TryParse(value, false, delimiter, out result, null);
-
-        [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
-            where TEnum : struct => TryParse(value, false, delimiter, out result, parseFormatOrder);
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result);
 
         /// <summary>
-        /// Tries to convert the specified string representation of the name or numeric value of one or more enumerated
-        /// constants delimited with the specified delimiter to an equivalent enumerated object. The return value
-        /// indicates whether the conversion succeeded. A parameter specifies whether the operation is case-insensitive.
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        [Pure]
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
@@ -479,14 +622,24 @@ namespace EnumsNET
         /// <param name="delimiter"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="delimiter"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="delimiter"/> is an empty string.</exception>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result)
-            where TEnum : struct => TryParse(value, ignoreCase, delimiter, out result, null);
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result);
 
+        /// <summary>
+        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
+        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
         [Pure]
-        public static bool TryParse<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         #endregion
     }

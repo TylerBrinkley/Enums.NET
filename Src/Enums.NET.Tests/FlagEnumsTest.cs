@@ -57,51 +57,51 @@ namespace EnumsNET.Tests
         [Test]
         public void FormatAsFlags_ReturnsValidString_WhenUsingValidValue()
         {
-            Assert.AreEqual("Black", FlagEnums.FormatAsFlags(ColorFlagEnum.Black));
-            Assert.AreEqual("Red", FlagEnums.FormatAsFlags(ColorFlagEnum.Red));
-            Assert.AreEqual("Green", FlagEnums.FormatAsFlags(ColorFlagEnum.Green));
-            Assert.AreEqual("Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Blue));
-            Assert.AreEqual("Red, Green", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Green));
-            Assert.AreEqual("Red, Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
-            Assert.AreEqual("Green, Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue));
-            Assert.AreEqual("Red, Green, Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue));
-            Assert.AreEqual("UltraViolet", FlagEnums.FormatAsFlags(ColorFlagEnum.UltraViolet));
-            Assert.AreEqual("All", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet));
+            Assert.AreEqual("Black", FlagEnums.FormatFlags(ColorFlagEnum.Black));
+            Assert.AreEqual("Red", FlagEnums.FormatFlags(ColorFlagEnum.Red));
+            Assert.AreEqual("Green", FlagEnums.FormatFlags(ColorFlagEnum.Green));
+            Assert.AreEqual("Blue", FlagEnums.FormatFlags(ColorFlagEnum.Blue));
+            Assert.AreEqual("Red, Green", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green));
+            Assert.AreEqual("Red, Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
+            Assert.AreEqual("Green, Blue", FlagEnums.FormatFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue));
+            Assert.AreEqual("Red, Green, Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue));
+            Assert.AreEqual("UltraViolet", FlagEnums.FormatFlags(ColorFlagEnum.UltraViolet));
+            Assert.AreEqual("All", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet));
         }
 
         [Test]
         public void FormatAsFlags_ReturnsValidString_WhenUsingValidValueWithCustomDelimiter()
         {
-            Assert.AreEqual("Black", FlagEnums.FormatAsFlags(ColorFlagEnum.Black, " | "));
-            Assert.AreEqual("Red", FlagEnums.FormatAsFlags(ColorFlagEnum.Red, " | "));
-            Assert.AreEqual("Green", FlagEnums.FormatAsFlags(ColorFlagEnum.Green, " | "));
-            Assert.AreEqual("Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("Red | Green", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Green, " | "));
-            Assert.AreEqual("Red | Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("Green | Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("Red | Green | Blue", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("UltraViolet", FlagEnums.FormatAsFlags(ColorFlagEnum.UltraViolet, " | "));
-            Assert.AreEqual("All", FlagEnums.FormatAsFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, " | "));
+            Assert.AreEqual("Black", FlagEnums.FormatFlags(ColorFlagEnum.Black, " | "));
+            Assert.AreEqual("Red", FlagEnums.FormatFlags(ColorFlagEnum.Red, " | "));
+            Assert.AreEqual("Green", FlagEnums.FormatFlags(ColorFlagEnum.Green, " | "));
+            Assert.AreEqual("Blue", FlagEnums.FormatFlags(ColorFlagEnum.Blue, " | "));
+            Assert.AreEqual("Red | Green", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green, " | "));
+            Assert.AreEqual("Red | Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue, " | "));
+            Assert.AreEqual("Green | Blue", FlagEnums.FormatFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue, " | "));
+            Assert.AreEqual("Red | Green | Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, " | "));
+            Assert.AreEqual("UltraViolet", FlagEnums.FormatFlags(ColorFlagEnum.UltraViolet, " | "));
+            Assert.AreEqual("All", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, " | "));
         }
 
         [Test]
         public void FormatAsFlags_ReturnsValidString_WhenUsingInvalidValue()
         {
-            Assert.AreEqual("16", FlagEnums.FormatAsFlags((ColorFlagEnum)16));
+            Assert.AreEqual("16", FlagEnums.FormatFlags((ColorFlagEnum)16));
         }
 
         [Test]
         public void FormatAsFlags_UsesDefaultDelimiter_WhenUsingValidValueWithNullDelimiter()
         {
             var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
-            Assert.AreEqual(FlagEnums.FormatAsFlags(value), FlagEnums.FormatAsFlags(value, (string)null));
+            Assert.AreEqual(FlagEnums.FormatFlags(value), FlagEnums.FormatFlags(value, (string)null));
         }
 
         [Test]
         public void FormatAsFlags_UsesDefaultDelimiter_WhenUsingValidValueWithEmptyDelimiter()
         {
             var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
-            Assert.AreEqual(FlagEnums.FormatAsFlags(value), FlagEnums.FormatAsFlags(value, string.Empty));
+            Assert.AreEqual(FlagEnums.FormatFlags(value), FlagEnums.FormatFlags(value, string.Empty));
         }
 
         [Test]
@@ -307,194 +307,194 @@ namespace EnumsNET.Tests
         [Test]
         public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidName()
         {
-            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.Parse<ColorFlagEnum>("Black"));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("Red"));
-            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("Green"));
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue , Red"));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue , Green"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue , Green , Red"));
-            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("UltraViolet"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>(" Blue ,UltraViolet,Green , Red"));
+            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("Black"));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("Red"));
+            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("Green"));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue , Red"));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue , Green"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue , Green , Red"));
+            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("UltraViolet"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" Blue ,UltraViolet,Green , Red"));
         }
 
         [Test]
         public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidNumber()
         {
-            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.Parse<ColorFlagEnum>("0"));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("1"));
-            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("2"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("+3"));
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("4"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("5"));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("6"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("7"));
-            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("+8"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>(" Blue ,UltraViolet,2 , Red"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("15"));
+            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("0"));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1"));
+            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("2"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("+3"));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("4"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("5"));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("6"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("7"));
+            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("+8"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" Blue ,UltraViolet,2 , Red"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("15"));
         }
 
         [Test]
         public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidStringWhileIgnoringCase()
         {
-            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.Parse<ColorFlagEnum>("black", true));
-            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.Parse<ColorFlagEnum>("0", true));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("ReD", true));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("1", true));
-            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("GrEeN", true));
-            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("2", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("3", true));
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("blue", true));
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("4", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("BLUE , red", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("5", true));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("BlUe, GReen", true));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("6", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Red ,    BluE ,greEn", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("7", true));
-            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("UltRaVioLet", true));
-            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("8", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>(" GREEN ,blue,UltraViolet , 1", true));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("15", true));
+            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("black", true));
+            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("0", true));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("ReD", true));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1", true));
+            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("GrEeN", true));
+            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("2", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("3", true));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("blue", true));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("4", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("BLUE , red", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("5", true));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("BlUe, GReen", true));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("6", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Red ,    BluE ,greEn", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("7", true));
+            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("UltRaVioLet", true));
+            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("8", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" GREEN ,blue,UltraViolet , 1", true));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("15", true));
         }
 
         [Test]
         public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
         {
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("Red", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("1", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue | Red", "|"));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue | Green", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("Blue | Green | Red", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>(" Blue |UltraViolet|2 | Red", " | "));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("Red", "|"));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1", "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Red", "|"));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Green", "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Green | Red", "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" Blue |UltraViolet|2 | Red", " | "));
         }
 
         [Test]
         public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiterWhileIgnoringCase()
         {
-            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.Parse<ColorFlagEnum>("black", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.Parse<ColorFlagEnum>("0", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("ReD", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.Parse<ColorFlagEnum>("1", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("GrEeN", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("2", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("RED|green", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.Parse<ColorFlagEnum>("3", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("blue", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("4", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("BLUE | red", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("5", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("BlUe| GReen", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("6", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("BluE |    greEn |Red", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.Parse<ColorFlagEnum>("7", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("UltRaVioLet", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("8", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>(" GREEN |blue|UltraViolet | 1", true, "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.Parse<ColorFlagEnum>("15", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("black", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("0", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("ReD", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("GrEeN", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("2", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("RED|green", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, FlagEnums.ParseFlags<ColorFlagEnum>("3", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("blue", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("4", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("BLUE | red", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("5", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("BlUe| GReen", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("6", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("BluE |    greEn |Red", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("7", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("UltRaVioLet", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("8", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" GREEN |blue|UltraViolet | 1", true, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>("15", true, "|"));
         }
 
         [Test]
         public void FlagEnumsParse_ThrowsArgumentNullException_WhenUsingNullString()
         {
-            TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.Parse<ColorFlagEnum>(null));
+            TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(null));
         }
 
         [Test]
         public void FlagEnumsParse_ThrowsArgumentException_WhenUsingWhiteSpaceString()
         {
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.Parse<ColorFlagEnum>(" "));
+            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(" "));
         }
 
         [Test]
         public void FlagEnumsParse_ThrowsArgumentException_WhenUsingUndefinedString()
         {
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.Parse<ColorFlagEnum>("Turquoise"));
+            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("Turquoise"));
         }
 
         [Test]
         public void FlagEnumsParse_ReturnsValidValue_WhenUsingInvalidNumber()
         {
-            Assert.AreEqual((ColorFlagEnum)16, FlagEnums.Parse<ColorFlagEnum>("16"));
+            Assert.AreEqual((ColorFlagEnum)16, FlagEnums.ParseFlags<ColorFlagEnum>("16"));
         }
 
         [Test]
         public void FlagEnumsParse_ThrowsOverflowException_WhenUsingLargeNumber()
         {
-            TestHelper.ExpectException<OverflowException>(() => FlagEnums.Parse<ColorFlagEnum>("128"));
+            TestHelper.ExpectException<OverflowException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("128"));
         }
 
         [Test]
         public void FlagEnumsParse_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
-            Assert.AreEqual(FlagEnums.Parse<ColorFlagEnum>("Red, Green"), FlagEnums.Parse<ColorFlagEnum>("Red, Green", (string)null));
+            Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", (string)null));
         }
 
         [Test]
         public void FlagEnumsParse_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
-            Assert.AreEqual(FlagEnums.Parse<ColorFlagEnum>("Red, Green"), FlagEnums.Parse<ColorFlagEnum>("Red, Green", string.Empty));
+            Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", string.Empty));
         }
 
         [Test]
         public void FlagEnumsParseOrDefault_ReturnsValidValue_WhenUsingValidName()
         {
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseOrDefault("Blue", ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlagsOrDefault("Blue", ColorFlagEnum.Red));
         }
 
         [Test]
         public void FlagEnumsParseOrDefault_ReturnsValidValue_WhenUsingValidNumber()
         {
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseOrDefault("+4", ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlagsOrDefault("+4", ColorFlagEnum.Red));
         }
 
         [Test]
         public void FlagEnumsParseOrDefault_ReturnsDefaultValue_WhenUsingInvalidName()
         {
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseOrDefault(null, ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlagsOrDefault(null, ColorFlagEnum.Red));
         }
 
         [Test]
         public void FlagEnumsParseOrDefault_ReturnsValidValue_WhenUsingInvalidNumber()
         {
-            Assert.AreEqual((ColorFlagEnum)16, FlagEnums.ParseOrDefault("16", ColorFlagEnum.Red));
+            Assert.AreEqual((ColorFlagEnum)16, FlagEnums.ParseFlagsOrDefault("16", ColorFlagEnum.Red));
         }
 
         [Test]
         public void FlagEnumsParseOrDefault_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
-            Assert.AreEqual(FlagEnums.ParseOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseOrDefault("Red, Green", null, ColorFlagEnum.Green));
+            Assert.AreEqual(FlagEnums.ParseFlagsOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseFlagsOrDefault("Red, Green", null, ColorFlagEnum.Green));
         }
 
         [Test]
         public void FlagEnumsParseOrDefault_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
-            Assert.AreEqual(FlagEnums.ParseOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseOrDefault("Red, Green", string.Empty, ColorFlagEnum.Green));
+            Assert.AreEqual(FlagEnums.ParseFlagsOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseFlagsOrDefault("Red, Green", string.Empty, ColorFlagEnum.Green));
         }
 
         [Test]
         public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidName()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParse("Black", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Black", out result));
             Assert.AreEqual(ColorFlagEnum.Black, result);
-            Assert.IsTrue(FlagEnums.TryParse("Red", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Red", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("Green", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Green", out result));
             Assert.AreEqual(ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("Red, Green", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Red, Green", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue", out result));
             Assert.AreEqual(ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue , Red", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue , Red", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue , Green", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue , Green", out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue , Green , Red", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue , Green , Red", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("UltraViolet", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("UltraViolet", out result));
             Assert.AreEqual(ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse(" Blue ,UltraViolet,Green , Red", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags(" Blue ,UltraViolet,Green , Red", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
         }
 
@@ -502,27 +502,27 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidNumber()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParse("0", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("0", out result));
             Assert.AreEqual(ColorFlagEnum.Black, result);
-            Assert.IsTrue(FlagEnums.TryParse("1", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("1", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("+2", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("+2", out result));
             Assert.AreEqual(ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("3", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("3", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("4", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("4", out result));
             Assert.AreEqual(ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("+5", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("+5", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("6", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("6", out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("7", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("7", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("8", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("8", out result));
             Assert.AreEqual(ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse(" Blue ,UltraViolet,+2 , Red", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags(" Blue ,UltraViolet,+2 , Red", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse("15", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("15", out result));
             Assert.AreEqual(ColorFlagEnum.All, result);
         }
 
@@ -530,43 +530,43 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidStringWhileIgnoringCase()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParse("black", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("black", true, out result));
             Assert.AreEqual(ColorFlagEnum.Black, result);
-            Assert.IsTrue(FlagEnums.TryParse("0", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("0", true, out result));
             Assert.AreEqual(ColorFlagEnum.Black, result);
-            Assert.IsTrue(FlagEnums.TryParse("ReD", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("ReD", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("1", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("1", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("GrEeN", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("GrEeN", true, out result));
             Assert.AreEqual(ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("2", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("2", true, out result));
             Assert.AreEqual(ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("3", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("3", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("blue", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("blue", true, out result));
             Assert.AreEqual(ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("4", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("4", true, out result));
             Assert.AreEqual(ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("BLUE , red", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("BLUE , red", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("5", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("5", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("BlUe, GReen", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("BlUe, GReen", true, out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("6", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("6", true, out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("Red ,    BluE ,greEn", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Red ,    BluE ,greEn", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("7", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("7", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("UltRaVioLet", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("UltRaVioLet", true, out result));
             Assert.AreEqual(ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse("8", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("8", true, out result));
             Assert.AreEqual(ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse(" GREEN ,blue,UltraViolet , 1", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags(" GREEN ,blue,UltraViolet , 1", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse("15", true, out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("15", true, out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
         }
 
@@ -574,17 +574,17 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParse("Red", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Red", "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("1", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("1", "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue | Red", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Red", "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue | Green", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Green", "|", out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("Blue | Green | Red", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Green | Red", "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse(" Blue |UltraViolet|2 | Red", " | ", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags(" Blue |UltraViolet|2 | Red", " | ", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
         }
 
@@ -592,45 +592,45 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiterWhileIgnoringCase()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParse("black", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("black", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Black, result);
-            Assert.IsTrue(FlagEnums.TryParse("0", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("0", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Black, result);
-            Assert.IsTrue(FlagEnums.TryParse("ReD", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("ReD", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("1", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("1", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParse("GrEeN", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("GrEeN", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("2", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("2", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("RED|green", true, "| ", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("RED|green", true, "| ", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("3", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("3", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green, result);
-            Assert.IsTrue(FlagEnums.TryParse("blue", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("blue", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("4", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("4", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("BLUE | red", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("BLUE | red", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("5", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("5", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("BlUe| GReen", true, " | ", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("BlUe| GReen", true, " | ", out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("6", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("6", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("BluE |    greEn |Red", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("BluE |    greEn |Red", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("7", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("7", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParse("UltRaVioLet", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("UltRaVioLet", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse("8", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("8", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse(" GREEN |blue|UltraViolet | 1", true, " |", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags(" GREEN |blue|UltraViolet | 1", true, " |", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
-            Assert.IsTrue(FlagEnums.TryParse("15", true, "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("15", true, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
         }
 
@@ -638,7 +638,7 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsFalse_WhenUsingNullString()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(FlagEnums.TryParse(null, out result));
+            Assert.IsFalse(FlagEnums.TryParseFlags(null, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
         }
 
@@ -646,7 +646,7 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsFalse_WhenUsingWhiteSpaceString()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(FlagEnums.TryParse(" ", out result));
+            Assert.IsFalse(FlagEnums.TryParseFlags(" ", out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
         }
 
@@ -654,7 +654,7 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsFalse_WhenUsingUndefinedString()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(FlagEnums.TryParse("Turquoise", out result));
+            Assert.IsFalse(FlagEnums.TryParseFlags("Turquoise", out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
         }
 
@@ -662,7 +662,7 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsTrue_WhenUsingInvalidNumber()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParse("16", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("16", out result));
             Assert.AreEqual((ColorFlagEnum)16, result);
         }
 
@@ -670,7 +670,7 @@ namespace EnumsNET.Tests
         public void FlagEnumsTryParse_ReturnsFalse_WhenUsingLargeNumber()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(FlagEnums.TryParse("128", out result));
+            Assert.IsFalse(FlagEnums.TryParseFlags("128", out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
         }
 
@@ -679,7 +679,7 @@ namespace EnumsNET.Tests
         {
             ColorFlagEnum result0;
             ColorFlagEnum result1;
-            Assert.AreEqual(FlagEnums.TryParse("Red, Green", out result0), FlagEnums.TryParse("Red, Green", null, out result1));
+            Assert.AreEqual(FlagEnums.TryParseFlags("Red, Green", out result0), FlagEnums.TryParseFlags("Red, Green", null, out result1));
             Assert.AreEqual(result0, result1);
         }
 
@@ -688,7 +688,7 @@ namespace EnumsNET.Tests
         {
             ColorFlagEnum result0;
             ColorFlagEnum result1;
-            Assert.AreEqual(FlagEnums.TryParse("Red, Green", out result0), FlagEnums.TryParse("Red, Green", string.Empty, out result1));
+            Assert.AreEqual(FlagEnums.TryParseFlags("Red, Green", out result0), FlagEnums.TryParseFlags("Red, Green", string.Empty, out result1));
             Assert.AreEqual(result0, result1);
         }
         #endregion

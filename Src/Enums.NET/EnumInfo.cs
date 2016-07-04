@@ -66,7 +66,7 @@ namespace EnumsNET
         #endregion
 
         #region Type Methods
-        public int GetDefinedCount(bool uniqueValued) => Cache.GetDefinedCount(uniqueValued);
+        public int GetEnumMemberCount(bool uniqueValued) => Cache.GetEnumMemberCount(uniqueValued);
 
         public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member =>
 #if NET20 || NET35
@@ -78,7 +78,7 @@ namespace EnumsNET
 
         public IEnumerable<TEnum> GetValues(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member => ToEnum(member.Value));
 
-        public int Compare(TEnum x, TEnum y) => ToInt(x).CompareTo(ToInt(y));
+        public int CompareTo(TEnum value, TEnum other) => ToInt(value).CompareTo(ToInt(other));
         #endregion
 
         #region IsValid
@@ -193,11 +193,7 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMember<TEnum> GetEnumMember(TEnum value)
-        {
-            var member = Cache.GetEnumMember(ToInt(value));
-            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
-        }
+        public EnumMember<TEnum> GetEnumMember(TEnum value) => new EnumMember<TEnum, TInt, TIntProvider>(Cache.GetEnumMember(ToInt(value)));
 
         public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase)
         {
@@ -253,7 +249,7 @@ namespace EnumsNET
         #region Main Methods
         public bool IsValidFlagCombination(TEnum value) => Cache.IsValidFlagCombination(ToInt(value));
 
-        public string FormatAsFlags(TEnum value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatAsFlags(ToInt(value), delimiter, formatOrder);
+        public string FormatFlags(TEnum value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatFlags(ToInt(value), delimiter, formatOrder);
 
         public IEnumerable<TEnum> GetFlags(TEnum value) => Cache.GetFlags(ToInt(value))?.Select(flag => ToEnum(flag));
 

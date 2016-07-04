@@ -82,15 +82,15 @@ namespace EnumsNET.Tests
         [Test]
         public void GetDefinedCount()
         {
-            Assert.AreEqual(0, GetDefinedCount<ByteEnum>());
-            Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>());
-            Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>());
-            Assert.AreEqual(10, GetDefinedCount<NumericFilterOperator>());
+            Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>());
+            Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>());
+            Assert.AreEqual(6, GetEnumMemberCount<ColorFlagEnum>());
+            Assert.AreEqual(10, GetEnumMemberCount<NumericFilterOperator>());
 
-            Assert.AreEqual(0, GetDefinedCount<ByteEnum>(true));
-            Assert.AreEqual(38, GetDefinedCount<DateFilterOperator>(true));
-            Assert.AreEqual(6, GetDefinedCount<ColorFlagEnum>(true));
-            Assert.AreEqual(8, GetDefinedCount<NumericFilterOperator>(true)); // Has 2 duplicates
+            Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>(true));
+            Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>(true));
+            Assert.AreEqual(6, GetEnumMemberCount<ColorFlagEnum>(true));
+            Assert.AreEqual(8, GetEnumMemberCount<NumericFilterOperator>(true)); // Has 2 duplicates
         }
 
         [Test]
