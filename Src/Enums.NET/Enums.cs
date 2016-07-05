@@ -1403,7 +1403,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> for use in constructor initializers and fluent API's</returns>
         /// <exception cref="ArgumentException"><paramref name="value"/> is invalid</exception>
         [Pure]
-        public static TEnum Validate<[EnumConstraint] TEnum>(this TEnum value, string paramName)
+        public static TEnum Validate<[EnumConstraint] TEnum>(TEnum value, string paramName)
             where TEnum : struct => Enums<TEnum>.Info.Validate(value, paramName);
 
         /// <summary>
@@ -1620,7 +1620,7 @@ namespace EnumsNET
         /// <param name="other"></param>
         /// <returns></returns>
         [Pure]
-        public static bool Equals<[EnumConstraint] TEnum>(this TEnum value, TEnum other)
+        public static bool Equals<[EnumConstraint] TEnum>(TEnum value, TEnum other)
             where TEnum : struct => Enums<TEnum>.Info.Equals(value, other);
 
         /// <summary>
@@ -1632,7 +1632,7 @@ namespace EnumsNET
         /// <returns>1 if <paramref name="value"/> is greater than <paramref name="other"/>, 0 if <paramref name="value"/> equals <paramref name="other"/>,
         /// and -1 if <paramref name="value"/> is less than <paramref name="other"/>.</returns>
         [Pure]
-        public static int CompareTo<[EnumConstraint] TEnum>(this TEnum value, TEnum other)
+        public static int CompareTo<[EnumConstraint] TEnum>(TEnum value, TEnum other)
             where TEnum : struct => Enums<TEnum>.Info.CompareTo(value, other);
         #endregion
 
@@ -1728,7 +1728,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns>Indication if the enumerated constant with the specified <paramref name="value"/> has a <typeparamref name="TAttribute"/>.</returns>
         [Pure]
-        public static bool HasAttribute<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
+        public static bool HasAttribute<[EnumConstraint] TEnum, TAttribute>(TEnum value)
             where TAttribute : Attribute
             where TEnum : struct => GetAttribute<TEnum, TAttribute>(value) != null;
 
@@ -1740,7 +1740,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns><typeparamref name="TAttribute"/> of the enumerated constant with the specified <paramref name="value"/> if defined and has attribute, else null</returns>
         [Pure]
-        public static TAttribute GetAttribute<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
+        public static TAttribute GetAttribute<[EnumConstraint] TEnum, TAttribute>(TEnum value)
             where TAttribute : Attribute
             where TEnum : struct => Enums<TEnum>.Info.GetAttribute<TAttribute>(value);
 
@@ -1803,7 +1803,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns><typeparamref name="TAttribute"/> array</returns>
         [Pure]
-        public static IEnumerable<TAttribute> GetAttributes<[EnumConstraint] TEnum, TAttribute>(this TEnum value)
+        public static IEnumerable<TAttribute> GetAttributes<[EnumConstraint] TEnum, TAttribute>(TEnum value)
             where TAttribute : Attribute
             where TEnum : struct => Enums<TEnum>.Info.GetAttributes<TAttribute>(value);
 
@@ -1814,7 +1814,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
         [Pure]
-        public static IEnumerable<Attribute> GetAttributes<[EnumConstraint] TEnum>(this TEnum value)
+        public static IEnumerable<Attribute> GetAttributes<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetAttributes(value);
         #endregion
 

@@ -918,55 +918,55 @@ namespace EnumsNET.Tests
         [Test]
         public void Validate()
         {
-            NonContiguousEnum.Cat.Validate("paramName");
-            NonContiguousEnum.Dog.Validate("paramName");
-            NonContiguousEnum.Chimp.Validate("paramName");
-            NonContiguousEnum.Elephant.Validate("paramName");
-            NonContiguousEnum.Whale.Validate("paramName");
-            NonContiguousEnum.Eagle.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousEnum)(-5)).Validate("paramName"));
+            Enums.Validate(NonContiguousEnum.Cat, "paramName");
+            Enums.Validate(NonContiguousEnum.Dog, "paramName");
+            Enums.Validate(NonContiguousEnum.Chimp, "paramName");
+            Enums.Validate(NonContiguousEnum.Elephant, "paramName");
+            Enums.Validate(NonContiguousEnum.Whale, "paramName");
+            Enums.Validate(NonContiguousEnum.Eagle, "paramName");
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousEnum)(-5), "paramName"));
 
-            UInt64FlagEnum.Flies.Validate("paramName");
-            UInt64FlagEnum.Hops.Validate("paramName");
-            UInt64FlagEnum.Runs.Validate("paramName");
-            UInt64FlagEnum.Slithers.Validate("paramName");
-            UInt64FlagEnum.Stationary.Validate("paramName");
-            UInt64FlagEnum.Swims.Validate("paramName");
-            UInt64FlagEnum.Walks.Validate("paramName");
-            (UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).Validate("paramName");
-            (UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => ((UInt64FlagEnum)8).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => ((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).Validate("paramName"));
+            Enums.Validate(UInt64FlagEnum.Flies, "paramName");
+            Enums.Validate(UInt64FlagEnum.Hops, "paramName");
+            Enums.Validate(UInt64FlagEnum.Runs, "paramName");
+            Enums.Validate(UInt64FlagEnum.Slithers, "paramName");
+            Enums.Validate(UInt64FlagEnum.Stationary, "paramName");
+            Enums.Validate(UInt64FlagEnum.Swims, "paramName");
+            Enums.Validate(UInt64FlagEnum.Walks, "paramName");
+            Enums.Validate(UInt64FlagEnum.Flies | UInt64FlagEnum.Hops, "paramName");
+            Enums.Validate(UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers, "paramName");
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((UInt64FlagEnum)8, "paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((UInt64FlagEnum)8 | UInt64FlagEnum.Hops, "paramName"));
 
-            ContiguousUInt64Enum.A.Validate("paramName");
-            ContiguousUInt64Enum.B.Validate("paramName");
-            ContiguousUInt64Enum.C.Validate("paramName");
-            ContiguousUInt64Enum.D.Validate("paramName");
-            ContiguousUInt64Enum.E.Validate("paramName");
-            ContiguousUInt64Enum.F.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => (ContiguousUInt64Enum.A - 1).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => (ContiguousUInt64Enum.F + 1).Validate("paramName"));
+            Enums.Validate(ContiguousUInt64Enum.A, "paramName");
+            Enums.Validate(ContiguousUInt64Enum.B, "paramName");
+            Enums.Validate(ContiguousUInt64Enum.C, "paramName");
+            Enums.Validate(ContiguousUInt64Enum.D, "paramName");
+            Enums.Validate(ContiguousUInt64Enum.E, "paramName");
+            Enums.Validate(ContiguousUInt64Enum.F, "paramName");
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(ContiguousUInt64Enum.A - 1, "paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(ContiguousUInt64Enum.F + 1, "paramName"));
 
-            NonContiguousUInt64Enum.SaintLouis.Validate("paramName");
-            NonContiguousUInt64Enum.Chicago.Validate("paramName");
-            NonContiguousUInt64Enum.Cincinnati.Validate("paramName");
-            NonContiguousUInt64Enum.Pittsburg.Validate("paramName");
-            NonContiguousUInt64Enum.Milwaukee.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousUInt64Enum)5).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousUInt64Enum)50000000UL).Validate("paramName"));
+            Enums.Validate(NonContiguousUInt64Enum.SaintLouis, "paramName");
+            Enums.Validate(NonContiguousUInt64Enum.Chicago, "paramName");
+            Enums.Validate(NonContiguousUInt64Enum.Cincinnati, "paramName");
+            Enums.Validate(NonContiguousUInt64Enum.Pittsburg, "paramName");
+            Enums.Validate(NonContiguousUInt64Enum.Milwaukee, "paramName");
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousUInt64Enum)5, "paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousUInt64Enum)50000000UL, "paramName"));
 
-            NumericFilterOperator.Is.Validate("paramName");
-            NumericFilterOperator.IsNot.Validate("paramName");
-            NumericFilterOperator.GreaterThan.Validate("paramName");
-            NumericFilterOperator.LessThan.Validate("paramName");
-            NumericFilterOperator.GreaterThanOrEqual.Validate("paramName");
-            NumericFilterOperator.NotLessThan.Validate("paramName");
-            NumericFilterOperator.LessThanOrEqual.Validate("paramName");
-            NumericFilterOperator.NotGreaterThan.Validate("paramName");
-            NumericFilterOperator.Between.Validate("paramName");
-            NumericFilterOperator.NotBetween.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => (NumericFilterOperator.Is - 1).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => (NumericFilterOperator.NotBetween + 1).Validate("paramName"));
+            Enums.Validate(NumericFilterOperator.Is, "paramName");
+            Enums.Validate(NumericFilterOperator.IsNot, "paramName");
+            Enums.Validate(NumericFilterOperator.GreaterThan, "paramName");
+            Enums.Validate(NumericFilterOperator.LessThan, "paramName");
+            Enums.Validate(NumericFilterOperator.GreaterThanOrEqual, "paramName");
+            Enums.Validate(NumericFilterOperator.NotLessThan, "paramName");
+            Enums.Validate(NumericFilterOperator.LessThanOrEqual, "paramName");
+            Enums.Validate(NumericFilterOperator.NotGreaterThan, "paramName");
+            Enums.Validate(NumericFilterOperator.Between, "paramName");
+            Enums.Validate(NumericFilterOperator.NotBetween, "paramName");
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericFilterOperator.Is - 1, "paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericFilterOperator.NotBetween + 1, "paramName"));
         }
 
         [Test]

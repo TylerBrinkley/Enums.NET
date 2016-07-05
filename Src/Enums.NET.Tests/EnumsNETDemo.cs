@@ -82,8 +82,6 @@ class EnumsNETDemo
     [Test]
     public void Attributes()
     {
-        Assert.IsTrue(NumericFilter.GreaterThanOrEquals.HasAttribute<NumericFilter, PrimaryEnumMemberAttribute>());
-        // Same as before but slightly more convenient due to not having to include the enum type generic parameter
         Assert.IsTrue(NumericFilter.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
         Assert.IsFalse(Enums.GetEnumMember<NumericFilter>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
     }
