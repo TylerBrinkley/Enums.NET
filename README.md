@@ -2,126 +2,126 @@
 Enums.NET is a high performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as C# extension methods for ease of use. It very closely matches System.Enum's API so it should be very comfortable to work with the first time. It's currently in Beta, but an RC is soon to come with a stable API.
 
 ## Demo
-        using System;
-        using System.Collections.Generic;
-        using System.Linq;
-        using EnumsNET;
-        using NUnit.Framework;
-        using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
-
-        [TestFixture]
-        class EnumsNETDemo
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using EnumsNET;
+    using NUnit.Framework;
+    using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
+    
+    [TestFixture]
+    class EnumsNETDemo
+    {
+        public void Enumerate()
         {
-            public void Enumerate()
+            foreach (EnumMember<NumericFilter> member in Enums.GetEnumMembers<NumericFilter>())
             {
-                foreach (EnumMember<NumericFilter> member in Enums.GetEnumMembers<NumericFilter>())
-                {
-                    NumericFilter value = member.Value;
-                    string name = member.Name;
-                    // Do stuff
-                }
-
-                foreach (NumericFilter value in Enums.GetValues<NumericFilter>())
-                {
-                    // Do stuff
-                }
-
-                foreach (string name in Enums.GetNames<NumericFilter>())
-                {
-                    // Do stuff
-                }
+                NumericFilter value = member.Value;
+                string name = member.Name;
+                // Do stuff
             }
-
-            [Test]
-            public void Validate()
+    
+            foreach (NumericFilter value in Enums.GetValues<NumericFilter>())
             {
-                // Standard Enums
-                Assert.IsTrue(NumericFilter.LessThan.IsValid());
-                Assert.IsFalse(((NumericFilter)20).IsValid());
-
-                // Flag Enums
-                Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Saturday).IsValid());
-                Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Saturday | (DaysOfWeek.All + 1)).IsValid());
+                // Do stuff
             }
-
-            [Test]
-            public void FlagEnumOperations()
+    
+            foreach (string name in Enums.GetNames<NumericFilter>())
             {
-                // CombineFlags ~ bitwise OR
-                Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
-
-                // HasAnyFlags
-                Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Wednesday));
-                Assert.IsFalse((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Friday));
-
-                // HasAllFlags
-                Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAllFlags((DaysOfWeek.Monday | DaysOfWeek.Wednesday)));
-                Assert.IsFalse(DaysOfWeek.Monday.HasAllFlags((DaysOfWeek.Monday | DaysOfWeek.Wednesday)));
-
-                // CommonFlags ~ bitwise AND
-                Assert.AreEqual(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-                Assert.AreEqual(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
-
-                // ExcludeFlags
-                Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).ExcludeFlags(DaysOfWeek.Monday));
-
-                // GetFlags
-                foreach (DaysOfWeek dayOfWeek in DaysOfWeek.Weekdays.GetFlags())
-                {
-                    // Do Stuff
-                }
-                List<DaysOfWeek> flags = DaysOfWeek.Weekend.GetFlags().ToList();
-                Assert.AreEqual(2, flags.Count);
-                Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
-                Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
-            }
-
-            [Test]
-            public void Description()
-            {
-                Assert.AreEqual("Is", NumericFilter.Equals.GetDescription());
-                Assert.IsNull(NumericFilter.LessThan.GetDescription());
-            }
-
-            [Test]
-            public void Attributes()
-            {
-                Assert.IsTrue(NumericFilter.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
-                Assert.IsFalse(Enums.GetEnumMember<NumericFilter>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
+                // Do stuff
             }
         }
-
-        enum NumericFilter
+    
+        [Test]
+        public void Validate()
         {
-            [Description("Is")]
-            Equals,
-            [Description("Is not")]
-            NotEquals,
-            LessThan,
-            [PrimaryEnumMember]
-            GreaterThanOrEquals,
-            NotLessThan = GreaterThanOrEquals,
-            GreaterThan,
-            [PrimaryEnumMember]
-            LessThanOrEquals,
-            NotGreaterThan = LessThanOrEquals
+            // Standard Enums
+            Assert.IsTrue(NumericFilter.LessThan.IsValid());
+            Assert.IsFalse(((NumericFilter)20).IsValid());
+    
+            // Flag Enums
+            Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Saturday).IsValid());
+            Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Saturday | (DaysOfWeek.All + 1)).IsValid());
         }
-
-        [Flags]
-        enum DaysOfWeek
+    
+        [Test]
+        public void FlagEnumOperations()
         {
-            None = 0,
-            Sunday = 1,
-            Monday = 2,
-            Tuesday = 4,
-            Wednesday = 8,
-            Thursday = 16,
-            Friday = 32,
-            Weekdays = Monday | Tuesday | Wednesday | Thursday | Friday,
-            Saturday = 64,
-            Weekend = Sunday | Saturday,
-            All = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
+            // CombineFlags ~ bitwise OR
+            Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
+    
+            // HasAnyFlags
+            Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Wednesday));
+            Assert.IsFalse((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Friday));
+    
+            // HasAllFlags
+            Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAllFlags((DaysOfWeek.Monday | DaysOfWeek.Wednesday)));
+            Assert.IsFalse(DaysOfWeek.Monday.HasAllFlags((DaysOfWeek.Monday | DaysOfWeek.Wednesday)));
+    
+            // CommonFlags ~ bitwise AND
+            Assert.AreEqual(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+            Assert.AreEqual(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
+    
+            // ExcludeFlags
+            Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).ExcludeFlags(DaysOfWeek.Monday));
+    
+            // GetFlags
+            foreach (DaysOfWeek dayOfWeek in DaysOfWeek.Weekdays.GetFlags())
+            {
+                // Do Stuff
+            }
+            List<DaysOfWeek> flags = DaysOfWeek.Weekend.GetFlags().ToList();
+            Assert.AreEqual(2, flags.Count);
+            Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
+            Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
         }
+    
+        [Test]
+        public void Description()
+        {
+            Assert.AreEqual("Is", NumericFilter.Equals.GetDescription());
+            Assert.IsNull(NumericFilter.LessThan.GetDescription());
+        }
+    
+        [Test]
+        public void Attributes()
+        {
+            Assert.IsTrue(NumericFilter.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
+            Assert.IsFalse(Enums.GetEnumMember<NumericFilter>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
+        }
+    }
+    
+    enum NumericFilter
+    {
+        [Description("Is")]
+        Equals,
+        [Description("Is not")]
+        NotEquals,
+        LessThan,
+        [PrimaryEnumMember]
+        GreaterThanOrEquals,
+        NotLessThan = GreaterThanOrEquals,
+        GreaterThan,
+        [PrimaryEnumMember]
+        LessThanOrEquals,
+        NotGreaterThan = LessThanOrEquals
+    }
+    
+    [Flags]
+    enum DaysOfWeek
+    {
+        None = 0,
+        Sunday = 1,
+        Monday = 2,
+        Tuesday = 4,
+        Wednesday = 8,
+        Thursday = 16,
+        Friday = 32,
+        Weekdays = Monday | Tuesday | Wednesday | Thursday | Friday,
+        Saturday = 64,
+        Weekend = Sunday | Saturday,
+        All = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
+    }
 
 ## How Is It Type-Safe
 As you may know there is no way to constrain a type or method's generic type parameter to an Enum in C#. This is a limitation the C# compiler imposes, not a limitation of the CLR itself thus a valid .NET assembly can contain these constraints. How this library works is that the C# compiler can understand when this constraint is applied, it just can't express it. Utilizing Simon Cropp's Fody.ExtraConstraints, Enums.NET is able to automatically apply a post-processing step on build to the compiled assembly to add these constraints to the assembly, thus achieving type safety.
