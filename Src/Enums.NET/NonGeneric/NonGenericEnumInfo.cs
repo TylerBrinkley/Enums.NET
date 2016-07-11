@@ -118,7 +118,11 @@ namespace EnumsNET.NonGeneric
 
         public string GetDescriptionOrName(object value, Func<string, string> nameFormatter) => Cache.GetDescriptionOrName(ToInt(value), nameFormatter);
 
-        public EnumMember GetEnumMember(object value) => new EnumMember<TEnum, TInt, TIntProvider>(Cache.GetEnumMember(ToInt(value)));
+        public EnumMember GetEnumMember(object value)
+        {
+            var member = Cache.GetEnumMember(ToInt(value));
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
+        }
 
         public EnumMember GetEnumMember(string name, bool ignoreCase)
         {
@@ -133,6 +137,12 @@ namespace EnumsNET.NonGeneric
             new EnumMember<TEnum, TInt, TIntProvider>(member));
 
         public IEnumerable<object> GetFlags(object value) => Cache.GetFlags(ToInt(value)).Select(flag => (object)ToEnum(flag));
+
+        public IEnumerable<EnumMember> GetFlagMembers(object value) => Cache.GetFlagMembers(ToInt(value)).Select(flag =>
+#if NET20 || NET35
+            (EnumMember)
+#endif
+            new EnumMember<TEnum, TInt, TIntProvider>(flag));
 
         public string GetName(object value) => Cache.GetName(ToInt(value));
 

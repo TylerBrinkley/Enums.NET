@@ -193,7 +193,11 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMember<TEnum> GetEnumMember(TEnum value) => new EnumMember<TEnum, TInt, TIntProvider>(Cache.GetEnumMember(ToInt(value)));
+        public EnumMember<TEnum> GetEnumMember(TEnum value)
+        {
+            var member = Cache.GetEnumMember(ToInt(value));
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
+        }
 
         public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase)
         {
@@ -251,7 +255,13 @@ namespace EnumsNET
 
         public string FormatFlags(TEnum value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatFlags(ToInt(value), delimiter, formatOrder);
 
-        public IEnumerable<TEnum> GetFlags(TEnum value) => Cache.GetFlags(ToInt(value))?.Select(flag => ToEnum(flag));
+        public IEnumerable<TEnum> GetFlags(TEnum value) => Cache.GetFlags(ToInt(value)).Select(flag => ToEnum(flag));
+
+        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => Cache.GetFlagMembers(ToInt(value)).Select(flag =>
+#if NET20 || NET35
+            (EnumMember<TEnum>)
+#endif
+            new EnumMember<TEnum, TInt, TIntProvider>(flag));
 
         public bool HasAnyFlags(TEnum value) => Cache.HasAnyFlags(ToInt(value));
 

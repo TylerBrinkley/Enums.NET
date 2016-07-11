@@ -31,7 +31,6 @@ namespace EnumsNET
     internal interface IEnumMember : IConvertible, IFormattable, IComparable
     {
         bool IsDefined { get; }
-        object Value { get; }
         string Name { get; }
         IEnumerable<Attribute> Attributes { get; }
         string Description { get; }
@@ -64,5 +63,9 @@ namespace EnumsNET
         uint ToUInt32();
         ulong ToUInt64();
         int GetHashCode();
+
+        bool IsValidFlagCombination();
+        bool HasAnyFlags();
+        bool HasAllFlags();
     }
 }

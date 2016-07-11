@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
@@ -312,6 +313,10 @@ namespace EnumsNET
 
         internal abstract bool EqualsMethod(EnumMember other);
 
+        internal abstract IEnumerable<object> GetFlags();
+
+        internal abstract IEnumerable<EnumMember> GetFlagMembers();
+
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => _member.ToString(format, formatProvider);
 
@@ -354,6 +359,12 @@ namespace EnumsNET
 
         // implemented in derived class
         int IComparable<EnumMember>.CompareTo(EnumMember other) => 0;
+
+        bool IEnumMember.IsValidFlagCombination() => _member.IsValidFlagCombination();
+
+        bool IEnumMember.HasAnyFlags() => _member.HasAnyFlags();
+
+        bool IEnumMember.HasAllFlags() => _member.HasAllFlags();
         #endregion
     }
 
@@ -384,9 +395,21 @@ namespace EnumsNET
 
         internal abstract bool GenericEqualsMethod(EnumMember<TEnum> other);
 
+        internal abstract IEnumerable<TEnum> GetGenericFlags();
+
+        internal abstract IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers();
+
         internal sealed override object GetValue() => GetGenericValue();
 
         internal sealed override bool EqualsMethod(EnumMember other) => GenericEqualsMethod(other as EnumMember<TEnum>);
+
+        internal sealed override IEnumerable<object> GetFlags() => GetGenericFlags().Select(flag => (object)flag);
+
+        internal sealed override IEnumerable<EnumMember> GetFlagMembers() => GetGenericFlagMembers()
+#if NET20 || NET35
+            .Select(flag => (EnumMember)flag)
+#endif
+            ;
 
         #region Explicit Interface Implementation
         // Implemented in derived class
@@ -410,6 +433,14 @@ namespace EnumsNET
         internal override bool GenericEqualsMethod(EnumMember<TEnum> other) => other != null && _member.Value.Equals(((EnumMember<TEnum, TInt, TIntProvider>)other)._member.Value) && Name == other.Name;
 
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(_member.Value);
+
+        internal override IEnumerable<TEnum> GetGenericFlags() => _member.GetFlags().Select(flag => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(flag));
+
+        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => _member.GetFlagMembers().Select(flag =>
+#if NET20 || NET35
+            (EnumMember<TEnum>)
+#endif
+            new EnumMember<TEnum, TInt, TIntProvider>(flag));
 
         #region Explicit Interface Implementation
         int IComparable.CompareTo(object other)

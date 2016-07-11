@@ -119,16 +119,24 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, formatOrder);
 
         /// <summary>
-        /// Returns an array of the flags that compose <paramref name="value"/>.
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.
+        /// Returns an IEnumerable of the flags that compose <paramref name="value"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <returns>Array of the flags that compose <paramref name="value"/>.
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
+        /// <returns>IEnumerable of the flags that compose <paramref name="value"/>.</returns>
         [Pure]
         public static IEnumerable<TEnum> GetFlags<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetFlags(value);
+
+        /// <summary>
+        /// Returns an IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns>IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.</returns>
+        [Pure]
+        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct => Enums<TEnum>.Info.GetFlagMembers(value);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags set.
@@ -641,6 +649,50 @@ namespace EnumsNET
         [Pure]
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
+        #endregion
+
+        #region EnumMember Extensions
+        /// <summary>
+        /// Indicates whether <paramref name="member"/> is a valid flag combination of the defined enum values.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>Indication of whether <paramref name="member"/> is a valid flag combination of the defined enum values.</returns>
+        [Pure]
+        public static bool IsValidFlagCombination(this EnumMember member) => ((IEnumMember)member).IsValidFlagCombination();
+
+        /// <summary>
+        /// Returns an array of the flags that compose <paramref name="member"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="member"></param>
+        /// <returns>Array of the flags that compose <paramref name="member"/>.</returns>
+        [Pure]
+        public static IEnumerable<TEnum> GetFlags<TEnum>(this EnumMember<TEnum> member) => member.GetGenericFlags();
+
+        /// <summary>
+        /// Returns an IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="member"></param>
+        /// <returns>IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.</returns>
+        [Pure]
+        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(this EnumMember<TEnum> member) => member.GetGenericFlagMembers();
+
+        /// <summary>
+        /// Indicates if <paramref name="member"/> has any flags set.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>Indication if <paramref name="member"/> has any flags set.</returns>
+        [Pure]
+        public static bool HasAnyFlags(this EnumMember member) => ((IEnumMember)member).HasAnyFlags();
+
+        /// <summary>
+        /// Indicates if <paramref name="member"/> has all flags set that are defined in its enum type.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>Indication if <paramref name="member"/> has all flags set that are defined in its enum type.</returns>
+        [Pure]
+        public static bool HasAllFlags(this EnumMember member) => ((IEnumMember)member).HasAllFlags();
         #endregion
     }
 }

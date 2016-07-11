@@ -73,6 +73,7 @@ namespace EnumsNET
         EnumMember GetEnumMember(string name, bool ignoreCase = false);
         IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued = false);
         IEnumerable<object> GetFlags(object value);
+        IEnumerable<EnumMember> GetFlagMembers(object value);
         string GetName(object value);
         object GetUnderlyingValue(object value);
         IEnumerable<object> GetValues(bool uniqueValued = false);
@@ -135,6 +136,7 @@ namespace EnumsNET
         EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase = false);
         IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued = false);
         IEnumerable<TEnum> GetFlags(TEnum value);
+        IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value);
         int GetHashCode(TEnum value);
         string GetName(TEnum value);
         object GetUnderlyingValue(TEnum value);

@@ -44,7 +44,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static bool IsFlagEnum(Type enumType) => NonGenericEnums.GetInfo(enumType).EnumInfo.IsFlagEnum;
+        public static bool IsFlagEnum(Type enumType) => NonGenericEnums.GetInfo(enumType).IsFlagEnum;
 
         /// <summary>
         /// Retrieves all the flags defined by <paramref name="enumType"/>.
@@ -54,7 +54,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
         [Pure]
-        public static object GetAllFlags(Type enumType) => NonGenericEnums.GetInfo(enumType).EnumInfo.AllFlags;
+        public static object GetAllFlags(Type enumType) => NonGenericEnums.GetInfo(enumType).AllFlags;
         #endregion
 
         #region Main Methods
@@ -71,7 +71,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsValidFlagCombination(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -140,7 +140,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string FormatFlags(Type enumType, object value, string delimiter, params EnumFormat[] formatOrder)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -151,13 +151,11 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns an array of the flags that compose <paramref name="value"/>.
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.
+        /// Returns an IEnumerable of the flags that compose <paramref name="value"/>.
         /// </summary>
         /// <param name="enumType"></param>
         /// <param name="value"></param>
-        /// <returns>Array of the flags that compose <paramref name="value"/>.
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
+        /// <returns>IEnumerable of the flags that compose <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
@@ -165,7 +163,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static IEnumerable<object> GetFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -173,6 +171,29 @@ namespace EnumsNET.NonGeneric
             }
 
             return info.EnumInfo.GetFlags(value);
+        }
+
+        /// <summary>
+        /// Returns an IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <returns>IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is an invalid type</exception>
+        [Pure]
+        public static IEnumerable<EnumMember> GetFlagMembers(Type enumType, object value)
+        {
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return new EnumMember[0];
+            }
+
+            return info.EnumInfo.GetFlagMembers(value);
         }
 
         /// <summary>
@@ -188,7 +209,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -212,7 +233,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -244,7 +265,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAllFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -268,7 +289,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAllFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -300,7 +321,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (value == null && info.IsNullable)
@@ -326,7 +347,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value, bool toggleValidFlagsOnly)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (value == null && info.IsNullable)
@@ -355,7 +376,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -387,7 +408,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object CommonFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -424,7 +445,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object CombineFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -457,7 +478,7 @@ namespace EnumsNET.NonGeneric
         {
             Preconditions.NotNull(flags, nameof(flags));
 
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             
             return info.EnumInfo.CombineFlags(info.IsNullable ? flags.Where(flag => flag != null) : flags);
         }
@@ -476,7 +497,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ExcludeFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -652,7 +673,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
@@ -902,7 +923,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var info = NonGenericEnums.GetInfo(enumType);
+            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
 
             if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
@@ -912,6 +933,24 @@ namespace EnumsNET.NonGeneric
 
             return info.EnumInfo.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
         }
+        #endregion
+
+        #region EnumMember Extensions
+        /// <summary>
+        /// Returns an IEnumerable of the flags that compose <paramref name="member"/>.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>IEnumerable of the flags that compose <paramref name="member"/>.</returns>
+        [Pure]
+        public static IEnumerable<object> GetFlags(this EnumMember member) => member.GetFlags();
+
+        /// <summary>
+        /// Returns an IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns>IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.</returns>
+        [Pure]
+        public static IEnumerable<EnumMember> GetFlagMembers(this EnumMember member) => member.GetFlagMembers();
         #endregion
     }
 }

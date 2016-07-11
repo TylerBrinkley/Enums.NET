@@ -181,6 +181,16 @@ namespace EnumsNET
 
         internal int CompareTo(InternalEnumMember<TInt, TIntProvider> other) => Value.CompareTo(other.Value);
 
+        public bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
+
+        public bool HasAnyFlags() => _enumCache.HasAnyFlags(Value);
+
+        public bool HasAllFlags() => _enumCache.HasAllFlags(Value);
+
+        public IEnumerable<TInt> GetFlags() => _enumCache.GetFlags(Value);
+
+        public IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
+
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
@@ -219,8 +229,6 @@ namespace EnumsNET
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
 
         int IComparable.CompareTo(object other) => other is InternalEnumMember<TInt, TIntProvider> ? CompareTo((InternalEnumMember<TInt, TIntProvider>)other) : 1;
-
-        object IEnumMember.Value => Value;
 
         object IEnumMember.UnderlyingValue => Value;
         #endregion

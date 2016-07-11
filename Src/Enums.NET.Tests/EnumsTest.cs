@@ -32,9 +32,10 @@ namespace EnumsNET.Tests
         {
             var enumTypeArgs = new[] { typeof(Enums), typeof(FlagEnums) }
                 .SelectMany(type => type.GetMethods(BindingFlags.Static | BindingFlags.Public))
-                .Select(method => method.GetGenericArguments().FirstOrDefault())
+                .Where(method => method.IsGenericMethod && ((method.Name != nameof(FlagEnums.GetFlags) && method.Name != nameof(FlagEnums.GetFlagMembers)) || method.GetParameters()[0].Name != "member"))
+                .Select(method => method.GetGenericArguments()[0])
                 .Where(genericArg => genericArg != null)
-                .Concat(new[] { typeof(EnumComparer<>).GetGenericArguments().First() });
+                .Concat(new[] { typeof(EnumComparer<>).GetGenericArguments()[0] });
             foreach (var enumTypeArg in enumTypeArgs)
             {
                 Assert.IsTrue(enumTypeArg.GetGenericParameterConstraints().Any(genericParamConstraint => genericParamConstraint == typeof(Enum)));

@@ -758,7 +758,7 @@ namespace EnumsNET
 
         public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(GetEnumMember(value), delimiter, formatOrder);
 
-        private string InternalFormatFlags(InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
+        internal string InternalFormatFlags(InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
         {
             if (!(formatOrder?.Length > 0))
             {
@@ -794,6 +794,8 @@ namespace EnumsNET
                 }
             }
         }
+
+        public IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetEnumMember(flag));
 
         public bool HasAnyFlags(TInt value) => !value.Equals(Provider.Zero);
 

@@ -115,16 +115,23 @@ namespace EnumsNET.Unsafe
         public static string FormatFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder) => UnsafeEnums.GetInfo<TEnum>().FormatFlags(value, delimiter, formatOrder);
 
         /// <summary>
-        /// Returns an array of the flags that compose <paramref name="value"/>.
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.
+        /// Returns an IEnumerable of the flags that compose <paramref name="value"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
-        /// <returns>Array of the flags that compose <paramref name="value"/>.
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.</returns>
+        /// <returns>IEnumerable of the flags that compose <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static IEnumerable<TEnum> GetFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().GetFlags(value);
+
+        /// <summary>
+        /// Returns an IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns>IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.</returns>
+        [Pure]
+        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().GetFlagMembers(value);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags set.
