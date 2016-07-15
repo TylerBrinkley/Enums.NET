@@ -177,7 +177,7 @@ namespace EnumsNET.NonGeneric
 
         public byte ToByte(object value) => ToInt(value).ToByte(null);
 
-        public object ToggleFlags(object value, bool toggleValidFlagsOnly) => ToEnum(Cache.ToggleFlags(ToInt(value), toggleValidFlagsOnly));
+        public object ToggleFlags(object value) => ToEnum(Cache.ToggleFlags(ToInt(value)));
 
         public object ToggleFlags(object value, object otherFlags) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(otherFlags)));
 

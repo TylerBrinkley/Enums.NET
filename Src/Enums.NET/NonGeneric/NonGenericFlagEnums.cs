@@ -333,36 +333,6 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with all of it's flags toggled. If <paramref name="toggleValidFlagsOnly"/> is <c>true</c> then equivalent to the bitwise "xor" operator with <see cref="GetAllFlags(Type)"/>
-        /// else is equivalent to the bitwise "not" operator.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="toggleValidFlagsOnly"></param>
-        /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
-        [Pure]
-        public static object ToggleFlags(Type enumType, object value, bool toggleValidFlagsOnly)
-        {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
-            var enumInfo = info.EnumInfo;
-
-            if (value == null && info.IsNullable)
-            {
-                if (toggleValidFlagsOnly)
-                {
-                    return enumInfo.AllFlags;
-                }
-                value = enumInfo.ToObject(0, false);
-            }
-
-            return enumInfo.ToggleFlags(value, toggleValidFlagsOnly);
-        }
-
-        /// <summary>
         /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <param name="enumType"></param>

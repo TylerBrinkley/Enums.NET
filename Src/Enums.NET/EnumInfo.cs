@@ -271,7 +271,7 @@ namespace EnumsNET
 
         public bool HasAllFlags(TEnum value, TEnum otherFlags) => Cache.HasAllFlags(ToInt(value), ToInt(otherFlags));
 
-        public TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly) => ToEnum(Cache.ToggleFlags(ToInt(value), toggleValidFlagsOnly));
+        public TEnum ToggleFlags(TEnum value) => ToEnum(Cache.ToggleFlags(ToInt(value)));
 
         public TEnum ToggleFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(otherFlags)));
 
