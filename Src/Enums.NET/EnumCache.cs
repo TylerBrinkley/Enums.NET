@@ -785,10 +785,11 @@ namespace EnumsNET
 
         public IEnumerable<TInt> GetFlags(TInt value)
         {
-            var isLessThanZero = Provider.LessThan(value, Provider.Zero);
-            for (var currentValue = Provider.One; (isLessThanZero || !Provider.LessThan(value, currentValue)) && !currentValue.Equals(Provider.Zero); currentValue = Provider.LeftShift(currentValue, 1))
+            var validValue = Provider.And(value, AllFlags);
+            var isLessThanZero = Provider.LessThan(validValue, Provider.Zero);
+            for (var currentValue = Provider.One; (isLessThanZero || !Provider.LessThan(validValue, currentValue)) && !currentValue.Equals(Provider.Zero); currentValue = Provider.LeftShift(currentValue, 1))
             {
-                if (HasAnyFlags(value, currentValue))
+                if (HasAnyFlags(validValue, currentValue))
                 {
                     yield return currentValue;
                 }
@@ -805,7 +806,7 @@ namespace EnumsNET
 
         public bool HasAllFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags).Equals(otherFlags);
 
-        public TInt ToggleFlags(TInt value, bool toggleValidFlagsOnly) => toggleValidFlagsOnly ? Provider.Xor(value, AllFlags) : Provider.Not(value);
+        public TInt ToggleFlags(TInt value) => Provider.Xor(value, AllFlags);
 
         public TInt ToggleFlags(TInt value, TInt otherFlags) => Provider.Xor(value, otherFlags);
 

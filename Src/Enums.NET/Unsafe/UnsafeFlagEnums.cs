@@ -186,18 +186,6 @@ namespace EnumsNET.Unsafe
         public static TEnum ToggleFlags<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().ToggleFlags(value);
 
         /// <summary>
-        /// Returns <paramref name="value"/> with all of it's flags toggled. If <paramref name="toggleValidFlagsOnly"/> is <c>true</c> then equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>
-        /// else is equivalent to the bitwise "not" operator.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="toggleValidFlagsOnly"></param>
-        /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static TEnum ToggleFlags<TEnum>(TEnum value, bool toggleValidFlagsOnly) => UnsafeEnums.GetInfo<TEnum>().ToggleFlags(value, toggleValidFlagsOnly);
-
-        /// <summary>
         /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>

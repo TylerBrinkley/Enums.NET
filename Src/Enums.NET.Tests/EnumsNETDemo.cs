@@ -36,8 +36,8 @@ class EnumsNETDemo
         Assert.IsFalse(((NumericFilter)20).IsValid());
 
         // Flag Enums
-        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Saturday).IsValid());
-        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Saturday | (DaysOfWeek.All + 1)).IsValid());
+        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
+        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | (DaysOfWeek.All + 1)).IsValid());
     }
 
     [Test]

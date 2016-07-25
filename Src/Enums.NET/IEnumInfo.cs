@@ -64,7 +64,7 @@ namespace EnumsNET
         string Format(object value, EnumFormat format);
         string Format(object value, EnumFormat format0, EnumFormat format1);
         string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string FormatFlags(object value, string delimiter = null, EnumFormat[] formatOrder = null);
+        string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder);
         IEnumerable<Attribute> GetAttributes(object value);
         string GetDescription(object value);
         string GetDescriptionOrName(object value);
@@ -88,7 +88,7 @@ namespace EnumsNET
         object CombineFlags(IEnumerable<object> flags);
         object CombineFlags(object value, object otherFlags);
         byte ToByte(object value);
-        object ToggleFlags(object value, bool toggleValidFlagsOnly = true);
+        object ToggleFlags(object value);
         object ToggleFlags(object value, object otherFlags);
         short ToInt16(object value);
         int ToInt32(object value);
@@ -157,7 +157,7 @@ namespace EnumsNET
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3);
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4);
         byte ToByte(TEnum value);
-        TEnum ToggleFlags(TEnum value, bool toggleValidFlagsOnly = true);
+        TEnum ToggleFlags(TEnum value);
         TEnum ToggleFlags(TEnum value, TEnum otherFlags);
         short ToInt16(TEnum value);
         int ToInt32(TEnum value);

@@ -1659,7 +1659,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
         [Pure]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(name, false);
+            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(name);
 
         /// <summary>
         /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="name"/>.
