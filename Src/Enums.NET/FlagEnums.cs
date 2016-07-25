@@ -236,6 +236,45 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.CombineFlags(value, otherFlags);
 
         /// <summary>
+        /// Combines <paramref name="flag0"/>, <paramref name="flag1"/>, and <paramref name="flag2"/> into one flag enum value.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
+        /// <param name="flag2"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2);
+
+        /// <summary>
+        /// Combines <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/> into one flag enum value.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
+        /// <param name="flag2"></param>
+        /// <param name="flag3"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3);
+
+        /// <summary>
+        /// Combines <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/> into one flag enum value.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="flag0"></param>
+        /// <param name="flag1"></param>
+        /// <param name="flag2"></param>
+        /// <param name="flag3"></param>
+        /// <param name="flag4"></param>
+        /// <returns></returns>
+        [Pure]
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3, flag4);
+
+        /// <summary>
         /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
@@ -658,7 +697,11 @@ namespace EnumsNET
         /// <param name="member"></param>
         /// <returns>Indication of whether <paramref name="member"/> is a valid flag combination of the defined enum values.</returns>
         [Pure]
-        public static bool IsValidFlagCombination(this EnumMember member) => ((IEnumMember)member).IsValidFlagCombination();
+        public static bool IsValidFlagCombination(this EnumMember member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return ((IEnumMember)member).IsValidFlagCombination();
+        }
 
         /// <summary>
         /// Returns an array of the flags that compose <paramref name="member"/>.
@@ -667,7 +710,11 @@ namespace EnumsNET
         /// <param name="member"></param>
         /// <returns>Array of the flags that compose <paramref name="member"/>.</returns>
         [Pure]
-        public static IEnumerable<TEnum> GetFlags<TEnum>(this EnumMember<TEnum> member) => member.GetGenericFlags();
+        public static IEnumerable<TEnum> GetFlags<TEnum>(this EnumMember<TEnum> member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return member.GetGenericFlags();
+        }
 
         /// <summary>
         /// Returns an IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.
@@ -676,7 +723,11 @@ namespace EnumsNET
         /// <param name="member"></param>
         /// <returns>IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.</returns>
         [Pure]
-        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(this EnumMember<TEnum> member) => member.GetGenericFlagMembers();
+        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(this EnumMember<TEnum> member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return member.GetGenericFlagMembers();
+        }
 
         /// <summary>
         /// Indicates if <paramref name="member"/> has any flags set.
@@ -684,7 +735,11 @@ namespace EnumsNET
         /// <param name="member"></param>
         /// <returns>Indication if <paramref name="member"/> has any flags set.</returns>
         [Pure]
-        public static bool HasAnyFlags(this EnumMember member) => ((IEnumMember)member).HasAnyFlags();
+        public static bool HasAnyFlags(this EnumMember member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return ((IEnumMember)member).HasAnyFlags();
+        }
 
         /// <summary>
         /// Indicates if <paramref name="member"/> has all flags set that are defined in its enum type.
@@ -692,7 +747,11 @@ namespace EnumsNET
         /// <param name="member"></param>
         /// <returns>Indication if <paramref name="member"/> has all flags set that are defined in its enum type.</returns>
         [Pure]
-        public static bool HasAllFlags(this EnumMember member) => ((IEnumMember)member).HasAllFlags();
+        public static bool HasAllFlags(this EnumMember member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return ((IEnumMember)member).HasAllFlags();
+        }
         #endregion
     }
 }

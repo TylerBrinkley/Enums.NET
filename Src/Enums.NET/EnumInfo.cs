@@ -279,6 +279,12 @@ namespace EnumsNET
 
         public TEnum CombineFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.CombineFlags(ToInt(value), ToInt(otherFlags)));
 
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2)));
+
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3)));
+
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
+
         public TEnum CombineFlags(TEnum[] flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
         public TEnum ExcludeFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));

@@ -942,7 +942,11 @@ namespace EnumsNET.NonGeneric
         /// <param name="member"></param>
         /// <returns>IEnumerable of the flags that compose <paramref name="member"/>.</returns>
         [Pure]
-        public static IEnumerable<object> GetFlags(this EnumMember member) => member.GetFlags();
+        public static IEnumerable<object> GetFlags(this EnumMember member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return member.GetFlags();
+        }
 
         /// <summary>
         /// Returns an IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.
@@ -950,7 +954,11 @@ namespace EnumsNET.NonGeneric
         /// <param name="member"></param>
         /// <returns>IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.</returns>
         [Pure]
-        public static IEnumerable<EnumMember> GetFlagMembers(this EnumMember member) => member.GetFlagMembers();
+        public static IEnumerable<EnumMember> GetFlagMembers(this EnumMember member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return member.GetFlagMembers();
+        }
         #endregion
     }
 }

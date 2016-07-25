@@ -1696,7 +1696,7 @@ namespace EnumsNET
         /// <returns>Description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
         /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.</returns>
         [Pure]
-        public static string GetDescription<[EnumConstraint] TEnum>(this TEnum value)
+        public static string GetDescription<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetDescription(value);
 
         /// <summary>

@@ -49,6 +49,7 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
         {
             // CombineFlags ~ bitwise OR
             Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
+            Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday, FlagEnums.CombineFlags(DaysOfWeek.Monday, DaysOfWeek.Wednesday, DaysOfWeek.Friday));
     
             // HasAnyFlags
             Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Wednesday));
@@ -79,8 +80,10 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
         [Test]
         public void Description()
         {
-            Assert.AreEqual("Is", NumericFilter.Equals.GetDescription());
-            Assert.IsNull(NumericFilter.LessThan.GetDescription());
+            Assert.AreEqual("Is", Enums.GetDescription(NumericFilter.Equals));
+            Assert.IsNull(Enums.GetDescription(NumericFilter.LessThan));
+            Assert.AreEqual("Is", NumericFilter.Equals.GetEnumMember().Description);
+            Assert.IsNull(NumericFilter.LessThan.GetEnumMember().Description);
         }
     
         [Test]

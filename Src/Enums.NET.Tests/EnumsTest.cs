@@ -1095,16 +1095,16 @@ namespace EnumsNET.Tests
         [Test]
         public void GetDescription_ReturnsDescription_WhenUsingValidValueWithDescription()
         {
-            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetDescription());
+            Assert.AreEqual("Ultra-Violet", GetDescription(ColorFlagEnum.UltraViolet));
         }
 
         [Test]
         public void GetDescription_ReturnsNull_WhenUsingValidValueWithoutDescription()
         {
-            Assert.IsNull(ColorFlagEnum.Black.GetDescription());
-            Assert.IsNull(ColorFlagEnum.Red.GetDescription());
-            Assert.IsNull(ColorFlagEnum.Green.GetDescription());
-            Assert.IsNull(ColorFlagEnum.Blue.GetDescription());
+            Assert.IsNull(GetDescription(ColorFlagEnum.Black));
+            Assert.IsNull(GetDescription(ColorFlagEnum.Red));
+            Assert.IsNull(GetDescription(ColorFlagEnum.Green));
+            Assert.IsNull(GetDescription(ColorFlagEnum.Blue));
         }
         #endregion
 
