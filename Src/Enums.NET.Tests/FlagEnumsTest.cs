@@ -122,7 +122,8 @@ namespace EnumsNET.Tests
         [Test]
         public void GetFlags_ReturnsValidArray_WhenUsingInvalidValue()
         {
-            CollectionAssert.AreEqual(new[] { (ColorFlagEnum)16 }, ((ColorFlagEnum)16).GetFlags());
+            CollectionAssert.AreEqual(new ColorFlagEnum[0], ((ColorFlagEnum)16).GetFlags());
+            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Blue }, (ColorFlagEnum.Blue | (ColorFlagEnum)16).GetFlags());
         }
 
         [Test]
