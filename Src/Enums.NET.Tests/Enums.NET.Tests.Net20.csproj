@@ -59,6 +59,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="EnumsNETDemo.cs" />
     <Compile Include="TestEnums\ByteEnum.cs" />
     <Compile Include="TestEnums\ColorFlagEnum.cs" />
     <Compile Include="TestEnums\ContiguousUInt64Enum.cs" />
