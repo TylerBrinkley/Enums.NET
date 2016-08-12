@@ -9,7 +9,7 @@ using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 [TestFixture]
 class EnumsNETDemo
 {
-    enum NumericFilter
+    enum NumericOperator
     {
         [Description("Is")]
         [EnumMember(Value = "=")]
@@ -50,19 +50,21 @@ class EnumsNETDemo
     [Test]
     public void Enumerate()
     {
-        foreach (EnumMember<NumericFilter> member in Enums.GetEnumMembers<NumericFilter>())
+        foreach (EnumMember<NumericOperator> member in Enums.GetEnumMembers<NumericOperator>())
         {
-            NumericFilter value = member.Value;
+            NumericOperator value = member.Value;
             string name = member.Name;
             // Do stuff
         }
+        Assert.AreEqual(8, Enums.GetEnumMembers<NumericOperator>().Count());
+        Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(uniqueValued: true).Count());
 
-        foreach (NumericFilter value in Enums.GetValues<NumericFilter>())
+        foreach (NumericOperator value in Enums.GetValues<NumericOperator>())
         {
             // Do stuff
         }
 
-        foreach (string name in Enums.GetNames<NumericFilter>())
+        foreach (string name in Enums.GetNames<NumericOperator>())
         {
             // Do stuff
         }
@@ -71,9 +73,9 @@ class EnumsNETDemo
     [Test]
     public void Validate()
     {
-        // Standard Enums, checks for defined
-        Assert.IsTrue(NumericFilter.LessThan.IsValid());
-        Assert.IsFalse(((NumericFilter)20).IsValid());
+        // Standard Enums, checks is defined
+        Assert.IsTrue(NumericOperator.LessThan.IsValid());
+        Assert.IsFalse(((NumericOperator)20).IsValid());
 
         // Flag Enums, checks is valid flag combination or is defined
         Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
@@ -117,37 +119,37 @@ class EnumsNETDemo
     [Test]
     public void Name()
     {
-        Assert.AreEqual("Equals", NumericFilter.Equals.GetName());
-        Assert.AreEqual("LessThan", NumericFilter.LessThan.AsString(EnumFormat.Name));
-        Assert.AreEqual("GreaterThan", NumericFilter.GreaterThan.GetEnumMember().Name);
+        Assert.AreEqual("Equals", NumericOperator.Equals.GetName());
+        Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Name));
+        Assert.AreEqual("GreaterThan", NumericOperator.GreaterThan.GetEnumMember().Name);
     }
 
     [Test]
     public void Description()
     {
-        Assert.AreEqual("Is", NumericFilter.Equals.AsString(EnumFormat.Description));
-        Assert.IsNull(NumericFilter.LessThan.AsString(EnumFormat.Description));
-        Assert.AreEqual("Is", NumericFilter.Equals.GetEnumMember().Description);
-        Assert.IsNull(NumericFilter.LessThan.GetEnumMember().Description);
-        Assert.AreEqual("Is", Enums.GetDescription(NumericFilter.Equals));
-        Assert.IsNull(Enums.GetDescription(NumericFilter.LessThan));
+        Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
+        Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
+        Assert.AreEqual("Is", NumericOperator.Equals.GetEnumMember().Description);
+        Assert.IsNull(NumericOperator.LessThan.GetEnumMember().Description);
+        Assert.AreEqual("Is", Enums.GetDescription(NumericOperator.Equals));
+        Assert.IsNull(Enums.GetDescription(NumericOperator.LessThan));
     }
 
     [Test]
     public void Attributes()
     {
-        Assert.IsTrue(NumericFilter.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
-        Assert.IsFalse(Enums.GetEnumMember<NumericFilter>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
-        Assert.AreEqual("Is not", NumericFilter.NotEquals.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
-        Assert.IsNull(NumericFilter.LessThan.GetEnumMember().GetAttributeSelect((DescriptionAttribute attr) => attr.Description));
+        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
+        Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
+        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
+        Assert.IsNull(NumericOperator.LessThan.GetEnumMember().GetAttributeSelect((DescriptionAttribute attr) => attr.Description));
     }
 
     [Test]
     public void Parsing()
     {
-        Assert.AreEqual(NumericFilter.GreaterThan, Enums.Parse<NumericFilter>("GreaterThan"));
-        Assert.AreEqual(NumericFilter.NotEquals, Enums.Parse<NumericFilter>("1"));
-        Assert.AreEqual(NumericFilter.Equals, Enums.Parse<NumericFilter>("Is", EnumFormat.Description));
+        Assert.AreEqual(NumericOperator.GreaterThan, Enums.Parse<NumericOperator>("GreaterThan"));
+        Assert.AreEqual(NumericOperator.NotEquals, Enums.Parse<NumericOperator>("1"));
+        Assert.AreEqual(NumericOperator.Equals, Enums.Parse<NumericOperator>("Is", EnumFormat.Description));
 
         Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, Enums.Parse<DaysOfWeek>("Monday, Wednesday"));
         Assert.AreEqual(DaysOfWeek.Tuesday | DaysOfWeek.Thursday, FlagEnums.ParseFlags<DaysOfWeek>("Tuesday | Thursday", delimiter: "|"));
@@ -157,7 +159,7 @@ class EnumsNETDemo
     public void CustomEnumFormat()
     {
         EnumFormat enumMemberValueFormat = Enums.RegisterCustomEnumFormat(member => member.GetAttributeSelect((EnumMemberAttribute attr) => attr.Value));
-        Assert.AreEqual(">", NumericFilter.GreaterThan.AsString(enumMemberValueFormat));
-        Assert.AreEqual(NumericFilter.LessThan, Enums.Parse<NumericFilter>("<", enumMemberValueFormat));
+        Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(enumMemberValueFormat));
+        Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", enumMemberValueFormat));
     }
 }

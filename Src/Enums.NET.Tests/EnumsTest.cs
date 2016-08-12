@@ -86,12 +86,12 @@ namespace EnumsNET.Tests
             Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>());
             Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>());
             Assert.AreEqual(6, GetEnumMemberCount<ColorFlagEnum>());
-            Assert.AreEqual(10, GetEnumMemberCount<NumericFilterOperator>());
+            Assert.AreEqual(10, GetEnumMemberCount<NumericOperator>());
 
             Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>(true));
             Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>(true));
             Assert.AreEqual(6, GetEnumMemberCount<ColorFlagEnum>(true));
-            Assert.AreEqual(8, GetEnumMemberCount<NumericFilterOperator>(true)); // Has 2 duplicates
+            Assert.AreEqual(8, GetEnumMemberCount<NumericOperator>(true)); // Has 2 duplicates
         }
 
         [Test]
@@ -100,12 +100,12 @@ namespace EnumsNET.Tests
             Assert.AreEqual(0, GetEnumMembers<ByteEnum>().Count());
             Assert.AreEqual(38, GetEnumMembers<DateFilterOperator>().Count());
             Assert.AreEqual(6, GetEnumMembers<ColorFlagEnum>().Count());
-            Assert.AreEqual(10, GetEnumMembers<NumericFilterOperator>().Count());
+            Assert.AreEqual(10, GetEnumMembers<NumericOperator>().Count());
 
             Assert.AreEqual(0, GetEnumMembers<ByteEnum>(true).Count());
             Assert.AreEqual(38, GetEnumMembers<DateFilterOperator>(true).Count());
             Assert.AreEqual(6, GetEnumMembers<ColorFlagEnum>(true).Count());
-            Assert.AreEqual(8, GetEnumMembers<NumericFilterOperator>(true).Count()); // Has 2 duplicates
+            Assert.AreEqual(8, GetEnumMembers<NumericOperator>(true).Count()); // Has 2 duplicates
 
             var enumMembers = GetEnumMembers<ColorFlagEnum>().ToList();
             AssertEnumMemberIsCorrect(enumMembers[0], ColorFlagEnum.Black, "Black");
@@ -140,7 +140,7 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>().ToArray());
 
             // Duplicate order check
-            var numericFilterOperators = GetValues<NumericFilterOperator>().ToArray();
+            var numericFilterOperators = GetValues<NumericOperator>().ToArray();
             for (var i = 1; i < numericFilterOperators.Length; ++i)
             {
                 Assert.IsTrue(numericFilterOperators[i - 1] <= numericFilterOperators[i]);
@@ -153,7 +153,7 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true).ToArray());
             CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true).ToArray());
             CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(true).ToArray());
-            CollectionAssert.AreEqual(new[] { NumericFilterOperator.Is, NumericFilterOperator.IsNot, NumericFilterOperator.GreaterThan, NumericFilterOperator.LessThan, NumericFilterOperator.GreaterThanOrEqual, NumericFilterOperator.NotGreaterThan, NumericFilterOperator.Between, NumericFilterOperator.NotBetween }, GetValues<NumericFilterOperator>(true).ToArray());
+            CollectionAssert.AreEqual(new[] { NumericOperator.Equals, NumericOperator.NotEquals, NumericOperator.GreaterThan, NumericOperator.LessThan, NumericOperator.GreaterThanOrEquals, NumericOperator.NotGreaterThan, NumericOperator.Between, NumericOperator.NotBetween }, GetValues<NumericOperator>(true).ToArray());
         }
 
         [Test]
@@ -235,18 +235,29 @@ namespace EnumsNET.Tests
             Assert.IsFalse(((NonContiguousUInt64Enum)5).IsValid());
             Assert.IsFalse(((NonContiguousUInt64Enum)50000000UL).IsValid());
 
-            Assert.IsTrue(NumericFilterOperator.Is.IsValid());
-            Assert.IsTrue(NumericFilterOperator.IsNot.IsValid());
-            Assert.IsTrue(NumericFilterOperator.GreaterThan.IsValid());
-            Assert.IsTrue(NumericFilterOperator.LessThan.IsValid());
-            Assert.IsTrue(NumericFilterOperator.GreaterThanOrEqual.IsValid());
-            Assert.IsTrue(NumericFilterOperator.NotLessThan.IsValid());
-            Assert.IsTrue(NumericFilterOperator.LessThanOrEqual.IsValid());
-            Assert.IsTrue(NumericFilterOperator.NotGreaterThan.IsValid());
-            Assert.IsTrue(NumericFilterOperator.Between.IsValid());
-            Assert.IsTrue(NumericFilterOperator.NotBetween.IsValid());
-            Assert.IsFalse((NumericFilterOperator.Is - 1).IsValid());
-            Assert.IsFalse((NumericFilterOperator.NotBetween + 1).IsValid());
+            Assert.IsTrue(NumericOperator.Equals.IsValid());
+            Assert.IsTrue(NumericOperator.NotEquals.IsValid());
+            Assert.IsTrue(NumericOperator.GreaterThan.IsValid());
+            Assert.IsTrue(NumericOperator.LessThan.IsValid());
+            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.IsValid());
+            Assert.IsTrue(NumericOperator.NotLessThan.IsValid());
+            Assert.IsTrue(NumericOperator.LessThanOrEquals.IsValid());
+            Assert.IsTrue(NumericOperator.NotGreaterThan.IsValid());
+            Assert.IsTrue(NumericOperator.Between.IsValid());
+            Assert.IsTrue(NumericOperator.NotBetween.IsValid());
+            Assert.IsFalse((NumericOperator.Equals - 1).IsValid());
+            Assert.IsFalse((NumericOperator.NotBetween + 1).IsValid());
+        }
+
+        [Test]
+        public void IsValid_UsingValidator()
+        {
+            Assert.IsTrue(TypeNameHandling.None.IsValid());
+            Assert.IsTrue(TypeNameHandling.Objects.IsValid());
+            Assert.IsTrue(TypeNameHandling.Arrays.IsValid());
+            Assert.IsTrue(TypeNameHandling.All.IsValid());
+            Assert.IsTrue(TypeNameHandling.Auto.IsValid());
+            Assert.IsFalse((TypeNameHandling.Auto | TypeNameHandling.All).IsValid());
         }
         #endregion
 
@@ -303,18 +314,18 @@ namespace EnumsNET.Tests
             Assert.IsFalse(((NonContiguousUInt64Enum)5).IsDefined());
             Assert.IsFalse(((NonContiguousUInt64Enum)50000000UL).IsDefined());
 
-            Assert.IsTrue(NumericFilterOperator.Is.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.IsNot.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.GreaterThan.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.LessThan.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.GreaterThanOrEqual.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.NotLessThan.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.LessThanOrEqual.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.NotGreaterThan.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.Between.IsDefined());
-            Assert.IsTrue(NumericFilterOperator.NotBetween.IsDefined());
-            Assert.IsFalse((NumericFilterOperator.Is - 1).IsDefined());
-            Assert.IsFalse((NumericFilterOperator.NotBetween + 1).IsDefined());
+            Assert.IsTrue(NumericOperator.Equals.IsDefined());
+            Assert.IsTrue(NumericOperator.NotEquals.IsDefined());
+            Assert.IsTrue(NumericOperator.GreaterThan.IsDefined());
+            Assert.IsTrue(NumericOperator.LessThan.IsDefined());
+            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.IsDefined());
+            Assert.IsTrue(NumericOperator.NotLessThan.IsDefined());
+            Assert.IsTrue(NumericOperator.LessThanOrEquals.IsDefined());
+            Assert.IsTrue(NumericOperator.NotGreaterThan.IsDefined());
+            Assert.IsTrue(NumericOperator.Between.IsDefined());
+            Assert.IsTrue(NumericOperator.NotBetween.IsDefined());
+            Assert.IsFalse((NumericOperator.Equals - 1).IsDefined());
+            Assert.IsFalse((NumericOperator.NotBetween + 1).IsDefined());
         }
 
         [Test]
@@ -956,18 +967,18 @@ namespace EnumsNET.Tests
             TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousUInt64Enum)5, "paramName"));
             TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousUInt64Enum)50000000UL, "paramName"));
 
-            Enums.Validate(NumericFilterOperator.Is, "paramName");
-            Enums.Validate(NumericFilterOperator.IsNot, "paramName");
-            Enums.Validate(NumericFilterOperator.GreaterThan, "paramName");
-            Enums.Validate(NumericFilterOperator.LessThan, "paramName");
-            Enums.Validate(NumericFilterOperator.GreaterThanOrEqual, "paramName");
-            Enums.Validate(NumericFilterOperator.NotLessThan, "paramName");
-            Enums.Validate(NumericFilterOperator.LessThanOrEqual, "paramName");
-            Enums.Validate(NumericFilterOperator.NotGreaterThan, "paramName");
-            Enums.Validate(NumericFilterOperator.Between, "paramName");
-            Enums.Validate(NumericFilterOperator.NotBetween, "paramName");
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericFilterOperator.Is - 1, "paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericFilterOperator.NotBetween + 1, "paramName"));
+            Enums.Validate(NumericOperator.Equals, "paramName");
+            Enums.Validate(NumericOperator.NotEquals, "paramName");
+            Enums.Validate(NumericOperator.GreaterThan, "paramName");
+            Enums.Validate(NumericOperator.LessThan, "paramName");
+            Enums.Validate(NumericOperator.GreaterThanOrEquals, "paramName");
+            Enums.Validate(NumericOperator.NotLessThan, "paramName");
+            Enums.Validate(NumericOperator.LessThanOrEquals, "paramName");
+            Enums.Validate(NumericOperator.NotGreaterThan, "paramName");
+            Enums.Validate(NumericOperator.Between, "paramName");
+            Enums.Validate(NumericOperator.NotBetween, "paramName");
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericOperator.Equals - 1, "paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericOperator.NotBetween + 1, "paramName"));
         }
 
         [Test]
@@ -1065,7 +1076,7 @@ namespace EnumsNET.Tests
         [Test]
         public void GetUnderlyingValue_ReturnsExpected_OnAny()
         {
-            Assert.AreEqual(2, GetUnderlyingValue(NumericFilterOperator.GreaterThan));
+            Assert.AreEqual(2, GetUnderlyingValue(NumericOperator.GreaterThan));
         }
         #endregion
 
@@ -1085,11 +1096,11 @@ namespace EnumsNET.Tests
                 Assert.AreEqual(Enum.GetName(typeof(DateFilterOperator), value), value.GetName());
             }
 
-            // Check for main duplicates
-            Assert.AreEqual("GreaterThanOrEqual", NumericFilterOperator.GreaterThanOrEqual.GetName());
-            Assert.AreEqual("GreaterThanOrEqual", NumericFilterOperator.NotLessThan.GetName());
-            Assert.AreEqual("NotGreaterThan", NumericFilterOperator.LessThanOrEqual.GetName());
-            Assert.AreEqual("NotGreaterThan", NumericFilterOperator.NotGreaterThan.GetName());
+            // Check for primary duplicates
+            Assert.AreEqual("GreaterThanOrEquals", NumericOperator.GreaterThanOrEquals.GetName());
+            Assert.AreEqual("GreaterThanOrEquals", NumericOperator.NotLessThan.GetName());
+            Assert.AreEqual("NotGreaterThan", NumericOperator.LessThanOrEquals.GetName());
+            Assert.AreEqual("NotGreaterThan", NumericOperator.NotGreaterThan.GetName());
         }
 
         [Test]
@@ -1108,8 +1119,58 @@ namespace EnumsNET.Tests
         }
         #endregion
 
-        // TODO
         #region Attributes
+        [Test]
+        public void HasAttribute()
+        {
+            Assert.IsTrue(HasAttribute<EnumMemberAttributeEnum, EnumMemberAttribute>(EnumMemberAttributeEnum.A));
+            Assert.IsFalse(HasAttribute<ColorFlagEnum, EnumMemberAttribute>(ColorFlagEnum.Blue));
+            Assert.IsTrue(HasAttribute<ColorFlagEnum, DescriptionAttribute>(ColorFlagEnum.UltraViolet));
+        }
+
+        [Test]
+        public void GetAttribute()
+        {
+            Assert.AreEqual("aye", GetAttribute<EnumMemberAttributeEnum, EnumMemberAttribute>(EnumMemberAttributeEnum.A).Value);
+            Assert.IsNull(GetAttribute<ColorFlagEnum, EnumMemberAttribute>(ColorFlagEnum.Blue));
+            Assert.AreEqual("Ultra-Violet", GetAttribute<ColorFlagEnum, DescriptionAttribute>(ColorFlagEnum.UltraViolet).Description);
+        }
+
+        [Test]
+        public void GetAttributeSelect()
+        {
+            Assert.AreEqual("aye", Enums.GetAttributeSelect(EnumMemberAttributeEnum.A, (EnumMemberAttribute attr) => attr.Value));
+            Assert.IsNull(Enums.GetAttributeSelect(ColorFlagEnum.Blue, (EnumMemberAttribute attr) => attr.Value));
+            Assert.AreEqual("Default", Enums.GetAttributeSelect(ColorFlagEnum.Blue, (EnumMemberAttribute attr) => attr.Value, "Default"));
+            Assert.AreEqual("Ultra-Violet", Enums.GetAttributeSelect(ColorFlagEnum.UltraViolet, (DescriptionAttribute attr) => attr.Description));
+        }
+
+        [Test]
+        public void TryGetAttributeSelect()
+        {
+            string result;
+            Assert.IsTrue(Enums.TryGetAttributeSelect(EnumMemberAttributeEnum.A, (EnumMemberAttribute attr) => attr.Value, out result));
+            Assert.AreEqual("aye", result);
+            Assert.IsFalse(Enums.TryGetAttributeSelect(ColorFlagEnum.Blue, (EnumMemberAttribute attr) => attr.Value, out result));
+            Assert.IsTrue(Enums.TryGetAttributeSelect(ColorFlagEnum.UltraViolet, (DescriptionAttribute attr) => attr.Description, out result));
+            Assert.AreEqual("Ultra-Violet", result);
+        }
+
+        [Test]
+        public void GetAttributes()
+        {
+            CollectionAssert.AreEquivalent(new OptionAttribute[0], GetAttributes<MultipleAttributeEnum, OptionAttribute>(MultipleAttributeEnum.None));
+            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Mono") }, GetAttributes<MultipleAttributeEnum, OptionAttribute>(MultipleAttributeEnum.Single));
+            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Poly"), new OptionAttribute("Plural") }, GetAttributes<MultipleAttributeEnum, OptionAttribute>(MultipleAttributeEnum.Multi));
+        }
+
+        [Test]
+        public void GetAllAttributes()
+        {
+            CollectionAssert.AreEquivalent(new Attribute[0], Enums.GetAttributes(MultipleAttributeEnum.None));
+            CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, Enums.GetAttributes(MultipleAttributeEnum.Single));
+            CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, Enums.GetAttributes(MultipleAttributeEnum.Multi));
+        }
         #endregion
 
         // TODO

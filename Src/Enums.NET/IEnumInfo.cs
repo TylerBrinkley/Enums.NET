@@ -57,7 +57,7 @@ namespace EnumsNET
         string AsString(object value, EnumFormat[] formatOrder);
         object ExcludeFlags(object value, object otherFlags);
         object CommonFlags(object value, object otherFlags);
-        int CompareTo(object x, object y);
+        int CompareTo(object value, object other);
         bool Equals(object value, object other);
         string Format(object value, string format);
         string Format(object value, EnumFormat[] formatOrder);
@@ -151,7 +151,7 @@ namespace EnumsNET
         TEnum Parse(string value, bool ignoreCase = false, EnumFormat[] parseFormatOrder = null);
         TEnum ParseFlags(string value, bool ignoreCase = false, string delimiter = null, EnumFormat[] parseFormatOrder = null);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
-        TEnum CombineFlags(TEnum[] flags);
+        TEnum CombineFlags(IEnumerable<TEnum> flags);
         TEnum CombineFlags(TEnum value, TEnum otherFlags);
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2);
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3);

@@ -70,13 +70,15 @@
     <Compile Include="TestEnums\Int16Enum.cs" />
     <Compile Include="TestEnums\Int32Enum.cs" />
     <Compile Include="TestEnums\Int64Enum.cs" />
+    <Compile Include="TestEnums\MultipleAttributeEnum.cs" />
     <Compile Include="TestEnums\NonContiguousEnum.cs" />
     <Compile Include="TestEnums\NonContiguousUInt64Enum.cs" />
     <Compile Include="NonGenericEnumsTest.cs" />
-    <Compile Include="TestEnums\NumericFilterOperator.cs" />
+    <Compile Include="TestEnums\NumericOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestEnums\SByteEnum.cs" />
     <Compile Include="TestEnums\StringFilterOperator.cs" />
+    <Compile Include="TestEnums\TypeNameHandling.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="TestEnums\UInt16Enum.cs" />
     <Compile Include="TestEnums\UInt32Enum.cs" />

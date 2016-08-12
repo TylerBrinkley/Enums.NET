@@ -7,8 +7,8 @@
     <description>Enums.NET is an efficient type-safe .NET enum utility library</description>
     <authors>Tyler Brinkley</authors>
     <language>en-US</language>
-    <projectUrl>https://github.com/Tydude4Christ/Enums.NET</projectUrl>
-    <licenseUrl>https://github.com/Tydude4Christ/Enums.NET/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/TylerBrinkley/Enums.NET</projectUrl>
+    <licenseUrl>https://github.com/TylerBrinkley/Enums.NET/blob/master/LICENSE</licenseUrl>
     <tags>enum</tags>
   </metadata>
 </package>

@@ -39,7 +39,7 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
-    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
+    internal class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
         where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
@@ -48,10 +48,10 @@ namespace EnumsNET
 
         private static List<Func<EnumMember<TEnum>, string>> _customEnumFormatters;
 
-        internal static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter);
+        protected static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomValidator());
 
         [MethodImpl(MethodImplOptions.ForwardRef)]
-        internal static extern TInt ToInt(TEnum value);
+        private static extern TInt ToInt(TEnum value);
 
         [MethodImpl(MethodImplOptions.ForwardRef)]
         internal static extern TEnum ToEnum(TInt value);
@@ -285,7 +285,7 @@ namespace EnumsNET
 
         public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
 
-        public TEnum CombineFlags(TEnum[] flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
+        public TEnum CombineFlags(IEnumerable<TEnum> flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
         public TEnum ExcludeFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));
         #endregion
@@ -304,9 +304,7 @@ namespace EnumsNET
         #endregion
 
         #region CustomEnumFormatters
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter) => InternalRegisterCustomEnumFormat(formatter);
-
-        internal static EnumFormat InternalRegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter)
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter)
         {
             Preconditions.NotNull(formatter, nameof(formatter));
 
@@ -322,29 +320,48 @@ namespace EnumsNET
                 }
             }
             _customEnumFormatters.Add(formatter);
-            return (EnumFormat)(index + Enums.StartingGenericCustomEnumFormatValue);
+            return (EnumFormat)((index << 1) + Enums.StartingCustomEnumFormatValue + 1);
         }
 
         private static Func<InternalEnumMember<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
         {
+            var isOdd = ((int)format & 1) == 1;
 #if NET20 || NET35
-            var formatter1 = Enums.GetCustomEnumFormatter(format);
-            if (formatter1 != null)
+            if (isOdd)
             {
-                return member => formatter1(new EnumMember<TEnum, TInt, TIntProvider>(member));
+                var formatter = GetCustomEnumFormatter(format);
+                if (formatter != null)
+                {
+                    return member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member));
+                }
             }
-            var formatter2 = GetCustomEnumFormatter(format);
-            return formatter2 != null ? member => formatter2(new EnumMember<TEnum, TInt, TIntProvider>(member)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
+            else
+            {
+                var formatter = Enums.GetCustomEnumFormatter(format);
+                if (formatter != null)
+                {
+                    return member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member));
+                }
+            }
+            return null;
 #else
-            var formatter = Enums.GetCustomEnumFormatter(format) ?? GetCustomEnumFormatter(format);
+            var formatter = isOdd ? GetCustomEnumFormatter(format) : Enums.GetCustomEnumFormatter(format);
             return formatter != null ? member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
 #endif
         }
 
         private static Func<EnumMember<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
         {
-            var index = (int)format - Enums.StartingGenericCustomEnumFormatValue;
+            var index = ((int)format - Enums.StartingCustomEnumFormatValue - 1) >> 1;
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
+        }
+        #endregion
+
+        #region CustomValidator
+        private static Func<TInt, bool> GetCustomValidator()
+        {
+            var customValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetCustomValidator(typeof(TEnum));
+            return customValidator != null ? value => customValidator.IsValid(ToEnum(value)) : (Func<TInt, bool>)null;
         }
         #endregion
     }

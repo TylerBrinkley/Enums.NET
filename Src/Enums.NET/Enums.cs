@@ -43,9 +43,7 @@ namespace EnumsNET
 
         internal static readonly Attribute[] EmptyAttributes = { };
 
-        private const int _startingGlobalCustomEnumFormatValue = 100;
-
-        internal const int StartingGenericCustomEnumFormatValue = 200;
+        internal const int StartingCustomEnumFormatValue = 100;
 
         private static int _lastCustomEnumFormatIndex = -1;
 
@@ -72,7 +70,7 @@ namespace EnumsNET
                 }
             }
             _customEnumFormatters.Add(formatter);
-            return (EnumFormat)(index + _startingGlobalCustomEnumFormatValue);
+            return (EnumFormat)((index << 1) + StartingCustomEnumFormatValue);
         }
 
         #region "Properties"
@@ -213,12 +211,14 @@ namespace EnumsNET
 
         /// <summary>
         /// Indicates whether <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.
+        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values. If <typeparamref name="TEnum"/> has an attribute
+        /// that implements <see cref="IEnumValidatorAttribute{TEnum}"/> then that attribute's validation logic is used instead.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The enum value.</param>
         /// <returns>Indication whether <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
+        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values. If <typeparamref name="TEnum"/> has an attribute
+        /// that implements <see cref="IEnumValidatorAttribute{TEnum}"/> then that attribute's validation logic is used instead.</returns>
         [Pure]
         public static bool IsValid<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.IsValid(value);
@@ -1708,6 +1708,7 @@ namespace EnumsNET
         [Pure]
         public static string GetDescriptionOrName<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value);
+
         /// <summary>
         /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
         /// </summary>
@@ -2012,7 +2013,7 @@ namespace EnumsNET
         #region Internal Methods
         internal static Func<EnumMember, string> GetCustomEnumFormatter(EnumFormat format)
         {
-            var index = (int)format - _startingGlobalCustomEnumFormatValue;
+            var index = ((int)format - StartingCustomEnumFormatValue) >> 1;
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
 
@@ -2045,6 +2046,22 @@ namespace EnumsNET
                     return typeof(UInt64NumericProvider);
             }
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
+        }
+
+        internal static object GetCustomValidator(Type enumType)
+        {
+            var validatorInterface = typeof(IEnumValidatorAttribute<>).MakeGenericType(enumType);
+            foreach (var attribute in enumType.GetCustomAttributes(false))
+            {
+                foreach (var attributeInterface in attribute.GetType().GetInterfaces())
+                {
+                    if (attributeInterface == validatorInterface)
+                    {
+                        return attribute;
+                    }
+                }
+            }
+            return null;
         }
         #endregion
     }

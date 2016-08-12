@@ -47,6 +47,7 @@
     <Compile Include="Collections\HashHelper.cs" />
     <Compile Include="IEnumInfo.cs" />
     <Compile Include="IEnumMember.cs" />
+    <Compile Include="IEnumValidatorAttribute.cs" />
     <Compile Include="NonGeneric\EnumInfoAndIsNullable.cs" />
     <Compile Include="Numerics\INumericProvider.cs" />
     <Compile Include="Numerics\ByteNumericProvider.cs" />

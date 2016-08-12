@@ -67,6 +67,8 @@ namespace EnumsNET
 
         private readonly Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> _getCustomEnumFormatter;
 
+        private readonly Func<TInt, bool> _customValidator;
+
         // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
         // If constant contains a DescriptionAttribute it will be the first in the attribute array
         private readonly OrderedBiDirectionalDictionary<TInt, NameAndAttributes> _valueMap;
@@ -106,13 +108,14 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter)
+        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter, Func<TInt, bool> customValidator)
         {
             Debug.Assert(enumType != null);
             Debug.Assert(enumType.IsEnum);
             _enumTypeName = enumType.Name;
             Debug.Assert(getCustomEnumFormatter != null);
             _getCustomEnumFormatter = getCustomEnumFormatter;
+            _customValidator = customValidator;
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
             var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
@@ -289,7 +292,7 @@ namespace EnumsNET
             return TryToObject(value, out result, true);
         }
 
-        public bool IsValid(TInt value) => IsFlagEnum ? IsValidFlagCombination(value) || IsDefined(value) : IsDefined(value);
+        public bool IsValid(TInt value) => _customValidator?.Invoke(value) ?? (IsFlagEnum ? IsValidFlagCombination(value) || IsDefined(value) : IsDefined(value));
 
         public bool IsValid(long value) => Provider.IsInValueRange(value) && IsValid(Provider.Create(value));
 
