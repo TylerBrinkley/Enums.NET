@@ -45,7 +45,7 @@ namespace EnumsNET
 
         internal const int StartingCustomEnumFormatValue = 100;
 
-        private static int _lastCustomEnumFormatIndex = -1;
+        internal static int LastCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMember, string>> _customEnumFormatters;
         
@@ -58,7 +58,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(formatter, nameof(formatter));
 
-            var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
+            var index = Interlocked.Increment(ref LastCustomEnumFormatIndex);
             if (index == 0)
             {
                 _customEnumFormatters = new List<Func<EnumMember, string>>();

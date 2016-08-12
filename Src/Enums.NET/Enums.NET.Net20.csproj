@@ -39,6 +39,7 @@
     <Compile Include="Collections\ThreadSafeDictionary.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />
+    <Compile Include="EnumFormatValidatorAttribute.cs" />
     <Compile Include="EnumInfo.cs" />
     <Compile Include="EnumMember.cs" />
     <Compile Include="Enums.cs" />

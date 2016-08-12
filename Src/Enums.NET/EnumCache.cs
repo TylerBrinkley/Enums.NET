@@ -537,7 +537,12 @@ namespace EnumsNET
                 case EnumFormat.Description:
                     return member.Description;
                 default:
-                    return _getCustomEnumFormatter(format)?.Invoke(member);
+                    var customEnumFormatter = _getCustomEnumFormatter(format);
+                    if (customEnumFormatter == null)
+                    {
+                        throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid for {_enumTypeName}");
+                    }
+                    return customEnumFormatter(member);
             }
         }
 
@@ -725,11 +730,12 @@ namespace EnumsNET
                             }
                             else
                             {
-                                var formatter = _getCustomEnumFormatter(format);
-                                if (formatter != null)
+                                var customEnumFormatter = _getCustomEnumFormatter(format);
+                                if (customEnumFormatter == null)
                                 {
-                                    parser = new EnumParser(formatter, this);
+                                    throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid for {_enumTypeName}");
                                 }
+                                parser = new EnumParser(customEnumFormatter, this);
                             }
                             if (parser != null)
                             {

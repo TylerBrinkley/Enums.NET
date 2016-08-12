@@ -23,31 +23,16 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System.ComponentModel;
+using System;
 
 namespace EnumsNET
 {
-    /// <summary>
-    /// Defines the various enum formats
-    /// </summary>
-    [EnumFormatValidator]
-    public enum EnumFormat
+    internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
     {
-        /// <summary>
-        /// Enum is represented by its decimal value
-        /// </summary>
-        DecimalValue,
-        /// <summary>
-        /// Enum is represented by its hexadecimal value
-        /// </summary>
-        HexadecimalValue,
-        /// <summary>
-        /// Enum is represented by its name
-        /// </summary>
-        Name,
-        /// <summary>
-        /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>
-        /// </summary>
-        Description
+        public bool IsValid(EnumFormat value)
+        {
+            var valueAsInt = (int)value;
+            return value.IsDefined() || (valueAsInt >= Enums.StartingCustomEnumFormatValue && ((valueAsInt & 1) == 1 || ((valueAsInt - Enums.StartingCustomEnumFormatValue) >> 1) <= Enums.LastCustomEnumFormatIndex));
+        }
     }
 }
