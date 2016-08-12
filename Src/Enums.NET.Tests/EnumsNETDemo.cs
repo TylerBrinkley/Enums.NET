@@ -47,6 +47,20 @@ class EnumsNETDemo
         All = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
     }
 
+    [Flags]
+    [DayTypeValidator]
+    enum DayType
+    {
+        Weekday = 1,
+        Weekend = 2,
+        Holiday = 4
+    }
+
+    class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
+    {
+        public bool IsValid(DayType value) => value == DayType.Weekday || value == DayType.Weekend || value == (DayType.Weekday | DayType.Holiday) || value == (DayType.Weekend | DayType.Holiday);
+    }
+
     [Test]
     public void Enumerate()
     {
@@ -80,6 +94,11 @@ class EnumsNETDemo
         // Flag Enums, checks is valid flag combination or is defined
         Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
         Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | (DaysOfWeek.All + 1)).IsValid());
+
+        // Custom validation through IEnumValidatorAttribute
+        Assert.IsTrue(DayType.Weekday.IsValid());
+        Assert.IsTrue((DayType.Weekday | DayType.Holiday).IsValid());
+        Assert.IsFalse((DayType.Weekday | DayType.Weekend).IsValid());
     }
 
     [Test]
