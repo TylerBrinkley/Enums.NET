@@ -721,8 +721,8 @@ namespace EnumsNET
                         }
                         break;
                     default:
-                        EnumParser parser = null;
-                        if (_customEnumParsers?.TryGetValue(format, out parser) != true)
+                        EnumParser parser;
+                        if (_customEnumParsers == null || !_customEnumParsers.TryGetValue(format, out parser))
                         {
                             if (format == EnumFormat.Description)
                             {
@@ -737,18 +737,15 @@ namespace EnumsNET
                                 }
                                 parser = new EnumParser(customEnumFormatter, this);
                             }
-                            if (parser != null)
+                            var customEnumParsers = _customEnumParsers;
+                            if (customEnumParsers == null)
                             {
-                                var customEnumParsers = _customEnumParsers;
-                                if (customEnumParsers == null)
-                                {
-                                    customEnumParsers = new ThreadSafeDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>());
-                                    customEnumParsers = Interlocked.CompareExchange(ref _customEnumParsers, customEnumParsers, null) ?? customEnumParsers;
-                                }
-                                customEnumParsers.TryAdd(format, parser);
+                                customEnumParsers = new ThreadSafeDictionary<EnumFormat, EnumParser>(new EnumComparer<EnumFormat>());
+                                customEnumParsers = Interlocked.CompareExchange(ref _customEnumParsers, customEnumParsers, null) ?? customEnumParsers;
                             }
+                            customEnumParsers.TryAdd(format, parser);
                         }
-                        success = parser?.TryParse(value, ignoreCase, out result) ?? false;
+                        success = parser.TryParse(value, ignoreCase, out result);
                         break;
                 }
                 if (success)
