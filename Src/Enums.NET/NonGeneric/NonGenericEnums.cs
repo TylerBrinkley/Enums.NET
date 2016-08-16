@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 
 #if NET20 || NET35 || NETSTANDARD10
 using EnumsNET.Collections;
@@ -58,9 +59,7 @@ namespace EnumsNET.NonGeneric
                 info = new EnumInfoAndIsNullable();
                 if (enumType.IsEnum)
                 {
-                    var underlyingType = Enum.GetUnderlyingType(enumType);
-                    var numericProviderType = Enums.GetNumericProviderType(underlyingType);
-                    info.EnumInfo = (IEnumInfo)Activator.CreateInstance(typeof(NonGenericEnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
+                    info.EnumInfo = (IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
                 }
                 else
                 {
@@ -2145,7 +2144,7 @@ namespace EnumsNET.NonGeneric
         {
             var info = GetInfoAndIsNullable(enumType);
 
-            if (string.IsNullOrEmpty(value) && info.IsNullable)
+            if (info.IsNullable && string.IsNullOrEmpty(value))
             {
                 return null;
             }

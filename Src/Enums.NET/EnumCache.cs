@@ -108,14 +108,18 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter, Func<TInt, bool> customValidator)
+        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter, Func<object, Func<TInt, bool>> getCustomValidator)
         {
             Debug.Assert(enumType != null);
             Debug.Assert(enumType.IsEnum);
             _enumTypeName = enumType.Name;
             Debug.Assert(getCustomEnumFormatter != null);
             _getCustomEnumFormatter = getCustomEnumFormatter;
-            _customValidator = customValidator;
+            var customValidator = Enums.GetCustomValidator(enumType);
+            if (customValidator != null)
+            {
+                _customValidator = getCustomValidator(customValidator);
+            }
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
             var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
@@ -649,14 +653,15 @@ namespace EnumsNET
         #region Parsing
         public TInt Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder)
         {
-            Preconditions.NotNull(value, nameof(value));
-
-            value = value.Trim();
-            TInt result;
             if (IsFlagEnum)
             {
                 return ParseFlags(value, ignoreCase, null, parseFormatOrder);
             }
+
+            Preconditions.NotNull(value, nameof(value));
+
+            value = value.Trim();
+            TInt result;
 
             if (!(parseFormatOrder?.Length > 0))
             {
@@ -676,13 +681,14 @@ namespace EnumsNET
 
         public bool TryParse(string value, bool ignoreCase, out TInt result, EnumFormat[] parseFormatOrder)
         {
+            if (IsFlagEnum)
+            {
+                return TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder);
+            }
+
             if (value != null)
             {
                 value = value.Trim();
-                if (IsFlagEnum)
-                {
-                    return TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder);
-                }
 
                 if (!(parseFormatOrder?.Length > 0))
                 {

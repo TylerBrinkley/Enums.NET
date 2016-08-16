@@ -39,7 +39,7 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
-    internal class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>
+    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo
         where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
@@ -48,7 +48,7 @@ namespace EnumsNET
 
         private static List<Func<EnumMember<TEnum>, string>> _customEnumFormatters;
 
-        protected static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomValidator());
+        private static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomValidator);
 
         [MethodImpl(MethodImplOptions.ForwardRef)]
         private static extern TInt ToInt(TEnum value);
@@ -110,7 +110,7 @@ namespace EnumsNET
         #endregion
 
         #region ToObject
-        public TEnum ToObject(object value, bool validate) => value is TEnum || value is TEnum? ? (TEnum)value : ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (TEnum)value : ToEnum(Cache.ToObject(value, validate));
 
         public TEnum ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
@@ -358,11 +358,162 @@ namespace EnumsNET
         #endregion
 
         #region CustomValidator
-        private static Func<TInt, bool> GetCustomValidator()
+        private static Func<TInt, bool> GetCustomValidator(object customValidator) => value => ((IEnumValidatorAttribute<TEnum>)customValidator).IsValid(ToEnum(value));
+        #endregion
+
+        #region NonGeneric
+        object IEnumInfo.AllFlags => AllFlags;
+
+        public string AsString(object value) => AsString(ToObject(value));
+
+        public string AsString(object value, string format) => AsString(ToObject(value), format);
+
+        public string AsString(object value, EnumFormat[] formatOrder) => AsString(ToObject(value), formatOrder);
+
+        public object ExcludeFlags(object value, object otherFlags) => ExcludeFlags(ToObject(value), ToObject(otherFlags));
+
+        public object CommonFlags(object value, object otherFlags) => CommonFlags(ToObject(value), ToObject(otherFlags));
+
+        public int CompareTo(object value, object other) => CompareTo(ToObject(value), ToObject(other));
+
+        public new bool Equals(object value, object other) => Equals(ToObject(value), ToObject(other));
+
+        public string Format(object value, string format) => Format(ToObject(value), format);
+
+        public string Format(object value, EnumFormat[] formatOrder) => Format(ToObject(value), formatOrder);
+
+        public string Format(object value, EnumFormat format) => AsString(ToObject(value), format);
+
+        public string Format(object value, EnumFormat format0, EnumFormat format1) => AsString(ToObject(value), format0, format1);
+
+        public string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => AsString(ToObject(value), format0, format1, format2);
+
+        public string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder) => FormatFlags(ToObject(value), delimiter, formatOrder);
+
+        public IEnumerable<Attribute> GetAttributes(object value) => GetAttributes(ToObject(value));
+
+        public string GetDescription(object value) => GetDescription(ToObject(value));
+
+        public string GetDescriptionOrName(object value) => GetDescriptionOrName(ToObject(value));
+
+        public string GetDescriptionOrName(object value, Func<string, string> nameFormatter) => GetDescriptionOrName(ToObject(value), nameFormatter);
+
+        public EnumMember GetEnumMember(object value) => GetEnumMember(ToObject(value));
+
+        EnumMember IEnumInfo.GetEnumMember(string name, bool ignoreCase) => GetEnumMember(name, ignoreCase);
+
+        IEnumerable<EnumMember> IEnumInfo.GetEnumMembers(bool uniqueValued) => GetEnumMembers(uniqueValued)
+#if NET20 || NET35
+            .Select(member => (EnumMember)member)
+#endif
+            ;
+
+        public IEnumerable<object> GetFlags(object value) => GetFlags(ToObject(value)).Select(flag => (object)flag);
+
+        public IEnumerable<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value))
+#if NET20 || NET35
+            .Select(flag => (EnumMember)flag)
+#endif
+            ;
+
+        public string GetName(object value) => GetName(ToObject(value));
+
+        public object GetUnderlyingValue(object value) => GetUnderlyingValue(ToObject(value));
+
+        IEnumerable<object> IEnumInfo.GetValues(bool uniqueValued) => GetValues(uniqueValued).Select(value => (object)value);
+
+        public bool HasAllFlags(object value) => HasAllFlags(ToObject(value));
+
+        public bool HasAllFlags(object value, object otherFlags) => HasAllFlags(ToObject(value), ToObject(otherFlags));
+
+        public bool HasAnyFlags(object value) => HasAnyFlags(ToObject(value));
+
+        public bool HasAnyFlags(object value, object otherFlags) => HasAnyFlags(ToObject(value), ToObject(otherFlags));
+
+        public bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
+
+        object IEnumInfo.Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => Parse(value, ignoreCase, parseFormatOrder);
+
+        object IEnumInfo.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+
+        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter) => RegisterCustomEnumFormat(
+#if NET20 || NET35
+            member => formatter(member));
+#else
+            formatter);
+#endif
+
+        public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags.Select(flag => ToObject(flag)));
+
+        public object CombineFlags(object value, object otherFlags) => CombineFlags(ToObject(value), ToObject(otherFlags));
+
+        public byte ToByte(object value) => ToByte(ToObject(value));
+
+        public object ToggleFlags(object value) => ToggleFlags(ToObject(value));
+
+        public object ToggleFlags(object value, object otherFlags) => ToggleFlags(ToObject(value), ToObject(otherFlags));
+
+        public short ToInt16(object value) => ToInt16(ToObject(value));
+
+        public int ToInt32(object value) => ToInt32(ToObject(value));
+
+        public long ToInt64(object value) => ToInt64(ToObject(value));
+
+        object IEnumInfo.ToObject(ulong value, bool validate) => ToObject(value, validate);
+
+        object IEnumInfo.ToObject(object value, bool validate) => ToObject(value, validate);
+
+        object IEnumInfo.ToObject(long value, bool validate) => ToObject(value, validate);
+
+        public sbyte ToSByte(object value) => ToSByte(ToObject(value));
+
+        public ushort ToUInt16(object value) => ToUInt16(ToObject(value));
+
+        public uint ToUInt32(object value) => ToUInt32(ToObject(value));
+
+        public ulong ToUInt64(object value) => ToUInt64(ToObject(value));
+
+        public bool TryParse(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder)
         {
-            var customValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetCustomValidator(typeof(TEnum));
-            return customValidator != null ? value => customValidator.IsValid(ToEnum(value)) : (Func<TInt, bool>)null;
+            TEnum resultAsTEnum;
+            var success = TryParse(value, ignoreCase, out resultAsTEnum, parseFormatOrder);
+            result = resultAsTEnum;
+            return success;
         }
+
+        public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] parseFormatOrder)
+        {
+            TEnum resultAsTEnum;
+            var success = TryParseFlags(value, ignoreCase, delimiter, out resultAsTEnum, parseFormatOrder);
+            result = resultAsTEnum;
+            return success;
+        }
+
+        public bool TryToObject(ulong value, out object result, bool validate)
+        {
+            TEnum resultAsTEnum;
+            var success = TryToObject(value, out resultAsTEnum, validate);
+            result = resultAsTEnum;
+            return success;
+        }
+
+        public bool TryToObject(object value, out object result, bool validate)
+        {
+            TEnum resultAsTEnum;
+            var success = TryToObject(value, out resultAsTEnum, validate);
+            result = resultAsTEnum;
+            return success;
+        }
+
+        public bool TryToObject(long value, out object result, bool validate)
+        {
+            TEnum resultAsTEnum;
+            var success = TryToObject(value, out resultAsTEnum, validate);
+            result = resultAsTEnum;
+            return success;
+        }
+
+        public object Validate(object value, string paramName) => Validate(ToObject(value), paramName);
         #endregion
     }
 }

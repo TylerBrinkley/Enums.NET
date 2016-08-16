@@ -67,7 +67,6 @@
     <Compile Include="Net20\ExtensionAttribute.cs" />
     <Compile Include="Net20\FuncAndAction.cs" />
     <Compile Include="Net20\PureAttribute.cs" />
-    <Compile Include="NonGeneric\NonGenericEnumInfo.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
     <Compile Include="Collections\OrderedBiDirectionalDictionary.cs" />
