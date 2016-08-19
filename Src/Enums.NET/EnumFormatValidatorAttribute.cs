@@ -32,7 +32,7 @@ namespace EnumsNET
         public bool IsValid(EnumFormat value)
         {
             var valueAsInt = (int)value;
-            return value.IsDefined() || (valueAsInt >= Enums.StartingCustomEnumFormatValue && ((valueAsInt & 1) == 1 || ((valueAsInt - Enums.StartingCustomEnumFormatValue) >> 1) <= Enums.LastCustomEnumFormatIndex));
+            return value.IsDefined() || (valueAsInt >= Enums.StartingCustomEnumFormatValue && ((valueAsInt & 1) == 1 ? Enums.GetEnumSpecificCustomEnumFormatIndex(value) <= Enums.HighestEnumSpecificCustomEnumFormatIndex : Enums.GetCustomEnumFormatIndex(value) <= Enums.HighestCustomEnumFormatIndex));
         }
     }
 }

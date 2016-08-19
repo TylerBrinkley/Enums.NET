@@ -45,7 +45,9 @@ namespace EnumsNET
 
         internal const int StartingCustomEnumFormatValue = 100;
 
-        internal static int LastCustomEnumFormatIndex = -1;
+        internal static int HighestCustomEnumFormatIndex = -1;
+
+        internal static int HighestEnumSpecificCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMember, string>> _customEnumFormatters;
         
@@ -58,7 +60,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(formatter, nameof(formatter));
 
-            var index = Interlocked.Increment(ref LastCustomEnumFormatIndex);
+            var index = Interlocked.Increment(ref HighestCustomEnumFormatIndex);
             if (index == 0)
             {
                 _customEnumFormatters = new List<Func<EnumMember, string>>();
@@ -70,7 +72,7 @@ namespace EnumsNET
                 }
             }
             _customEnumFormatters.Add(formatter);
-            return (EnumFormat)((index << 1) + StartingCustomEnumFormatValue);
+            return GetCustomEnumFormat(index);
         }
 
         #region "Properties"
@@ -2011,9 +2013,17 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
+        internal static int GetCustomEnumFormatIndex(EnumFormat format) => ((int)format - StartingCustomEnumFormatValue) >> 1;
+
+        internal static int GetEnumSpecificCustomEnumFormatIndex(EnumFormat format) => ((int)format - StartingCustomEnumFormatValue - 1) >> 1;
+
+        internal static EnumFormat GetCustomEnumFormat(int index) => (EnumFormat)((index << 1) + StartingCustomEnumFormatValue);
+
+        internal static EnumFormat GetEnumSpecificCustomEnumFormat(int index) => (EnumFormat)((index << 1) + StartingCustomEnumFormatValue + 1);
+
         internal static Func<EnumMember, string> GetCustomEnumFormatter(EnumFormat format)
         {
-            var index = ((int)format - StartingCustomEnumFormatValue) >> 1;
+            var index = GetCustomEnumFormatIndex(format);
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
 
@@ -2048,7 +2058,7 @@ namespace EnumsNET
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
         }
 
-        internal static object GetCustomValidator(Type enumType)
+        internal static object GetCustomEnumValidator(Type enumType)
         {
             var validatorInterface = typeof(IEnumValidatorAttribute<>).MakeGenericType(enumType);
             foreach (var attribute in enumType.GetCustomAttributes(false))

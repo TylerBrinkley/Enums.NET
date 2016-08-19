@@ -1077,6 +1077,7 @@ namespace EnumsNET.Tests
             // Enum specific custom enum formatter
             var enumMemberValueFormat = RegisterCustomEnumFormat((EnumMember<EnumMemberAttributeEnum> member) => member.GetAttribute<EnumMemberAttribute>()?.Value);
             Assert.IsTrue(enumMemberValueFormat.IsValid());
+            Assert.IsFalse((enumMemberValueFormat + 2).IsValid());
             Assert.AreEqual("aye", Format(EnumMemberAttributeEnum.A, enumMemberValueFormat));
             TestHelper.ExpectException<ArgumentException>(() => Format(ColorFlagEnum.Blue, enumMemberValueFormat));
         }

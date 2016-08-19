@@ -48,6 +48,8 @@ namespace EnumsNET
 
         public bool IsDefined => Name != null;
 
+        public bool IsInitialized => _enumCache != null;
+
         public InternalEnumMember(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
@@ -129,21 +131,21 @@ namespace EnumsNET
             return false;
         }
 
-        public override string ToString() => _enumCache.InternalAsString(this);
+        public override string ToString() => _enumCache.InternalAsString(Value, this);
 
-        public string ToString(string format) => _enumCache.InternalAsString(this, format);
+        public string ToString(string format) => _enumCache.InternalAsString(Value, this, format);
 
-        public string ToString(params EnumFormat[] formatOrder) => _enumCache.InternalAsString(this, formatOrder);
+        public string ToString(params EnumFormat[] formatOrder) => _enumCache.InternalAsString(Value, this, formatOrder);
 
         public string AsString() => ToString();
 
         public string AsString(string format) => ToString(format);
 
-        public string AsString(EnumFormat format) => _enumCache.InternalFormat(this, format);
+        public string AsString(EnumFormat format) => _enumCache.InternalFormat(Value, ref this, format);
 
-        public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(this, format0, format1);
+        public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(Value, this, format0, format1);
 
-        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(this, format0, format1, format2);
+        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(Value, this, format0, format1, format2);
 
         public string AsString(params EnumFormat[] formatOrder) => ToString(formatOrder);
 
@@ -151,14 +153,14 @@ namespace EnumsNET
         {
             Preconditions.NotNull(format, nameof(format));
 
-            return _enumCache.InternalFormat(this, format);
+            return _enumCache.InternalFormat(Value, this, format);
         }
 
         public string Format(params EnumFormat[] formatOrder)
         {
             Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return _enumCache.InternalFormat(this, formatOrder);
+            return _enumCache.InternalFormat(Value, this, formatOrder);
         }
 
         public sbyte ToSByte() => Value.ToSByte(null);

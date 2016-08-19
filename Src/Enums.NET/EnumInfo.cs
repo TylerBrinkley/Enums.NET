@@ -44,11 +44,11 @@ namespace EnumsNET
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private static int _lastCustomEnumFormatIndex = -1;
+        private static int _highestCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMember<TEnum>, string>> _customEnumFormatters;
 
-        private static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomValidator);
+        private static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomEnumValidator);
 
         [MethodImpl(MethodImplOptions.ForwardRef)]
         private static extern TInt ToInt(TEnum value);
@@ -308,7 +308,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(formatter, nameof(formatter));
 
-            var index = Interlocked.Increment(ref _lastCustomEnumFormatIndex);
+            var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
             if (index == 0)
             {
                 _customEnumFormatters = new List<Func<EnumMember<TEnum>, string>>();
@@ -320,7 +320,12 @@ namespace EnumsNET
                 }
             }
             _customEnumFormatters.Add(formatter);
-            return (EnumFormat)((index << 1) + Enums.StartingCustomEnumFormatValue + 1);
+            int highestEnumSpecificCustomEnumFormatIndex;
+            do
+            {
+                highestEnumSpecificCustomEnumFormatIndex = Enums.HighestEnumSpecificCustomEnumFormatIndex;
+            } while (index > highestEnumSpecificCustomEnumFormatIndex && Interlocked.CompareExchange(ref Enums.HighestEnumSpecificCustomEnumFormatIndex, index, highestEnumSpecificCustomEnumFormatIndex) != highestEnumSpecificCustomEnumFormatIndex);
+            return Enums.GetEnumSpecificCustomEnumFormat(index);
         }
 
         private static Func<InternalEnumMember<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
@@ -352,13 +357,13 @@ namespace EnumsNET
 
         private static Func<EnumMember<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
         {
-            var index = ((int)format - Enums.StartingCustomEnumFormatValue - 1) >> 1;
+            var index = Enums.GetEnumSpecificCustomEnumFormatIndex(format);
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
         #endregion
 
-        #region CustomValidator
-        private static Func<TInt, bool> GetCustomValidator(object customValidator) => value => ((IEnumValidatorAttribute<TEnum>)customValidator).IsValid(ToEnum(value));
+        #region CustomEnumValidator
+        private static Func<TInt, bool> GetCustomEnumValidator(object customEnumValidator) => value => ((IEnumValidatorAttribute<TEnum>)customEnumValidator).IsValid(ToEnum(value));
         #endregion
 
         #region NonGeneric

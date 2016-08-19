@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -67,7 +66,7 @@ namespace EnumsNET
 
         private readonly Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> _getCustomEnumFormatter;
 
-        private readonly Func<TInt, bool> _customValidator;
+        private readonly Func<TInt, bool> _customEnumValidator;
 
         // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
         // If constant contains a DescriptionAttribute it will be the first in the attribute array
@@ -108,17 +107,14 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter, Func<object, Func<TInt, bool>> getCustomValidator)
+        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter, Func<object, Func<TInt, bool>> getCustomEnumValidator)
         {
-            Debug.Assert(enumType != null);
-            Debug.Assert(enumType.IsEnum);
             _enumTypeName = enumType.Name;
-            Debug.Assert(getCustomEnumFormatter != null);
             _getCustomEnumFormatter = getCustomEnumFormatter;
-            var customValidator = Enums.GetCustomValidator(enumType);
-            if (customValidator != null)
+            var customEnumValidator = Enums.GetCustomEnumValidator(enumType);
+            if (customEnumValidator != null)
             {
-                _customValidator = getCustomValidator(customValidator);
+                _customEnumValidator = getCustomEnumValidator(customEnumValidator);
             }
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
@@ -296,7 +292,7 @@ namespace EnumsNET
             return TryToObject(value, out result, true);
         }
 
-        public bool IsValid(TInt value) => _customValidator?.Invoke(value) ?? (IsFlagEnum ? IsValidFlagCombination(value) || IsDefined(value) : IsDefined(value));
+        public bool IsValid(TInt value) => _customEnumValidator?.Invoke(value) ?? (IsFlagEnum ? IsValidFlagCombination(value) || IsDefined(value) : IsDefined(value));
 
         public bool IsValid(long value) => Provider.IsInValueRange(value) && IsValid(Provider.Create(value));
 
@@ -476,95 +472,107 @@ namespace EnumsNET
             }
         }
 
-        public string AsString(TInt value) => InternalAsString(GetEnumMember(value));
+        public string AsString(TInt value) => InternalAsString(value, default(InternalEnumMember<TInt, TIntProvider>));
 
-        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatFlags(member, null, null) : InternalFormat(member, EnumFormat.Name, EnumFormat.DecimalValue);
+        internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatFlags(value, member, null, null) : InternalFormat(value, member, EnumFormat.Name, EnumFormat.DecimalValue);
 
-        public string AsString(TInt value, EnumFormat format) => InternalFormat(GetEnumMember(value), format);
+        public string AsString(TInt value, EnumFormat format)
+        {
+            var member = default(InternalEnumMember<TInt, TIntProvider>);
+            return InternalFormat(value, ref member, format);
+        }
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(GetEnumMember(value), format0, format1);
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), format0, format1);
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(GetEnumMember(value), format0, format1, format2);
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), format0, format1, format2);
 
-        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(GetEnumMember(value), formatOrder);
+        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(value, default(InternalEnumMember<TInt, TIntProvider>), formatOrder);
 
-        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder) => formatOrder?.Length > 0 ? InternalFormat(member, formatOrder) : InternalAsString(member);
+        internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder) => formatOrder?.Length > 0 ? InternalFormat(value, member, formatOrder) : InternalAsString(value, member);
 
-        public string AsString(TInt value, string format) => InternalAsString(GetEnumMember(value), format);
+        public string AsString(TInt value, string format) => InternalAsString(value, default(InternalEnumMember<TInt, TIntProvider>), format);
 
-        internal string InternalAsString(InternalEnumMember<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? InternalAsString(member) : InternalFormat(member, format);
+        internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? InternalAsString(value, member) : InternalFormat(value, member, format);
 
         public string Format(TInt value, EnumFormat[] formatOrder)
         {
             Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return InternalFormat(GetEnumMember(value), formatOrder);
+            return InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), formatOrder);
         }
 
         public string Format(TInt value, string format)
         {
             Preconditions.NotNull(format, nameof(format));
 
-            return InternalFormat(GetEnumMember(value), format);
+            return InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), format);
         }
 
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, string format)
+        internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, string format)
         {
             switch (format)
             {
                 case "G":
                 case "g":
-                    return InternalAsString(member);
+                    return InternalAsString(value, member);
                 case "F":
                 case "f":
-                    return InternalFormatFlags(member, null, null);
+                    return InternalFormatFlags(value, member, null, null);
                 case "D":
                 case "d":
-                    return member.Value.ToString("D", null);
+                    return value.ToString("D", null);
                 case "X":
                 case "x":
-                    return member.Value.ToString(Provider.HexFormatString, null);
+                    return value.ToString(Provider.HexFormatString, null);
             }
             throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
         }
 
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format)
+        internal string InternalFormat(TInt value, ref InternalEnumMember<TInt, TIntProvider> member, EnumFormat format)
         {
             switch (format)
             {
                 case EnumFormat.DecimalValue:
-                    return member.Value.ToString("D", null);
+                    return value.ToString("D", null);
                 case EnumFormat.HexadecimalValue:
-                    return member.Value.ToString(Provider.HexFormatString, null);
-                case EnumFormat.Name:
-                    return member.Name;
-                case EnumFormat.Description:
-                    return member.Description;
+                    return value.ToString(Provider.HexFormatString, null);
                 default:
-                    var customEnumFormatter = _getCustomEnumFormatter(format);
-                    if (customEnumFormatter == null)
+                    if (!member.IsInitialized)
                     {
-                        throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid for {_enumTypeName}");
+                        member = GetEnumMember(value);
                     }
-                    return customEnumFormatter(member);
+                    switch (format)
+                    {
+                        case EnumFormat.Name:
+                            return member.Name;
+                        case EnumFormat.Description:
+                            return member.Description;
+                        default:
+                            var customEnumFormatter = _getCustomEnumFormatter(format);
+                            if (customEnumFormatter == null)
+                            {
+                                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid for {_enumTypeName}");
+                            }
+                            return customEnumFormatter(member);
+                    }
             }
         }
 
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1)
+        internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1)
         {
-            return InternalFormat(member, format0) ?? InternalFormat(member, format1);
+            return InternalFormat(value, ref member, format0) ?? InternalFormat(value, ref member, format1);
         }
 
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+        internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
-            return InternalFormat(member, format0) ?? InternalFormat(member, format1) ?? InternalFormat(member, format2);
+            return InternalFormat(value, ref member, format0) ?? InternalFormat(value, ref member, format1) ?? InternalFormat(value, ref member, format2);
         }
 
-        internal string InternalFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder)
+        internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder)
         {
             foreach (var format in formatOrder)
             {
-                var formattedValue = InternalFormat(member, format);
+                var formattedValue = InternalFormat(value, ref member, format);
                 if (formattedValue != null)
                 {
                     return formattedValue;
@@ -768,18 +776,23 @@ namespace EnumsNET
         #region Main Methods
         public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
 
-        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(GetEnumMember(value), delimiter, formatOrder);
+        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(value, default(InternalEnumMember<TInt, TIntProvider>), delimiter, formatOrder);
 
-        internal string InternalFormatFlags(InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
+        internal string InternalFormatFlags(TInt value, InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
         {
             if (!(formatOrder?.Length > 0))
             {
                 formatOrder = Enums.DefaultFormatOrder;
             }
 
+            if (!member.IsInitialized)
+            {
+                member = GetEnumMember(value);
+            }
+
             if (member.IsDefined || member.Value.Equals(Provider.Zero) || !IsValidFlagCombination(member.Value))
             {
-                return InternalFormat(member, formatOrder);
+                return InternalFormat(value, member, formatOrder);
             }
 
             if (string.IsNullOrEmpty(delimiter))
@@ -788,7 +801,7 @@ namespace EnumsNET
             }
 
             return string.Join(delimiter,
-                GetFlags(member.Value).Select(flag => InternalFormat(GetEnumMember(flag), formatOrder))
+                GetFlags(member.Value).Select(flag => InternalFormat(value, GetEnumMember(flag), formatOrder))
 #if NET20 || NET35
                 .ToArray()
 #endif
