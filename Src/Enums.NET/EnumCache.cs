@@ -472,25 +472,25 @@ namespace EnumsNET
             }
         }
 
-        public string AsString(TInt value) => InternalAsString(value, default(InternalEnumMember<TInt, TIntProvider>));
+        public string AsString(TInt value) => InternalAsString(value, new InternalEnumMember<TInt, TIntProvider>());
 
         internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatFlags(value, member, null, null) : InternalFormat(value, member, EnumFormat.Name, EnumFormat.DecimalValue);
 
         public string AsString(TInt value, EnumFormat format)
         {
-            var member = default(InternalEnumMember<TInt, TIntProvider>);
+            var member = new InternalEnumMember<TInt, TIntProvider>();
             return InternalFormat(value, ref member, format);
         }
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), format0, format1);
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), format0, format1);
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), format0, format1, format2);
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), format0, format1, format2);
 
-        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(value, default(InternalEnumMember<TInt, TIntProvider>), formatOrder);
+        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(value, new InternalEnumMember<TInt, TIntProvider>(), formatOrder);
 
         internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder) => formatOrder?.Length > 0 ? InternalFormat(value, member, formatOrder) : InternalAsString(value, member);
 
-        public string AsString(TInt value, string format) => InternalAsString(value, default(InternalEnumMember<TInt, TIntProvider>), format);
+        public string AsString(TInt value, string format) => InternalAsString(value, new InternalEnumMember<TInt, TIntProvider>(), format);
 
         internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? InternalAsString(value, member) : InternalFormat(value, member, format);
 
@@ -498,14 +498,14 @@ namespace EnumsNET
         {
             Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), formatOrder);
+            return InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), formatOrder);
         }
 
         public string Format(TInt value, string format)
         {
             Preconditions.NotNull(format, nameof(format));
 
-            return InternalFormat(value, default(InternalEnumMember<TInt, TIntProvider>), format);
+            return InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), format);
         }
 
         internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, string format)
@@ -669,14 +669,37 @@ namespace EnumsNET
             Preconditions.NotNull(value, nameof(value));
 
             value = value.Trim();
-            TInt result;
+            InternalEnumMember<TInt, TIntProvider> result;
 
             if (!(parseFormatOrder?.Length > 0))
             {
                 parseFormatOrder = Enums.DefaultFormatOrder;
             }
 
-            if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder))
+            if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder, true))
+            {
+                return result.Value;
+            }
+            if (IsNumeric(value))
+            {
+                throw new OverflowException("value is outside the underlying type's value range");
+            }
+            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+        }
+
+        public InternalEnumMember<TInt, TIntProvider> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder)
+        {
+            Preconditions.NotNull(value, nameof(value));
+
+            value = value.Trim();
+            InternalEnumMember<TInt, TIntProvider> result;
+
+            if (!(parseFormatOrder?.Length > 0))
+            {
+                parseFormatOrder = Enums.DefaultFormatOrder;
+            }
+
+            if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder, false))
             {
                 return result;
             }
@@ -703,8 +726,11 @@ namespace EnumsNET
                     parseFormatOrder = Enums.DefaultFormatOrder;
                 }
 
-                if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder))
+                InternalEnumMember<TInt, TIntProvider> member;
+
+                if (InternalTryParse(value, ignoreCase, out member, parseFormatOrder, true))
                 {
+                    result = member.Value;
                     return true;
                 }
             }
@@ -712,26 +738,53 @@ namespace EnumsNET
             return false;
         }
 
-        private bool InternalTryParse(string value, bool ignoreCase, out TInt result, EnumFormat[] parseFormatOrder)
+        public bool TryParseMember(string value, bool ignoreCase, out InternalEnumMember<TInt, TIntProvider> result, EnumFormat[] parseFormatOrder)
         {
-            result = default(TInt);
+            if (value != null)
+            {
+                value = value.Trim();
+
+                if (!(parseFormatOrder?.Length > 0))
+                {
+                    parseFormatOrder = Enums.DefaultFormatOrder;
+                }
+                
+                if (InternalTryParse(value, ignoreCase, out result, parseFormatOrder, false))
+                {
+                    return true;
+                }
+            }
+            result = new InternalEnumMember<TInt, TIntProvider>();
+            return false;
+        }
+
+        private bool InternalTryParse(string value, bool ignoreCase, out InternalEnumMember<TInt, TIntProvider> result, EnumFormat[] parseFormatOrder, bool getValueOnly)
+        {
+            TInt valueAsTInt;
             foreach (var format in parseFormatOrder)
             {
-                var success = false;
                 switch (format)
                 {
                     case EnumFormat.DecimalValue:
-                        success = Provider.TryParse(value, NumberStyles.AllowLeadingSign, null, out result);
+                        if (Provider.TryParse(value, NumberStyles.AllowLeadingSign, null, out valueAsTInt))
+                        {
+                            result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, this) : GetEnumMember(valueAsTInt);
+                            return true;
+                        }
                         break;
                     case EnumFormat.HexadecimalValue:
-                        success = Provider.TryParse(value, NumberStyles.AllowHexSpecifier, null, out result);
+                        if (Provider.TryParse(value, NumberStyles.AllowHexSpecifier, null, out valueAsTInt))
+                        {
+                            result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, this) : GetEnumMember(valueAsTInt);
+                            return true;
+                        }
                         break;
                     case EnumFormat.Name:
                         var member = InternalGetEnumMember(value, ignoreCase);
                         if (member.IsDefined)
                         {
-                            result = member.Value;
-                            success = true;
+                            result = member;
+                            return true;
                         }
                         break;
                     default:
@@ -759,14 +812,14 @@ namespace EnumsNET
                             }
                             customEnumParsers.TryAdd(format, parser);
                         }
-                        success = parser.TryParse(value, ignoreCase, out result);
+                        if (parser.TryParse(value, ignoreCase, out result))
+                        {
+                            return true;
+                        }
                         break;
                 }
-                if (success)
-                {
-                    return true;
-                }
             }
+            result = new InternalEnumMember<TInt, TIntProvider>();
             return false;
         }
         #endregion
@@ -776,7 +829,7 @@ namespace EnumsNET
         #region Main Methods
         public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
 
-        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(value, default(InternalEnumMember<TInt, TIntProvider>), delimiter, formatOrder);
+        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(value, new InternalEnumMember<TInt, TIntProvider>(), delimiter, formatOrder);
 
         internal string InternalFormatFlags(TInt value, InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
         {
@@ -902,10 +955,10 @@ namespace EnumsNET
                     --delimiterIndex;
                 }
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
-                TInt indValueAsInt;
-                if (InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder))
+                InternalEnumMember<TInt, TIntProvider> member;
+                if (InternalTryParse(indValue, ignoreCase, out member, parseFormatOrder, true))
                 {
-                    result = Provider.Or(result, indValueAsInt);
+                    result = Provider.Or(result, member.Value);
                 }
                 else
                 {
@@ -964,13 +1017,13 @@ namespace EnumsNET
                     --delimiterIndex;
                 }
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
-                TInt indValueAsInt;
-                if (!InternalTryParse(indValue, ignoreCase, out indValueAsInt, parseFormatOrder))
+                InternalEnumMember<TInt, TIntProvider> member;
+                if (!InternalTryParse(indValue, ignoreCase, out member, parseFormatOrder, true))
                 {
                     result = Provider.Zero;
                     return false;
                 }
-                resultAsInt = Provider.Or(resultAsInt, indValueAsInt);
+                resultAsInt = Provider.Or(resultAsInt, member.Value);
                 startIndex = newStartIndex;
             }
             result = resultAsInt;
@@ -982,16 +1035,16 @@ namespace EnumsNET
         #region Nested Types
         internal sealed class EnumParser
         {
-            private readonly Dictionary<string, TInt> _formatValueMap;
-            private Dictionary<string, TInt> _formatIgnoreCase;
+            private readonly Dictionary<string, InternalEnumMember<TInt, TIntProvider>> _formatValueMap;
+            private Dictionary<string, InternalEnumMember<TInt, TIntProvider>> _formatIgnoreCase;
 
-            private Dictionary<string, TInt> FormatIgnoreCase
+            private Dictionary<string, InternalEnumMember<TInt, TIntProvider>> FormatIgnoreCase
             {
                 get
                 {
                     if (_formatIgnoreCase == null)
                     {
-                        var formatIgnoreCase = new Dictionary<string, TInt>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
+                        var formatIgnoreCase = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
                         foreach (var pair in _formatValueMap)
                         {
                             formatIgnoreCase[pair.Key] = pair.Value;
@@ -1005,18 +1058,18 @@ namespace EnumsNET
 
             public EnumParser(Func<InternalEnumMember<TInt, TIntProvider>, string> formatter, EnumCache<TInt, TIntProvider> enumCache)
             {
-                _formatValueMap = new Dictionary<string, TInt>(enumCache.GetEnumMemberCount(false));
+                _formatValueMap = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(enumCache.GetEnumMemberCount(false));
                 foreach (var member in enumCache.GetEnumMembers(false))
                 {
                     var formattedValue = formatter(member);
                     if (formattedValue != null)
                     {
-                        _formatValueMap[formattedValue] = member.Value;
+                        _formatValueMap[formattedValue] = member;
                     }
                 }
             }
 
-            internal bool TryParse(string formattedValue, bool ignoreCase, out TInt result) => _formatValueMap.TryGetValue(formattedValue, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(formattedValue, out result));
+            internal bool TryParse(string formattedValue, bool ignoreCase, out InternalEnumMember<TInt, TIntProvider> result) => _formatValueMap.TryGetValue(formattedValue, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(formattedValue, out result));
         }
         #endregion
     }

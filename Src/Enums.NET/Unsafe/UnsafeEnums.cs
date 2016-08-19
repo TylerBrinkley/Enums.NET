@@ -1932,6 +1932,199 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
         [Pure]
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParse(value, ignoreCase, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of the name or numeric value of one or more enumerated constants
+        /// to an equivalent enumerated member object.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMember<TEnum>(string value) => GetInfo<TEnum>().ParseMember(value);
+
+        /// <summary>
+        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMember<TEnum>(string value, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().ParseMember(value, false, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of the name or numeric value of one or more enumerated constants
+        /// to an equivalent enumerated member object. A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMember<TEnum>(string value, bool ignoreCase) => GetInfo<TEnum>().ParseMember(value, ignoreCase);
+
+        /// <summary>
+        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().ParseMember(value, ignoreCase, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object but if it fails returns the specified default enumerated value.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, EnumMember<TEnum> defaultValue)
+        {
+            EnumMember<TEnum> result;
+            return GetInfo<TEnum>().TryParseMember(value, false, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
+        /// but if it fails returns the specified default enumerated member value.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, EnumMember<TEnum> defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            EnumMember<TEnum> result;
+            return GetInfo<TEnum>().TryParseMember(value, false, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object but if it fails returns the specified default enumerated member value.
+        /// A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, bool ignoreCase, EnumMember<TEnum> defaultValue)
+        {
+            EnumMember<TEnum> result;
+            return GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
+        /// but if it fails returns the specified default enumerated member value. A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, bool ignoreCase, EnumMember<TEnum> defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            EnumMember<TEnum> result;
+            return GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object. The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember<TEnum>(string value, out EnumMember<TEnum> result) => GetInfo<TEnum>().TryParseMember(value, false, out result);
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember<TEnum>(string value, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, false, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object. The return value indicates whether the conversion succeeded.
+        /// A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result);
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// The return value indicates whether the conversion succeeded. A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result, parseFormatOrder);
         #endregion
     }
 }

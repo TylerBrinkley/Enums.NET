@@ -2280,6 +2280,216 @@ namespace EnumsNET.NonGeneric
 
             return info.EnumInfo.TryParse(value, ignoreCase, out result, parseFormatOrder);
         }
+
+        /// <summary>
+        /// Converts the string representation of the name or numeric value of one or more enumerated constants
+        /// to an equivalent enumerated member object.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
+        [Pure]
+        public static EnumMember ParseMember(Type enumType, string value) => ParseMember(enumType, value, false, null);
+
+        /// <summary>
+        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
+        [Pure]
+        public static EnumMember ParseMember(Type enumType, string value, params EnumFormat[] parseFormatOrder) => ParseMember(enumType, value, false, parseFormatOrder);
+
+        /// <summary>
+        /// Converts the string representation of the name or numeric value of one or more enumerated constants
+        /// to an equivalent enumerated member object. A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
+        [Pure]
+        public static EnumMember ParseMember(Type enumType, string value, bool ignoreCase) => ParseMember(enumType, value, ignoreCase, null);
+
+        /// <summary>
+        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// -or-
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/></exception>
+        [Pure]
+        public static EnumMember ParseMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (info.IsNullable && string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return info.EnumInfo.ParseMember(value, ignoreCase, parseFormatOrder);
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object but if it fails returns the specified default enumerated value.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember ParseMemberOrDefault(Type enumType, string value, EnumMember defaultValue) => ParseMemberOrDefault(enumType, value, false, defaultValue, null);
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
+        /// but if it fails returns the specified default enumerated member value.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember ParseMemberOrDefault(Type enumType, string value, EnumMember defaultValue, params EnumFormat[] parseFormatOrder) => ParseMemberOrDefault(enumType, value, false, defaultValue, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object but if it fails returns the specified default enumerated member value.
+        /// A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember ParseMemberOrDefault(Type enumType, string value, bool ignoreCase, EnumMember defaultValue) => ParseMemberOrDefault(enumType, value, ignoreCase, defaultValue, null);
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>
+        /// but if it fails returns the specified default enumerated member value. A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static EnumMember ParseMemberOrDefault(Type enumType, string value, bool ignoreCase, EnumMember defaultValue, params EnumFormat[] parseFormatOrder)
+        {
+            EnumMember result;
+            return TryParseMember(enumType, value, ignoreCase, out result, parseFormatOrder) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object. The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember(Type enumType, string value, out EnumMember result) => TryParseMember(enumType, value, false, out result, null);
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember(Type enumType, string value, out EnumMember result, params EnumFormat[] parseFormatOrder) => TryParseMember(enumType, value, false, out result, parseFormatOrder);
+
+        /// <summary>
+        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
+        /// constants to an equivalent enumerated member object. The return value indicates whether the conversion succeeded.
+        /// A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember(Type enumType, string value, bool ignoreCase, out EnumMember result) => TryParseMember(enumType, value, ignoreCase, out result, null);
+
+        /// <summary>
+        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// The return value indicates whether the conversion succeeded. A parameter specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreCase"></param>
+        /// <param name="result"></param>
+        /// <param name="parseFormatOrder"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static bool TryParseMember(Type enumType, string value, bool ignoreCase, out EnumMember result, params EnumFormat[] parseFormatOrder)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
+            {
+                result = null;
+                return true;
+            }
+
+            return info.EnumInfo.TryParseMember(value, ignoreCase, out result, parseFormatOrder);
+        }
         #endregion
     }
 }

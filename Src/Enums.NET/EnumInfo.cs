@@ -233,12 +233,30 @@ namespace EnumsNET
         #region Parsing
         public TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ToEnum(Cache.Parse(value, ignoreCase, parseFormatOrder));
 
+        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder)
+        {
+            var member = Cache.ParseMember(value, ignoreCase, parseFormatOrder);
+            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
+        }
+
         public bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
         {
             TInt resultAsInt;
             var success = Cache.TryParse(value, ignoreCase, out resultAsInt, parseFormatOrder);
             result = ToEnum(resultAsInt);
             return success;
+        }
+
+        public bool TryParseMember(string value, bool ignoreCase, out EnumMember<TEnum> result, EnumFormat[] parseFormatOrder)
+        {
+            InternalEnumMember<TInt, TIntProvider> member;
+            if (Cache.TryParseMember(value, ignoreCase, out member, parseFormatOrder))
+            {
+                result = new EnumMember<TEnum, TInt, TIntProvider>(member);
+                return true;
+            }
+            result = null;
+            return false;
         }
         #endregion
         #endregion
@@ -439,13 +457,15 @@ namespace EnumsNET
 
         object IEnumInfo.Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => Parse(value, ignoreCase, parseFormatOrder);
 
+        EnumMember IEnumInfo.ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ParseMember(value, ignoreCase, parseFormatOrder);
+
         object IEnumInfo.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
 
         public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter) => RegisterCustomEnumFormat(
 #if NET20 || NET35
-            member => formatter(member));
+            (EnumMember<TEnum> member) => formatter(member));
 #else
-            formatter);
+            (Func<EnumMember<TEnum>, string>)formatter);
 #endif
 
         public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags.Select(flag => ToObject(flag)));
@@ -483,6 +503,14 @@ namespace EnumsNET
             TEnum resultAsTEnum;
             var success = TryParse(value, ignoreCase, out resultAsTEnum, parseFormatOrder);
             result = resultAsTEnum;
+            return success;
+        }
+
+        public bool TryParseMember(string value, bool ignoreCase, out EnumMember result, EnumFormat[] parseFormatOrder)
+        {
+            EnumMember<TEnum> member;
+            var success = TryParseMember(value, ignoreCase, out member, parseFormatOrder);
+            result = member;
             return success;
         }
 

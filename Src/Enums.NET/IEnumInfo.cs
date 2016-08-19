@@ -83,6 +83,7 @@ namespace EnumsNET
         bool HasAnyFlags(object value, object otherFlags);
         bool IsValidFlagCombination(object value);
         object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
+        EnumMember ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter);
         object CombineFlags(IEnumerable<object> flags);
@@ -101,6 +102,7 @@ namespace EnumsNET
         uint ToUInt32(object value);
         ulong ToUInt64(object value);
         bool TryParse(string value, bool ignoreCase, out object result, EnumFormat[] parseFormatOrder);
+        bool TryParseMember(string value, bool ignoreCase, out EnumMember result, EnumFormat[] parseFormatOrder);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] parseFormatOrder);
         bool TryToObject(ulong value, out object result, bool validate = false);
         bool TryToObject(object value, out object result, bool validate = false);
@@ -149,6 +151,7 @@ namespace EnumsNET
         bool IsValid(TEnum value);
         bool IsValidFlagCombination(TEnum value);
         TEnum Parse(string value, bool ignoreCase = false, EnumFormat[] parseFormatOrder = null);
+        EnumMember<TEnum> ParseMember(string value, bool ignoreCase = false, EnumFormat[] parseFormatOrder = null);
         TEnum ParseFlags(string value, bool ignoreCase = false, string delimiter = null, EnumFormat[] parseFormatOrder = null);
         EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
         TEnum CombineFlags(IEnumerable<TEnum> flags);
@@ -171,6 +174,7 @@ namespace EnumsNET
         ulong ToUInt64(TEnum value);
         bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
         bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder = null);
+        bool TryParseMember(string value, bool ignoreCase, out EnumMember<TEnum> result, EnumFormat[] parseFormatOrder = null);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder = null);
         bool TryToObject(ulong value, out TEnum result, bool validate = false);
         bool TryToObject(object value, out TEnum result, bool validate = false);
