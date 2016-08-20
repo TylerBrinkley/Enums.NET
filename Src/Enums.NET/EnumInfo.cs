@@ -233,11 +233,7 @@ namespace EnumsNET
         #region Parsing
         public TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ToEnum(Cache.Parse(value, ignoreCase, parseFormatOrder));
 
-        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder)
-        {
-            var member = Cache.ParseMember(value, ignoreCase, parseFormatOrder);
-            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
-        }
+        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => new EnumMember<TEnum, TInt, TIntProvider>(Cache.ParseMember(value, ignoreCase, parseFormatOrder));
 
         public bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
         {
