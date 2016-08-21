@@ -222,17 +222,9 @@ namespace EnumsNET
         #region Type Methods
         public int GetEnumMemberCount(bool uniqueValued) => _valueMap.Count + (uniqueValued ? 0 : _duplicateValues?.Count ?? 0);
 
-        public IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetEnumMembers(bool uniqueValued)
-        {
-            if (uniqueValued || _duplicateValues == null)
-            {
-                return _valueMap.Select(pair => new InternalEnumMember<TInt, TIntProvider>(pair.First, pair.Second.Name, pair.Second.Attributes, this));
-            }
-            else
-            {
-                return GetAllEnumMembersInValueOrder();
-            }
-        }
+        public IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetEnumMembers(bool uniqueValued) => uniqueValued || _duplicateValues == null
+            ? _valueMap.Select(pair => new InternalEnumMember<TInt, TIntProvider>(pair.First, pair.Second.Name, pair.Second.Attributes, this))
+            : GetAllEnumMembersInValueOrder();
 
         public IEnumerable<string> GetNames(bool uniqueValued) => GetEnumMembers(uniqueValued).Select(member => member.Name);
 
@@ -245,7 +237,7 @@ namespace EnumsNET
                 var mainIsActive = true;
                 mainEnumerator.MoveNext();
                 var mainPair = mainEnumerator.Current;
-                using (IEnumerator<KeyValuePair<string, ValueAndAttributes<TInt>>> dupeEnumerator = _duplicateValues.GetEnumerator())
+                using (var dupeEnumerator = _duplicateValues.GetEnumerator())
                 {
                     var dupeIsActive = true;
                     dupeEnumerator.MoveNext();
@@ -292,7 +284,7 @@ namespace EnumsNET
             return TryToObject(value, out result, true);
         }
 
-        public bool IsValid(TInt value) => _customEnumValidator?.Invoke(value) ?? (IsFlagEnum ? IsValidFlagCombination(value) || IsDefined(value) : IsDefined(value));
+        public bool IsValid(TInt value) => _customEnumValidator?.Invoke(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
 
         public bool IsValid(long value) => Provider.IsInValueRange(value) && IsValid(Provider.Create(value));
 
@@ -308,7 +300,7 @@ namespace EnumsNET
             return TryToObject(value, out result, false) && IsDefined(result);
         }
 
-        public bool IsDefined(TInt value) => IsContiguous ? (!(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value))) : _valueMap.ContainsFirst(value);
+        public bool IsDefined(TInt value) => IsContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsFirst(value);
 
         public bool IsDefined(string name, bool ignoreCase)
         {
@@ -405,7 +397,7 @@ namespace EnumsNET
                 if (value is TInt || value is TInt?)
                 {
                     result = (TInt)value;
-                    return true;
+                    return !validate || IsValid(result);
                 }
 
                 var type = value.GetType();
@@ -648,9 +640,6 @@ namespace EnumsNET
 
         public TResult GetAttributeSelect<TAttribute, TResult>(TInt value, Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute => GetEnumMember(value).GetAttributeSelect(selector, defaultValue);
-
-        public bool TryGetAttributeSelect<TAttribute, TResult>(TInt value, Func<TAttribute, TResult> selector, out TResult result)
-            where TAttribute : Attribute => GetEnumMember(value).TryGetAttributeSelect(selector, out result);
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TInt value)
             where TAttribute : Attribute => GetEnumMember(value).GetAttributes<TAttribute>();

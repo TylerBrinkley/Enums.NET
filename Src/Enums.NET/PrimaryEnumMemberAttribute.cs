@@ -28,7 +28,7 @@ using System;
 namespace EnumsNET
 {
     /// <summary>
-    /// Used to indicate if the enum member should be the primary enum member for duplicate values.
+    /// Used to indicate if the enum member should be the primary enum member when there are duplicate values.
     /// Extension methods will use the enum member marked with this attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]

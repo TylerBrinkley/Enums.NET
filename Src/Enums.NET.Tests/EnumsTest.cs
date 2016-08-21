@@ -1155,17 +1155,6 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void TryGetAttributeSelect()
-        {
-            string result;
-            Assert.IsTrue(Enums.TryGetAttributeSelect(EnumMemberAttributeEnum.A, (EnumMemberAttribute attr) => attr.Value, out result));
-            Assert.AreEqual("aye", result);
-            Assert.IsFalse(Enums.TryGetAttributeSelect(ColorFlagEnum.Blue, (EnumMemberAttribute attr) => attr.Value, out result));
-            Assert.IsTrue(Enums.TryGetAttributeSelect(ColorFlagEnum.UltraViolet, (DescriptionAttribute attr) => attr.Description, out result));
-            Assert.AreEqual("Ultra-Violet", result);
-        }
-
-        [Test]
         public void GetAttributes()
         {
             CollectionAssert.AreEquivalent(new OptionAttribute[0], GetAttributes<MultipleAttributeEnum, OptionAttribute>(MultipleAttributeEnum.None));

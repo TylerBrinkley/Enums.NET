@@ -27,7 +27,13 @@ namespace EnumsNET.NonGeneric
 {
     internal struct EnumInfoAndIsNullable
     {
-        public IEnumInfo EnumInfo;
-        public bool IsNullable;
+        public readonly IEnumInfo EnumInfo;
+        public readonly bool IsNullable;
+
+        public EnumInfoAndIsNullable(IEnumInfo enumInfo, bool isNullable)
+        {
+            EnumInfo = enumInfo;
+            IsNullable = isNullable;
+        }
     }
 }

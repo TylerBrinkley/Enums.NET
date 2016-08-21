@@ -56,10 +56,9 @@ namespace EnumsNET.NonGeneric
             EnumInfoAndIsNullable info;
             if (!_enumInfosDictionary.TryGetValue(enumType, out info))
             {
-                info = new EnumInfoAndIsNullable();
                 if (enumType.IsEnum)
                 {
-                    info.EnumInfo = (IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+                    info = new EnumInfoAndIsNullable((IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null), false);
                 }
                 else
                 {
@@ -68,8 +67,7 @@ namespace EnumsNET.NonGeneric
                     {
                         throw new ArgumentException("must be an enum type", nameof(enumType));
                     }
-                    info.EnumInfo = GetInfo(nonNullableEnumType);
-                    info.IsNullable = true;
+                    info = new EnumInfoAndIsNullable(GetInfo(nonNullableEnumType), true);
                 }
                 if (!_enumInfosDictionary.TryAdd(enumType, info))
                 {

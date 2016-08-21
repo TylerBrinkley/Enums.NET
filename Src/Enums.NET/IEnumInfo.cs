@@ -172,7 +172,6 @@ namespace EnumsNET
         ushort ToUInt16(TEnum value);
         uint ToUInt32(TEnum value);
         ulong ToUInt64(TEnum value);
-        bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
         bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder = null);
         bool TryParseMember(string value, bool ignoreCase, out EnumMember<TEnum> result, EnumFormat[] parseFormatOrder = null);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder = null);

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal interface IEnumMember : IConvertible, IFormattable, IComparable
+    internal interface IEnumMember : IConvertible, IFormattable
     {
         bool IsDefined { get; }
         string Name { get; }
@@ -52,7 +52,6 @@ namespace EnumsNET
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
         TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute;
-        bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute;
         IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute;
         byte ToByte();
         short ToInt16();

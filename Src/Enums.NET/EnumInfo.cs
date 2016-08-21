@@ -82,7 +82,7 @@ namespace EnumsNET
         #endregion
 
         #region IsValid
-        public bool IsValid(object value) => value is TEnum || value is TEnum? ? Cache.IsValid(ToInt((TEnum)value)) : Cache.IsValid(value);
+        public bool IsValid(object value) => value is TEnum || value is TEnum? ? IsValid((TEnum)value) : Cache.IsValid(value);
 
         public bool IsValid(TEnum value) => Cache.IsValid(ToInt(value));
 
@@ -92,7 +92,7 @@ namespace EnumsNET
         #endregion
 
         #region IsDefined
-        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? Cache.IsDefined(ToInt((TEnum)value)) : Cache.IsDefined(value);
+        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? IsDefined((TEnum)value) : Cache.IsDefined(value);
 
         public bool IsDefined(TEnum value) => Cache.IsDefined(ToInt(value));
 
@@ -110,7 +110,7 @@ namespace EnumsNET
         #endregion
 
         #region ToObject
-        public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (TEnum)value : ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (validate ? Validate((TEnum)value, nameof(value)) : (TEnum)value) : ToEnum(Cache.ToObject(value, validate));
 
         public TEnum ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
 
@@ -121,7 +121,7 @@ namespace EnumsNET
             if (value is TEnum || value is TEnum?)
             {
                 result = (TEnum)value;
-                return true;
+                return !validate || IsValid(result);
             }
             TInt resultAsInt;
             var success = Cache.TryToObject(value, out resultAsInt, validate);
@@ -193,17 +193,11 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMember<TEnum> GetEnumMember(TEnum value)
-        {
-            var member = Cache.GetEnumMember(ToInt(value));
-            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
-        }
+        public EnumMember<TEnum> GetEnumMember(TEnum value) => InternalGetEnumMember(Cache.GetEnumMember(ToInt(value)));
 
-        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase)
-        {
-            var member = Cache.GetEnumMember(name, ignoreCase);
-            return member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
-        }
+        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase) => InternalGetEnumMember(Cache.GetEnumMember(name, ignoreCase));
+
+        private static EnumMember<TEnum> InternalGetEnumMember(InternalEnumMember<TInt, TIntProvider> member) => member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
 
         public string GetName(TEnum value) => Cache.GetName(ToInt(value));
 
@@ -220,9 +214,6 @@ namespace EnumsNET
 
         public TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute => Cache.GetAttributeSelect(ToInt(value), selector, defaultValue);
-
-        public bool TryGetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, out TResult result)
-            where TAttribute : Attribute => Cache.TryGetAttributeSelect(ToInt(value), selector, out result);
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value)
             where TAttribute : Attribute => Cache.GetAttributes<TAttribute>(ToInt(value));

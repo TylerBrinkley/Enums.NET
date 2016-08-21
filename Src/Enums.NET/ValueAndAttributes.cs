@@ -28,6 +28,7 @@ using System;
 namespace EnumsNET
 {
     internal struct ValueAndAttributes<TInt>
+        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
     {
         public readonly TInt Value;
         // Guaranteed to be either null or not empty

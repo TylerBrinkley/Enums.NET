@@ -29,8 +29,7 @@ namespace EnumsNET
 {
     internal static class Preconditions
     {
-        public static void NotNull<T>(T value, string paramName)
-            where T : class
+        public static void NotNull(object value, string paramName)
         {
             if (value == null)
             {

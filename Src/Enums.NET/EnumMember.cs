@@ -34,7 +34,7 @@ namespace EnumsNET
     /// <summary>
     /// Represents an enum member's Name, Value, and Attributes
     /// </summary>
-    public abstract class EnumMember : IEnumMember, IComparable<EnumMember>, IEquatable<EnumMember>
+    public abstract class EnumMember : IEnumMember, IComparable<EnumMember>, IEquatable<EnumMember>, IComparable
     {
         internal readonly IEnumMember _member;
 
@@ -208,19 +208,6 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
         public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute => _member.GetAttributeSelect(selector, defaultValue);
-
-        /// <summary>
-        /// Tries to retrieve the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined and sets <paramref name="result"/>
-        /// to the result of applying the <paramref name="selector"/> to the <typeparamref name="TAttribute"/>.
-        /// Returns true if a <typeparamref name="TAttribute"/> is found else false.
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="selector"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
-        public bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result) where TAttribute : Attribute => _member.TryGetAttributeSelect(selector, out result);
 
         /// <summary>
         /// Retrieves all <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.

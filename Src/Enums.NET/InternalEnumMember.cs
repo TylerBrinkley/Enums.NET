@@ -108,27 +108,10 @@ namespace EnumsNET
         public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute
         {
-            TResult result;
-            if (!TryGetAttributeSelect(selector, out result))
-            {
-                result = defaultValue;
-            }
-            return result;
-        }
-
-        public bool TryGetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, out TResult result)
-            where TAttribute : Attribute
-        {
             Preconditions.NotNull(selector, nameof(selector));
-
+            
             var attr = GetAttribute<TAttribute>();
-            if (attr != null)
-            {
-                result = selector(attr);
-                return true;
-            }
-            result = default(TResult);
-            return false;
+            return attr != null ? selector(attr) : defaultValue;
         }
 
         public override string ToString() => _enumCache.InternalAsString(Value, this);
@@ -229,8 +212,6 @@ namespace EnumsNET
         string IConvertible.ToString(IFormatProvider provider) => ToString();
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
-
-        int IComparable.CompareTo(object other) => other is InternalEnumMember<TInt, TIntProvider> ? CompareTo((InternalEnumMember<TInt, TIntProvider>)other) : 1;
 
         object IEnumMember.UnderlyingValue => Value;
         #endregion
