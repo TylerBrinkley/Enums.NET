@@ -1,11 +1,11 @@
 ﻿properties { 
-  $zipFileName = "Enums10b1.zip"
+  $zipFileName = "Enums100rc1.zip"
   $majorVersion = "1.0"
   $majorWithReleaseVersion = "1.0.0"
-  $nugetPrelease = "beta1"
+  $nugetPrelease = "rc1"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Enums.NET"
-  $signAssemblies = $false
+  $signAssemblies = $true
   $signKeyPath = "C:\Development\Release\enumsnet.snk"
   $buildDocumentation = $false
   $buildNuGet = $true
@@ -22,7 +22,10 @@
   $workingDir = "$baseDir\$workingName"
   $workingSourceDir = "$workingDir\Src"
   $builds = @(
-    @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"}
+    @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET45"; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"},
+    @{Name = "Enums.NET.Net40"; TestsName = "Enums.NET.Tests.Net40"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"},
+    @{Name = "Enums.NET.Net35"; TestsName = "Enums.NET.Tests.Net35"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET35"; FinalDir="Net35"; NuGetDir = "net35"; Framework="net-2.0"},
+    @{Name = "Enums.NET.Net20"; TestsName = "Enums.NET.Tests.Net20"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET20"; FinalDir="Net20"; NuGetDir = "net20"; Framework="net-2.0"}
   )
 }
 

@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0-rc1",
+  "title": "Enums.NET",
+  "description": "Enums.NET is a high performance type-safe .NET enum utility library",
+  "authors": [ "Tyler Brinkley" ],
+  "tags": [ "enum" ],
+  "projectUrl": "https://github.com/TylerBrinkley/Enums.NET",
+  "licenseUrl": "https://github.com/TylerBrinkley/Enums.NET/blob/master/LICENSE",
+  "language": "en-US",
+
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+      }
+    },
+    "net40": {
+      "frameworkAssemblies": {
+      }
+    },
+    "net35": {
+      "frameworkAssemblies": {
+      }
+    },
+    "net20": {
+      "frameworkAssemblies": {
+      }
+    }
+  }
+}

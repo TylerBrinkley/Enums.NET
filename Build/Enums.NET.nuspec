@@ -4,7 +4,7 @@
     <id>Enums.NET</id>
     <version></version>
     <title>Enums.NET</title>
-    <description>Enums.NET is an efficient type-safe .NET enum utility library</description>
+    <description>Enums.NET is a high-performance type-safe .NET enum utility library</description>
     <authors>Tyler Brinkley</authors>
     <language>en-US</language>
     <projectUrl>https://github.com/TylerBrinkley/Enums.NET</projectUrl>
