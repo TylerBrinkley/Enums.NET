@@ -2198,7 +2198,7 @@ namespace EnumsNET
             return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
 
-        internal static object InitializeEnumInfo(Type enumType)
+        internal static object GetEnumInfo(Type enumType)
         {
             var underlyingType = Enum.GetUnderlyingType(enumType);
             var numericProviderType = GetNumericProviderType(underlyingType);
@@ -2249,6 +2249,6 @@ namespace EnumsNET
 
     internal static class Enums<TEnum>
     {
-        internal static readonly IEnumInfo<TEnum> Info = (IEnumInfo<TEnum>)Enums.InitializeEnumInfo(typeof(TEnum));
+        internal static readonly IEnumInfo<TEnum> Info = (IEnumInfo<TEnum>)Enums.GetEnumInfo(typeof(TEnum));
     }
 }

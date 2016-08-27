@@ -54,6 +54,9 @@ namespace EnumsNET
 
         string AsString(object value);
         string AsString(object value, string format);
+        string AsString(object value, EnumFormat format);
+        string AsString(object value, EnumFormat format0, EnumFormat format1);
+        string AsString(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string AsString(object value, EnumFormat[] formatOrder);
         object ExcludeFlags(object value, object otherFlags);
         object CommonFlags(object value, object otherFlags);
@@ -61,9 +64,6 @@ namespace EnumsNET
         bool Equals(object value, object other);
         string Format(object value, string format);
         string Format(object value, EnumFormat[] formatOrder);
-        string Format(object value, EnumFormat format);
-        string Format(object value, EnumFormat format0, EnumFormat format1);
-        string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder);
         IEnumerable<Attribute> GetAttributes(object value);
         string GetDescription(object value);

@@ -1534,6 +1534,75 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static string AsString(Type enumType, object value, EnumFormat format)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.AsString(value, format);
+        }
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified formats.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static string AsString(Type enumType, object value, EnumFormat format0, EnumFormat format1)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.AsString(value, format0, format1);
+        }
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified formats.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value"></param>
+        /// <param name="format0"></param>
+        /// <param name="format1"></param>
+        /// <param name="format2"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type</exception>
+        [Pure]
+        public static string AsString(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.AsString(value, format0, format1, format2);
+        }
+
+        /// <summary>
         /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
         /// </summary>
         /// <param name="enumType"></param>
@@ -1578,81 +1647,6 @@ namespace EnumsNET.NonGeneric
             }
 
             return info.EnumInfo.Format(value, format);
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is invalid</exception>
-        [Pure]
-        public static string Format(Type enumType, object value, EnumFormat format)
-        {
-            var info = GetInfoAndIsNullable(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, format);
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is invalid</exception>
-        [Pure]
-        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1)
-        {
-            var info = GetInfoAndIsNullable(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, format0, format1);
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <param name="format2"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is invalid</exception>
-        [Pure]
-        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-        {
-            var info = GetInfoAndIsNullable(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, format0, format1, format2);
         }
 
         /// <summary>

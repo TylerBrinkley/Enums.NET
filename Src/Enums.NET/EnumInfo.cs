@@ -378,6 +378,12 @@ namespace EnumsNET
 
         public string AsString(object value, string format) => AsString(ToObject(value), format);
 
+        public string AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
+
+        public string AsString(object value, EnumFormat format0, EnumFormat format1) => AsString(ToObject(value), format0, format1);
+
+        public string AsString(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => AsString(ToObject(value), format0, format1, format2);
+
         public string AsString(object value, EnumFormat[] formatOrder) => AsString(ToObject(value), formatOrder);
 
         public object ExcludeFlags(object value, object otherFlags) => ExcludeFlags(ToObject(value), ToObject(otherFlags));
@@ -391,12 +397,6 @@ namespace EnumsNET
         public string Format(object value, string format) => Format(ToObject(value), format);
 
         public string Format(object value, EnumFormat[] formatOrder) => Format(ToObject(value), formatOrder);
-
-        public string Format(object value, EnumFormat format) => AsString(ToObject(value), format);
-
-        public string Format(object value, EnumFormat format0, EnumFormat format1) => AsString(ToObject(value), format0, format1);
-
-        public string Format(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => AsString(ToObject(value), format0, format1, format2);
 
         public string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder) => FormatFlags(ToObject(value), delimiter, formatOrder);
 
