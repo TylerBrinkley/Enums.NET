@@ -36,7 +36,7 @@ namespace EnumsNET
     /// </summary>
     public abstract class EnumMember : IEnumMember, IComparable<EnumMember>, IEquatable<EnumMember>, IComparable
     {
-        internal readonly IEnumMember _member;
+        private readonly IEnumMember _member;
 
         /// <summary>
         /// The defined enum member's value
@@ -85,7 +85,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public string ToString(string format) => _member.ToString(format);
 
         /// <summary>
@@ -93,6 +93,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="formatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
         public string ToString(params EnumFormat[] formatOrder) => _member.ToString(formatOrder);
 
         /// <summary>
@@ -106,7 +107,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public string AsString(string format) => _member.AsString(format);
 
         /// <summary>
@@ -114,6 +115,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public string AsString(EnumFormat format) => _member.AsString(format);
 
         /// <summary>
@@ -122,6 +124,7 @@ namespace EnumsNET
         /// <param name="format0"></param>
         /// <param name="format1"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public string AsString(EnumFormat format0, EnumFormat format1) => _member.AsString(format0, format1);
 
         /// <summary>
@@ -131,6 +134,7 @@ namespace EnumsNET
         /// <param name="format1"></param>
         /// <param name="format2"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _member.AsString(format0, format1, format2);
 
         /// <summary>
@@ -138,6 +142,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="formatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
         public string AsString(params EnumFormat[] formatOrder) => _member.AsString(formatOrder);
 
         /// <summary>
@@ -155,6 +160,7 @@ namespace EnumsNET
         /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
         public string Format(params EnumFormat[] formatOrder) => _member.Format(formatOrder);
 
         /// <summary>
@@ -220,7 +226,7 @@ namespace EnumsNET
         /// Converts <see cref="Value"/> to an <see cref="sbyte"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public sbyte ToSByte() => _member.ToSByte();
 
@@ -228,21 +234,21 @@ namespace EnumsNET
         /// Converts <see cref="Value"/> to a <see cref="byte"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="byte"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="byte"/>'s value range without overflowing.</exception>
         public byte ToByte() => _member.ToByte();
 
         /// <summary>
         /// Converts <see cref="Value"/> to an <see cref="short"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="short"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="short"/>'s value range without overflowing.</exception>
         public short ToInt16() => _member.ToInt16();
 
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="ushort"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public ushort ToUInt16() => _member.ToUInt16();
 
@@ -250,14 +256,14 @@ namespace EnumsNET
         /// Converts <see cref="Value"/> to an <see cref="int"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="int"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="int"/>'s value range without overflowing.</exception>
         public int ToInt32() => _member.ToInt32();
 
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="uint"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="uint"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="uint"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public uint ToUInt32() => _member.ToUInt32();
 
@@ -265,14 +271,14 @@ namespace EnumsNET
         /// Converts <see cref="Value"/> to an <see cref="long"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="long"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="long"/>'s value range without overflowing.</exception>
         public long ToInt64() => _member.ToInt64();
 
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="ulong"/>.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing</exception>
+        /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public ulong ToUInt64() => _member.ToUInt64();
 
@@ -409,7 +415,7 @@ namespace EnumsNET
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private new InternalEnumMember<TInt, TIntProvider> _member;
+        private readonly InternalEnumMember<TInt, TIntProvider> _member;
 
         internal EnumMember(InternalEnumMember<TInt, TIntProvider> member)
             : base(member)

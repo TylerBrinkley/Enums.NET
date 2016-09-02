@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,6 +38,7 @@ namespace EnumsNET.Unsafe
         /// <summary>
         /// Constructor for an efficient type-unsafe enum comparer which doesn't box the values for use with generics
         /// </summary>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public UnsafeEnumComparer()
         {
             UnsafeEnums.GetInfo<TEnum>();

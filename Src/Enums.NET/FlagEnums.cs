@@ -89,6 +89,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <param name="formatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, params EnumFormat[] formatOrder)
             where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, null, formatOrder);
@@ -114,6 +115,7 @@ namespace EnumsNET
         /// <param name="delimiter"></param>
         /// <param name="formatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, params EnumFormat[] formatOrder)
             where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, formatOrder);
@@ -311,7 +313,9 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, params EnumFormat[] parseFormatOrder)
@@ -347,7 +351,9 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
@@ -381,7 +387,9 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, params EnumFormat[] parseFormatOrder)
@@ -419,7 +427,9 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="value"/> is either an empty string or only contains white space
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
@@ -450,6 +460,7 @@ namespace EnumsNET
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
             where TEnum : struct
@@ -486,6 +497,7 @@ namespace EnumsNET
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
             where TEnum : struct
@@ -521,6 +533,7 @@ namespace EnumsNET
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
             where TEnum : struct
@@ -559,6 +572,7 @@ namespace EnumsNET
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static TEnum ParseFlagsOrDefault<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
             where TEnum : struct
@@ -588,6 +602,7 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, null, out result, parseFormatOrder);
@@ -616,6 +631,7 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result, parseFormatOrder);
@@ -643,6 +659,7 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result, parseFormatOrder);
@@ -673,6 +690,7 @@ namespace EnumsNET
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentException"><paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] parseFormatOrder)
             where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);

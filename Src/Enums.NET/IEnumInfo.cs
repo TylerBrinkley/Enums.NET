@@ -37,15 +37,6 @@ namespace EnumsNET
 
         int GetEnumMemberCount(bool uniqueValued = false);
         IEnumerable<string> GetNames(bool uniqueValued = false);
-        bool IsDefined(object value);
-        bool IsDefined(ulong value);
-        bool IsDefined(long value);
-        bool IsDefined(string name, bool ignoreCase = false);
-        bool IsInValueRange(ulong value);
-        bool IsInValueRange(long value);
-        bool IsValid(ulong value);
-        bool IsValid(object value);
-        bool IsValid(long value);
     }
 
     internal interface IEnumInfo : ICommonEnumInfo
@@ -81,6 +72,8 @@ namespace EnumsNET
         bool HasAllFlags(object value, object otherFlags);
         bool HasAnyFlags(object value);
         bool HasAnyFlags(object value, object otherFlags);
+        bool IsDefined(object value);
+        bool IsValid(object value);
         bool IsValidFlagCombination(object value);
         object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         EnumMember ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);

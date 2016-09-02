@@ -285,10 +285,6 @@ namespace EnumsNET
         }
 
         public bool IsValid(TInt value) => _customEnumValidator?.Invoke(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
-
-        public bool IsValid(long value) => Provider.IsInValueRange(value) && IsValid(Provider.Create(value));
-
-        public bool IsValid(ulong value) => Provider.IsInValueRange(value) && IsValid(Provider.Create(value));
         #endregion
 
         #region IsDefined
@@ -301,17 +297,6 @@ namespace EnumsNET
         }
 
         public bool IsDefined(TInt value) => IsContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsFirst(value);
-
-        public bool IsDefined(string name, bool ignoreCase)
-        {
-            Preconditions.NotNull(name, nameof(name));
-
-            return _valueMap.ContainsSecond(new NameAndAttributes(name)) || (_duplicateValues?.ContainsKey(name) ?? false) || (ignoreCase && IgnoreCaseSet.ContainsKey(name));
-        }
-
-        public bool IsDefined(long value) => Provider.IsInValueRange(value) && IsDefined(Provider.Create(value));
-
-        public bool IsDefined(ulong value) => Provider.IsInValueRange(value) && IsDefined(Provider.Create(value));
         #endregion
 
         #region ToObject

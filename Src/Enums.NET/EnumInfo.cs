@@ -48,12 +48,20 @@ namespace EnumsNET
 
         private static List<Func<EnumMember<TEnum>, string>> _customEnumFormatters;
 
-        private static readonly EnumCache<TInt, TIntProvider> Cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomEnumValidator);
+        private static readonly EnumCache<TInt, TIntProvider> _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomEnumValidator);
 
+#if NET45
+        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
+#else
         [MethodImpl(MethodImplOptions.ForwardRef)]
+#endif
         private static extern TInt ToInt(TEnum value);
 
+#if NET45
+        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
+#else
         [MethodImpl(MethodImplOptions.ForwardRef)]
+#endif
         internal static extern TEnum ToEnum(TInt value);
 
         #region Enums
@@ -62,59 +70,39 @@ namespace EnumsNET
 
         public Type UnderlyingType => typeof(TInt);
 
-        public bool IsContiguous => Cache.IsContiguous;
+        public bool IsContiguous => _cache.IsContiguous;
         #endregion
 
         #region Type Methods
-        public int GetEnumMemberCount(bool uniqueValued) => Cache.GetEnumMemberCount(uniqueValued);
+        public int GetEnumMemberCount(bool uniqueValued) => _cache.GetEnumMemberCount(uniqueValued);
 
-        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member =>
+        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => _cache.GetEnumMembers(uniqueValued).Select(member =>
 #if NET20 || NET35
             (EnumMember<TEnum>)
 #endif
             new EnumMember<TEnum, TInt, TIntProvider>(member));
 
-        public IEnumerable<string> GetNames(bool uniqueValued) => Cache.GetNames(uniqueValued);
+        public IEnumerable<string> GetNames(bool uniqueValued) => _cache.GetNames(uniqueValued);
 
-        public IEnumerable<TEnum> GetValues(bool uniqueValued) => Cache.GetEnumMembers(uniqueValued).Select(member => ToEnum(member.Value));
+        public IEnumerable<TEnum> GetValues(bool uniqueValued) => _cache.GetEnumMembers(uniqueValued).Select(member => ToEnum(member.Value));
 
         public int CompareTo(TEnum value, TEnum other) => ToInt(value).CompareTo(ToInt(other));
         #endregion
 
         #region IsValid
-        public bool IsValid(object value) => value is TEnum || value is TEnum? ? IsValid((TEnum)value) : Cache.IsValid(value);
-
-        public bool IsValid(TEnum value) => Cache.IsValid(ToInt(value));
-
-        public bool IsValid(long value) => Cache.IsValid(value);
-
-        public bool IsValid(ulong value) => Cache.IsValid(value);
+        public bool IsValid(TEnum value) => _cache.IsValid(ToInt(value));
         #endregion
 
         #region IsDefined
-        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? IsDefined((TEnum)value) : Cache.IsDefined(value);
-
-        public bool IsDefined(TEnum value) => Cache.IsDefined(ToInt(value));
-
-        public bool IsDefined(string name, bool ignoreCase) => Cache.IsDefined(name, ignoreCase);
-
-        public bool IsDefined(long value) => Cache.IsDefined(value);
-
-        public bool IsDefined(ulong value) => Cache.IsDefined(value);
-        #endregion
-
-        #region IsInValueRange
-        public bool IsInValueRange(long value) => EnumCache<TInt, TIntProvider>.Provider.IsInValueRange(value);
-
-        public bool IsInValueRange(ulong value) => EnumCache<TInt, TIntProvider>.Provider.IsInValueRange(value);
+        public bool IsDefined(TEnum value) => _cache.IsDefined(ToInt(value));
         #endregion
 
         #region ToObject
-        public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (validate ? Validate((TEnum)value, nameof(value)) : (TEnum)value) : ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (validate ? Validate((TEnum)value, nameof(value)) : (TEnum)value) : ToEnum(_cache.ToObject(value, validate));
 
-        public TEnum ToObject(long value, bool validate) => ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(long value, bool validate) => ToEnum(_cache.ToObject(value, validate));
 
-        public TEnum ToObject(ulong value, bool validate) => ToEnum(Cache.ToObject(value, validate));
+        public TEnum ToObject(ulong value, bool validate) => ToEnum(_cache.ToObject(value, validate));
 
         public bool TryToObject(object value, out TEnum result, bool validate)
         {
@@ -124,7 +112,7 @@ namespace EnumsNET
                 return !validate || IsValid(result);
             }
             TInt resultAsInt;
-            var success = Cache.TryToObject(value, out resultAsInt, validate);
+            var success = _cache.TryToObject(value, out resultAsInt, validate);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -132,7 +120,7 @@ namespace EnumsNET
         public bool TryToObject(long value, out TEnum result, bool validate)
         {
             TInt resultAsInt;
-            var success = Cache.TryToObject(value, out resultAsInt, validate);
+            var success = _cache.TryToObject(value, out resultAsInt, validate);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -140,7 +128,7 @@ namespace EnumsNET
         public bool TryToObject(ulong value, out TEnum result, bool validate)
         {
             TInt resultAsInt;
-            var success = Cache.TryToObject(value, out resultAsInt, validate);
+            var success = _cache.TryToObject(value, out resultAsInt, validate);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -149,25 +137,25 @@ namespace EnumsNET
         #region All Values Main Methods
         public TEnum Validate(TEnum value, string paramName)
         {
-            Cache.Validate(ToInt(value), paramName);
+            _cache.Validate(ToInt(value), paramName);
             return value;
         }
 
-        public string AsString(TEnum value) => Cache.AsString(ToInt(value));
+        public string AsString(TEnum value) => _cache.AsString(ToInt(value));
 
-        public string AsString(TEnum value, string format) => Cache.AsString(ToInt(value), format);
+        public string AsString(TEnum value, string format) => _cache.AsString(ToInt(value), format);
 
-        public string AsString(TEnum value, EnumFormat[] formatOrder) => Cache.AsString(ToInt(value), formatOrder);
+        public string AsString(TEnum value, EnumFormat[] formatOrder) => _cache.AsString(ToInt(value), formatOrder);
 
-        public string Format(TEnum value, string format) => Cache.Format(ToInt(value), format);
+        public string Format(TEnum value, string format) => _cache.Format(ToInt(value), format);
 
-        public string AsString(TEnum value, EnumFormat format) => Cache.AsString(ToInt(value), format);
+        public string AsString(TEnum value, EnumFormat format) => _cache.AsString(ToInt(value), format);
 
-        public string AsString(TEnum value, EnumFormat format0, EnumFormat format1) => Cache.AsString(ToInt(value), format0, format1);
+        public string AsString(TEnum value, EnumFormat format0, EnumFormat format1) => _cache.AsString(ToInt(value), format0, format1);
 
-        public string AsString(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Cache.AsString(ToInt(value), format0, format1, format2);
+        public string AsString(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => _cache.AsString(ToInt(value), format0, format1, format2);
 
-        public string Format(TEnum value, EnumFormat[] formatOrder) => Cache.Format(ToInt(value), formatOrder);
+        public string Format(TEnum value, EnumFormat[] formatOrder) => _cache.Format(ToInt(value), formatOrder);
 
         public object GetUnderlyingValue(TEnum value) => ToInt(value);
 
@@ -193,43 +181,43 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMember<TEnum> GetEnumMember(TEnum value) => InternalGetEnumMember(Cache.GetEnumMember(ToInt(value)));
+        public EnumMember<TEnum> GetEnumMember(TEnum value) => InternalGetEnumMember(_cache.GetEnumMember(ToInt(value)));
 
-        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase) => InternalGetEnumMember(Cache.GetEnumMember(name, ignoreCase));
+        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase) => InternalGetEnumMember(_cache.GetEnumMember(name, ignoreCase));
 
         private static EnumMember<TEnum> InternalGetEnumMember(InternalEnumMember<TInt, TIntProvider> member) => member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
 
-        public string GetName(TEnum value) => Cache.GetName(ToInt(value));
+        public string GetName(TEnum value) => _cache.GetName(ToInt(value));
 
-        public string GetDescription(TEnum value) => Cache.GetDescription(ToInt(value));
+        public string GetDescription(TEnum value) => _cache.GetDescription(ToInt(value));
 
-        public string GetDescriptionOrName(TEnum value) => Cache.GetDescriptionOrName(ToInt(value));
+        public string GetDescriptionOrName(TEnum value) => _cache.GetDescriptionOrName(ToInt(value));
 
-        public string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter) => Cache.GetDescriptionOrName(ToInt(value), nameFormatter);
+        public string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter) => _cache.GetDescriptionOrName(ToInt(value), nameFormatter);
         #endregion
 
         #region Attributes
         public TAttribute GetAttribute<TAttribute>(TEnum value)
-            where TAttribute : Attribute => Cache.GetAttribute<TAttribute>(ToInt(value));
+            where TAttribute : Attribute => _cache.GetAttribute<TAttribute>(ToInt(value));
 
         public TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
-            where TAttribute : Attribute => Cache.GetAttributeSelect(ToInt(value), selector, defaultValue);
+            where TAttribute : Attribute => _cache.GetAttributeSelect(ToInt(value), selector, defaultValue);
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value)
-            where TAttribute : Attribute => Cache.GetAttributes<TAttribute>(ToInt(value));
+            where TAttribute : Attribute => _cache.GetAttributes<TAttribute>(ToInt(value));
 
-        public IEnumerable<Attribute> GetAttributes(TEnum value) => Cache.GetAttributes(ToInt(value));
+        public IEnumerable<Attribute> GetAttributes(TEnum value) => _cache.GetAttributes(ToInt(value));
         #endregion
 
         #region Parsing
-        public TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ToEnum(Cache.Parse(value, ignoreCase, parseFormatOrder));
+        public TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ToEnum(_cache.Parse(value, ignoreCase, parseFormatOrder));
 
-        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => new EnumMember<TEnum, TInt, TIntProvider>(Cache.ParseMember(value, ignoreCase, parseFormatOrder));
+        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => new EnumMember<TEnum, TInt, TIntProvider>(_cache.ParseMember(value, ignoreCase, parseFormatOrder));
 
         public bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
         {
             TInt resultAsInt;
-            var success = Cache.TryParse(value, ignoreCase, out resultAsInt, parseFormatOrder);
+            var success = _cache.TryParse(value, ignoreCase, out resultAsInt, parseFormatOrder);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -237,7 +225,7 @@ namespace EnumsNET
         public bool TryParseMember(string value, bool ignoreCase, out EnumMember<TEnum> result, EnumFormat[] parseFormatOrder)
         {
             InternalEnumMember<TInt, TIntProvider> member;
-            if (Cache.TryParseMember(value, ignoreCase, out member, parseFormatOrder))
+            if (_cache.TryParseMember(value, ignoreCase, out member, parseFormatOrder))
             {
                 result = new EnumMember<TEnum, TInt, TIntProvider>(member);
                 return true;
@@ -250,58 +238,58 @@ namespace EnumsNET
 
         #region FlagEnums
         #region Properties
-        public bool IsFlagEnum => Cache.IsFlagEnum;
+        public bool IsFlagEnum => _cache.IsFlagEnum;
 
-        public TEnum AllFlags => ToEnum(Cache.AllFlags);
+        public TEnum AllFlags => ToEnum(_cache.AllFlags);
         #endregion
 
         #region Main Methods
-        public bool IsValidFlagCombination(TEnum value) => Cache.IsValidFlagCombination(ToInt(value));
+        public bool IsValidFlagCombination(TEnum value) => _cache.IsValidFlagCombination(ToInt(value));
 
-        public string FormatFlags(TEnum value, string delimiter, EnumFormat[] formatOrder) => Cache.FormatFlags(ToInt(value), delimiter, formatOrder);
+        public string FormatFlags(TEnum value, string delimiter, EnumFormat[] formatOrder) => _cache.FormatFlags(ToInt(value), delimiter, formatOrder);
 
-        public IEnumerable<TEnum> GetFlags(TEnum value) => Cache.GetFlags(ToInt(value)).Select(flag => ToEnum(flag));
+        public IEnumerable<TEnum> GetFlags(TEnum value) => _cache.GetFlags(ToInt(value)).Select(flag => ToEnum(flag));
 
-        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => Cache.GetFlagMembers(ToInt(value)).Select(flag =>
+        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => _cache.GetFlagMembers(ToInt(value)).Select(flag =>
 #if NET20 || NET35
             (EnumMember<TEnum>)
 #endif
             new EnumMember<TEnum, TInt, TIntProvider>(flag));
 
-        public bool HasAnyFlags(TEnum value) => Cache.HasAnyFlags(ToInt(value));
+        public bool HasAnyFlags(TEnum value) => _cache.HasAnyFlags(ToInt(value));
 
-        public bool HasAnyFlags(TEnum value, TEnum otherFlags) => Cache.HasAnyFlags(ToInt(value), ToInt(otherFlags));
+        public bool HasAnyFlags(TEnum value, TEnum otherFlags) => _cache.HasAnyFlags(ToInt(value), ToInt(otherFlags));
 
-        public bool HasAllFlags(TEnum value) => Cache.HasAllFlags(ToInt(value));
+        public bool HasAllFlags(TEnum value) => _cache.HasAllFlags(ToInt(value));
 
-        public bool HasAllFlags(TEnum value, TEnum otherFlags) => Cache.HasAllFlags(ToInt(value), ToInt(otherFlags));
+        public bool HasAllFlags(TEnum value, TEnum otherFlags) => _cache.HasAllFlags(ToInt(value), ToInt(otherFlags));
 
-        public TEnum ToggleFlags(TEnum value) => ToEnum(Cache.ToggleFlags(ToInt(value)));
+        public TEnum ToggleFlags(TEnum value) => ToEnum(_cache.ToggleFlags(ToInt(value)));
 
-        public TEnum ToggleFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ToggleFlags(ToInt(value), ToInt(otherFlags)));
+        public TEnum ToggleFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.ToggleFlags(ToInt(value), ToInt(otherFlags)));
 
-        public TEnum CommonFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.CommonFlags(ToInt(value), ToInt(otherFlags)));
+        public TEnum CommonFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.CommonFlags(ToInt(value), ToInt(otherFlags)));
 
-        public TEnum CombineFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.CombineFlags(ToInt(value), ToInt(otherFlags)));
+        public TEnum CombineFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.CombineFlags(ToInt(value), ToInt(otherFlags)));
 
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2) => ToEnum(_cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2)));
 
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) => ToEnum(_cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3)));
 
-        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(Cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
+        public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(_cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
 
-        public TEnum CombineFlags(IEnumerable<TEnum> flags) => ToEnum(Cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
+        public TEnum CombineFlags(IEnumerable<TEnum> flags) => ToEnum(_cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
-        public TEnum ExcludeFlags(TEnum value, TEnum otherFlags) => ToEnum(Cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));
+        public TEnum ExcludeFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));
         #endregion
 
         #region Parsing
-        public TEnum ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(Cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
+        public TEnum ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ToEnum(_cache.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder));
 
         public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] parseFormatOrder)
         {
             TInt resultAsInt;
-            var success = Cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt, parseFormatOrder);
+            var success = _cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt, parseFormatOrder);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -439,6 +427,10 @@ namespace EnumsNET
         public bool HasAnyFlags(object value) => HasAnyFlags(ToObject(value));
 
         public bool HasAnyFlags(object value, object otherFlags) => HasAnyFlags(ToObject(value), ToObject(otherFlags));
+
+        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? IsDefined((TEnum)value) : _cache.IsDefined(value);
+
+        public bool IsValid(object value) => value is TEnum || value is TEnum? ? IsValid((TEnum)value) : _cache.IsValid(value);
 
         public bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
 

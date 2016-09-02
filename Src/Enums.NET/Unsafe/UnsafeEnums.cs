@@ -51,7 +51,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns>Indication if <typeparamref name="TEnum"/>'s defined values are contiguous.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool IsContiguous<TEnum>() => GetInfo<TEnum>().IsContiguous;
 
@@ -60,7 +60,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns>The underlying type of <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static Type GetUnderlyingType<TEnum>() => GetInfo<TEnum>().UnderlyingType;
 
@@ -69,7 +69,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TypeCode GetTypeCode<TEnum>() => GetInfo<TEnum>().TypeCode;
         #endregion
@@ -80,7 +80,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns><typeparamref name="TEnum"/>'s count of defined constants.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static int GetEnumMemberCount<TEnum>() => GetInfo<TEnum>().GetEnumMemberCount();
 
@@ -90,7 +90,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="uniqueValued"></param>
         /// <returns><typeparamref name="TEnum"/>'s count of defined constants.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static int GetEnumMemberCount<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetEnumMemberCount(uniqueValued);
 
@@ -99,7 +99,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>() => GetInfo<TEnum>().GetEnumMembers();
 
@@ -110,7 +110,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="uniqueValued"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetEnumMembers(uniqueValued);
 
@@ -119,7 +119,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' names in value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<string> GetNames<TEnum>() => GetInfo<TEnum>().GetNames();
 
@@ -130,7 +130,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="uniqueValued"></param>
         /// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' names in value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<string> GetNames<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetNames(uniqueValued);
 
@@ -139,7 +139,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns>Array of <typeparamref name="TEnum"/> defined constants' values in value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<TEnum> GetValues<TEnum>() => GetInfo<TEnum>().GetValues();
 
@@ -150,7 +150,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="uniqueValued"></param>
         /// <returns>Array of <typeparamref name="TEnum"/> defined constants' values in value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<TEnum> GetValues<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetValues(uniqueValued);
 
@@ -160,7 +160,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="formatter"></param>
         /// <returns></returns>
-        /// /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
         [Pure]
         public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<EnumMember<TEnum>, string> formatter) => GetInfo<TEnum>().RegisterCustomEnumFormat(formatter);
         #endregion
@@ -171,107 +172,12 @@ namespace EnumsNET.Unsafe
         /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsValid<TEnum>(object value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns>Indication whether the specified <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
         /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool IsValid<TEnum>(TEnum value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsValid<TEnum>(sbyte value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsValid<TEnum>(byte value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsValid<TEnum>(short value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsValid<TEnum>(ushort value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsValid<TEnum>(int value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsValid<TEnum>(uint value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsValid<TEnum>(long value) => GetInfo<TEnum>().IsValid(value);
-
-        /// <summary>
-        /// Indicates if <paramref name="value"/> is valid for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if value is valid for <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsValid<TEnum>(ulong value) => GetInfo<TEnum>().IsValid(value);
         #endregion
 
         #region IsDefined
@@ -279,216 +185,11 @@ namespace EnumsNET.Unsafe
         /// Indicates whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.
         /// </summary>
         /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(object value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns>Indication whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool IsDefined<TEnum>(TEnum value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Indicates whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.
-        /// Is case-sensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="name"></param>
-        /// <returns>Indication whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(string name) => GetInfo<TEnum>().IsDefined(name);
-
-        /// <summary>
-        /// Indicates whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.
-        /// <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="ignoreCase">Specifies whether the operation is case-insensitive.</param>
-        /// <returns>Indication whether a constant with the specified <paramref name="name"/> exists in <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(string name, bool ignoreCase) => GetInfo<TEnum>().IsDefined(name, ignoreCase);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsDefined<TEnum>(sbyte value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(byte value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(short value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsDefined<TEnum>(ushort value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(int value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsDefined<TEnum>(uint value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(long value) => GetInfo<TEnum>().IsDefined(value);
-
-        /// <summary>
-        /// Returns an indication whether a constant with the specified <paramref name="value"/> exists in the enumeration.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsDefined<TEnum>(ulong value) => GetInfo<TEnum>().IsDefined(value);
-        #endregion
-
-        #region IsInValueRange
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsInValueRange<TEnum>(sbyte value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsInValueRange<TEnum>(byte value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsInValueRange<TEnum>(short value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsInValueRange<TEnum>(ushort value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsInValueRange<TEnum>(int value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsInValueRange<TEnum>(uint value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        public static bool IsInValueRange<TEnum>(long value) => GetInfo<TEnum>().IsInValueRange(value);
-
-        /// <summary>
-        /// Returns an indication whether the specified <paramref name="value"/> is within the underlying types value range.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        [Pure]
-        [CLSCompliant(false)]
-        public static bool IsInValueRange<TEnum>(ulong value) => GetInfo<TEnum>().IsInValueRange(value);
         #endregion
 
         #region ToObject
@@ -501,8 +202,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is not a valid type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="value"/> is not a valid type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(object value) => GetInfo<TEnum>().ToObject(value);
 
@@ -518,8 +219,8 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is not a valid type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(object value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
@@ -530,8 +231,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(sbyte value) => GetInfo<TEnum>().ToObject(value);
@@ -546,8 +247,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(sbyte value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
@@ -559,8 +260,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(byte value) => GetInfo<TEnum>().ToObject(value);
 
@@ -574,8 +275,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(byte value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
@@ -586,8 +287,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(short value) => GetInfo<TEnum>().ToObject(value);
 
@@ -601,8 +302,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(short value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
@@ -613,8 +314,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ushort value) => GetInfo<TEnum>().ToObject(value);
@@ -629,8 +330,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ushort value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
@@ -642,8 +343,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(int value) => GetInfo<TEnum>().ToObject(value);
 
@@ -657,8 +358,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(int value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
@@ -669,8 +370,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(uint value) => GetInfo<TEnum>().ToObject(value);
@@ -685,8 +386,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(uint value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
@@ -698,8 +399,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(long value) => GetInfo<TEnum>().ToObject(value);
 
@@ -713,8 +414,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         public static TEnum ToObject<TEnum>(long value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
@@ -725,8 +426,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ulong value) => GetInfo<TEnum>().ToObject(value);
@@ -741,8 +442,8 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range</exception>
+        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ulong value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
@@ -755,7 +456,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultValue)
         {
@@ -773,7 +474,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(object value, TEnum defaultValue, bool validate)
         {
@@ -789,7 +490,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultValue)
@@ -808,7 +509,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(sbyte value, TEnum defaultValue, bool validate)
@@ -825,7 +526,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultValue)
         {
@@ -843,7 +544,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(byte value, TEnum defaultValue, bool validate)
         {
@@ -859,7 +560,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultValue)
         {
@@ -877,7 +578,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(short value, TEnum defaultValue, bool validate)
         {
@@ -893,7 +594,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultValue)
@@ -912,7 +613,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(ushort value, TEnum defaultValue, bool validate)
@@ -929,7 +630,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultValue)
         {
@@ -947,7 +648,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(int value, TEnum defaultValue, bool validate)
         {
@@ -963,7 +664,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultValue)
@@ -982,7 +683,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(uint value, TEnum defaultValue, bool validate)
@@ -999,7 +700,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultValue)
         {
@@ -1017,7 +718,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ToObjectOrDefault<TEnum>(long value, TEnum defaultValue, bool validate)
         {
@@ -1033,7 +734,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultValue)
@@ -1052,7 +753,7 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static TEnum ToObjectOrDefault<TEnum>(ulong value, TEnum defaultValue, bool validate)
@@ -1070,7 +771,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(object value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
@@ -1084,7 +785,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
@@ -1097,7 +798,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
@@ -1112,7 +813,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
@@ -1126,7 +827,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(byte value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
@@ -1140,7 +841,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(byte value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
@@ -1153,7 +854,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(short value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
@@ -1167,7 +868,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(short value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
@@ -1180,7 +881,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
@@ -1195,7 +896,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
@@ -1209,7 +910,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(int value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
@@ -1223,7 +924,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(int value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
@@ -1236,7 +937,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
@@ -1251,7 +952,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
@@ -1265,7 +966,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(long value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
@@ -1279,7 +980,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
@@ -1292,7 +993,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
@@ -1307,7 +1008,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="validate"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
@@ -1323,7 +1024,7 @@ namespace EnumsNET.Unsafe
         /// <returns><paramref name="value"/> for use in constructor initializers and fluent API's</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is invalid</exception>
+        /// <paramref name="value"/> is invalid.</exception>
         [Pure]
         public static TEnum Validate<TEnum>(TEnum value, string paramName) => GetInfo<TEnum>().Validate(value, paramName);
 
@@ -1333,7 +1034,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value) => GetInfo<TEnum>().AsString(value);
 
@@ -1344,8 +1045,8 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, string format) => GetInfo<TEnum>().AsString(value, format);
 
@@ -1356,7 +1057,9 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, EnumFormat format) => GetInfo<TEnum>().AsString(value, format);
 
@@ -1368,7 +1071,9 @@ namespace EnumsNET.Unsafe
         /// <param name="format0"></param>
         /// <param name="format1"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1) => GetInfo<TEnum>().AsString(value, format0, format1);
 
@@ -1381,7 +1086,9 @@ namespace EnumsNET.Unsafe
         /// <param name="format1"></param>
         /// <param name="format2"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetInfo<TEnum>().AsString(value, format0, format1, format2);
 
@@ -1392,7 +1099,9 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="formatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, params EnumFormat[] formatOrder) => GetInfo<TEnum>().AsString(value, formatOrder);
 
@@ -1403,8 +1112,8 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="format"/> is null</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="format"/> is null.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         [Pure]
         public static string Format<TEnum>(TEnum value, string format) => GetInfo<TEnum>().Format(value, format);
@@ -1417,7 +1126,9 @@ namespace EnumsNET.Unsafe
         /// <param name="formatOrder"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static string Format<TEnum>(TEnum value, params EnumFormat[] formatOrder) => GetInfo<TEnum>().Format(value, formatOrder);
 
@@ -1427,7 +1138,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static object GetUnderlyingValue<TEnum>(TEnum value) => GetInfo<TEnum>().GetUnderlyingValue(value);
 
@@ -1437,8 +1148,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static sbyte ToSByte<TEnum>(TEnum value) => GetInfo<TEnum>().ToSByte(value);
@@ -1449,8 +1160,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="byte"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="byte"/>'s value range without overflowing.</exception>
         [Pure]
         public static byte ToByte<TEnum>(TEnum value) => GetInfo<TEnum>().ToByte(value);
 
@@ -1460,8 +1171,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="short"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="short"/>'s value range without overflowing.</exception>
         [Pure]
         public static short ToInt16<TEnum>(TEnum value) => GetInfo<TEnum>().ToInt16(value);
 
@@ -1471,8 +1182,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static ushort ToUInt16<TEnum>(TEnum value) => GetInfo<TEnum>().ToUInt16(value);
@@ -1483,8 +1194,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="int"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="int"/>'s value range without overflowing.</exception>
         [Pure]
         public static int ToInt32<TEnum>(TEnum value) => GetInfo<TEnum>().ToInt32(value);
 
@@ -1494,8 +1205,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static uint ToUInt32<TEnum>(TEnum value) => GetInfo<TEnum>().ToUInt32(value);
@@ -1506,8 +1217,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="long"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="long"/>'s value range without overflowing.</exception>
         [Pure]
         public static long ToInt64<TEnum>(TEnum value) => GetInfo<TEnum>().ToInt64(value);
 
@@ -1517,8 +1228,8 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing.</exception>
         [Pure]
         [CLSCompliant(false)]
         public static ulong ToUInt64<TEnum>(TEnum value) => GetInfo<TEnum>().ToUInt64(value);
@@ -1529,7 +1240,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static int GetHashCode<TEnum>(TEnum value) => GetInfo<TEnum>().GetHashCode(value);
 
@@ -1540,7 +1251,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="other"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool Equals<TEnum>(TEnum value, TEnum other) => GetInfo<TEnum>().Equals(value, other);
 
@@ -1552,7 +1263,7 @@ namespace EnumsNET.Unsafe
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static int CompareTo<TEnum>(TEnum x, TEnum y) => GetInfo<TEnum>().CompareTo(x, y);
         #endregion
@@ -1565,7 +1276,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(TEnum value) => GetInfo<TEnum>().GetEnumMember(value);
 
@@ -1577,7 +1288,7 @@ namespace EnumsNET.Unsafe
         /// <param name="name"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string name) => GetInfo<TEnum>().GetEnumMember(name);
 
@@ -1591,7 +1302,7 @@ namespace EnumsNET.Unsafe
         /// <param name="ignoreCase"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string name, bool ignoreCase) => GetInfo<TEnum>().GetEnumMember(name, ignoreCase);
 
@@ -1603,7 +1314,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <returns>Name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
         /// is not defined null is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static string GetName<TEnum>(TEnum value) => GetInfo<TEnum>().GetName(value);
 
@@ -1615,7 +1326,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <returns>Description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
         /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static string GetDescription<TEnum>(TEnum value) => GetInfo<TEnum>().GetDescription(value);
 
@@ -1625,7 +1336,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static string GetDescriptionOrName<TEnum>(TEnum value) => GetInfo<TEnum>().GetDescriptionOrName(value);
 
@@ -1636,7 +1347,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="nameFormatter"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static string GetDescriptionOrName<TEnum>(TEnum value, Func<string, string> nameFormatter) => GetInfo<TEnum>().GetDescriptionOrName(value, nameFormatter);
         #endregion
 
@@ -1648,7 +1359,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="value"></param>
         /// <returns>Indication if the enumerated constant with the specified <paramref name="value"/> has a <typeparamref name="TAttribute"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool HasAttribute<TEnum, TAttribute>(TEnum value)
             where TAttribute : Attribute => GetAttribute<TEnum, TAttribute>(value) != null;
@@ -1660,7 +1371,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="value"></param>
         /// <returns><typeparamref name="TAttribute"/> of the enumerated constant with the specified <paramref name="value"/> if defined and has attribute, else null</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TAttribute GetAttribute<TEnum, TAttribute>(TEnum value)
             where TAttribute : Attribute => GetInfo<TEnum>().GetAttribute<TAttribute>(value);
@@ -1675,8 +1386,8 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
         [Pure]
         public static TResult GetAttributeSelect<TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector)
             where TAttribute : Attribute => GetInfo<TEnum>().GetAttributeSelect(value, selector);
@@ -1692,8 +1403,8 @@ namespace EnumsNET.Unsafe
         /// <param name="selector"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
         [Pure]
         public static TResult GetAttributeSelect<TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
             where TAttribute : Attribute => GetInfo<TEnum>().GetAttributeSelect(value, selector, defaultValue);
@@ -1705,7 +1416,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="value"></param>
         /// <returns><typeparamref name="TAttribute"/> array</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<TAttribute> GetAttributes<TEnum, TAttribute>(TEnum value)
             where TAttribute : Attribute => GetInfo<TEnum>().GetAttributes<TAttribute>(value);
@@ -1716,7 +1427,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="value"></param>
         /// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<Attribute> GetAttributes<TEnum>(TEnum value) => GetInfo<TEnum>().GetAttributes(value);
         #endregion
@@ -1735,7 +1446,7 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum Parse<TEnum>(string value) => GetInfo<TEnum>().Parse(value);
 
@@ -1750,9 +1461,11 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is either an empty string or only contains white space.
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum Parse<TEnum>(string value, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().Parse(value, false, parseFormatOrder);
 
@@ -1770,7 +1483,7 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum Parse<TEnum>(string value, bool ignoreCase) => GetInfo<TEnum>().Parse(value, ignoreCase);
 
@@ -1787,9 +1500,11 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is either an empty string or only contains white space.
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().Parse(value, ignoreCase, parseFormatOrder);
 
@@ -1801,7 +1516,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue)
         {
@@ -1818,7 +1533,9 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static TEnum ParseOrDefault<TEnum>(string value, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
         {
@@ -1836,7 +1553,7 @@ namespace EnumsNET.Unsafe
         /// <param name="ignoreCase"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue)
         {
@@ -1854,7 +1571,9 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static TEnum ParseOrDefault<TEnum>(string value, bool ignoreCase, TEnum defaultValue, params EnumFormat[] parseFormatOrder)
         {
@@ -1870,7 +1589,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryParse<TEnum>(string value, out TEnum result) => GetInfo<TEnum>().TryParse(value, false, out result);
 
@@ -1883,7 +1602,9 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParse(value, false, out result, parseFormatOrder);
 
@@ -1897,7 +1618,7 @@ namespace EnumsNET.Unsafe
         /// <param name="ignoreCase"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result) => GetInfo<TEnum>().TryParse(value, ignoreCase, out result);
 
@@ -1911,7 +1632,9 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParse(value, ignoreCase, out result, parseFormatOrder);
 
@@ -1928,7 +1651,7 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMember<TEnum>(string value) => GetInfo<TEnum>().ParseMember(value);
 
@@ -1943,9 +1666,11 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is either an empty string or only contains white space.
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMember<TEnum>(string value, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().ParseMember(value, false, parseFormatOrder);
 
@@ -1963,7 +1688,7 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMember<TEnum>(string value, bool ignoreCase) => GetInfo<TEnum>().ParseMember(value, ignoreCase);
 
@@ -1980,9 +1705,11 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="value"/> is either an empty string or only contains white space.
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/></exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().ParseMember(value, ignoreCase, parseFormatOrder);
 
@@ -1994,7 +1721,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, EnumMember<TEnum> defaultValue)
         {
@@ -2011,7 +1738,9 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, EnumMember<TEnum> defaultValue, params EnumFormat[] parseFormatOrder)
         {
@@ -2029,7 +1758,7 @@ namespace EnumsNET.Unsafe
         /// <param name="ignoreCase"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, bool ignoreCase, EnumMember<TEnum> defaultValue)
         {
@@ -2047,7 +1776,9 @@ namespace EnumsNET.Unsafe
         /// <param name="defaultValue"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static EnumMember<TEnum> ParseMemberOrDefault<TEnum>(string value, bool ignoreCase, EnumMember<TEnum> defaultValue, params EnumFormat[] parseFormatOrder)
         {
@@ -2063,7 +1794,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryParseMember<TEnum>(string value, out EnumMember<TEnum> result) => GetInfo<TEnum>().TryParseMember(value, false, out result);
 
@@ -2076,7 +1807,9 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParseMember<TEnum>(string value, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, false, out result, parseFormatOrder);
 
@@ -2090,7 +1823,7 @@ namespace EnumsNET.Unsafe
         /// <param name="ignoreCase"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result);
 
@@ -2104,7 +1837,9 @@ namespace EnumsNET.Unsafe
         /// <param name="result"></param>
         /// <param name="parseFormatOrder"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
         [Pure]
         public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result, parseFormatOrder);
         #endregion
