@@ -1043,7 +1043,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> for use in constructor initializers and fluent API's</returns>
         /// <exception cref="ArgumentException"><paramref name="value"/> is invalid.</exception>
         [Pure]
-        public static TEnum Validate<[EnumConstraint] TEnum>(TEnum value, string paramName)
+        public static TEnum Validate<[EnumConstraint] TEnum>(this TEnum value, string paramName)
             where TEnum : struct => Enums<TEnum>.Info.Validate(value, paramName);
 
         /// <summary>
