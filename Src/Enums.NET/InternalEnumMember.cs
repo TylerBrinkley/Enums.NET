@@ -204,7 +204,7 @@ namespace EnumsNET
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
 
-        object IEnumMember.UnderlyingValue => Value;
+        object IEnumMember.GetUnderlyingValue() => Value;
         #endregion
     }
 }

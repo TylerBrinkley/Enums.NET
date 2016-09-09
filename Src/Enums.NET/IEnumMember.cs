@@ -33,8 +33,8 @@ namespace EnumsNET
         string Name { get; }
         IEnumerable<Attribute> Attributes { get; }
         string Description { get; }
-        object UnderlyingValue { get; }
 
+        object GetUnderlyingValue();
         string ToString();
         string ToString(string format);
         string ToString(params EnumFormat[] formatOrder);

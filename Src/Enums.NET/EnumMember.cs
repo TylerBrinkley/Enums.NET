@@ -58,15 +58,15 @@ namespace EnumsNET
         /// </summary>
         public string Description => _member.Description;
 
-        /// <summary>
-        /// The defined enum member's underlying integer value
-        /// </summary>
-        public object UnderlyingValue => _member.UnderlyingValue;
-
         internal EnumMember(IEnumMember member)
         {
             _member = member;
         }
+
+        /// <summary>
+        /// The defined enum member's underlying integer value
+        /// </summary>
+        public object GetUnderlyingValue() => _member.GetUnderlyingValue();
 
         /// <summary>
         /// Converts <see cref="Value"/> to its equivalent string representation.
