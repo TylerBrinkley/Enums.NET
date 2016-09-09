@@ -105,15 +105,6 @@ namespace EnumsNET
             return attributes;
         }
 
-        public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue)
-            where TAttribute : Attribute
-        {
-            Preconditions.NotNull(selector, nameof(selector));
-            
-            var attr = GetAttribute<TAttribute>();
-            return attr != null ? selector(attr) : defaultValue;
-        }
-
         public override string ToString() => _enumCache.InternalAsString(Value, this);
 
         public string ToString(string format) => _enumCache.InternalAsString(Value, this, format);

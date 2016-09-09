@@ -122,7 +122,6 @@ namespace EnumsNET
         TAttribute GetAttribute<TAttribute>(TEnum value) where TAttribute : Attribute;
         IEnumerable<Attribute> GetAttributes(TEnum value);
         IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value) where TAttribute : Attribute;
-        TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue = default(TResult)) where TAttribute : Attribute;
         string GetDescription(TEnum value);
         string GetDescriptionOrName(TEnum value);
         string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter);

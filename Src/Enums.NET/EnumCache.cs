@@ -639,9 +639,6 @@ namespace EnumsNET
         public TAttribute GetAttribute<TAttribute>(TInt value)
             where TAttribute : Attribute => GetEnumMember(value).GetAttribute<TAttribute>();
 
-        public TResult GetAttributeSelect<TAttribute, TResult>(TInt value, Func<TAttribute, TResult> selector, TResult defaultValue)
-            where TAttribute : Attribute => GetEnumMember(value).GetAttributeSelect(selector, defaultValue);
-
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TInt value)
             where TAttribute : Attribute => GetEnumMember(value).GetAttributes<TAttribute>();
 

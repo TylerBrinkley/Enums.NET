@@ -933,15 +933,6 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetAttributeSelect()
-        {
-            Assert.AreEqual("aye", Enums.GetAttributeSelect(EnumMemberAttributeEnum.A, (EnumMemberAttribute attr) => attr.Value));
-            Assert.IsNull(Enums.GetAttributeSelect(ColorFlagEnum.Blue, (EnumMemberAttribute attr) => attr.Value));
-            Assert.AreEqual("Default", Enums.GetAttributeSelect(ColorFlagEnum.Blue, (EnumMemberAttribute attr) => attr.Value, "Default"));
-            Assert.AreEqual("Ultra-Violet", Enums.GetAttributeSelect(ColorFlagEnum.UltraViolet, (DescriptionAttribute attr) => attr.Description));
-        }
-
-        [Test]
         public void GetAttributes()
         {
             CollectionAssert.AreEquivalent(new OptionAttribute[0], GetAttributes<MultipleAttributeEnum, OptionAttribute>(MultipleAttributeEnum.None));

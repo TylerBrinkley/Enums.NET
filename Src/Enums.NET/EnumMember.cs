@@ -185,31 +185,6 @@ namespace EnumsNET
         public TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute => _member.GetAttribute<TAttribute>();
 
         /// <summary>
-        /// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined and returns a <typeparamref name="TResult"/>
-        /// using the <paramref name="selector"/> else returns <c>default{TResult}</c>.
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="selector"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
-        public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector)
-            where TAttribute : Attribute => _member.GetAttributeSelect(selector);
-
-        /// <summary>
-        /// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined and returns a <typeparamref name="TResult"/>
-        /// using the <paramref name="selector"/> else returns <paramref name="defaultValue"/>.
-        /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="selector"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
-        public TResult GetAttributeSelect<TAttribute, TResult>(Func<TAttribute, TResult> selector, TResult defaultValue)
-            where TAttribute : Attribute => _member.GetAttributeSelect(selector, defaultValue);
-
-        /// <summary>
         /// Retrieves all <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.
         /// </summary>
         /// <typeparam name="TAttribute"></typeparam>

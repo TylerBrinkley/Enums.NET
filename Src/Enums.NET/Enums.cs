@@ -1391,39 +1391,6 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.GetAttribute<TAttribute>(value);
 
         /// <summary>
-        /// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>
-        /// and then applies the <paramref name="selector"/> else it returns <c>default{TResult}</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="selector"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
-        [Pure]
-        public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector)
-            where TAttribute : Attribute
-            where TEnum : struct => Enums<TEnum>.Info.GetAttributeSelect(value, selector);
-
-        /// <summary>
-        /// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>
-        /// and then applies the <paramref name="selector"/> else it returns <paramref name="defaultValue"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="selector"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="selector"/> is null.</exception>
-        [Pure]
-        public static TResult GetAttributeSelect<[EnumConstraint] TEnum, TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
-            where TAttribute : Attribute
-            where TEnum : struct => Enums<TEnum>.Info.GetAttributeSelect(value, selector, defaultValue);
-
-        /// <summary>
         /// Retrieves an array of <typeparamref name="TAttribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

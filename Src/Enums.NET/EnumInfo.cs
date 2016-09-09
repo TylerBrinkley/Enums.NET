@@ -195,9 +195,6 @@ namespace EnumsNET
         public TAttribute GetAttribute<TAttribute>(TEnum value)
             where TAttribute : Attribute => _cache.GetAttribute<TAttribute>(ToInt(value));
 
-        public TResult GetAttributeSelect<TAttribute, TResult>(TEnum value, Func<TAttribute, TResult> selector, TResult defaultValue)
-            where TAttribute : Attribute => _cache.GetAttributeSelect(ToInt(value), selector, defaultValue);
-
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value)
             where TAttribute : Attribute => _cache.GetAttributes<TAttribute>(ToInt(value));
 
