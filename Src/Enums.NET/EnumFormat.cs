@@ -24,6 +24,7 @@
 #endregion
 
 using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace EnumsNET
 {
@@ -48,6 +49,12 @@ namespace EnumsNET
         /// <summary>
         /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>
         /// </summary>
-        Description
+        Description,
+#if !NET20
+        /// <summary>
+        /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>
+        /// </summary>
+        EnumMemberValue
+#endif
     }
 }

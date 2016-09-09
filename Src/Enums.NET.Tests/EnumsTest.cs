@@ -155,27 +155,6 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(true).ToArray());
             CollectionAssert.AreEqual(new[] { NumericOperator.Equals, NumericOperator.NotEquals, NumericOperator.GreaterThan, NumericOperator.LessThan, NumericOperator.GreaterThanOrEquals, NumericOperator.NotGreaterThan, NumericOperator.Between, NumericOperator.NotBetween }, GetValues<NumericOperator>(true).ToArray());
         }
-
-        [Test]
-        public void GetDescriptionsAlternative()
-        {
-            CollectionAssert.AreEqual(new[] { null, null, null, null, "Ultra-Violet", null }, GetEnumMembers<ColorFlagEnum>().Select(member => member.Description).ToArray());
-            CollectionAssert.AreEqual(new string[0], GetEnumMembers<ByteEnum>().Select(member => member.Description).ToArray());
-        }
-
-        [Test]
-        public void GetAttributes1Alternative()
-        {
-            TestHelper.EnumerableOfEnumerablesAreEqual(new[] { new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[0], new Attribute[] { new DescriptionAttribute("Ultra-Violet") }, new Attribute[0] }, GetEnumMembers<ColorFlagEnum>().Select(member => member.Attributes));
-            TestHelper.EnumerableOfEnumerablesAreEqual(new Attribute[0][], GetEnumMembers<ByteEnum>().Select(member => member.Attributes));
-        }
-
-        [Test]
-        public void GetAttributes2Alternative()
-        {
-            CollectionAssert.AreEqual(new[] { null, null, null, null, new DescriptionAttribute("Ultra-Violet"), null }, GetEnumMembers<ColorFlagEnum>().Select(member => member.GetAttribute<DescriptionAttribute>()).ToArray());
-            CollectionAssert.AreEqual(new DescriptionAttribute[0], GetEnumMembers<ByteEnum>().Select(member => member.GetAttribute<DescriptionAttribute>()).ToArray());
-        }
         #endregion
 
         #region IsValid
@@ -861,7 +840,7 @@ namespace EnumsNET.Tests
         public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
         {
             // Custom enum member formatter
-            var descriptionOrNameFormat = RegisterCustomEnumFormat(member => member.Description ?? member.Name);
+            var descriptionOrNameFormat = RegisterCustomEnumFormat(member => member.AsString(EnumFormat.Description) ?? member.Name);
             Assert.IsTrue(descriptionOrNameFormat.IsValid());
             Assert.IsFalse((descriptionOrNameFormat + 2).IsValid());
             Assert.AreEqual("Ultra-Violet", Format(ColorFlagEnum.UltraViolet, descriptionOrNameFormat));
@@ -897,21 +876,6 @@ namespace EnumsNET.Tests
             Assert.AreEqual("GreaterThanOrEquals", NumericOperator.NotLessThan.GetName());
             Assert.AreEqual("NotGreaterThan", NumericOperator.LessThanOrEquals.GetName());
             Assert.AreEqual("NotGreaterThan", NumericOperator.NotGreaterThan.GetName());
-        }
-
-        [Test]
-        public void GetDescription_ReturnsDescription_WhenUsingValidValueWithDescription()
-        {
-            Assert.AreEqual("Ultra-Violet", GetDescription(ColorFlagEnum.UltraViolet));
-        }
-
-        [Test]
-        public void GetDescription_ReturnsNull_WhenUsingValidValueWithoutDescription()
-        {
-            Assert.IsNull(GetDescription(ColorFlagEnum.Black));
-            Assert.IsNull(GetDescription(ColorFlagEnum.Red));
-            Assert.IsNull(GetDescription(ColorFlagEnum.Green));
-            Assert.IsNull(GetDescription(ColorFlagEnum.Blue));
         }
         #endregion
 

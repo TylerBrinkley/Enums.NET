@@ -1331,38 +1331,6 @@ namespace EnumsNET
         [Pure]
         public static string GetName<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetName(value);
-
-        /// <summary>
-        /// Retrieves the description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
-        /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <returns>Description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
-        /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.</returns>
-        [Pure]
-        public static string GetDescription<[EnumConstraint] TEnum>(TEnum value)
-            where TEnum : struct => Enums<TEnum>.Info.GetDescription(value);
-
-        /// <summary>
-        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [Pure]
-        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(TEnum value)
-            where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value);
-
-        /// <summary>
-        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="nameFormatter"></param>
-        /// <returns></returns>
-        public static string GetDescriptionOrName<[EnumConstraint] TEnum>(TEnum value, Func<string, string> nameFormatter)
-            where TEnum : struct => Enums<TEnum>.Info.GetDescriptionOrName(value, nameFormatter);
         #endregion
 
         #region Attributes

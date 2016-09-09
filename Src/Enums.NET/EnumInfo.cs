@@ -183,12 +183,6 @@ namespace EnumsNET
         private static EnumMember<TEnum> InternalGetEnumMember(InternalEnumMember<TInt, TIntProvider> member) => member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
 
         public string GetName(TEnum value) => _cache.GetName(ToInt(value));
-
-        public string GetDescription(TEnum value) => _cache.GetDescription(ToInt(value));
-
-        public string GetDescriptionOrName(TEnum value) => _cache.GetDescriptionOrName(ToInt(value));
-
-        public string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter) => _cache.GetDescriptionOrName(ToInt(value), nameFormatter);
         #endregion
 
         #region Attributes
@@ -330,12 +324,6 @@ namespace EnumsNET
         public string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder) => FormatFlags(ToObject(value), delimiter, formatOrder);
 
         public IEnumerable<Attribute> GetAttributes(object value) => GetAttributes(ToObject(value));
-
-        public string GetDescription(object value) => GetDescription(ToObject(value));
-
-        public string GetDescriptionOrName(object value) => GetDescriptionOrName(ToObject(value));
-
-        public string GetDescriptionOrName(object value, Func<string, string> nameFormatter) => GetDescriptionOrName(ToObject(value), nameFormatter);
 
         public EnumMember GetEnumMember(object value) => GetEnumMember(ToObject(value));
 

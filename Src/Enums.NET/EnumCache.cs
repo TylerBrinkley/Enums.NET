@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
 using EnumsNET.Collections;
 using EnumsNET.Numerics;
@@ -147,40 +148,13 @@ namespace EnumsNET
                 var name = field.Name;
                 var attributes = Attribute.GetCustomAttributes(field, false);
                 var isPrimaryDupe = false;
-                if (attributes.Length > 0)
+                for (var i = 0; i < attributes.Length; ++i)
                 {
-                    var descriptionFound = false;
-                    for (var i = 0; i < attributes.Length; ++i)
+                    var attr = attributes[i];
+                    if (attr is PrimaryEnumMemberAttribute)
                     {
-                        var attr = attributes[i];
-                        if (!descriptionFound)
-                        {
-                            var descAttr = attr as DescriptionAttribute;
-                            if (descAttr != null)
-                            {
-                                for (var j = i; j > 0; --j)
-                                {
-                                    attributes[j] = attributes[j - 1];
-                                }
-                                attributes[0] = descAttr;
-                                if (descAttr.GetType() == typeof(DescriptionAttribute))
-                                {
-                                    descriptionFound = true;
-                                    if (isPrimaryDupe)
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if (!isPrimaryDupe && (attr as PrimaryEnumMemberAttribute) != null)
-                        {
-                            isPrimaryDupe = true;
-                            if (descriptionFound)
-                            {
-                                break;
-                            }
-                        }
+                        isPrimaryDupe = true;
+                        break;
                     }
                 }
                 var index = _valueMap.IndexOfFirst(value);
@@ -539,7 +513,11 @@ namespace EnumsNET
                         case EnumFormat.Name:
                             return member.Name;
                         case EnumFormat.Description:
-                            return member.Description;
+                            return member.GetAttribute<DescriptionAttribute>()?.Description;
+#if !NET20
+                        case EnumFormat.EnumMemberValue:
+                            return member.GetAttribute<EnumMemberAttribute>()?.Value;
+#endif
                         default:
                             var customEnumMemberFormatter = _getCustomEnumMemberFormatter(format);
                             if (customEnumMemberFormatter == null)
@@ -624,12 +602,6 @@ namespace EnumsNET
         }
 
         public string GetName(TInt value) => GetEnumMember(value).Name;
-
-        public string GetDescription(TInt value) => GetEnumMember(value).Description;
-
-        public string GetDescriptionOrName(TInt value) => GetEnumMember(value).GetDescriptionOrName();
-
-        public string GetDescriptionOrName(TInt value, Func<string, string> nameFormatter) => GetEnumMember(value).GetDescriptionOrName(nameFormatter);
         #endregion
 
         #region Attributes
@@ -778,19 +750,11 @@ namespace EnumsNET
                         EnumParser parser;
                         if (_customEnumParsers == null || !_customEnumParsers.TryGetValue(format, out parser))
                         {
-                            if (format == EnumFormat.Description)
+                            if (!format.IsValid())
                             {
-                                parser = new EnumParser(internalMember => internalMember.Description, this);
+                                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
                             }
-                            else
-                            {
-                                var customEnumMemberFormatter = _getCustomEnumMemberFormatter(format);
-                                if (customEnumMemberFormatter == null)
-                                {
-                                    throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
-                                }
-                                parser = new EnumParser(customEnumMemberFormatter, this);
-                            }
+                            parser = new EnumParser(format, this);
                             var customEnumParsers = _customEnumParsers;
                             if (customEnumParsers == null)
                             {
@@ -1043,12 +1007,12 @@ namespace EnumsNET
                 }
             }
 
-            public EnumParser(Func<InternalEnumMember<TInt, TIntProvider>, string> formatter, EnumCache<TInt, TIntProvider> enumCache)
+            public EnumParser(EnumFormat format, EnumCache<TInt, TIntProvider> enumCache)
             {
                 _formatValueMap = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(enumCache.GetEnumMemberCount(false));
                 foreach (var member in enumCache.GetEnumMembers(false))
                 {
-                    var formattedValue = formatter(member);
+                    var formattedValue = member.AsString(format);
                     if (formattedValue != null)
                     {
                         _formatValueMap[formattedValue] = member;

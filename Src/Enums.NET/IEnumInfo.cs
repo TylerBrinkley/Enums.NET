@@ -57,9 +57,6 @@ namespace EnumsNET
         string Format(object value, EnumFormat[] formatOrder);
         string FormatFlags(object value, string delimiter, EnumFormat[] formatOrder);
         IEnumerable<Attribute> GetAttributes(object value);
-        string GetDescription(object value);
-        string GetDescriptionOrName(object value);
-        string GetDescriptionOrName(object value, Func<string, string> nameFormatter);
         EnumMember GetEnumMember(object value);
         EnumMember GetEnumMember(string name, bool ignoreCase = false);
         IEnumerable<EnumMember> GetEnumMembers(bool uniqueValued = false);
@@ -122,9 +119,6 @@ namespace EnumsNET
         TAttribute GetAttribute<TAttribute>(TEnum value) where TAttribute : Attribute;
         IEnumerable<Attribute> GetAttributes(TEnum value);
         IEnumerable<TAttribute> GetAttributes<TAttribute>(TEnum value) where TAttribute : Attribute;
-        string GetDescription(TEnum value);
-        string GetDescriptionOrName(TEnum value);
-        string GetDescriptionOrName(TEnum value, Func<string, string> nameFormatter);
         EnumMember<TEnum> GetEnumMember(TEnum value);
         EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase = false);
         IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued = false);

@@ -1306,38 +1306,6 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static string GetName<TEnum>(TEnum value) => GetInfo<TEnum>().GetName(value);
-
-        /// <summary>
-        /// Retrieves the description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
-        /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Description of the constant in the enumeration that has the specified <paramref name="value"/>. If <paramref name="value"/>
-        /// is not defined or no associated <see cref="DescriptionAttribute"/> is found then null is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Pure]
-        public static string GetDescription<TEnum>(TEnum value) => GetInfo<TEnum>().GetDescription(value);
-
-        /// <summary>
-        /// Retrieves the description if not null else the name of the specified <paramref name="value"/> if defined.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Pure]
-        public static string GetDescriptionOrName<TEnum>(TEnum value) => GetInfo<TEnum>().GetDescriptionOrName(value);
-
-        /// <summary>
-        /// Retrieves the description if not null else the name formatted with <paramref name="nameFormatter"/> of the specified <paramref name="value"/> if defined.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="nameFormatter"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static string GetDescriptionOrName<TEnum>(TEnum value, Func<string, string> nameFormatter) => GetInfo<TEnum>().GetDescriptionOrName(value, nameFormatter);
         #endregion
 
         #region Attributes

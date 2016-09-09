@@ -148,10 +148,6 @@ class EnumsNETDemo
     {
         Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
         Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
-        Assert.AreEqual("Is", NumericOperator.Equals.GetEnumMember().Description);
-        Assert.IsNull(NumericOperator.LessThan.GetEnumMember().Description);
-        Assert.AreEqual("Is", Enums.GetDescription(NumericOperator.Equals));
-        Assert.IsNull(Enums.GetDescription(NumericOperator.LessThan));
     }
 
     [Test]

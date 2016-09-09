@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
@@ -44,8 +43,6 @@ namespace EnumsNET
 
         public IEnumerable<Attribute> Attributes => IsDefined ? new ReadOnlyCollection<Attribute>(_attributes ?? Enums.EmptyAttributes) : null;
 
-        public string Description => _attributes?.Length > 0 ? (_attributes[0] as DescriptionAttribute)?.Description : null;
-
         public bool IsDefined => Name != null;
 
         public bool IsInitialized => _enumCache != null;
@@ -57,10 +54,6 @@ namespace EnumsNET
             _attributes = attributes;
             _enumCache = enumCache;
         }
-
-        public string GetDescriptionOrName() => Description ?? Name;
-
-        public string GetDescriptionOrName(Func<string, string> nameFormatter) => IsDefined ? (Description ?? (nameFormatter != null ? nameFormatter(Name) : Name)) : null;
 
         public bool HasAttribute<TAttribute>()
             where TAttribute : Attribute => GetAttribute<TAttribute>() != null;

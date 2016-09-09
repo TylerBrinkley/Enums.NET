@@ -32,7 +32,6 @@ namespace EnumsNET
     {
         string Name { get; }
         IEnumerable<Attribute> Attributes { get; }
-        string Description { get; }
 
         object GetUnderlyingValue();
         string ToString();
@@ -46,8 +45,6 @@ namespace EnumsNET
         string AsString(EnumFormat format0, EnumFormat format1);
         string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string Format(params EnumFormat[] formatOrder);
-        string GetDescriptionOrName();
-        string GetDescriptionOrName(Func<string, string> nameFormatter);
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
         IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute;

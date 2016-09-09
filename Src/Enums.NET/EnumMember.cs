@@ -53,11 +53,6 @@ namespace EnumsNET
         /// </summary>
         public IEnumerable<Attribute> Attributes => _member.Attributes;
 
-        /// <summary>
-        /// The defined enum member's <see cref="DescriptionAttribute.Description"/> if applied else null.
-        /// </summary>
-        public string Description => _member.Description;
-
         internal EnumMember(IEnumMember member)
         {
             _member = member;
@@ -156,19 +151,6 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
         public string Format(params EnumFormat[] formatOrder) => _member.Format(formatOrder);
-
-        /// <summary>
-        /// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/>.
-        /// </summary>
-        /// <returns></returns>
-        public string GetDescriptionOrName() => _member.GetDescriptionOrName();
-
-        /// <summary>
-        /// Retrieves the <see cref="Description"/> if not null else the <see cref="Name"/> that's been formatted with <paramref name="nameFormatter"/>.
-        /// </summary>
-        /// <param name="nameFormatter"></param>
-        /// <returns></returns>
-        public string GetDescriptionOrName(Func<string, string> nameFormatter) => _member.GetDescriptionOrName(nameFormatter);
 
         /// <summary>
         /// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.
