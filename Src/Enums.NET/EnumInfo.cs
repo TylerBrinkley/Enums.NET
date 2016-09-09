@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
@@ -44,11 +43,7 @@ namespace EnumsNET
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private static int _highestCustomEnumFormatIndex = -1;
-
-        private static List<Func<EnumMember<TEnum>, string>> _customEnumFormatters;
-
-        private static readonly EnumCache<TInt, TIntProvider> _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), InternalGetCustomEnumFormatter, GetCustomEnumValidator);
+        private static readonly EnumCache<TInt, TIntProvider> _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), GetCustomEnumMemberFormatter, GetCustomEnumValidator);
 
 #if NET45
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
@@ -297,61 +292,10 @@ namespace EnumsNET
         #endregion
 
         #region CustomEnumFormatters
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter)
+        private static Func<InternalEnumMember<TInt, TIntProvider>, string> GetCustomEnumMemberFormatter(EnumFormat format)
         {
-            Preconditions.NotNull(formatter, nameof(formatter));
-
-            var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
-            if (index == 0)
-            {
-                _customEnumFormatters = new List<Func<EnumMember<TEnum>, string>>();
-            }
-            else
-            {
-                while (_customEnumFormatters?.Count != index)
-                {
-                }
-            }
-            _customEnumFormatters.Add(formatter);
-            int highestEnumSpecificCustomEnumFormatIndex;
-            do
-            {
-                highestEnumSpecificCustomEnumFormatIndex = Enums.HighestEnumSpecificCustomEnumFormatIndex;
-            } while (index > highestEnumSpecificCustomEnumFormatIndex && Interlocked.CompareExchange(ref Enums.HighestEnumSpecificCustomEnumFormatIndex, index, highestEnumSpecificCustomEnumFormatIndex) != highestEnumSpecificCustomEnumFormatIndex);
-            return Enums.GetEnumSpecificCustomEnumFormat(index);
-        }
-
-        private static Func<InternalEnumMember<TInt, TIntProvider>, string> InternalGetCustomEnumFormatter(EnumFormat format)
-        {
-            var isOdd = ((int)format & 1) == 1;
-#if NET20 || NET35
-            if (isOdd)
-            {
-                var formatter = GetCustomEnumFormatter(format);
-                if (formatter != null)
-                {
-                    return member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member));
-                }
-            }
-            else
-            {
-                var formatter = Enums.GetCustomEnumFormatter(format);
-                if (formatter != null)
-                {
-                    return member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member));
-                }
-            }
-            return null;
-#else
-            var formatter = isOdd ? GetCustomEnumFormatter(format) : Enums.GetCustomEnumFormatter(format);
+            var formatter = Enums.GetCustomEnumMemberFormatter(format);
             return formatter != null ? member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
-#endif
-        }
-
-        private static Func<EnumMember<TEnum>, string> GetCustomEnumFormatter(EnumFormat format)
-        {
-            var index = Enums.GetEnumSpecificCustomEnumFormatIndex(format);
-            return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
         }
         #endregion
 
@@ -439,13 +383,6 @@ namespace EnumsNET
         EnumMember IEnumInfo.ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ParseMember(value, ignoreCase, parseFormatOrder);
 
         object IEnumInfo.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
-
-        public EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter) => RegisterCustomEnumFormat(
-#if NET20 || NET35
-            (EnumMember<TEnum> member) => formatter(member));
-#else
-            (Func<EnumMember<TEnum>, string>)formatter);
-#endif
 
         public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags.Select(flag => ToObject(flag)));
 

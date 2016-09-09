@@ -49,6 +49,22 @@ namespace EnumsNET
             char firstChar;
             return value.Length > 0 && (char.IsDigit((firstChar = value[0])) || firstChar == '-' || firstChar == '+');
         }
+
+        private static object GetCustomEnumValidator(Type enumType)
+        {
+            var validatorInterface = typeof(IEnumValidatorAttribute<>).MakeGenericType(enumType);
+            foreach (var attribute in enumType.GetCustomAttributes(false))
+            {
+                foreach (var attributeInterface in attribute.GetType().GetInterfaces())
+                {
+                    if (attributeInterface == validatorInterface)
+                    {
+                        return attribute;
+                    }
+                }
+            }
+            return null;
+        }
         #endregion
 
         #region Fields
@@ -64,7 +80,7 @@ namespace EnumsNET
 
         private readonly TInt _minDefined;
 
-        private readonly Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> _getCustomEnumFormatter;
+        private readonly Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> _getCustomEnumMemberFormatter;
 
         private readonly Func<TInt, bool> _customEnumValidator;
 
@@ -107,11 +123,11 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumFormatter, Func<object, Func<TInt, bool>> getCustomEnumValidator)
+        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumMemberFormatter, Func<object, Func<TInt, bool>> getCustomEnumValidator)
         {
             _enumTypeName = enumType.Name;
-            _getCustomEnumFormatter = getCustomEnumFormatter;
-            var customEnumValidator = Enums.GetCustomEnumValidator(enumType);
+            _getCustomEnumMemberFormatter = getCustomEnumMemberFormatter;
+            var customEnumValidator = GetCustomEnumValidator(enumType);
             if (customEnumValidator != null)
             {
                 _customEnumValidator = getCustomEnumValidator(customEnumValidator);
@@ -525,12 +541,12 @@ namespace EnumsNET
                         case EnumFormat.Description:
                             return member.Description;
                         default:
-                            var customEnumFormatter = _getCustomEnumFormatter(format);
-                            if (customEnumFormatter == null)
+                            var customEnumMemberFormatter = _getCustomEnumMemberFormatter(format);
+                            if (customEnumMemberFormatter == null)
                             {
-                                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid for {_enumTypeName}");
+                                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
                             }
-                            return customEnumFormatter(member);
+                            return member.IsDefined ? customEnumMemberFormatter(member) : null;
                     }
             }
         }
@@ -771,12 +787,12 @@ namespace EnumsNET
                             }
                             else
                             {
-                                var customEnumFormatter = _getCustomEnumFormatter(format);
-                                if (customEnumFormatter == null)
+                                var customEnumMemberFormatter = _getCustomEnumMemberFormatter(format);
+                                if (customEnumMemberFormatter == null)
                                 {
-                                    throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid for {_enumTypeName}");
+                                    throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
                                 }
-                                parser = new EnumParser(customEnumFormatter, this);
+                                parser = new EnumParser(customEnumMemberFormatter, this);
                             }
                             var customEnumParsers = _customEnumParsers;
                             if (customEnumParsers == null)

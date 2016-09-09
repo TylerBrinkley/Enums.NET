@@ -153,17 +153,6 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<TEnum> GetValues<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetValues(uniqueValued);
-
-        /// <summary>
-        /// Registers a custom enum format for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="formatter"></param>
-        /// <returns></returns>
-        /// /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
-        [Pure]
-        public static EnumFormat RegisterCustomEnumFormat<TEnum>(Func<EnumMember<TEnum>, string> formatter) => GetInfo<TEnum>().RegisterCustomEnumFormat(formatter);
         #endregion
 
         #region IsValid
@@ -1088,7 +1077,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         [Pure]
         public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetInfo<TEnum>().AsString(value, format0, format1, format2);
 

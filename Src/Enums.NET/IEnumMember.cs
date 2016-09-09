@@ -30,7 +30,6 @@ namespace EnumsNET
 {
     internal interface IEnumMember : IConvertible, IFormattable
     {
-        bool IsDefined { get; }
         string Name { get; }
         IEnumerable<Attribute> Attributes { get; }
         string Description { get; }

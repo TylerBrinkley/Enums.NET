@@ -63,12 +63,6 @@ namespace EnumsNET
         /// </summary>
         public object UnderlyingValue => _member.UnderlyingValue;
 
-        /// <summary>
-        /// Specifies if the given EnumMember is defined, the only time it may not be defined is within
-        /// a custom enum formatter
-        /// </summary>
-        public bool IsDefined => _member.IsDefined;
-
         internal EnumMember(IEnumMember member)
         {
             _member = member;

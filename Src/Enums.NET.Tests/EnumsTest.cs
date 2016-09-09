@@ -860,20 +860,13 @@ namespace EnumsNET.Tests
         [Test]
         public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
         {
-            // Global custom enum formatter
+            // Custom enum member formatter
             var descriptionOrNameFormat = RegisterCustomEnumFormat(member => member.Description ?? member.Name);
             Assert.IsTrue(descriptionOrNameFormat.IsValid());
             Assert.IsFalse((descriptionOrNameFormat + 2).IsValid());
             Assert.AreEqual("Ultra-Violet", Format(ColorFlagEnum.UltraViolet, descriptionOrNameFormat));
             Assert.AreEqual(nameof(ColorFlagEnum.Red), Format(ColorFlagEnum.Red, descriptionOrNameFormat));
             Assert.AreEqual(nameof(EnumMemberAttributeEnum.B), Format(EnumMemberAttributeEnum.B, descriptionOrNameFormat));
-
-            // Enum specific custom enum formatter
-            var enumMemberValueFormat = RegisterCustomEnumFormat((EnumMember<EnumMemberAttributeEnum> member) => member.GetAttribute<EnumMemberAttribute>()?.Value);
-            Assert.IsTrue(enumMemberValueFormat.IsValid());
-            Assert.IsFalse((enumMemberValueFormat + 2).IsValid());
-            Assert.AreEqual("aye", Format(EnumMemberAttributeEnum.A, enumMemberValueFormat));
-            TestHelper.ExpectException<ArgumentException>(() => Format(ColorFlagEnum.Blue, enumMemberValueFormat));
         }
 
         [Test]

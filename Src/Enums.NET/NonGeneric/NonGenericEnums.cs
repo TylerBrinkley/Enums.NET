@@ -199,17 +199,6 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Pure]
         public static IEnumerable<object> GetValues(Type enumType, bool uniqueValued) => GetInfo(enumType).GetValues(uniqueValued);
-
-        /// <summary>
-        /// Registers a custom enum format for <paramref name="enumType"/>.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="formatter"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="formatter"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        [Pure]
-        public static EnumFormat RegisterCustomEnumFormat(Type enumType, Func<EnumMember, string> formatter) => GetInfo(enumType).RegisterCustomEnumFormat(formatter);
         #endregion
 
         #region IsValid

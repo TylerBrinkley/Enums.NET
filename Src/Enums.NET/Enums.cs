@@ -47,33 +47,31 @@ namespace EnumsNET
 
         internal static int HighestCustomEnumFormatIndex = -1;
 
-        internal static int HighestEnumSpecificCustomEnumFormatIndex = -1;
-
-        private static List<Func<EnumMember, string>> _customEnumFormatters;
+        private static List<Func<EnumMember, string>> _customEnumMemberFormatters;
         
         /// <summary>
         /// Registers a global custom enum format
         /// </summary>
-        /// <param name="formatter"></param>
+        /// <param name="enumMemberFormatter"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
-        public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter)
+        /// <exception cref="ArgumentNullException"><paramref name="enumMemberFormatter"/> is null.</exception>
+        public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> enumMemberFormatter)
         {
-            Preconditions.NotNull(formatter, nameof(formatter));
+            Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
 
             var index = Interlocked.Increment(ref HighestCustomEnumFormatIndex);
             if (index == 0)
             {
-                _customEnumFormatters = new List<Func<EnumMember, string>>();
+                _customEnumMemberFormatters = new List<Func<EnumMember, string>>();
             }
             else
             {
-                while (_customEnumFormatters?.Count != index)
+                while (_customEnumMemberFormatters?.Count != index)
                 {
                 }
             }
-            _customEnumFormatters.Add(formatter);
-            return GetCustomEnumFormat(index);
+            _customEnumMemberFormatters.Add(enumMemberFormatter);
+            return (EnumFormat)(index + StartingCustomEnumFormatValue);
         }
 
         #region "Properties"
@@ -185,16 +183,6 @@ namespace EnumsNET
         [Pure]
         public static IEnumerable<TEnum> GetValues<[EnumConstraint] TEnum>(bool uniqueValued)
             where TEnum : struct => Enums<TEnum>.Info.GetValues(uniqueValued);
-
-        /// <summary>
-        /// Registers a custom enum format for <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="formatter"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formatter"/> is null.</exception>
-        public static EnumFormat RegisterCustomEnumFormat<[EnumConstraint] TEnum>(Func<EnumMember<TEnum>, string> formatter)
-            where TEnum : struct => Enums<TEnum>.Info.RegisterCustomEnumFormat(formatter);
         #endregion
 
         #region IsValid
@@ -1855,18 +1843,10 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static int GetCustomEnumFormatIndex(EnumFormat format) => ((int)format - StartingCustomEnumFormatValue) >> 1;
-
-        internal static int GetEnumSpecificCustomEnumFormatIndex(EnumFormat format) => ((int)format - StartingCustomEnumFormatValue - 1) >> 1;
-
-        internal static EnumFormat GetCustomEnumFormat(int index) => (EnumFormat)((index << 1) + StartingCustomEnumFormatValue);
-
-        internal static EnumFormat GetEnumSpecificCustomEnumFormat(int index) => (EnumFormat)((index << 1) + StartingCustomEnumFormatValue + 1);
-
-        internal static Func<EnumMember, string> GetCustomEnumFormatter(EnumFormat format)
+        internal static Func<EnumMember, string> GetCustomEnumMemberFormatter(EnumFormat format)
         {
-            var index = GetCustomEnumFormatIndex(format);
-            return index >= 0 && index < _customEnumFormatters?.Count ? _customEnumFormatters[index] : null;
+            var index = (int)format - StartingCustomEnumFormatValue;
+            return index >= 0 && index < _customEnumMemberFormatters?.Count ? _customEnumMemberFormatters[index] : null;
         }
 
         internal static object GetEnumInfo(Type enumType)
@@ -1898,22 +1878,6 @@ namespace EnumsNET
                     return typeof(UInt64NumericProvider);
             }
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
-        }
-
-        internal static object GetCustomEnumValidator(Type enumType)
-        {
-            var validatorInterface = typeof(IEnumValidatorAttribute<>).MakeGenericType(enumType);
-            foreach (var attribute in enumType.GetCustomAttributes(false))
-            {
-                foreach (var attributeInterface in attribute.GetType().GetInterfaces())
-                {
-                    if (attributeInterface == validatorInterface)
-                    {
-                        return attribute;
-                    }
-                }
-            }
-            return null;
         }
         #endregion
     }

@@ -78,7 +78,6 @@ namespace EnumsNET
         object Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         EnumMember ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder);
         object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder);
-        EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> formatter);
         object CombineFlags(IEnumerable<object> flags);
         object CombineFlags(object value, object otherFlags);
         byte ToByte(object value);
@@ -146,7 +145,6 @@ namespace EnumsNET
         TEnum Parse(string value, bool ignoreCase = false, EnumFormat[] parseFormatOrder = null);
         EnumMember<TEnum> ParseMember(string value, bool ignoreCase = false, EnumFormat[] parseFormatOrder = null);
         TEnum ParseFlags(string value, bool ignoreCase = false, string delimiter = null, EnumFormat[] parseFormatOrder = null);
-        EnumFormat RegisterCustomEnumFormat(Func<EnumMember<TEnum>, string> formatter);
         TEnum CombineFlags(IEnumerable<TEnum> flags);
         TEnum CombineFlags(TEnum value, TEnum otherFlags);
         TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2);

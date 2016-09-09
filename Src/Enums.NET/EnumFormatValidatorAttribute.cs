@@ -29,10 +29,6 @@ namespace EnumsNET
 {
     internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
     {
-        public bool IsValid(EnumFormat value)
-        {
-            var valueAsInt = (int)value;
-            return value.IsDefined() || (valueAsInt >= Enums.StartingCustomEnumFormatValue && ((valueAsInt & 1) == 1 ? Enums.GetEnumSpecificCustomEnumFormatIndex(value) <= Enums.HighestEnumSpecificCustomEnumFormatIndex : Enums.GetCustomEnumFormatIndex(value) <= Enums.HighestCustomEnumFormatIndex));
-        }
+        public bool IsValid(EnumFormat value) => value.IsDefined() || Enums.GetCustomEnumMemberFormatter(value) != null;
     }
 }
