@@ -30,12 +30,21 @@ using ExtraConstraints;
 namespace EnumsNET
 {
     /// <summary>
-    /// An efficient type-safe enum comparer which doesn't box the values
+    /// An efficient type-safe enum comparer which doesn't box the values, to access use the Instance property
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     public sealed class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
         where TEnum : struct
     {
+        /// <summary>
+        /// The singleton instance of the <see cref="EnumComparer{TEnum}"/>. 
+        /// </summary>
+        public static EnumComparer<TEnum> Instance { get; } = new EnumComparer<TEnum>();
+
+        private EnumComparer()
+        {
+        }
+
         /// <summary>
         /// Indicates if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.
         /// </summary>

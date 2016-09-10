@@ -200,7 +200,7 @@ namespace EnumsNET.Collections
                 _dictionary = dictionary;
             }
 
-            public bool Contains(TValue item) => _dictionary.Values.Contains(item);
+            public bool Contains(TValue item) => ((ICollection<TValue>)_dictionary._dictionary.Values).Contains(item);
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {

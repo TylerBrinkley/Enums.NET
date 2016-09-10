@@ -13,57 +13,7 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
     [TestFixture]
     class EnumsNETDemo
     {
-        enum NumericOperator
-        {
-            [Description("Is")]
-            [EnumMember(Value = "=")]
-            Equals,
-            [Description("Is not")]
-            [EnumMember(Value = "!=")]
-            NotEquals,
-            [EnumMember(Value = "<")]
-            LessThan,
-            [PrimaryEnumMember]
-            [EnumMember(Value = ">=")]
-            GreaterThanOrEquals,
-            NotLessThan = GreaterThanOrEquals,
-            [EnumMember(Value = ">")]
-            GreaterThan,
-            [PrimaryEnumMember]
-            [EnumMember(Value = "<=")]
-            LessThanOrEquals,
-            NotGreaterThan = LessThanOrEquals
-        }
-
-        [Flags]
-        enum DaysOfWeek
-        {
-            None = 0,
-            Sunday = 1,
-            Monday = 2,
-            Tuesday = 4,
-            Wednesday = 8,
-            Thursday = 16,
-            Friday = 32,
-            Weekdays = Monday | Tuesday | Wednesday | Thursday | Friday,
-            Saturday = 64,
-            Weekend = Sunday | Saturday,
-            All = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
-        }
-
-        [Flags]
-        [DayTypeValidator]
-        enum DayType
-        {
-            Weekday = 1,
-            Weekend = 2,
-            Holiday = 4
-        }
-
-        class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
-        {
-            public bool IsValid(DayType value) => value == DayType.Weekday || value == DayType.Weekend || value == (DayType.Weekday | DayType.Holiday) || value == (DayType.Weekend | DayType.Holiday);
-        }
+        // Test enum definitions at the end
 
         [Test]
         public void Enumerate()
@@ -129,10 +79,6 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
             Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).ExcludeFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
 
             // GetFlags
-            foreach (DaysOfWeek dayOfWeek in DaysOfWeek.Weekdays.GetFlags())
-            {
-                // Do Stuff
-            }
             List<DaysOfWeek> flags = DaysOfWeek.Weekend.GetFlags().ToList();
             Assert.AreEqual(2, flags.Count);
             Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
@@ -143,19 +89,7 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
         public void Name()
         {
             Assert.AreEqual("Equals", NumericOperator.Equals.GetName());
-            Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Name));
-            Assert.AreEqual("GreaterThan", NumericOperator.GreaterThan.GetEnumMember().Name);
-        }
-
-        [Test]
-        public void Description()
-        {
-            Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
-            Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
-            Assert.AreEqual("Is", NumericOperator.Equals.GetEnumMember().Description);
-            Assert.IsNull(NumericOperator.LessThan.GetEnumMember().Description);
-            Assert.AreEqual("Is", Enums.GetDescription(NumericOperator.Equals));
-            Assert.IsNull(Enums.GetDescription(NumericOperator.LessThan));
+            Assert.IsNull(((NumericOperator)(-1)).GetName());
         }
 
         [Test]
@@ -164,7 +98,7 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
             Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
             Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
             Assert.AreEqual("Is not", NumericOperator.NotEquals.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
-            Assert.IsNull(NumericOperator.LessThan.GetEnumMember().GetAttributeSelect((DescriptionAttribute attr) => attr.Description));
+            Assert.IsNull(NumericOperator.LessThan.GetEnumMember().GetAttribute<DescriptionAttribute>());
         }
 
         [Test]
@@ -179,11 +113,82 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
         }
 
         [Test]
+        public void Description()
+        {
+            Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
+            Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
+        }
+
+        [Test]
         public void CustomEnumFormat()
         {
-            EnumFormat enumMemberValueFormat = Enums.RegisterCustomEnumFormat(member => member.GetAttributeSelect((EnumMemberAttribute attr) => attr.Value));
-            Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(enumMemberValueFormat));
-            Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", enumMemberValueFormat));
+            EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.GetAttribute<SymbolAttribute>()?.Symbol);
+            Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(symbolFormat));
+            Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", symbolFormat));
+        }
+
+        enum NumericOperator
+        {
+            [Description("Is")]
+            [Symbol("=")]
+            Equals,
+            [Description("Is not")]
+            [Symbol("!=")]
+            NotEquals,
+            [Symbol("<")]
+            LessThan,
+            [PrimaryEnumMember]
+            [Symbol(">=")]
+            GreaterThanOrEquals,
+            NotLessThan = GreaterThanOrEquals,
+            [Symbol(">")]
+            GreaterThan,
+            [PrimaryEnumMember]
+            [Symbol("<=")]
+            LessThanOrEquals,
+            NotGreaterThan = LessThanOrEquals
+        }
+
+        [Flags]
+        enum DaysOfWeek
+        {
+            None = 0,
+            Sunday = 1,
+            Monday = 2,
+            Tuesday = 4,
+            Wednesday = 8,
+            Thursday = 16,
+            Friday = 32,
+            Weekdays = Monday | Tuesday | Wednesday | Thursday | Friday,
+            Saturday = 64,
+            Weekend = Sunday | Saturday,
+            All = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
+        }
+
+        [Flags]
+        [DayTypeValidator]
+        enum DayType
+        {
+            Weekday = 1,
+            Weekend = 2,
+            Holiday = 4
+        }
+
+        [AttributeUsage(AttributeTargets.Field)]
+        class SymbolAttribute : Attribute
+        {
+            public string Symbol { get; }
+
+            public SymbolAttribute(string symbol)
+            {
+                Symbol = symbol;
+            }
+        }
+
+        [AttributeUsage(AttributeTargets.Enum)]
+        class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
+        {
+            public bool IsValid(DayType value) => value == DayType.Weekday || value == DayType.Weekend || value == (DayType.Weekday | DayType.Holiday) || value == (DayType.Weekend | DayType.Holiday);
         }
     }
 

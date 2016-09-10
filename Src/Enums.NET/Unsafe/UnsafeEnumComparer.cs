@@ -26,6 +26,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace EnumsNET.Unsafe
 {
@@ -35,11 +36,22 @@ namespace EnumsNET.Unsafe
     /// <typeparam name="TEnum"></typeparam>
     public sealed class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
     {
+        private static UnsafeEnumComparer<TEnum> _instance;
+
         /// <summary>
-        /// Constructor for an efficient type-unsafe enum comparer which doesn't box the values for use with generics
+        /// The singleton instance of the <see cref="UnsafeEnumComparer{TEnum}"/>. 
         /// </summary>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public UnsafeEnumComparer()
+        public static UnsafeEnumComparer<TEnum> Instance
+        {
+            get
+            {
+                UnsafeEnumComparer<TEnum> instance;
+                return _instance ?? (Interlocked.CompareExchange(ref _instance, (instance = new UnsafeEnumComparer<TEnum>()), null) ?? instance);
+            }
+        }
+
+        private UnsafeEnumComparer()
         {
             UnsafeEnums.GetInfo<TEnum>();
         }
