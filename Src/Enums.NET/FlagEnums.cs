@@ -137,7 +137,7 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <returns>IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.</returns>
         [Pure]
-        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<[EnumConstraint] TEnum>(this TEnum value)
+        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.GetFlagMembers(value);
 
         /// <summary>
