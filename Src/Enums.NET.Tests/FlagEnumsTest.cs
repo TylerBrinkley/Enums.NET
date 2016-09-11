@@ -438,42 +438,6 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsParseOrDefault_ReturnsValidValue_WhenUsingValidName()
-        {
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlagsOrDefault("Blue", ColorFlagEnum.Red));
-        }
-
-        [Test]
-        public void FlagEnumsParseOrDefault_ReturnsValidValue_WhenUsingValidNumber()
-        {
-            Assert.AreEqual(ColorFlagEnum.Blue, FlagEnums.ParseFlagsOrDefault("+4", ColorFlagEnum.Red));
-        }
-
-        [Test]
-        public void FlagEnumsParseOrDefault_ReturnsDefaultValue_WhenUsingInvalidName()
-        {
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlagsOrDefault(null, ColorFlagEnum.Red));
-        }
-
-        [Test]
-        public void FlagEnumsParseOrDefault_ReturnsValidValue_WhenUsingInvalidNumber()
-        {
-            Assert.AreEqual((ColorFlagEnum)16, FlagEnums.ParseFlagsOrDefault("16", ColorFlagEnum.Red));
-        }
-
-        [Test]
-        public void FlagEnumsParseOrDefault_UsesDefaultDelimiter_WhenUsingNullDelimiter()
-        {
-            Assert.AreEqual(FlagEnums.ParseFlagsOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseFlagsOrDefault("Red, Green", null, ColorFlagEnum.Green));
-        }
-
-        [Test]
-        public void FlagEnumsParseOrDefault_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
-        {
-            Assert.AreEqual(FlagEnums.ParseFlagsOrDefault("Red, Green", ColorFlagEnum.Green), FlagEnums.ParseFlagsOrDefault("Red, Green", string.Empty, ColorFlagEnum.Green));
-        }
-
-        [Test]
         public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidName()
         {
             ColorFlagEnum result;

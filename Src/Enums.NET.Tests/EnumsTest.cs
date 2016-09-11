@@ -412,65 +412,6 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void ToObjectOrDefault_ReturnsValidResult_WhenUsingValidValue()
-        {
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault((sbyte)1, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault((byte)1, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault((short)1, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault((ushort)1, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault(1, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault(1U, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault(1L, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Red, ToObjectOrDefault(1UL, ColorFlagEnum.Blue));
-        }
-
-        [Test]
-        public void ToObjectOrDefault_ReturnsDefaultValue_WhenUsingValueInRangeButNotValidButCheckIsOff()
-        {
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault((sbyte)16, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault((byte)16, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault((short)16, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault((ushort)16, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault(16, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault(16U, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault(16L, ColorFlagEnum.Blue, false));
-            Assert.AreEqual((ColorFlagEnum)16, ToObjectOrDefault(16UL, ColorFlagEnum.Blue, false));
-        }
-
-        [Test]
-        public void ToObjectOrDefault_ReturnsDefaultValue_WhenUsingValueInRangeButNotValid()
-        {
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((sbyte)16, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((byte)16, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((short)16, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((ushort)16, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16U, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16L, ColorFlagEnum.Blue, true));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(16UL, ColorFlagEnum.Blue, true));
-        }
-
-        [Test]
-        public void ToObjectOrDefault_ReturnsDefaultValue_WhenUsingValueOutOfRange()
-        {
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((byte)128, ColorFlagEnum.Blue, false));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((short)128, ColorFlagEnum.Blue, false));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((ushort)128, ColorFlagEnum.Blue, false));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128, ColorFlagEnum.Blue, false));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128U, ColorFlagEnum.Blue, false));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128L, ColorFlagEnum.Blue, false));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128UL, ColorFlagEnum.Blue, false));
-
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((byte)128, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((short)128, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault((ushort)128, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128U, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128L, ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Blue, ToObjectOrDefault(128UL, ColorFlagEnum.Blue));
-        }
-
-        [Test]
         public void TryToObject_ReturnsTrueAndValidValue_WhenUsingValidNumber()
         {
             SByteEnum sbyteResult;
