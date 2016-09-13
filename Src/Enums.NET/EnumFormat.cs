@@ -24,7 +24,10 @@
 #endregion
 
 using System.ComponentModel;
+
+#if !NET20
 using System.Runtime.Serialization;
+#endif
 
 namespace EnumsNET
 {

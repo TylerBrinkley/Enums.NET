@@ -90,14 +90,6 @@ namespace EnumsNET
         public int CompareTo(TEnum value, TEnum other) => ToInt(value).CompareTo(ToInt(other));
         #endregion
 
-        #region IsValid
-        public bool IsValid(TEnum value) => _cache.IsValid(ToInt(value));
-        #endregion
-
-        #region IsDefined
-        public bool IsDefined(TEnum value) => _cache.IsDefined(ToInt(value));
-        #endregion
-
         #region ToObject
         public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (validate ? Validate((TEnum)value, nameof(value)) : (TEnum)value) : ToEnum(_cache.ToObject(value, validate));
 
@@ -136,6 +128,10 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
+        public bool IsValid(TEnum value) => _cache.IsValid(ToInt(value));
+
+        public bool IsDefined(TEnum value) => _cache.IsDefined(ToInt(value));
+
         public TEnum Validate(TEnum value, string paramName)
         {
             _cache.Validate(ToInt(value), paramName);

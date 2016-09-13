@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.Contracts;
 
 namespace EnumsNET.Unsafe
@@ -38,7 +37,7 @@ namespace EnumsNET.Unsafe
     {
         internal static IEnumInfo<TEnum> GetInfo<TEnum>()
         {
-            if (!typeof(TEnum).IsEnum)
+            if (!UnsafeEnums<TEnum>.IsEnum)
             {
                 throw new ArgumentException("Type argument TEnum must be an enum");
             }
@@ -1303,5 +1302,10 @@ namespace EnumsNET.Unsafe
         [Pure]
         public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result, parseFormatOrder);
         #endregion
+    }
+
+    internal static class UnsafeEnums<TEnum>
+    {
+        public static bool IsEnum { get; } = typeof(TEnum).IsEnum;
     }
 }

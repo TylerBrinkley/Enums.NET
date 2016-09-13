@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 
@@ -43,11 +42,7 @@ namespace EnumsNET.NonGeneric
     /// </summary>
     public static class NonGenericEnums
     {
-#if NET20 || NET35 || NETSTANDARD10
-        private static readonly ThreadSafeDictionary<Type, EnumInfoAndIsNullable> _enumInfosDictionary = new ThreadSafeDictionary<Type, EnumInfoAndIsNullable>();
-#else
         private static readonly ConcurrentDictionary<Type, EnumInfoAndIsNullable> _enumInfosDictionary = new ConcurrentDictionary<Type, EnumInfoAndIsNullable>();
-#endif
 
         internal static EnumInfoAndIsNullable GetInfoAndIsNullable(Type enumType)
         {

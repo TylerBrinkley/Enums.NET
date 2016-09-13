@@ -29,10 +29,17 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading;
 using EnumsNET.Collections;
 using EnumsNET.Numerics;
+
+#if !NET20
+using System.Runtime.Serialization;
+#endif
+
+#if !(NET20 || NET35 || NETSTANDARD10)
+using System.Collections.Concurrent;
+#endif
 
 namespace EnumsNET
 {
@@ -76,7 +83,7 @@ namespace EnumsNET
 
         private Dictionary<string, string> _ignoreCaseSet;
 
-        private ThreadSafeDictionary<EnumFormat, EnumParser> _customEnumParsers;
+        private ConcurrentDictionary<EnumFormat, EnumParser> _customEnumParsers;
         #endregion
 
         #region Properties
@@ -88,8 +95,9 @@ namespace EnumsNET
                 if (_ignoreCaseSet == null)
                 {
                     var ignoreCaseSet = new Dictionary<string, string>(GetEnumMemberCount(false), StringComparer.OrdinalIgnoreCase);
-                    foreach (var nameAndAttributes in _valueMap.SecondItems)
+                    foreach (var pair in _valueMap)
                     {
+                        var nameAndAttributes = pair.Second;
                         ignoreCaseSet[nameAndAttributes.Name] = nameAndAttributes.Name;
                     }
                     if (_duplicateValues != null)
@@ -682,14 +690,14 @@ namespace EnumsNET
                 switch (format)
                 {
                     case EnumFormat.DecimalValue:
-                        if (_provider.TryParse(value, NumberStyles.AllowLeadingSign, null, out valueAsTInt))
+                        if (_provider.TryParse(value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out valueAsTInt))
                         {
                             result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, this) : GetEnumMember(valueAsTInt);
                             return true;
                         }
                         break;
                     case EnumFormat.HexadecimalValue:
-                        if (_provider.TryParse(value, NumberStyles.AllowHexSpecifier, null, out valueAsTInt))
+                        if (_provider.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out valueAsTInt))
                         {
                             result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, this) : GetEnumMember(valueAsTInt);
                             return true;
@@ -715,7 +723,7 @@ namespace EnumsNET
                             var customEnumParsers = _customEnumParsers;
                             if (customEnumParsers == null)
                             {
-                                customEnumParsers = new ThreadSafeDictionary<EnumFormat, EnumParser>(EnumComparer<EnumFormat>.Instance);
+                                customEnumParsers = new ConcurrentDictionary<EnumFormat, EnumParser>(EnumComparer<EnumFormat>.Instance);
                                 customEnumParsers = Interlocked.CompareExchange(ref _customEnumParsers, customEnumParsers, null) ?? customEnumParsers;
                             }
                             customEnumParsers.TryAdd(format, parser);

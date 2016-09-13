@@ -38,7 +38,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Collections\ThreadSafeDictionary.cs" />
+    <Compile Include="Collections\ConcurrentDictionary.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumFormatValidatorAttribute.cs" />
