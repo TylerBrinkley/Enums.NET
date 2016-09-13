@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
@@ -163,5 +164,13 @@ namespace EnumsNET
         bool TryToObject(object value, out TEnum result, bool validate = false);
         bool TryToObject(long value, out TEnum result, bool validate = false);
         TEnum Validate(TEnum value, string paramName);
+    }
+
+    internal interface IInternalEnumInfo<TInt, TIntProvider>
+        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TIntProvider : struct, INumericProvider<TInt>
+    {
+        string CustomEnumMemberFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format);
+        bool? CustomValidate(TInt value);
     }
 }

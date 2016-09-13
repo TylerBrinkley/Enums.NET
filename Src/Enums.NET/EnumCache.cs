@@ -50,22 +50,6 @@ namespace EnumsNET
             char firstChar;
             return value.Length > 0 && (char.IsDigit((firstChar = value[0])) || firstChar == '-' || firstChar == '+');
         }
-
-        private static object GetCustomEnumValidator(Type enumType)
-        {
-            var validatorInterface = typeof(IEnumValidatorAttribute<>).MakeGenericType(enumType);
-            foreach (var attribute in enumType.GetCustomAttributes(false))
-            {
-                foreach (var attributeInterface in attribute.GetType().GetInterfaces())
-                {
-                    if (attributeInterface == validatorInterface)
-                    {
-                        return attribute;
-                    }
-                }
-            }
-            return null;
-        }
         #endregion
 
         #region Fields
@@ -81,9 +65,7 @@ namespace EnumsNET
 
         private readonly TInt _minDefined;
 
-        private readonly Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> _getCustomEnumMemberFormatter;
-
-        private readonly Func<TInt, bool> _customEnumValidator;
+        private readonly IInternalEnumInfo<TInt, TIntProvider> _enumInfo;
 
         // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
         // If constant contains a DescriptionAttribute it will be the first in the attribute array
@@ -124,15 +106,10 @@ namespace EnumsNET
         }
         #endregion
 
-        public EnumCache(Type enumType, Func<EnumFormat, Func<InternalEnumMember<TInt, TIntProvider>, string>> getCustomEnumMemberFormatter, Func<object, Func<TInt, bool>> getCustomEnumValidator)
+        public EnumCache(Type enumType, IInternalEnumInfo<TInt, TIntProvider> enumInfo)
         {
             _enumTypeName = enumType.Name;
-            _getCustomEnumMemberFormatter = getCustomEnumMemberFormatter;
-            var customEnumValidator = GetCustomEnumValidator(enumType);
-            if (customEnumValidator != null)
-            {
-                _customEnumValidator = getCustomEnumValidator(customEnumValidator);
-            }
+            _enumInfo = enumInfo;
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
             var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
@@ -263,30 +240,6 @@ namespace EnumsNET
                 }
             }
         }
-        #endregion
-
-        #region IsValid
-        public bool IsValid(object value)
-        {
-            Preconditions.NotNull(value, nameof(value));
-
-            TInt result;
-            return TryToObject(value, out result, true);
-        }
-
-        public bool IsValid(TInt value) => _customEnumValidator?.Invoke(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
-        #endregion
-
-        #region IsDefined
-        public bool IsDefined(object value)
-        {
-            Preconditions.NotNull(value, nameof(value));
-
-            TInt result;
-            return TryToObject(value, out result, false) && IsDefined(result);
-        }
-
-        public bool IsDefined(TInt value) => IsContiguous ? !(_provider.LessThan(value, _minDefined) || _provider.LessThan(_maxDefined, value)) : _valueMap.ContainsFirst(value);
         #endregion
 
         #region ToObject
@@ -431,6 +384,10 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
+        public bool IsValid(TInt value) => _enumInfo.CustomValidate(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
+
+        public bool IsDefined(TInt value) => IsContiguous ? !(_provider.LessThan(value, _minDefined) || _provider.LessThan(_maxDefined, value)) : _valueMap.ContainsFirst(value);
+
         public void Validate(TInt value, string paramName)
         {
             if (!IsValid(value))
@@ -519,12 +476,12 @@ namespace EnumsNET
                             return member.GetAttribute<EnumMemberAttribute>()?.Value;
 #endif
                         default:
-                            var customEnumMemberFormatter = _getCustomEnumMemberFormatter(format);
-                            if (customEnumMemberFormatter == null)
+                            if (member.IsDefined)
                             {
-                                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
+                                return _enumInfo.CustomEnumMemberFormat(member, format);
                             }
-                            return member.IsDefined ? customEnumMemberFormatter(member) : null;
+                            Enums.GetCustomEnumFormatIndex(format);
+                            return null;
                     }
             }
         }

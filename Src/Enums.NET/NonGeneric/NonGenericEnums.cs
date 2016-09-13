@@ -201,58 +201,6 @@ namespace EnumsNET.NonGeneric
         public static IEnumerable<object> GetValues(Type enumType, bool uniqueValued) => GetInfo(enumType).GetValues(uniqueValued);
         #endregion
 
-        #region IsValid
-        /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined or if <paramref name="enumType"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <paramref name="enumType"/>'s defined values.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value">must be an enum value, <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <returns>Indication whether the specified <paramref name="value"/> is defined or if <paramref name="enumType"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <paramref name="enumType"/>'s defined values.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is not or cannot be converted to enum of <paramref name="enumType"/>.</exception>
-        [Pure]
-        public static bool IsValid(Type enumType, object value)
-        {
-            var info = GetInfoAndIsNullable(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return true;
-            }
-
-            return info.EnumInfo.IsValid(value);
-        }
-        #endregion
-
-        #region IsDefined
-        /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined in <paramref name="enumType"/>.
-        /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value">must be an enum value, <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <returns>Indication whether <paramref name="value"/> is defined in <paramref name="enumType"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is not or cannot be converted to enum of <paramref name="enumType"/>.</exception>
-        [Pure]
-        public static bool IsDefined(Type enumType, object value)
-        {
-            var info = GetInfoAndIsNullable(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return false;
-            }
-
-            return info.EnumInfo.IsDefined(value);
-        }
-        #endregion
-
         #region ToObject
         /// <summary>
         /// Converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
@@ -819,6 +767,54 @@ namespace EnumsNET.NonGeneric
         #endregion
 
         #region All Values Main Methods
+        /// <summary>
+        /// Indicates whether <paramref name="value"/> is defined or if <paramref name="enumType"/> is marked with <see cref="FlagsAttribute"/>
+        /// whether it's a valid flag combination of <paramref name="enumType"/>'s defined values.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value">must be an enum value, <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
+        /// <returns>Indication whether the specified <paramref name="value"/> is defined or if <paramref name="enumType"/> is marked with <see cref="FlagsAttribute"/>
+        /// whether it's a valid flag combination of <paramref name="enumType"/>'s defined values.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is not or cannot be converted to enum of <paramref name="enumType"/>.</exception>
+        [Pure]
+        public static bool IsValid(Type enumType, object value)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return true;
+            }
+
+            return info.EnumInfo.IsValid(value);
+        }
+
+        /// <summary>
+        /// Indicates whether <paramref name="value"/> is defined in <paramref name="enumType"/>.
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="value">must be an enum value, <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
+        /// <returns>Indication whether <paramref name="value"/> is defined in <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is not or cannot be converted to enum of <paramref name="enumType"/>.</exception>
+        [Pure]
+        public static bool IsDefined(Type enumType, object value)
+        {
+            var info = GetInfoAndIsNullable(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return false;
+            }
+
+            return info.EnumInfo.IsDefined(value);
+        }
+
         /// <summary>
         /// Validates that <paramref name="value"/> is valid. If it's not it throws an <see cref="ArgumentException"/> with the given <paramref name="paramName"/>.
         /// </summary>

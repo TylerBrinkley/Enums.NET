@@ -29,6 +29,6 @@ namespace EnumsNET
 {
     internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
     {
-        public bool IsValid(EnumFormat value) => value.IsDefined() || Enums.GetCustomEnumMemberFormatter(value) != null;
+        public bool IsValid(EnumFormat value) => value.IsDefined() || Enums.CustomEnumFormatIsValid(value);
     }
 }

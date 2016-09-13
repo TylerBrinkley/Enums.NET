@@ -38,13 +38,11 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
-    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo
+    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IInternalEnumInfo<TInt, TIntProvider>
         where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private static readonly EnumCache<TInt, TIntProvider> _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), GetCustomEnumMemberFormatter, GetCustomEnumValidator);
-
 #if NET45
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
 #else
@@ -58,6 +56,14 @@ namespace EnumsNET
         [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
         internal static extern TEnum ToEnum(TInt value);
+
+        private readonly EnumCache<TInt, TIntProvider> _cache;
+        private readonly IEnumValidatorAttribute<TEnum> _customEnumValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetCustomEnumValidator(typeof(TEnum));
+
+        public EnumInfo()
+        {
+            _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), this);
+        }
 
         #region Enums
         #region Properties
@@ -283,15 +289,11 @@ namespace EnumsNET
         #endregion
 
         #region CustomEnumFormatters
-        private static Func<InternalEnumMember<TInt, TIntProvider>, string> GetCustomEnumMemberFormatter(EnumFormat format)
-        {
-            var formatter = Enums.GetCustomEnumMemberFormatter(format);
-            return formatter != null ? member => formatter(new EnumMember<TEnum, TInt, TIntProvider>(member)) : (Func<InternalEnumMember<TInt, TIntProvider>, string>)null;
-        }
+        public string CustomEnumMemberFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format) => Enums.CustomEnumMemberFormat(new EnumMember<TEnum, TInt, TIntProvider>(member), format);
         #endregion
 
         #region CustomEnumValidator
-        private static Func<TInt, bool> GetCustomEnumValidator(object customEnumValidator) => value => ((IEnumValidatorAttribute<TEnum>)customEnumValidator).IsValid(ToEnum(value));
+        public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
         #endregion
 
         #region NonGeneric
@@ -357,9 +359,9 @@ namespace EnumsNET
 
         public bool HasAnyFlags(object value, object otherFlags) => HasAnyFlags(ToObject(value), ToObject(otherFlags));
 
-        public bool IsDefined(object value) => value is TEnum || value is TEnum? ? IsDefined((TEnum)value) : _cache.IsDefined(value);
+        public bool IsDefined(object value) => IsDefined(ToObject(value));
 
-        public bool IsValid(object value) => value is TEnum || value is TEnum? ? IsValid((TEnum)value) : _cache.IsValid(value);
+        public bool IsValid(object value) => IsValid(ToObject(value));
 
         public bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
 

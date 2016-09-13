@@ -157,157 +157,6 @@ namespace EnumsNET.Tests
         }
         #endregion
 
-        #region IsValid
-        [Test]
-        public void IsValid_ReturnsSameResultAsIsValidFlagCombination_WhenUsingFlagEnum()
-        {
-            for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
-            {
-                var value = (ColorFlagEnum)i;
-                Assert.AreEqual(FlagEnums.IsValidFlagCombination(value), value.IsValid());
-            }
-        }
-
-        [Test]
-        public void IsValid()
-        {
-            for (int i = short.MinValue; i <= short.MaxValue; ++i)
-            {
-                var value = (DateFilterOperator)i;
-                Assert.AreEqual(Enum.IsDefined(typeof(DateFilterOperator), value), value.IsValid());
-            }
-
-            Assert.IsTrue(NonContiguousEnum.Cat.IsValid());
-            Assert.IsTrue(NonContiguousEnum.Dog.IsValid());
-            Assert.IsTrue(NonContiguousEnum.Chimp.IsValid());
-            Assert.IsTrue(NonContiguousEnum.Elephant.IsValid());
-            Assert.IsTrue(NonContiguousEnum.Whale.IsValid());
-            Assert.IsTrue(NonContiguousEnum.Eagle.IsValid());
-            Assert.IsFalse(((NonContiguousEnum)(-5)).IsValid());
-
-            Assert.IsTrue(UInt64FlagEnum.Flies.IsValid());
-            Assert.IsTrue(UInt64FlagEnum.Hops.IsValid());
-            Assert.IsTrue(UInt64FlagEnum.Runs.IsValid());
-            Assert.IsTrue(UInt64FlagEnum.Slithers.IsValid());
-            Assert.IsTrue(UInt64FlagEnum.Stationary.IsValid());
-            Assert.IsTrue(UInt64FlagEnum.Swims.IsValid());
-            Assert.IsTrue(UInt64FlagEnum.Walks.IsValid());
-            Assert.IsTrue((UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).IsValid());
-            Assert.IsTrue((UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).IsValid());
-            Assert.IsFalse(((UInt64FlagEnum)8).IsValid());
-            Assert.IsFalse(((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).IsValid());
-
-            Assert.IsTrue(ContiguousUInt64Enum.A.IsValid());
-            Assert.IsTrue(ContiguousUInt64Enum.B.IsValid());
-            Assert.IsTrue(ContiguousUInt64Enum.C.IsValid());
-            Assert.IsTrue(ContiguousUInt64Enum.D.IsValid());
-            Assert.IsTrue(ContiguousUInt64Enum.E.IsValid());
-            Assert.IsTrue(ContiguousUInt64Enum.F.IsValid());
-            Assert.IsFalse((ContiguousUInt64Enum.A - 1).IsValid());
-            Assert.IsFalse((ContiguousUInt64Enum.F + 1).IsValid());
-
-            Assert.IsTrue(NonContiguousUInt64Enum.SaintLouis.IsValid());
-            Assert.IsTrue(NonContiguousUInt64Enum.Chicago.IsValid());
-            Assert.IsTrue(NonContiguousUInt64Enum.Cincinnati.IsValid());
-            Assert.IsTrue(NonContiguousUInt64Enum.Pittsburg.IsValid());
-            Assert.IsTrue(NonContiguousUInt64Enum.Milwaukee.IsValid());
-            Assert.IsFalse(((NonContiguousUInt64Enum)5).IsValid());
-            Assert.IsFalse(((NonContiguousUInt64Enum)50000000UL).IsValid());
-
-            Assert.IsTrue(NumericOperator.Equals.IsValid());
-            Assert.IsTrue(NumericOperator.NotEquals.IsValid());
-            Assert.IsTrue(NumericOperator.GreaterThan.IsValid());
-            Assert.IsTrue(NumericOperator.LessThan.IsValid());
-            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.IsValid());
-            Assert.IsTrue(NumericOperator.NotLessThan.IsValid());
-            Assert.IsTrue(NumericOperator.LessThanOrEquals.IsValid());
-            Assert.IsTrue(NumericOperator.NotGreaterThan.IsValid());
-            Assert.IsTrue(NumericOperator.Between.IsValid());
-            Assert.IsTrue(NumericOperator.NotBetween.IsValid());
-            Assert.IsFalse((NumericOperator.Equals - 1).IsValid());
-            Assert.IsFalse((NumericOperator.NotBetween + 1).IsValid());
-        }
-
-        [Test]
-        public void IsValid_UsingValidator()
-        {
-            Assert.IsTrue(TypeNameHandling.None.IsValid());
-            Assert.IsTrue(TypeNameHandling.Objects.IsValid());
-            Assert.IsTrue(TypeNameHandling.Arrays.IsValid());
-            Assert.IsTrue(TypeNameHandling.All.IsValid());
-            Assert.IsTrue(TypeNameHandling.Auto.IsValid());
-            Assert.IsFalse((TypeNameHandling.Auto | TypeNameHandling.All).IsValid());
-        }
-        #endregion
-
-        #region IsDefined
-        [Test]
-        public void IsDefined()
-        {
-            for (int i = byte.MinValue; i <= byte.MaxValue; ++i)
-            {
-                var value = (ColorFlagEnum)i;
-                Assert.AreEqual(Enum.IsDefined(typeof(ColorFlagEnum), value), value.IsDefined());
-            }
-
-            for (int i = short.MinValue; i <= short.MaxValue; ++i)
-            {
-                var value = (DateFilterOperator)i;
-                Assert.AreEqual(Enum.IsDefined(typeof(DateFilterOperator), value), value.IsDefined());
-            }
-
-            Assert.IsTrue(NonContiguousEnum.Cat.IsDefined());
-            Assert.IsTrue(NonContiguousEnum.Dog.IsDefined());
-            Assert.IsTrue(NonContiguousEnum.Chimp.IsDefined());
-            Assert.IsTrue(NonContiguousEnum.Elephant.IsDefined());
-            Assert.IsTrue(NonContiguousEnum.Whale.IsDefined());
-            Assert.IsTrue(NonContiguousEnum.Eagle.IsDefined());
-            Assert.IsFalse(((NonContiguousEnum)(-5)).IsDefined());
-
-            Assert.IsTrue(UInt64FlagEnum.Flies.IsDefined());
-            Assert.IsTrue(UInt64FlagEnum.Hops.IsDefined());
-            Assert.IsTrue(UInt64FlagEnum.Runs.IsDefined());
-            Assert.IsTrue(UInt64FlagEnum.Slithers.IsDefined());
-            Assert.IsTrue(UInt64FlagEnum.Stationary.IsDefined());
-            Assert.IsTrue(UInt64FlagEnum.Swims.IsDefined());
-            Assert.IsTrue(UInt64FlagEnum.Walks.IsDefined());
-            Assert.IsFalse((UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).IsDefined());
-            Assert.IsFalse((UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).IsDefined());
-            Assert.IsFalse(((UInt64FlagEnum)8).IsDefined());
-            Assert.IsFalse(((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).IsDefined());
-
-            Assert.IsTrue(ContiguousUInt64Enum.A.IsDefined());
-            Assert.IsTrue(ContiguousUInt64Enum.B.IsDefined());
-            Assert.IsTrue(ContiguousUInt64Enum.C.IsDefined());
-            Assert.IsTrue(ContiguousUInt64Enum.D.IsDefined());
-            Assert.IsTrue(ContiguousUInt64Enum.E.IsDefined());
-            Assert.IsTrue(ContiguousUInt64Enum.F.IsDefined());
-            Assert.IsFalse((ContiguousUInt64Enum.A - 1).IsDefined());
-            Assert.IsFalse((ContiguousUInt64Enum.F + 1).IsDefined());
-
-            Assert.IsTrue(NonContiguousUInt64Enum.SaintLouis.IsDefined());
-            Assert.IsTrue(NonContiguousUInt64Enum.Chicago.IsDefined());
-            Assert.IsTrue(NonContiguousUInt64Enum.Cincinnati.IsDefined());
-            Assert.IsTrue(NonContiguousUInt64Enum.Pittsburg.IsDefined());
-            Assert.IsTrue(NonContiguousUInt64Enum.Milwaukee.IsDefined());
-            Assert.IsFalse(((NonContiguousUInt64Enum)5).IsDefined());
-            Assert.IsFalse(((NonContiguousUInt64Enum)50000000UL).IsDefined());
-
-            Assert.IsTrue(NumericOperator.Equals.IsDefined());
-            Assert.IsTrue(NumericOperator.NotEquals.IsDefined());
-            Assert.IsTrue(NumericOperator.GreaterThan.IsDefined());
-            Assert.IsTrue(NumericOperator.LessThan.IsDefined());
-            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.IsDefined());
-            Assert.IsTrue(NumericOperator.NotLessThan.IsDefined());
-            Assert.IsTrue(NumericOperator.LessThanOrEquals.IsDefined());
-            Assert.IsTrue(NumericOperator.NotGreaterThan.IsDefined());
-            Assert.IsTrue(NumericOperator.Between.IsDefined());
-            Assert.IsTrue(NumericOperator.NotBetween.IsDefined());
-            Assert.IsFalse((NumericOperator.Equals - 1).IsDefined());
-            Assert.IsFalse((NumericOperator.NotBetween + 1).IsDefined());
-        }
-        #endregion
-
         #region ToObject
         [Test]
         public void ToObject_ReturnsValidValue_WhenUsingValidNumber()
@@ -641,6 +490,153 @@ namespace EnumsNET.Tests
         #endregion
 
         #region All Values Main Methods
+        [Test]
+        public void IsValid_ReturnsSameResultAsIsValidFlagCombination_WhenUsingFlagEnum()
+        {
+            for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
+            {
+                var value = (ColorFlagEnum)i;
+                Assert.AreEqual(FlagEnums.IsValidFlagCombination(value), value.IsValid());
+            }
+        }
+
+        [Test]
+        public void IsValid()
+        {
+            for (int i = short.MinValue; i <= short.MaxValue; ++i)
+            {
+                var value = (DateFilterOperator)i;
+                Assert.AreEqual(Enum.IsDefined(typeof(DateFilterOperator), value), value.IsValid());
+            }
+
+            Assert.IsTrue(NonContiguousEnum.Cat.IsValid());
+            Assert.IsTrue(NonContiguousEnum.Dog.IsValid());
+            Assert.IsTrue(NonContiguousEnum.Chimp.IsValid());
+            Assert.IsTrue(NonContiguousEnum.Elephant.IsValid());
+            Assert.IsTrue(NonContiguousEnum.Whale.IsValid());
+            Assert.IsTrue(NonContiguousEnum.Eagle.IsValid());
+            Assert.IsFalse(((NonContiguousEnum)(-5)).IsValid());
+
+            Assert.IsTrue(UInt64FlagEnum.Flies.IsValid());
+            Assert.IsTrue(UInt64FlagEnum.Hops.IsValid());
+            Assert.IsTrue(UInt64FlagEnum.Runs.IsValid());
+            Assert.IsTrue(UInt64FlagEnum.Slithers.IsValid());
+            Assert.IsTrue(UInt64FlagEnum.Stationary.IsValid());
+            Assert.IsTrue(UInt64FlagEnum.Swims.IsValid());
+            Assert.IsTrue(UInt64FlagEnum.Walks.IsValid());
+            Assert.IsTrue((UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).IsValid());
+            Assert.IsTrue((UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).IsValid());
+            Assert.IsFalse(((UInt64FlagEnum)8).IsValid());
+            Assert.IsFalse(((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).IsValid());
+
+            Assert.IsTrue(ContiguousUInt64Enum.A.IsValid());
+            Assert.IsTrue(ContiguousUInt64Enum.B.IsValid());
+            Assert.IsTrue(ContiguousUInt64Enum.C.IsValid());
+            Assert.IsTrue(ContiguousUInt64Enum.D.IsValid());
+            Assert.IsTrue(ContiguousUInt64Enum.E.IsValid());
+            Assert.IsTrue(ContiguousUInt64Enum.F.IsValid());
+            Assert.IsFalse((ContiguousUInt64Enum.A - 1).IsValid());
+            Assert.IsFalse((ContiguousUInt64Enum.F + 1).IsValid());
+
+            Assert.IsTrue(NonContiguousUInt64Enum.SaintLouis.IsValid());
+            Assert.IsTrue(NonContiguousUInt64Enum.Chicago.IsValid());
+            Assert.IsTrue(NonContiguousUInt64Enum.Cincinnati.IsValid());
+            Assert.IsTrue(NonContiguousUInt64Enum.Pittsburg.IsValid());
+            Assert.IsTrue(NonContiguousUInt64Enum.Milwaukee.IsValid());
+            Assert.IsFalse(((NonContiguousUInt64Enum)5).IsValid());
+            Assert.IsFalse(((NonContiguousUInt64Enum)50000000UL).IsValid());
+
+            Assert.IsTrue(NumericOperator.Equals.IsValid());
+            Assert.IsTrue(NumericOperator.NotEquals.IsValid());
+            Assert.IsTrue(NumericOperator.GreaterThan.IsValid());
+            Assert.IsTrue(NumericOperator.LessThan.IsValid());
+            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.IsValid());
+            Assert.IsTrue(NumericOperator.NotLessThan.IsValid());
+            Assert.IsTrue(NumericOperator.LessThanOrEquals.IsValid());
+            Assert.IsTrue(NumericOperator.NotGreaterThan.IsValid());
+            Assert.IsTrue(NumericOperator.Between.IsValid());
+            Assert.IsTrue(NumericOperator.NotBetween.IsValid());
+            Assert.IsFalse((NumericOperator.Equals - 1).IsValid());
+            Assert.IsFalse((NumericOperator.NotBetween + 1).IsValid());
+        }
+
+        [Test]
+        public void IsValid_UsingValidator()
+        {
+            Assert.IsTrue(TypeNameHandling.None.IsValid());
+            Assert.IsTrue(TypeNameHandling.Objects.IsValid());
+            Assert.IsTrue(TypeNameHandling.Arrays.IsValid());
+            Assert.IsTrue(TypeNameHandling.All.IsValid());
+            Assert.IsTrue(TypeNameHandling.Auto.IsValid());
+            Assert.IsFalse((TypeNameHandling.Auto | TypeNameHandling.All).IsValid());
+        }
+
+        [Test]
+        public void IsDefined()
+        {
+            for (int i = byte.MinValue; i <= byte.MaxValue; ++i)
+            {
+                var value = (ColorFlagEnum)i;
+                Assert.AreEqual(Enum.IsDefined(typeof(ColorFlagEnum), value), value.IsDefined());
+            }
+
+            for (int i = short.MinValue; i <= short.MaxValue; ++i)
+            {
+                var value = (DateFilterOperator)i;
+                Assert.AreEqual(Enum.IsDefined(typeof(DateFilterOperator), value), value.IsDefined());
+            }
+
+            Assert.IsTrue(NonContiguousEnum.Cat.IsDefined());
+            Assert.IsTrue(NonContiguousEnum.Dog.IsDefined());
+            Assert.IsTrue(NonContiguousEnum.Chimp.IsDefined());
+            Assert.IsTrue(NonContiguousEnum.Elephant.IsDefined());
+            Assert.IsTrue(NonContiguousEnum.Whale.IsDefined());
+            Assert.IsTrue(NonContiguousEnum.Eagle.IsDefined());
+            Assert.IsFalse(((NonContiguousEnum)(-5)).IsDefined());
+
+            Assert.IsTrue(UInt64FlagEnum.Flies.IsDefined());
+            Assert.IsTrue(UInt64FlagEnum.Hops.IsDefined());
+            Assert.IsTrue(UInt64FlagEnum.Runs.IsDefined());
+            Assert.IsTrue(UInt64FlagEnum.Slithers.IsDefined());
+            Assert.IsTrue(UInt64FlagEnum.Stationary.IsDefined());
+            Assert.IsTrue(UInt64FlagEnum.Swims.IsDefined());
+            Assert.IsTrue(UInt64FlagEnum.Walks.IsDefined());
+            Assert.IsFalse((UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).IsDefined());
+            Assert.IsFalse((UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).IsDefined());
+            Assert.IsFalse(((UInt64FlagEnum)8).IsDefined());
+            Assert.IsFalse(((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).IsDefined());
+
+            Assert.IsTrue(ContiguousUInt64Enum.A.IsDefined());
+            Assert.IsTrue(ContiguousUInt64Enum.B.IsDefined());
+            Assert.IsTrue(ContiguousUInt64Enum.C.IsDefined());
+            Assert.IsTrue(ContiguousUInt64Enum.D.IsDefined());
+            Assert.IsTrue(ContiguousUInt64Enum.E.IsDefined());
+            Assert.IsTrue(ContiguousUInt64Enum.F.IsDefined());
+            Assert.IsFalse((ContiguousUInt64Enum.A - 1).IsDefined());
+            Assert.IsFalse((ContiguousUInt64Enum.F + 1).IsDefined());
+
+            Assert.IsTrue(NonContiguousUInt64Enum.SaintLouis.IsDefined());
+            Assert.IsTrue(NonContiguousUInt64Enum.Chicago.IsDefined());
+            Assert.IsTrue(NonContiguousUInt64Enum.Cincinnati.IsDefined());
+            Assert.IsTrue(NonContiguousUInt64Enum.Pittsburg.IsDefined());
+            Assert.IsTrue(NonContiguousUInt64Enum.Milwaukee.IsDefined());
+            Assert.IsFalse(((NonContiguousUInt64Enum)5).IsDefined());
+            Assert.IsFalse(((NonContiguousUInt64Enum)50000000UL).IsDefined());
+
+            Assert.IsTrue(NumericOperator.Equals.IsDefined());
+            Assert.IsTrue(NumericOperator.NotEquals.IsDefined());
+            Assert.IsTrue(NumericOperator.GreaterThan.IsDefined());
+            Assert.IsTrue(NumericOperator.LessThan.IsDefined());
+            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.IsDefined());
+            Assert.IsTrue(NumericOperator.NotLessThan.IsDefined());
+            Assert.IsTrue(NumericOperator.LessThanOrEquals.IsDefined());
+            Assert.IsTrue(NumericOperator.NotGreaterThan.IsDefined());
+            Assert.IsTrue(NumericOperator.Between.IsDefined());
+            Assert.IsTrue(NumericOperator.NotBetween.IsDefined());
+            Assert.IsFalse((NumericOperator.Equals - 1).IsDefined());
+            Assert.IsFalse((NumericOperator.NotBetween + 1).IsDefined());
+        }
+
         [Test]
         public void Validate()
         {

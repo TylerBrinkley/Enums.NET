@@ -155,32 +155,6 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<TEnum> GetValues<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetValues(uniqueValued);
         #endregion
 
-        #region IsValid
-        /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication whether the specified <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Pure]
-        public static bool IsValid<TEnum>(TEnum value) => GetInfo<TEnum>().IsValid(value);
-        #endregion
-
-        #region IsDefined
-        /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Pure]
-        public static bool IsDefined<TEnum>(TEnum value) => GetInfo<TEnum>().IsDefined(value);
-        #endregion
-
         #region ToObject
         /// <summary>
         /// Converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
@@ -690,6 +664,28 @@ namespace EnumsNET.Unsafe
         #endregion
 
         #region All Values Main Methods
+        /// <summary>
+        /// Indicates whether <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
+        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns>Indication whether the specified <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
+        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Pure]
+        public static bool IsValid<TEnum>(TEnum value) => GetInfo<TEnum>().IsValid(value);
+
+        /// <summary>
+        /// Indicates whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns>Indication whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Pure]
+        public static bool IsDefined<TEnum>(TEnum value) => GetInfo<TEnum>().IsDefined(value);
+
         /// <summary>
         /// Validates that <paramref name="value"/> is valid. If it's not it throws an <see cref="ArgumentException"/> with the given <paramref name="paramName"/>.
         /// </summary>
