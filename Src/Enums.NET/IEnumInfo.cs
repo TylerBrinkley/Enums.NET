@@ -170,7 +170,7 @@ namespace EnumsNET
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        string CustomEnumMemberFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format);
+        EnumMember CreateEnumMember(InternalEnumMember<TInt, TIntProvider> member);
         bool? CustomValidate(TInt value);
     }
 }

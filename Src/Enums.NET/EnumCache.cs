@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using EnumsNET.Collections;
 using EnumsNET.Numerics;
 
 #if !NET20
@@ -39,6 +38,8 @@ using System.Runtime.Serialization;
 
 #if !(NET20 || NET35 || NETSTANDARD10)
 using System.Collections.Concurrent;
+#else
+using EnumsNET.Collections;
 #endif
 
 namespace EnumsNET
@@ -66,67 +67,37 @@ namespace EnumsNET
 
         internal readonly bool IsContiguous;
 
+        internal readonly IInternalEnumInfo<TInt, TIntProvider> EnumInfo;
+
         private readonly string _enumTypeName;
 
         private readonly TInt _maxDefined;
 
         private readonly TInt _minDefined;
 
-        private readonly IInternalEnumInfo<TInt, TIntProvider> _enumInfo;
-
         // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
         // If constant contains a DescriptionAttribute it will be the first in the attribute array
-        private readonly OrderedBiDirectionalDictionary<TInt, NameAndAttributes> _valueMap;
+        private readonly Dictionary<TInt, InternalEnumMember<TInt, TIntProvider>> _valueMap;
 
         // Duplicate values are stored here with a key of the constant's name, is null if no duplicates
-        private readonly Dictionary<string, ValueAndAttributes<TInt>> _duplicateValues;
-
-        private Dictionary<string, string> _ignoreCaseSet;
+        private readonly Dictionary<string, InternalEnumMember<TInt, TIntProvider>> _duplicateValues;
 
         private ConcurrentDictionary<EnumFormat, EnumParser> _customEnumParsers;
-        #endregion
-
-        #region Properties
-        // Enables case insensitive parsing, lazily instantiated to reduce memory usage if not going to use this feature, is thread-safe as it's only used for retrieval
-        private Dictionary<string, string> IgnoreCaseSet
-        {
-            get
-            {
-                if (_ignoreCaseSet == null)
-                {
-                    var ignoreCaseSet = new Dictionary<string, string>(GetEnumMemberCount(false), StringComparer.OrdinalIgnoreCase);
-                    foreach (var pair in _valueMap)
-                    {
-                        var nameAndAttributes = pair.Second;
-                        ignoreCaseSet[nameAndAttributes.Name] = nameAndAttributes.Name;
-                    }
-                    if (_duplicateValues != null)
-                    {
-                        foreach (var name in _duplicateValues.Keys)
-                        {
-                            ignoreCaseSet[name] = name;
-                        }
-                    }
-                    _ignoreCaseSet = ignoreCaseSet;
-                }
-                return _ignoreCaseSet;
-            }
-        }
         #endregion
 
         public EnumCache(Type enumType, IInternalEnumInfo<TInt, TIntProvider> enumInfo)
         {
             _enumTypeName = enumType.Name;
-            _enumInfo = enumInfo;
+            EnumInfo = enumInfo;
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
             var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-            _valueMap = new OrderedBiDirectionalDictionary<TInt, NameAndAttributes>(fields.Length);
+            _valueMap = new Dictionary<TInt, InternalEnumMember<TInt, TIntProvider>>(fields.Length);
             if (fields.Length == 0)
             {
                 return;
             }
-            var duplicateValues = new Dictionary<string, ValueAndAttributes<TInt>>();
+            var duplicateValues = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>();
             foreach (var field in fields)
             {
                 var value = (TInt)field.GetValue(null);
@@ -142,40 +113,44 @@ namespace EnumsNET
                         break;
                     }
                 }
-                var index = _valueMap.IndexOfFirst(value);
-                if (index < 0)
+                var member = new InternalEnumMember<TInt, TIntProvider>(value, name, attributes, this);
+                InternalEnumMember<TInt, TIntProvider> existing;
+                if (_valueMap.TryGetValue(value, out existing))
                 {
-                    for (index = _valueMap.Count; index > 0; --index)
+                    if (isPrimaryDupe)
                     {
-                        var mapValue = _valueMap.GetFirstAt(index - 1);
-                        if (!_provider.LessThan(value, mapValue))
-                        {
-                            break;
-                        }
+                        _valueMap[value] = member;
+                        member = existing;
                     }
-                    _valueMap.Insert(index, value, new NameAndAttributes(name, attributes));
+                    duplicateValues.Add(member.Name, member);
+                }
+                else
+                {
+                    _valueMap.Add(value, member);
                     if (IsPowerOfTwo(value))
                     {
                         AllFlags = _provider.Or(AllFlags, value);
                     }
                 }
-                else
-                {
-                    if (isPrimaryDupe)
-                    {
-                        var nameAndAttributes = _valueMap.GetSecondAt(index);
-                        _valueMap.ReplaceSecondAt(index, new NameAndAttributes(name, attributes));
-                        name = nameAndAttributes.Name;
-                        attributes = nameAndAttributes.Attributes;
-                    }
-                    duplicateValues.Add(name, new ValueAndAttributes<TInt>(value, attributes));
-                }
             }
-            _maxDefined = _valueMap.GetFirstAt(_valueMap.Count - 1);
-            _minDefined = _valueMap.GetFirstAt(0);
+
+            // Makes sure is in increasing order, due to no removals
+#if NET20
+            var values = _valueMap.ToArray();
+            Array.Sort(values, (first, second) => first.Key.CompareTo(second.Key));
+#else
+            var values = _valueMap.OrderBy(pair => pair.Key).ToArray();
+#endif
+            _valueMap = new Dictionary<TInt, InternalEnumMember<TInt, TIntProvider>>(_valueMap.Count);
+            foreach (var pair in values)
+            {
+                _valueMap.Add(pair.Key, pair.Value);
+            }
+
+            _maxDefined = values[values.Length - 1].Key;
+            _minDefined = values[0].Key;
             IsContiguous = _provider.Subtract(_maxDefined, _provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
 
-            _valueMap.TrimExcess();
             if (duplicateValues.Count > 0)
             {
                 // Makes sure is in increasing order, due to no removals
@@ -183,9 +158,9 @@ namespace EnumsNET
                 var dupes = duplicateValues.ToArray();
                 Array.Sort(dupes, (first, second) => first.Value.Value.CompareTo(second.Value.Value));
 #else
-                var dupes = duplicateValues.OrderBy(pair => pair.Value.Value).ToList();
+                var dupes = duplicateValues.OrderBy(pair => pair.Value.Value).ToArray();
 #endif
-                _duplicateValues = new Dictionary<string, ValueAndAttributes<TInt>>(duplicateValues.Count);
+                _duplicateValues = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(duplicateValues.Count);
                 foreach (var pair in dupes)
                 {
                     _duplicateValues.Add(pair.Key, pair.Value);
@@ -198,12 +173,10 @@ namespace EnumsNET
         public int GetEnumMemberCount(bool uniqueValued) => _valueMap.Count + (uniqueValued ? 0 : _duplicateValues?.Count ?? 0);
 
         public IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetEnumMembers(bool uniqueValued) => uniqueValued || _duplicateValues == null
-            ? _valueMap.Select(pair => new InternalEnumMember<TInt, TIntProvider>(pair.First, pair.Second.Name, pair.Second.Attributes, this))
+            ? _valueMap.Values
             : GetAllEnumMembersInValueOrder();
 
         public IEnumerable<string> GetNames(bool uniqueValued) => GetEnumMembers(uniqueValued).Select(member => member.Name);
-
-        public IEnumerable<TInt> GetValues(bool uniqueValued) => GetEnumMembers(uniqueValued).Select(member => member.Value);
 
         private IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetAllEnumMembersInValueOrder()
         {
@@ -220,14 +193,9 @@ namespace EnumsNET
                     var count = GetEnumMemberCount(false);
                     for (var i = 0; i < count; ++i)
                     {
-                        TInt value;
-                        string name;
-                        Attribute[] attributes;
-                        if (dupeIsActive && (!mainIsActive || _provider.LessThan(dupePair.Value.Value, mainPair.First)))
+                        if (dupeIsActive && (!mainIsActive || _provider.LessThan(dupePair.Value.Value, mainPair.Key)))
                         {
-                            value = dupePair.Value.Value;
-                            name = dupePair.Key;
-                            attributes = dupePair.Value.Attributes;
+                            yield return dupePair.Value;
                             if (dupeIsActive = dupeEnumerator.MoveNext())
                             {
                                 dupePair = dupeEnumerator.Current;
@@ -235,15 +203,12 @@ namespace EnumsNET
                         }
                         else
                         {
-                            value = mainPair.First;
-                            name = mainPair.Second.Name;
-                            attributes = mainPair.Second.Attributes;
+                            yield return mainPair.Value;
                             if (mainIsActive = mainEnumerator.MoveNext())
                             {
                                 mainPair = mainEnumerator.Current;
                             }
                         }
-                        yield return new InternalEnumMember<TInt, TIntProvider>(value, name, attributes, this);
                     }
                 }
             }
@@ -392,9 +357,9 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
-        public bool IsValid(TInt value) => _enumInfo.CustomValidate(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
+        public bool IsValid(TInt value) => EnumInfo.CustomValidate(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
 
-        public bool IsDefined(TInt value) => IsContiguous ? !(_provider.LessThan(value, _minDefined) || _provider.LessThan(_maxDefined, value)) : _valueMap.ContainsFirst(value);
+        public bool IsDefined(TInt value) => IsContiguous ? !(_provider.LessThan(value, _minDefined) || _provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
 
         public void Validate(TInt value, string paramName)
         {
@@ -404,25 +369,26 @@ namespace EnumsNET
             }
         }
 
-        public string AsString(TInt value) => InternalAsString(value, new InternalEnumMember<TInt, TIntProvider>());
+        public string AsString(TInt value) => InternalAsString(value, null);
 
         internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member) => IsFlagEnum ? InternalFormatFlags(value, member, null, null) : InternalFormat(value, member, EnumFormat.Name, EnumFormat.DecimalValue);
 
         public string AsString(TInt value, EnumFormat format)
         {
-            var member = new InternalEnumMember<TInt, TIntProvider>();
-            return InternalFormat(value, ref member, format);
+            var isInitialized = false;
+            InternalEnumMember<TInt, TIntProvider> member = null;
+            return InternalFormat(value, ref isInitialized, ref member, format);
         }
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), format0, format1);
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => InternalFormat(value, null, format0, format1);
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), format0, format1, format2);
+        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => InternalFormat(value, null, format0, format1, format2);
 
-        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(value, new InternalEnumMember<TInt, TIntProvider>(), formatOrder);
+        public string AsString(TInt value, EnumFormat[] formatOrder) => InternalAsString(value, null, formatOrder);
 
         internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder) => formatOrder?.Length > 0 ? InternalFormat(value, member, formatOrder) : InternalAsString(value, member);
 
-        public string AsString(TInt value, string format) => InternalAsString(value, new InternalEnumMember<TInt, TIntProvider>(), format);
+        public string AsString(TInt value, string format) => InternalAsString(value, null, format);
 
         internal string InternalAsString(TInt value, InternalEnumMember<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? InternalAsString(value, member) : InternalFormat(value, member, format);
 
@@ -430,14 +396,14 @@ namespace EnumsNET
         {
             Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), formatOrder);
+            return InternalFormat(value, null, formatOrder);
         }
 
         public string Format(TInt value, string format)
         {
             Preconditions.NotNull(format, nameof(format));
 
-            return InternalFormat(value, new InternalEnumMember<TInt, TIntProvider>(), format);
+            return InternalFormat(value, null, format);
         }
 
         internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, string format)
@@ -460,34 +426,35 @@ namespace EnumsNET
             throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
         }
 
-        internal string InternalFormat(TInt value, ref InternalEnumMember<TInt, TIntProvider> member, EnumFormat format)
+        internal string InternalFormat(TInt value, ref bool isInitialized, ref InternalEnumMember<TInt, TIntProvider> member, EnumFormat format)
         {
             switch (format)
             {
                 case EnumFormat.DecimalValue:
-                    return value.ToString("D", null);
                 case EnumFormat.HexadecimalValue:
-                    return value.ToString(_provider.HexFormatString, null);
+                    return value.ToString(format == EnumFormat.DecimalValue ? "D" : _provider.HexFormatString, null);
                 default:
-                    if (!member.IsInitialized)
+                    if (!isInitialized)
                     {
                         member = GetEnumMember(value);
+                        isInitialized = true;
                     }
                     switch (format)
                     {
                         case EnumFormat.Name:
-                            return member.Name;
+                            return member?.Name;
                         case EnumFormat.Description:
-                            return member.GetAttribute<DescriptionAttribute>()?.Description;
+                            return member?.GetAttribute<DescriptionAttribute>()?.Description;
 #if !NET20
                         case EnumFormat.EnumMemberValue:
-                            return member.GetAttribute<EnumMemberAttribute>()?.Value;
+                            return member?.GetAttribute<EnumMemberAttribute>()?.Value;
 #endif
                         default:
-                            if (member.IsDefined)
+                            if (member != null)
                             {
-                                return _enumInfo.CustomEnumMemberFormat(member, format);
+                                return Enums.CustomEnumMemberFormat(member.EnumMember, format);
                             }
+                            // Validates format
                             Enums.GetCustomEnumFormatIndex(format);
                             return null;
                     }
@@ -496,19 +463,22 @@ namespace EnumsNET
 
         internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1)
         {
-            return InternalFormat(value, ref member, format0) ?? InternalFormat(value, ref member, format1);
+            var isInitialized = member != null;
+            return InternalFormat(value, ref isInitialized, ref member, format0) ?? InternalFormat(value, ref isInitialized, ref member, format1);
         }
 
         internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
-            return InternalFormat(value, ref member, format0) ?? InternalFormat(value, ref member, format1) ?? InternalFormat(value, ref member, format2);
+            var isInitialized = member != null;
+            return InternalFormat(value, ref isInitialized, ref member, format0) ?? InternalFormat(value, ref isInitialized, ref member, format1) ?? InternalFormat(value, ref isInitialized, ref member, format2);
         }
 
         internal string InternalFormat(TInt value, InternalEnumMember<TInt, TIntProvider> member, EnumFormat[] formatOrder)
         {
+            var isInitialized = member != null;
             foreach (var format in formatOrder)
             {
-                var formattedValue = InternalFormat(value, ref member, format);
+                var formattedValue = InternalFormat(value, ref isInitialized, ref member, format);
                 if (formattedValue != null)
                 {
                     return formattedValue;
@@ -521,65 +491,34 @@ namespace EnumsNET
         #region Defined Values Main Methods
         public InternalEnumMember<TInt, TIntProvider> GetEnumMember(TInt value)
         {
-            var index = _valueMap.IndexOfFirst(value);
-            if (index >= 0)
-            {
-                var nameAndAttributes = _valueMap.GetSecondAt(index);
-                return new InternalEnumMember<TInt, TIntProvider>(value, nameAndAttributes.Name, nameAndAttributes.Attributes, this);
-            }
-            return new InternalEnumMember<TInt, TIntProvider>(value, null, null, this);
+            InternalEnumMember<TInt, TIntProvider> member;
+            _valueMap.TryGetValue(value, out member);
+            return member;
         }
 
         public InternalEnumMember<TInt, TIntProvider> GetEnumMember(string name, bool ignoreCase)
         {
             Preconditions.NotNull(name, nameof(name));
 
-            return InternalGetEnumMember(name, ignoreCase);
+            InternalEnumMember<TInt, TIntProvider> member;
+            InternalTryParse(name, ignoreCase, out member, Enums.NameFormatArray, false);
+            return member;
         }
 
-        private InternalEnumMember<TInt, TIntProvider> InternalGetEnumMember(string name, bool ignoreCase)
-        {
-            var index = _valueMap.IndexOfSecond(new NameAndAttributes(name));
-            if (index < 0)
-            {
-                var valueAndAttributes = default(ValueAndAttributes<TInt>);
-                bool foundInDuplicates;
-                if (!(foundInDuplicates = (_duplicateValues?.TryGetValue(name, out valueAndAttributes)).GetValueOrDefault()))
-                {
-                    if (!(ignoreCase && IgnoreCaseSet.TryGetValue(name, out name)))
-                    {
-                        return new InternalEnumMember<TInt, TIntProvider>();
-                    }
-                    index = _valueMap.IndexOfSecond(new NameAndAttributes(name));
-                    if (index < 0)
-                    {
-                        valueAndAttributes = _duplicateValues[name];
-                        foundInDuplicates = true;
-                    }
-                }
-                if (foundInDuplicates)
-                {
-                    return new InternalEnumMember<TInt, TIntProvider>(valueAndAttributes.Value, name, valueAndAttributes.Attributes, this);
-                }
-            }
-            var pair = _valueMap.GetAt(index);
-            return new InternalEnumMember<TInt, TIntProvider>(pair.First, name, pair.Second.Attributes, this);
-        }
-
-        public string GetName(TInt value) => GetEnumMember(value).Name;
+        public string GetName(TInt value) => GetEnumMember(value)?.Name;
         #endregion
 
         #region Attributes
         public bool HasAttribute<TAttribute>(TInt value)
-            where TAttribute : Attribute => GetEnumMember(value).HasAttribute<TAttribute>();
+            where TAttribute : Attribute => GetEnumMember(value)?.HasAttribute<TAttribute>() ?? false;
 
         public TAttribute GetAttribute<TAttribute>(TInt value)
-            where TAttribute : Attribute => GetEnumMember(value).GetAttribute<TAttribute>();
+            where TAttribute : Attribute => GetEnumMember(value)?.GetAttribute<TAttribute>();
 
         public IEnumerable<TAttribute> GetAttributes<TAttribute>(TInt value)
-            where TAttribute : Attribute => GetEnumMember(value).GetAttributes<TAttribute>();
+            where TAttribute : Attribute => GetEnumMember(value)?.GetAttributes<TAttribute>();
 
-        public IEnumerable<Attribute> GetAttributes(TInt value) => GetEnumMember(value).Attributes;
+        public IEnumerable<Attribute> GetAttributes(TInt value) => GetEnumMember(value)?.Attributes;
         #endregion
 
         #region Parsing
@@ -678,7 +617,7 @@ namespace EnumsNET
                     return true;
                 }
             }
-            result = new InternalEnumMember<TInt, TIntProvider>();
+            result = null;
             return false;
         }
 
@@ -690,24 +629,10 @@ namespace EnumsNET
                 switch (format)
                 {
                     case EnumFormat.DecimalValue:
-                        if (_provider.TryParse(value, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out valueAsTInt))
-                        {
-                            result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, this) : GetEnumMember(valueAsTInt);
-                            return true;
-                        }
-                        break;
                     case EnumFormat.HexadecimalValue:
-                        if (_provider.TryParse(value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out valueAsTInt))
+                        if (_provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out valueAsTInt))
                         {
-                            result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, this) : GetEnumMember(valueAsTInt);
-                            return true;
-                        }
-                        break;
-                    case EnumFormat.Name:
-                        var member = InternalGetEnumMember(value, ignoreCase);
-                        if (member.IsDefined)
-                        {
-                            result = member;
+                            result = getValueOnly ? new InternalEnumMember<TInt, TIntProvider>(valueAsTInt, null, null, null) : GetEnumMember(valueAsTInt);
                             return true;
                         }
                         break;
@@ -735,7 +660,7 @@ namespace EnumsNET
                         break;
                 }
             }
-            result = new InternalEnumMember<TInt, TIntProvider>();
+            result = null;
             return false;
         }
         #endregion
@@ -745,7 +670,7 @@ namespace EnumsNET
         #region Main Methods
         public bool IsValidFlagCombination(TInt value) => _provider.And(AllFlags, value).Equals(value);
 
-        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(value, new InternalEnumMember<TInt, TIntProvider>(), delimiter, formatOrder);
+        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => InternalFormatFlags(value, null, delimiter, formatOrder);
 
         internal string InternalFormatFlags(TInt value, InternalEnumMember<TInt, TIntProvider> member, string delimiter, EnumFormat[] formatOrder)
         {
@@ -754,12 +679,12 @@ namespace EnumsNET
                 formatOrder = Enums.DefaultFormatOrder;
             }
 
-            if (!member.IsInitialized)
+            if (member == null)
             {
                 member = GetEnumMember(value);
             }
 
-            if (member.IsDefined || member.Value.Equals(_provider.Zero) || !IsValidFlagCombination(member.Value))
+            if (member != null || value.Equals(_provider.Zero) || !IsValidFlagCombination(value))
             {
                 return InternalFormat(value, member, formatOrder);
             }
@@ -770,7 +695,7 @@ namespace EnumsNET
             }
 
             return string.Join(delimiter,
-                GetFlags(member.Value).Select(flag => InternalFormat(value, GetEnumMember(flag), formatOrder))
+                GetFlags(value).Select(flag => InternalFormat(flag, GetEnumMember(flag), formatOrder))
 #if NET20 || NET35
                 .ToArray()
 #endif
@@ -974,7 +899,7 @@ namespace EnumsNET
 
             public EnumParser(EnumFormat format, EnumCache<TInt, TIntProvider> enumCache)
             {
-                _formatValueMap = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(enumCache.GetEnumMemberCount(false));
+                _formatValueMap = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(enumCache.GetEnumMemberCount(false), StringComparer.Ordinal);
                 foreach (var member in enumCache.GetEnumMembers(false))
                 {
                     var formattedValue = member.AsString(format);

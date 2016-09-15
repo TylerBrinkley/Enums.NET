@@ -30,29 +30,28 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal struct InternalEnumMember<TInt, TIntProvider> : IEnumMember
+    internal class InternalEnumMember<TInt, TIntProvider> : IEnumMember
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private readonly Attribute[] _attributes;
+        private readonly ReadOnlyCollection<Attribute> _attributes;
         private readonly EnumCache<TInt, TIntProvider> _enumCache;
 
         public TInt Value { get; }
 
         public string Name { get; }
 
-        public IEnumerable<Attribute> Attributes => IsDefined ? new ReadOnlyCollection<Attribute>(_attributes ?? Enums.EmptyAttributes) : null;
+        public IEnumerable<Attribute> Attributes => _attributes;
 
-        public bool IsDefined => Name != null;
-
-        public bool IsInitialized => _enumCache != null;
+        internal EnumMember EnumMember { get; }
 
         public InternalEnumMember(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
             Name = name;
-            _attributes = attributes;
+            _attributes = attributes != null ? new ReadOnlyCollection<Attribute>(attributes) : null;
             _enumCache = enumCache;
+            EnumMember = enumCache?.EnumInfo.CreateEnumMember(this);
         }
 
         public bool HasAttribute<TAttribute>()
@@ -61,15 +60,12 @@ namespace EnumsNET
         public TAttribute GetAttribute<TAttribute>()
             where TAttribute : Attribute
         {
-            if (_attributes != null)
+            foreach (var attribute in _attributes)
             {
-                foreach (var attribute in _attributes)
+                var castedAttr = attribute as TAttribute;
+                if (castedAttr != null)
                 {
-                    var castedAttr = attribute as TAttribute;
-                    if (castedAttr != null)
-                    {
-                        return castedAttr;
-                    }
+                    return castedAttr;
                 }
             }
             return null;
@@ -78,14 +74,6 @@ namespace EnumsNET
         public IEnumerable<TAttribute> GetAttributes<TAttribute>()
             where TAttribute : Attribute
         {
-            if (!IsDefined)
-            {
-                return null;
-            }
-            if (_attributes == null)
-            {
-                return new TAttribute[0];
-            }
             var attributes = new List<TAttribute>();
             foreach (var attribute in _attributes)
             {
@@ -108,7 +96,12 @@ namespace EnumsNET
 
         public string AsString(string format) => ToString(format);
 
-        public string AsString(EnumFormat format) => _enumCache.InternalFormat(Value, ref this, format);
+        public string AsString(EnumFormat format)
+        {
+            var isInitialized = true;
+            var member = this;
+            return _enumCache.InternalFormat(Value, ref isInitialized, ref member, format);
+        }
 
         public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(Value, this, format0, format1);
 

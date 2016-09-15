@@ -77,11 +77,7 @@ namespace EnumsNET
         #region Type Methods
         public int GetEnumMemberCount(bool uniqueValued) => _cache.GetEnumMemberCount(uniqueValued);
 
-        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => _cache.GetEnumMembers(uniqueValued).Select(member =>
-#if NET20 || NET35
-            (EnumMember<TEnum>)
-#endif
-            new EnumMember<TEnum, TInt, TIntProvider>(member));
+        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool uniqueValued) => _cache.GetEnumMembers(uniqueValued).Select(member => (EnumMember<TEnum>)member.EnumMember);
 
         public IEnumerable<string> GetNames(bool uniqueValued) => _cache.GetNames(uniqueValued);
 
@@ -178,11 +174,9 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMember<TEnum> GetEnumMember(TEnum value) => InternalGetEnumMember(_cache.GetEnumMember(ToInt(value)));
+        public EnumMember<TEnum> GetEnumMember(TEnum value) => (EnumMember<TEnum>)_cache.GetEnumMember(ToInt(value))?.EnumMember;
 
-        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase) => InternalGetEnumMember(_cache.GetEnumMember(name, ignoreCase));
-
-        private static EnumMember<TEnum> InternalGetEnumMember(InternalEnumMember<TInt, TIntProvider> member) => member.IsDefined ? new EnumMember<TEnum, TInt, TIntProvider>(member) : null;
+        public EnumMember<TEnum> GetEnumMember(string name, bool ignoreCase) => (EnumMember<TEnum>)_cache.GetEnumMember(name, ignoreCase)?.EnumMember;
 
         public string GetName(TEnum value) => _cache.GetName(ToInt(value));
         #endregion
@@ -200,7 +194,7 @@ namespace EnumsNET
         #region Parsing
         public TEnum Parse(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => ToEnum(_cache.Parse(value, ignoreCase, parseFormatOrder));
 
-        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => new EnumMember<TEnum, TInt, TIntProvider>(_cache.ParseMember(value, ignoreCase, parseFormatOrder));
+        public EnumMember<TEnum> ParseMember(string value, bool ignoreCase, EnumFormat[] parseFormatOrder) => (EnumMember<TEnum>)_cache.ParseMember(value, ignoreCase, parseFormatOrder)?.EnumMember;
 
         public bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] parseFormatOrder)
         {
@@ -215,7 +209,7 @@ namespace EnumsNET
             InternalEnumMember<TInt, TIntProvider> member;
             if (_cache.TryParseMember(value, ignoreCase, out member, parseFormatOrder))
             {
-                result = new EnumMember<TEnum, TInt, TIntProvider>(member);
+                result = (EnumMember<TEnum>)member.EnumMember;
                 return true;
             }
             result = null;
@@ -238,11 +232,7 @@ namespace EnumsNET
 
         public IEnumerable<TEnum> GetFlags(TEnum value) => _cache.GetFlags(ToInt(value)).Select(flag => ToEnum(flag));
 
-        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => _cache.GetFlagMembers(ToInt(value)).Select(flag =>
-#if NET20 || NET35
-            (EnumMember<TEnum>)
-#endif
-            new EnumMember<TEnum, TInt, TIntProvider>(flag));
+        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => _cache.GetFlagMembers(ToInt(value)).Select(flag => (EnumMember<TEnum>)flag.EnumMember);
 
         public bool HasAnyFlags(TEnum value) => _cache.HasAnyFlags(ToInt(value));
 
@@ -284,12 +274,10 @@ namespace EnumsNET
         #endregion
         #endregion
 
-        #region CustomEnumFormatters
-        public string CustomEnumMemberFormat(InternalEnumMember<TInt, TIntProvider> member, EnumFormat format) => Enums.CustomEnumMemberFormat(new EnumMember<TEnum, TInt, TIntProvider>(member), format);
-        #endregion
-
-        #region CustomEnumValidator
+        #region IInternalEnumInfo
         public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
+
+        public EnumMember CreateEnumMember(InternalEnumMember<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
         #endregion
 
         #region NonGeneric

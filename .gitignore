@@ -212,3 +212,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 /Working
 /Src/Enums.NET/Enums.NET.project.lock.json
+*project.lock.json

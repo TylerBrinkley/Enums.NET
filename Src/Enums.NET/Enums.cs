@@ -40,7 +40,7 @@ namespace EnumsNET
     {
         internal static readonly EnumFormat[] DefaultFormatOrder = { EnumFormat.Name, EnumFormat.DecimalValue };
 
-        internal static readonly Attribute[] EmptyAttributes = { };
+        internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
         private const int _startingCustomEnumFormatValue = 100;
 
