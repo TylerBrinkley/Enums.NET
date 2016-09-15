@@ -36,13 +36,5 @@ namespace EnumsNET
                 throw new ArgumentNullException(paramName);
             }
         }
-
-        public static void GreaterThanOrEqual(int value, string paramName, int comparisonValue)
-        {
-            if (value < comparisonValue)
-            {
-                throw new ArgumentOutOfRangeException(paramName, $"must be greater than or equal to {comparisonValue}");
-            }
-        }
     }
 }

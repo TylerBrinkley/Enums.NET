@@ -80,7 +80,7 @@ namespace EnumsNET
         private readonly Dictionary<TInt, InternalEnumMember<TInt, TIntProvider>> _valueMap;
 
         // Duplicate values are stored here with a key of the constant's name, is null if no duplicates
-        private readonly Dictionary<string, InternalEnumMember<TInt, TIntProvider>> _duplicateValues;
+        private readonly List<InternalEnumMember<TInt, TIntProvider>> _duplicateValues;
 
         private ConcurrentDictionary<EnumFormat, EnumParser> _customEnumParsers;
         #endregion
@@ -97,7 +97,7 @@ namespace EnumsNET
             {
                 return;
             }
-            var duplicateValues = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>();
+            var duplicateValues = new List<InternalEnumMember<TInt, TIntProvider>>();
             foreach (var field in fields)
             {
                 var value = (TInt)field.GetValue(null);
@@ -107,7 +107,7 @@ namespace EnumsNET
                 for (var i = 0; i < attributes.Length; ++i)
                 {
                     var attr = attributes[i];
-                    if (attr is PrimaryEnumMemberAttribute)
+                    if (attr is PrimaryAttribute)
                     {
                         isPrimaryDupe = true;
                         break;
@@ -122,7 +122,7 @@ namespace EnumsNET
                         _valueMap[value] = member;
                         member = existing;
                     }
-                    duplicateValues.Add(member.Name, member);
+                    duplicateValues.Add(member);
                 }
                 else
                 {
@@ -153,18 +153,9 @@ namespace EnumsNET
 
             if (duplicateValues.Count > 0)
             {
-                // Makes sure is in increasing order, due to no removals
-#if NET20
-                var dupes = duplicateValues.ToArray();
-                Array.Sort(dupes, (first, second) => first.Value.Value.CompareTo(second.Value.Value));
-#else
-                var dupes = duplicateValues.OrderBy(pair => pair.Value.Value).ToArray();
-#endif
-                _duplicateValues = new Dictionary<string, InternalEnumMember<TInt, TIntProvider>>(duplicateValues.Count);
-                foreach (var pair in dupes)
-                {
-                    _duplicateValues.Add(pair.Key, pair.Value);
-                }
+                // Makes sure is in increasing order
+                duplicateValues.Sort((first, second) => first.Value.CompareTo(second.Value));
+                _duplicateValues = duplicateValues;
             }
         }
 
@@ -189,16 +180,16 @@ namespace EnumsNET
                 {
                     var dupeIsActive = true;
                     dupeEnumerator.MoveNext();
-                    var dupePair = dupeEnumerator.Current;
+                    var dupeValue = dupeEnumerator.Current;
                     var count = GetEnumMemberCount(false);
                     for (var i = 0; i < count; ++i)
                     {
-                        if (dupeIsActive && (!mainIsActive || _provider.LessThan(dupePair.Value.Value, mainPair.Key)))
+                        if (dupeIsActive && (!mainIsActive || _provider.LessThan(dupeValue.Value, mainPair.Key)))
                         {
-                            yield return dupePair.Value;
+                            yield return dupeValue;
                             if (dupeIsActive = dupeEnumerator.MoveNext())
                             {
-                                dupePair = dupeEnumerator.Current;
+                                dupeValue = dupeEnumerator.Current;
                             }
                         }
                         else
@@ -509,9 +500,6 @@ namespace EnumsNET
         #endregion
 
         #region Attributes
-        public bool HasAttribute<TAttribute>(TInt value)
-            where TAttribute : Attribute => GetEnumMember(value)?.HasAttribute<TAttribute>() ?? false;
-
         public TAttribute GetAttribute<TAttribute>(TInt value)
             where TAttribute : Attribute => GetEnumMember(value)?.GetAttribute<TAttribute>();
 

@@ -37,7 +37,7 @@ namespace EnumsNET.Collections
         //private KeyCollection _keys;
         //private ValueCollection _values;
 
-        public int Count => _dictionary.Count;
+        //public int Count => _dictionary.Count;
 
         public TValue this[TKey key]
         {

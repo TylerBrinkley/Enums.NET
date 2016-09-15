@@ -30,7 +30,7 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal class InternalEnumMember<TInt, TIntProvider> : IEnumMember
+    internal sealed class InternalEnumMember<TInt, TIntProvider> : IEnumMember
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {

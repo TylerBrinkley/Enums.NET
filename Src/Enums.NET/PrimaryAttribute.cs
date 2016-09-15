@@ -32,7 +32,7 @@ namespace EnumsNET
     /// Extension methods will use the enum member marked with this attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class PrimaryEnumMemberAttribute : Attribute
+    public sealed class PrimaryAttribute : Attribute
     {
     }
 }

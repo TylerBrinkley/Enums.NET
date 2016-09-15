@@ -30,7 +30,7 @@ using ExtraConstraints;
 namespace EnumsNET
 {
     /// <summary>
-    /// An efficient type-safe enum comparer which doesn't box the values, to access use the Instance property
+    /// An efficient type-safe enum comparer which doesn't box the values, to access use the <see cref="EnumComparer{TEnum}.Instance"/> property
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     public sealed class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer

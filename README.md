@@ -5,7 +5,6 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.Serialization;
     using EnumsNET;
     using NUnit.Framework;
     using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
@@ -95,8 +94,8 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
         [Test]
         public void Attributes()
         {
-            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
-            Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
+            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryAttribute>());
+            Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryAttribute>());
             Assert.AreEqual("Is not", NumericOperator.NotEquals.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
             Assert.IsNull(NumericOperator.LessThan.GetEnumMember().GetAttribute<DescriptionAttribute>());
         }
@@ -137,13 +136,13 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
             NotEquals,
             [Symbol("<")]
             LessThan,
-            [PrimaryEnumMember]
+            [Primary]
             [Symbol(">=")]
             GreaterThanOrEquals,
             NotLessThan = GreaterThanOrEquals,
             [Symbol(">")]
             GreaterThan,
-            [PrimaryEnumMember]
+            [Primary]
             [Symbol("<=")]
             LessThanOrEquals,
             NotGreaterThan = LessThanOrEquals

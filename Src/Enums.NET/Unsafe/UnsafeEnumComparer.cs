@@ -31,7 +31,7 @@ using System.Threading;
 namespace EnumsNET.Unsafe
 {
     /// <summary>
-    /// An efficient type-unsafe enum comparer which doesn't box the values for use with generics
+    /// An efficient type-unsafe enum comparer which doesn't box the values for use with generics, to access use the <see cref="UnsafeEnumComparer{TEnum}.Instance"/> property
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     public sealed class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
@@ -53,6 +53,7 @@ namespace EnumsNET.Unsafe
 
         private UnsafeEnumComparer()
         {
+            // Validates TEnum is an enum
             UnsafeEnums.GetInfo<TEnum>();
         }
 

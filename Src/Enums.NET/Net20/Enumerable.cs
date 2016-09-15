@@ -57,16 +57,6 @@ namespace System.Linq
             }
         }
 
-        public static bool Any<T>(this IEnumerable<T> source)
-        {
-            Preconditions.NotNull(source, nameof(source));
-
-            using (var enumerator = source.GetEnumerator())
-            {
-                return enumerator.MoveNext();
-            }
-        }
-
         public static T[] ToArray<T>(this IEnumerable<T> source)
         {
             Preconditions.NotNull(source, nameof(source));
