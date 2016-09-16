@@ -94,8 +94,8 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
         [Test]
         public void Attributes()
         {
-            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryAttribute>());
-            Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryAttribute>());
+            Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
+            Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
             Assert.AreEqual("Is not", NumericOperator.NotEquals.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
             Assert.IsNull(NumericOperator.LessThan.GetEnumMember().GetAttribute<DescriptionAttribute>());
         }
@@ -136,13 +136,13 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
             NotEquals,
             [Symbol("<")]
             LessThan,
-            [Primary]
+            [PrimaryEnumMember]
             [Symbol(">=")]
             GreaterThanOrEquals,
             NotLessThan = GreaterThanOrEquals,
             [Symbol(">")]
             GreaterThan,
-            [Primary]
+            [PrimaryEnumMember]
             [Symbol("<=")]
             LessThanOrEquals,
             NotGreaterThan = LessThanOrEquals

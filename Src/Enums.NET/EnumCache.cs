@@ -107,7 +107,7 @@ namespace EnumsNET
                 for (var i = 0; i < attributes.Length; ++i)
                 {
                     var attr = attributes[i];
-                    if (attr is PrimaryAttribute)
+                    if (attr is PrimaryEnumMemberAttribute)
                     {
                         isPrimaryDupe = true;
                         break;

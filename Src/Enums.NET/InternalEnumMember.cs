@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
@@ -34,24 +35,31 @@ namespace EnumsNET
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private readonly ReadOnlyCollection<Attribute> _attributes;
+        private readonly Attribute[] _attributes;
         private readonly EnumCache<TInt, TIntProvider> _enumCache;
+        private EnumMember _enumMember;
 
         public TInt Value { get; }
 
         public string Name { get; }
 
-        public IEnumerable<Attribute> Attributes => _attributes;
+        public IEnumerable<Attribute> Attributes => new ReadOnlyCollection<Attribute>(_attributes);
 
-        internal EnumMember EnumMember { get; }
+        internal EnumMember EnumMember
+        {
+            get
+            {
+                EnumMember enumMember;
+                return _enumMember ?? Interlocked.CompareExchange(ref _enumMember, (enumMember = _enumCache.EnumInfo.CreateEnumMember(this)), null) ?? enumMember;
+            }
+        }
 
         public InternalEnumMember(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
             Name = name;
-            _attributes = attributes != null ? new ReadOnlyCollection<Attribute>(attributes) : null;
+            _attributes = attributes;
             _enumCache = enumCache;
-            EnumMember = enumCache?.EnumInfo.CreateEnumMember(this);
         }
 
         public bool HasAttribute<TAttribute>()
@@ -74,16 +82,14 @@ namespace EnumsNET
         public IEnumerable<TAttribute> GetAttributes<TAttribute>()
             where TAttribute : Attribute
         {
-            var attributes = new List<TAttribute>();
             foreach (var attribute in _attributes)
             {
                 var castedAttr = attribute as TAttribute;
                 if (castedAttr != null)
                 {
-                    attributes.Add(castedAttr);
+                    yield return castedAttr;
                 }
             }
-            return attributes;
         }
 
         public override string ToString() => _enumCache.InternalAsString(Value, this);
