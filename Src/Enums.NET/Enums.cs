@@ -42,9 +42,14 @@ namespace EnumsNET
 
         internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
-        private const int _startingCustomEnumFormatValue = 100;
+        internal const int StartingCustomEnumFormatValue =
+#if NET20
+            4;
+#else
+            5;
+#endif
 
-        private static int _highestCustomEnumFormatIndex = -1;
+        internal static int HighestCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMember, string>> _customEnumMemberFormatters;
         
@@ -58,7 +63,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
 
-            var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
+            var index = Interlocked.Increment(ref HighestCustomEnumFormatIndex);
             if (index == 0)
             {
                 _customEnumMemberFormatters = new List<Func<EnumMember, string>>();
@@ -70,7 +75,7 @@ namespace EnumsNET
                 }
             }
             _customEnumMemberFormatters.Add(enumMemberFormatter);
-            return (EnumFormat)(index + _startingCustomEnumFormatValue);
+            return (EnumFormat)(index + StartingCustomEnumFormatValue);
         }
 
         #region "Properties"
@@ -1317,11 +1322,9 @@ namespace EnumsNET
         #region Internal Methods
         private static bool CustomEnumFormatIndexIsValid(int index) => index >= 0 && index < _customEnumMemberFormatters?.Count;
 
-        internal static bool CustomEnumFormatIsValid(EnumFormat format) => CustomEnumFormatIndexIsValid((int)format - _startingCustomEnumFormatValue);
-
         internal static int GetCustomEnumFormatIndex(EnumFormat format)
         {
-            var index = (int)format - _startingCustomEnumFormatValue;
+            var index = (int)format - StartingCustomEnumFormatValue;
             if (!CustomEnumFormatIndexIsValid(index))
             {
                 throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");

@@ -29,7 +29,7 @@ namespace EnumsNET.Tests.TestEnums
         GreaterThan,
         [NumericOperatorType(NumericOperatorType.OneNumber)]
         LessThan,
-        [Primary]
+        [PrimaryEnumMember]
         [NumericOperatorType(NumericOperatorType.OneNumber)]
         [Description("Greater than or equal")]
         GreaterThanOrEquals,
@@ -38,7 +38,7 @@ namespace EnumsNET.Tests.TestEnums
         NotLessThan = GreaterThanOrEquals,
         [NumericOperatorType(NumericOperatorType.OneNumber)]
         LessThanOrEquals,
-        [Primary]
+        [PrimaryEnumMember]
         [NumericOperatorType(NumericOperatorType.OneNumber)]
         NotGreaterThan = LessThanOrEquals,
         [NumericOperatorType(NumericOperatorType.TwoNumbers)]
