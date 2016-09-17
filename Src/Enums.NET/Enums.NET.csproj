@@ -41,7 +41,6 @@
     <Compile Include="Collections\ConcurrentDictionary.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />
-    <Compile Include="EnumFormatValidatorAttribute.cs" />
     <Compile Include="EnumInfo.cs" />
     <Compile Include="EnumMember.cs" />
     <Compile Include="Enums.cs" />
@@ -50,7 +49,7 @@
     <Compile Include="IEnumInfo.cs" />
     <Compile Include="IEnumMember.cs" />
     <Compile Include="IEnumValidatorAttribute.cs" />
-    <Compile Include="NonGeneric\EnumInfoAndIsNullable.cs" />
+    <Compile Include="NonGeneric\NonGenericEnumInfo.cs" />
     <Compile Include="Numerics\INumericProvider.cs" />
     <Compile Include="Numerics\ByteNumericProvider.cs" />
     <Compile Include="Numerics\SByteNumericProvider.cs" />
@@ -60,7 +59,7 @@
     <Compile Include="Numerics\Int64NumericProvider.cs" />
     <Compile Include="Numerics\UInt32NumericProvider.cs" />
     <Compile Include="Numerics\Int32NumericProvider.cs" />
-    <Compile Include="InternalEnumMember.cs" />
+    <Compile Include="EnumMemberInternal.cs" />
     <Compile Include="Net20\Enumerable.cs" />
     <Compile Include="Net20\ExtensionAttribute.cs" />
     <Compile Include="Net20\FuncAndAction.cs" />

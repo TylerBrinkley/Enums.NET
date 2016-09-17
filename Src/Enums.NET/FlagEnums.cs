@@ -270,6 +270,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum"></typeparam>
         /// <param name="flags">Must be valid flag combinations.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="flags"/> is null.</exception>
         [Pure]
         public static TEnum CombineFlags<[EnumConstraint] TEnum>(params TEnum[] flags)
             where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flags);

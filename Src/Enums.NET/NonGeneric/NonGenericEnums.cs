@@ -42,18 +42,18 @@ namespace EnumsNET.NonGeneric
     /// </summary>
     public static class NonGenericEnums
     {
-        private static readonly ConcurrentDictionary<Type, EnumInfoAndIsNullable> _enumInfosDictionary = new ConcurrentDictionary<Type, EnumInfoAndIsNullable>();
+        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _enumInfosDictionary = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
 
-        internal static EnumInfoAndIsNullable GetInfoAndIsNullable(Type enumType)
+        internal static NonGenericEnumInfo GetNonGenericEnumInfo(Type enumType)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
             
-            EnumInfoAndIsNullable info;
+            NonGenericEnumInfo info;
             if (!_enumInfosDictionary.TryGetValue(enumType, out info))
             {
                 if (enumType.IsEnum)
                 {
-                    info = new EnumInfoAndIsNullable((IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null), false);
+                    info = new NonGenericEnumInfo((IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null), false);
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace EnumsNET.NonGeneric
                     {
                         throw new ArgumentException("must be an enum type", nameof(enumType));
                     }
-                    info = new EnumInfoAndIsNullable(GetInfo(nonNullableEnumType), true);
+                    info = new NonGenericEnumInfo(GetInfo(nonNullableEnumType), true);
                 }
                 if (!_enumInfosDictionary.TryAdd(enumType, info))
                 {
@@ -72,7 +72,7 @@ namespace EnumsNET.NonGeneric
             return info;
         }
 
-        internal static IEnumInfo GetInfo(Type enumType) => GetInfoAndIsNullable(enumType).EnumInfo;
+        internal static IEnumInfo GetInfo(Type enumType) => GetNonGenericEnumInfo(enumType).EnumInfo;
 
         #region "Properties"
         /// <summary>
@@ -230,7 +230,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToObject(Type enumType, object value, bool validate)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -509,7 +509,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryToObject(Type enumType, object value, out object result, bool validate)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -777,7 +777,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsValid(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -800,7 +800,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsDefined(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -824,7 +824,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Validate(Type enumType, object value, string paramName)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -847,7 +847,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -872,7 +872,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, string format)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -896,7 +896,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, EnumFormat format)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -921,7 +921,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, EnumFormat format0, EnumFormat format1)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -947,7 +947,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -971,7 +971,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string AsString(Type enumType, object value, params EnumFormat[] formatOrder)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -996,7 +996,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, string format)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -1022,7 +1022,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string Format(Type enumType, object value, params EnumFormat[] formatOrder)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -1045,7 +1045,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object GetUnderlyingValue(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -1183,7 +1183,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool Equals(Type enumType, object x, object y)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -1224,7 +1224,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static int CompareTo(Type enumType, object value, object other)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -1264,7 +1264,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static EnumMember GetEnumMember(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -1315,7 +1315,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string GetName(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -1340,7 +1340,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static IEnumerable<Attribute> GetAttributes(Type enumType, object value)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -1427,7 +1427,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object Parse(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (info.IsNullable && string.IsNullOrEmpty(value))
             {
@@ -1498,7 +1498,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
@@ -1584,7 +1584,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static EnumMember ParseMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (info.IsNullable && string.IsNullOrEmpty(value))
             {
@@ -1655,7 +1655,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParseMember(Type enumType, string value, bool ignoreCase, out EnumMember result, params EnumFormat[] parseFormatOrder)
         {
-            var info = GetInfoAndIsNullable(enumType);
+            var info = GetNonGenericEnumInfo(enumType);
 
             if (string.IsNullOrEmpty(value) && info.IsNullable)
             {

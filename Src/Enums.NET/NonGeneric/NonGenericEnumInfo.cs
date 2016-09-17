@@ -23,16 +23,17 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-
-namespace EnumsNET
+namespace EnumsNET.NonGeneric
 {
-    internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
+    internal struct NonGenericEnumInfo
     {
-        public bool IsValid(EnumFormat value)
+        public readonly IEnumInfo EnumInfo;
+        public readonly bool IsNullable;
+
+        public NonGenericEnumInfo(IEnumInfo enumInfo, bool isNullable)
         {
-            var valueAsInt = (int)value;
-            return valueAsInt >= 0 && valueAsInt <= Enums.StartingCustomEnumFormatValue + Enums.HighestCustomEnumFormatIndex;
+            EnumInfo = enumInfo;
+            IsNullable = isNullable;
         }
     }
 }

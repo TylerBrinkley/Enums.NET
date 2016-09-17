@@ -265,6 +265,7 @@ namespace EnumsNET.Unsafe
         /// <param name="flags">Must be valid flag combinations.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="flags"/> is null.</exception>
         [Pure]
         public static TEnum CombineFlags<TEnum>(params TEnum[] flags) => UnsafeEnums.GetInfo<TEnum>().CombineFlags(flags);
 

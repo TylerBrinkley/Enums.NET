@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.ComponentModel;
 
 #if !NET20
@@ -59,5 +60,14 @@ namespace EnumsNET
         /// </summary>
         EnumMemberValue
 #endif
+    }
+
+    internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
+    {
+        public bool IsValid(EnumFormat value)
+        {
+            var valueAsInt = (int)value;
+            return valueAsInt >= 0 && valueAsInt <= Enums.StartingCustomEnumFormatValue + Enums.HighestCustomEnumFormatIndex;
+        }
     }
 }

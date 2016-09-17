@@ -166,11 +166,11 @@ namespace EnumsNET
         TEnum Validate(TEnum value, string paramName);
     }
 
-    internal interface IInternalEnumInfo<TInt, TIntProvider>
+    internal interface IEnumInfoInternal<TInt, TIntProvider>
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        EnumMember CreateEnumMember(InternalEnumMember<TInt, TIntProvider> member);
+        EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member);
         bool? CustomValidate(TInt value);
     }
 }

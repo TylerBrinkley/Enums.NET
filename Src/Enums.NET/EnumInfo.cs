@@ -38,7 +38,7 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
-    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IInternalEnumInfo<TInt, TIntProvider>
+    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
         where TEnum : struct
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
@@ -206,7 +206,7 @@ namespace EnumsNET
 
         public bool TryParseMember(string value, bool ignoreCase, out EnumMember<TEnum> result, EnumFormat[] parseFormatOrder)
         {
-            InternalEnumMember<TInt, TIntProvider> member;
+            EnumMemberInternal<TInt, TIntProvider> member;
             if (_cache.TryParseMember(value, ignoreCase, out member, parseFormatOrder))
             {
                 result = (EnumMember<TEnum>)member.EnumMember;
@@ -277,7 +277,7 @@ namespace EnumsNET
         #region IInternalEnumInfo
         public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
 
-        public EnumMember CreateEnumMember(InternalEnumMember<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
+        public EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
         #endregion
 
         #region NonGeneric
@@ -355,7 +355,7 @@ namespace EnumsNET
 
         object IEnumInfo.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] parseFormatOrder) => ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
 
-        public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags.Select(flag => ToObject(flag)));
+        public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags?.Select(flag => ToObject(flag)));
 
         public object CombineFlags(object value, object otherFlags) => CombineFlags(ToObject(value), ToObject(otherFlags));
 

@@ -365,9 +365,9 @@ namespace EnumsNET
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        internal new InternalEnumMember<TInt, TIntProvider> Member => (InternalEnumMember<TInt, TIntProvider>)base.Member;
+        internal new EnumMemberInternal<TInt, TIntProvider> Member => (EnumMemberInternal<TInt, TIntProvider>)base.Member;
 
-        internal EnumMember(InternalEnumMember<TInt, TIntProvider> member)
+        internal EnumMember(EnumMemberInternal<TInt, TIntProvider> member)
             : base(member)
         {
         }

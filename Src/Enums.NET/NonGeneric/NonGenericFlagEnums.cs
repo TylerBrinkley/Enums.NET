@@ -71,7 +71,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool IsValidFlagCombination(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -144,7 +144,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static string FormatFlags(Type enumType, object value, string delimiter, params EnumFormat[] formatOrder)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -167,7 +167,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static IEnumerable<object> GetFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -190,7 +190,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static IEnumerable<EnumMember> GetFlagMembers(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -213,7 +213,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -237,7 +237,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAnyFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -269,7 +269,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAllFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
             {
@@ -293,7 +293,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool HasAllFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -325,7 +325,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (value == null && info.IsNullable)
@@ -350,7 +350,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ToggleFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -382,7 +382,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object CommonFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -419,7 +419,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object CombineFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -443,18 +443,16 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType"></param>
         /// <param name="flags">Must be valid flag combinations.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="flags"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="flags"/> contains an object that is an invalid type.</exception>
         [Pure]
         public static object CombineFlags(Type enumType, params object[] flags)
         {
-            Preconditions.NotNull(flags, nameof(flags));
-
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             
-            return info.EnumInfo.CombineFlags(info.IsNullable ? flags.Where(flag => flag != null) : flags);
+            return info.EnumInfo.CombineFlags(info.IsNullable ? flags?.Where(flag => flag != null) : flags);
         }
 
         /// <summary>
@@ -471,7 +469,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ExcludeFlags(Type enumType, object value, object otherFlags)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -655,7 +653,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static object ParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (string.IsNullOrEmpty(value) && info.IsNullable)
             {
@@ -791,7 +789,7 @@ namespace EnumsNET.NonGeneric
         [Pure]
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder)
         {
-            var info = NonGenericEnums.GetInfoAndIsNullable(enumType);
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
             if (string.IsNullOrEmpty(value) && info.IsNullable)
             {

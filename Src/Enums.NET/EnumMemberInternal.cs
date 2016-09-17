@@ -31,7 +31,7 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal sealed class InternalEnumMember<TInt, TIntProvider> : IEnumMember
+    internal sealed class EnumMemberInternal<TInt, TIntProvider> : IEnumMember
         where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
         where TIntProvider : struct, INumericProvider<TInt>
     {
@@ -54,7 +54,7 @@ namespace EnumsNET
             }
         }
 
-        public InternalEnumMember(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
+        public EnumMemberInternal(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
             Name = name;
@@ -92,11 +92,11 @@ namespace EnumsNET
             }
         }
 
-        public override string ToString() => _enumCache.InternalAsString(Value, this);
+        public override string ToString() => _enumCache.AsStringInternal(Value, this);
 
-        public string ToString(string format) => _enumCache.InternalAsString(Value, this, format);
+        public string ToString(string format) => _enumCache.AsStringInternal(Value, this, format);
 
-        public string ToString(params EnumFormat[] formatOrder) => _enumCache.InternalAsString(Value, this, formatOrder);
+        public string ToString(params EnumFormat[] formatOrder) => _enumCache.AsStringInternal(Value, this, formatOrder);
 
         public string AsString() => ToString();
 
@@ -106,12 +106,12 @@ namespace EnumsNET
         {
             var isInitialized = true;
             var member = this;
-            return _enumCache.InternalFormat(Value, ref isInitialized, ref member, format);
+            return _enumCache.FormatInternal(Value, ref isInitialized, ref member, format);
         }
 
-        public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.InternalFormat(Value, this, format0, format1);
+        public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.FormatInternal(Value, this, format0, format1);
 
-        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.InternalFormat(Value, this, format0, format1, format2);
+        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.FormatInternal(Value, this, format0, format1, format2);
 
         public string AsString(params EnumFormat[] formatOrder) => ToString(formatOrder);
 
@@ -119,14 +119,14 @@ namespace EnumsNET
         {
             Preconditions.NotNull(format, nameof(format));
 
-            return _enumCache.InternalFormat(Value, this, format);
+            return _enumCache.FormatInternal(Value, this, format);
         }
 
         public string Format(params EnumFormat[] formatOrder)
         {
             Preconditions.NotNull(formatOrder, nameof(formatOrder));
 
-            return _enumCache.InternalFormat(Value, this, formatOrder);
+            return _enumCache.FormatInternal(Value, this, formatOrder);
         }
 
         public sbyte ToSByte() => Value.ToSByte(null);
@@ -147,7 +147,7 @@ namespace EnumsNET
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        internal int CompareTo(InternalEnumMember<TInt, TIntProvider> other) => Value.CompareTo(other.Value);
+        internal int CompareTo(EnumMemberInternal<TInt, TIntProvider> other) => Value.CompareTo(other.Value);
 
         public bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
 
@@ -157,7 +157,7 @@ namespace EnumsNET
 
         public IEnumerable<TInt> GetFlags() => _enumCache.GetFlags(Value);
 
-        public IEnumerable<InternalEnumMember<TInt, TIntProvider>> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
+        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
 
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
