@@ -42,14 +42,16 @@ namespace EnumsNET
 
         internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
-        internal const int StartingCustomEnumFormatValue =
+        internal static EnumFormat HighestEnumFormat => (EnumFormat)(_highestCustomEnumFormatIndex + _startingCustomEnumFormatValue);
+
+        private const int _startingCustomEnumFormatValue =
 #if NET20
             4;
 #else
             5;
 #endif
 
-        internal static int HighestCustomEnumFormatIndex = -1;
+        private static int _highestCustomEnumFormatIndex = -1;
 
         private static List<Func<EnumMember, string>> _customEnumMemberFormatters;
         
@@ -63,7 +65,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
 
-            var index = Interlocked.Increment(ref HighestCustomEnumFormatIndex);
+            var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
             if (index == 0)
             {
                 _customEnumMemberFormatters = new List<Func<EnumMember, string>>();
@@ -75,7 +77,7 @@ namespace EnumsNET
                 }
             }
             _customEnumMemberFormatters.Add(enumMemberFormatter);
-            return (EnumFormat)(index + StartingCustomEnumFormatValue);
+            return (EnumFormat)(index + _startingCustomEnumFormatValue);
         }
 
         #region "Properties"
@@ -1320,12 +1322,10 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        private static bool CustomEnumFormatIndexIsValid(int index) => index >= 0 && index < _customEnumMemberFormatters?.Count;
-
         internal static int GetCustomEnumFormatIndex(EnumFormat format)
         {
-            var index = (int)format - StartingCustomEnumFormatValue;
-            if (!CustomEnumFormatIndexIsValid(index))
+            var index = (int)format - _startingCustomEnumFormatValue;
+            if (!(index >= 0 && index < _customEnumMemberFormatters?.Count))
             {
                 throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
             }
@@ -1345,7 +1345,7 @@ namespace EnumsNET
             return Activator.CreateInstance(typeof(EnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
         }
 
-        internal static Type GetNumericProviderType(Type underlyingType)
+        private static Type GetNumericProviderType(Type underlyingType)
         {
             switch (Type.GetTypeCode(underlyingType))
             {

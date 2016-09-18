@@ -64,10 +64,6 @@ namespace EnumsNET
 
     internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
     {
-        public bool IsValid(EnumFormat value)
-        {
-            var valueAsInt = (int)value;
-            return valueAsInt >= 0 && valueAsInt <= Enums.StartingCustomEnumFormatValue + Enums.HighestCustomEnumFormatIndex;
-        }
+        public bool IsValid(EnumFormat value) => value >= EnumFormat.DecimalValue && value <= Enums.HighestEnumFormat;
     }
 }

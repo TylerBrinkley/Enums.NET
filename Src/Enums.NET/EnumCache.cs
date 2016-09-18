@@ -857,9 +857,10 @@ namespace EnumsNET
             {
                 get
                 {
-                    if (_formatIgnoreCase == null)
+                    var formatIgnoreCase = _formatIgnoreCase;
+                    if (formatIgnoreCase == null)
                     {
-                        var formatIgnoreCase = new Dictionary<string, EnumMemberInternal<TInt, TIntProvider>>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
+                        formatIgnoreCase = new Dictionary<string, EnumMemberInternal<TInt, TIntProvider>>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
                         foreach (var pair in _formatValueMap)
                         {
                             formatIgnoreCase[pair.Key] = pair.Value;
@@ -867,7 +868,7 @@ namespace EnumsNET
                         
                         _formatIgnoreCase = formatIgnoreCase;
                     }
-                    return _formatIgnoreCase;
+                    return formatIgnoreCase;
                 }
             }
 

@@ -274,7 +274,7 @@ namespace EnumsNET
         #endregion
         #endregion
 
-        #region IInternalEnumInfo
+        #region IEnumInfoInternal
         public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
 
         public EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
