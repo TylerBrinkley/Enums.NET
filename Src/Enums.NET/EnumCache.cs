@@ -411,36 +411,27 @@ namespace EnumsNET
 
         internal string FormatInternal(TInt value, ref bool isInitialized, ref EnumMemberInternal<TInt, TIntProvider> member, EnumFormat format)
         {
+            if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
+            {
+                return value.ToString(format == EnumFormat.DecimalValue ? "D" : _provider.HexFormatString, null);
+            }
+            if (!isInitialized)
+            {
+                member = GetEnumMember(value);
+                isInitialized = true;
+            }
             switch (format)
             {
-                case EnumFormat.DecimalValue:
-                case EnumFormat.HexadecimalValue:
-                    return value.ToString(format == EnumFormat.DecimalValue ? "D" : _provider.HexFormatString, null);
-                default:
-                    if (!isInitialized)
-                    {
-                        member = GetEnumMember(value);
-                        isInitialized = true;
-                    }
-                    switch (format)
-                    {
-                        case EnumFormat.Name:
-                            return member?.Name;
-                        case EnumFormat.Description:
-                            return member?.GetAttribute<DescriptionAttribute>()?.Description;
+                case EnumFormat.Name:
+                    return member?.Name;
+                case EnumFormat.Description:
+                    return member?.GetAttribute<DescriptionAttribute>()?.Description;
 #if !NET20
-                        case EnumFormat.EnumMemberValue:
-                            return member?.GetAttribute<EnumMemberAttribute>()?.Value;
+                case EnumFormat.EnumMemberValue:
+                    return member?.GetAttribute<EnumMemberAttribute>()?.Value;
 #endif
-                        default:
-                            if (member != null)
-                            {
-                                return Enums.CustomEnumMemberFormat(member.EnumMember, format);
-                            }
-                            // Validates format
-                            Enums.GetCustomEnumFormatIndex(format);
-                            return null;
-                    }
+                default:
+                    return Enums.CustomEnumMemberFormat(member?.EnumMember, format);
             }
         }
 
@@ -601,35 +592,30 @@ namespace EnumsNET
         {
             foreach (var format in parseFormatOrder)
             {
-                switch (format)
+                if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
                 {
-                    case EnumFormat.DecimalValue:
-                    case EnumFormat.HexadecimalValue:
-                        if (_provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
-                        {
-                            member = getValueOnly ? null : GetEnumMember(result);
-                            return true;
-                        }
-                        break;
-                    default:
-                        EnumMemberParser parser;
-                        if (_enumMemberParsers == null || !_enumMemberParsers.TryGetValue(format, out parser))
-                        {
-                            if (!format.IsValid())
-                            {
-                                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
-                            }
-                            parser = new EnumMemberParser(format, this);
-                            ConcurrentDictionary<EnumFormat, EnumMemberParser> enumMemberParsers;
-                            enumMemberParsers = _enumMemberParsers ?? Interlocked.CompareExchange(ref _enumMemberParsers, (enumMemberParsers = new ConcurrentDictionary<EnumFormat, EnumMemberParser>(EnumComparer<EnumFormat>.Instance)), null) ?? enumMemberParsers;
-                            enumMemberParsers.TryAdd(format, parser);
-                        }
-                        if (parser.TryParse(value, ignoreCase, out member))
-                        {
-                            result = member.Value;
-                            return true;
-                        }
-                        break;
+                    if (_provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
+                    {
+                        member = getValueOnly ? null : GetEnumMember(result);
+                        return true;
+                    }
+                }
+                else
+                {
+                    EnumMemberParser parser;
+                    var enumMemberParsers = _enumMemberParsers;
+                    if (enumMemberParsers == null || !enumMemberParsers.TryGetValue(format, out parser))
+                    {
+                        format.Validate(nameof(format));
+                        parser = new EnumMemberParser(format, this);
+                        enumMemberParsers = enumMemberParsers ?? Interlocked.CompareExchange(ref _enumMemberParsers, (enumMemberParsers = new ConcurrentDictionary<EnumFormat, EnumMemberParser>(EnumComparer<EnumFormat>.Instance)), null) ?? enumMemberParsers;
+                        enumMemberParsers.TryAdd(format, parser);
+                    }
+                    if (parser.TryParse(value, ignoreCase, out member))
+                    {
+                        result = member.Value;
+                        return true;
+                    }
                 }
             }
             result = default(TInt);

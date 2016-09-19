@@ -1322,20 +1322,14 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static int GetCustomEnumFormatIndex(EnumFormat format)
+        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format)
         {
             var index = (int)format - _startingCustomEnumFormatValue;
             if (!(index >= 0 && index < _customEnumMemberFormatters?.Count))
             {
                 throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
             }
-            return index;
-        }
-
-        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format)
-        {
-            var index = GetCustomEnumFormatIndex(format);
-            return _customEnumMemberFormatters[index](member);
+            return member != null ? _customEnumMemberFormatters[index](member) : null;
         }
 
         internal static object GetEnumInfo(Type enumType)
