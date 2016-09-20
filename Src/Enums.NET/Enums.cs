@@ -42,18 +42,17 @@ namespace EnumsNET
 
         internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
-        internal static EnumFormat HighestEnumFormat => (EnumFormat)(_highestCustomEnumFormatIndex + _startingCustomEnumFormatValue);
-
-        private const int _startingCustomEnumFormatValue =
+        private const int _startingCustomEnumFormatValue = (int)EnumFormat.
 #if NET20
-            4;
+            Description
 #else
-            5;
+            EnumMemberValue
 #endif
+            + 1;
 
         private static int _highestCustomEnumFormatIndex = -1;
 
-        private static List<Func<EnumMember, string>> _customEnumMemberFormatters;
+        private static List<Func<EnumMember, string>> _customEnumMemberFormatters = new List<Func<EnumMember, string>>();
         
         /// <summary>
         /// Registers a custom enum format with the given <paramref name="enumMemberFormatter"/>.
@@ -66,17 +65,11 @@ namespace EnumsNET
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
 
             var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
-            if (index == 0)
+            var customEnumMemberFormatters = _customEnumMemberFormatters;
+            while (customEnumMemberFormatters.Count != index)
             {
-                _customEnumMemberFormatters = new List<Func<EnumMember, string>>();
             }
-            else
-            {
-                while (_customEnumMemberFormatters?.Count != index)
-                {
-                }
-            }
-            _customEnumMemberFormatters.Add(enumMemberFormatter);
+            customEnumMemberFormatters.Add(enumMemberFormatter);
             return (EnumFormat)(index + _startingCustomEnumFormatValue);
         }
 
@@ -1322,15 +1315,9 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format)
-        {
-            var index = (int)format - _startingCustomEnumFormatValue;
-            if (!(index >= 0 && index < _customEnumMemberFormatters?.Count))
-            {
-                throw new ArgumentException($"EnumFormat of {format.AsString()} is not valid");
-            }
-            return member != null ? _customEnumMemberFormatters[index](member) : null;
-        }
+        internal static bool EnumFormatIsValid(EnumFormat format) => format >= EnumFormat.DecimalValue && format <= (EnumFormat)(_highestCustomEnumFormatIndex + _startingCustomEnumFormatValue);
+
+        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format) => _customEnumMemberFormatters[(int)format - _startingCustomEnumFormatValue](member);
 
         internal static object GetEnumInfo(Type enumType)
         {

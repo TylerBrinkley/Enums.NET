@@ -431,7 +431,8 @@ namespace EnumsNET
                     return member?.GetAttribute<EnumMemberAttribute>()?.Value;
 #endif
                 default:
-                    return Enums.CustomEnumMemberFormat(member?.EnumMember, format);
+                    format.Validate(nameof(format));
+                    return member != null ? Enums.CustomEnumMemberFormat(member.EnumMember, format) : null;
             }
         }
 
