@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿#if !NET20
+using System.Runtime.Serialization;
 
 namespace EnumsNET.Tests.TestEnums
 {
@@ -14,3 +15,4 @@ namespace EnumsNET.Tests.TestEnums
         D
     }
 }
+#endif

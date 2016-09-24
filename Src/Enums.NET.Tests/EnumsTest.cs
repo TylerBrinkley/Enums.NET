@@ -127,17 +127,17 @@ namespace EnumsNET.Tests
         [Test]
         public void GetNames()
         {
-            CollectionAssert.AreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, GetNames<ColorFlagEnum>().ToArray());
-            CollectionAssert.AreEqual(Enum.GetNames(typeof(DateFilterOperator)), GetNames<DateFilterOperator>().ToArray());
-            CollectionAssert.AreEqual(new string[0], GetNames<ByteEnum>().ToArray());
+            CollectionAssert.AreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, GetNames<ColorFlagEnum>());
+            CollectionAssert.AreEqual(Enum.GetNames(typeof(DateFilterOperator)), GetNames<DateFilterOperator>());
+            CollectionAssert.AreEqual(new string[0], GetNames<ByteEnum>());
         }
 
         [Test]
         public void GetValues()
         {
-            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>().ToArray());
-            CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>().ToArray());
-            CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>().ToArray());
+            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>());
+            CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>());
+            CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>());
 
             // Duplicate order check
             var numericFilterOperators = GetValues<NumericOperator>().ToArray();
@@ -150,10 +150,10 @@ namespace EnumsNET.Tests
         [Test]
         public void GetValues_UniqueValued()
         {
-            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true).ToArray());
-            CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true).ToArray());
-            CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(true).ToArray());
-            CollectionAssert.AreEqual(new[] { NumericOperator.Equals, NumericOperator.NotEquals, NumericOperator.GreaterThan, NumericOperator.LessThan, NumericOperator.GreaterThanOrEquals, NumericOperator.NotGreaterThan, NumericOperator.Between, NumericOperator.NotBetween }, GetValues<NumericOperator>(true).ToArray());
+            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true));
+            CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true));
+            CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(true));
+            CollectionAssert.AreEqual(new[] { NumericOperator.Equals, NumericOperator.NotEquals, NumericOperator.GreaterThan, NumericOperator.LessThan, NumericOperator.GreaterThanOrEquals, NumericOperator.NotGreaterThan, NumericOperator.Between, NumericOperator.NotBetween }, GetValues<NumericOperator>(true));
         }
         #endregion
 
@@ -248,7 +248,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void ToObject_ThrowsArgumentException_WhenUsingInvalidValueAndCheckIsOn()
+        public void ToObject_ThrowsArgumentException_WhenUsingInvalidValueWithValidation()
         {
             TestHelper.ExpectException<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue, true));
             TestHelper.ExpectException<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue, true));
@@ -431,7 +431,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void TryToObject_ReturnsTrueAndValidValue_WhenUsingValueInRangeButNotValidButCheckIsOff()
+        public void TryToObject_ReturnsTrueAndValidValue_WhenUsingValueInRangeButNotValidWithoutValidation()
         {
             ColorFlagEnum result;
             var value = (ColorFlagEnum)16;
@@ -640,55 +640,55 @@ namespace EnumsNET.Tests
         [Test]
         public void Validate()
         {
-            Enums.Validate(NonContiguousEnum.Cat, "paramName");
-            Enums.Validate(NonContiguousEnum.Dog, "paramName");
-            Enums.Validate(NonContiguousEnum.Chimp, "paramName");
-            Enums.Validate(NonContiguousEnum.Elephant, "paramName");
-            Enums.Validate(NonContiguousEnum.Whale, "paramName");
-            Enums.Validate(NonContiguousEnum.Eagle, "paramName");
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousEnum)(-5), "paramName"));
+            NonContiguousEnum.Cat.Validate("paramName");
+            NonContiguousEnum.Dog.Validate("paramName");
+            NonContiguousEnum.Chimp.Validate("paramName");
+            NonContiguousEnum.Elephant.Validate("paramName");
+            NonContiguousEnum.Whale.Validate("paramName");
+            NonContiguousEnum.Eagle.Validate("paramName");
+            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousEnum)(-5)).Validate("paramName"));
 
-            Enums.Validate(UInt64FlagEnum.Flies, "paramName");
-            Enums.Validate(UInt64FlagEnum.Hops, "paramName");
-            Enums.Validate(UInt64FlagEnum.Runs, "paramName");
-            Enums.Validate(UInt64FlagEnum.Slithers, "paramName");
-            Enums.Validate(UInt64FlagEnum.Stationary, "paramName");
-            Enums.Validate(UInt64FlagEnum.Swims, "paramName");
-            Enums.Validate(UInt64FlagEnum.Walks, "paramName");
-            Enums.Validate(UInt64FlagEnum.Flies | UInt64FlagEnum.Hops, "paramName");
-            Enums.Validate(UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers, "paramName");
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((UInt64FlagEnum)8, "paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((UInt64FlagEnum)8 | UInt64FlagEnum.Hops, "paramName"));
+            UInt64FlagEnum.Flies.Validate("paramName");
+            UInt64FlagEnum.Hops.Validate("paramName");
+            UInt64FlagEnum.Runs.Validate("paramName");
+            UInt64FlagEnum.Slithers.Validate("paramName");
+            UInt64FlagEnum.Stationary.Validate("paramName");
+            UInt64FlagEnum.Swims.Validate("paramName");
+            UInt64FlagEnum.Walks.Validate("paramName");
+            (UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).Validate("paramName");
+            (UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).Validate("paramName");
+            TestHelper.ExpectException<ArgumentException>(() => ((UInt64FlagEnum)8).Validate("paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => ((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).Validate("paramName"));
 
-            Enums.Validate(ContiguousUInt64Enum.A, "paramName");
-            Enums.Validate(ContiguousUInt64Enum.B, "paramName");
-            Enums.Validate(ContiguousUInt64Enum.C, "paramName");
-            Enums.Validate(ContiguousUInt64Enum.D, "paramName");
-            Enums.Validate(ContiguousUInt64Enum.E, "paramName");
-            Enums.Validate(ContiguousUInt64Enum.F, "paramName");
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(ContiguousUInt64Enum.A - 1, "paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(ContiguousUInt64Enum.F + 1, "paramName"));
+            ContiguousUInt64Enum.A.Validate("paramName");
+            ContiguousUInt64Enum.B.Validate("paramName");
+            ContiguousUInt64Enum.C.Validate("paramName");
+            ContiguousUInt64Enum.D.Validate("paramName");
+            ContiguousUInt64Enum.E.Validate("paramName");
+            ContiguousUInt64Enum.F.Validate("paramName");
+            TestHelper.ExpectException<ArgumentException>(() => (ContiguousUInt64Enum.A - 1).Validate("paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => (ContiguousUInt64Enum.F + 1).Validate("paramName"));
 
-            Enums.Validate(NonContiguousUInt64Enum.SaintLouis, "paramName");
-            Enums.Validate(NonContiguousUInt64Enum.Chicago, "paramName");
-            Enums.Validate(NonContiguousUInt64Enum.Cincinnati, "paramName");
-            Enums.Validate(NonContiguousUInt64Enum.Pittsburg, "paramName");
-            Enums.Validate(NonContiguousUInt64Enum.Milwaukee, "paramName");
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousUInt64Enum)5, "paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate((NonContiguousUInt64Enum)50000000UL, "paramName"));
+            NonContiguousUInt64Enum.SaintLouis.Validate("paramName");
+            NonContiguousUInt64Enum.Chicago.Validate("paramName");
+            NonContiguousUInt64Enum.Cincinnati.Validate("paramName");
+            NonContiguousUInt64Enum.Pittsburg.Validate("paramName");
+            NonContiguousUInt64Enum.Milwaukee.Validate("paramName");
+            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousUInt64Enum)5).Validate("paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousUInt64Enum)50000000UL).Validate("paramName"));
 
-            Enums.Validate(NumericOperator.Equals, "paramName");
-            Enums.Validate(NumericOperator.NotEquals, "paramName");
-            Enums.Validate(NumericOperator.GreaterThan, "paramName");
-            Enums.Validate(NumericOperator.LessThan, "paramName");
-            Enums.Validate(NumericOperator.GreaterThanOrEquals, "paramName");
-            Enums.Validate(NumericOperator.NotLessThan, "paramName");
-            Enums.Validate(NumericOperator.LessThanOrEquals, "paramName");
-            Enums.Validate(NumericOperator.NotGreaterThan, "paramName");
-            Enums.Validate(NumericOperator.Between, "paramName");
-            Enums.Validate(NumericOperator.NotBetween, "paramName");
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericOperator.Equals - 1, "paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => Enums.Validate(NumericOperator.NotBetween + 1, "paramName"));
+            NumericOperator.Equals.Validate("paramName");
+            NumericOperator.NotEquals.Validate("paramName");
+            NumericOperator.GreaterThan.Validate("paramName");
+            NumericOperator.LessThan.Validate("paramName");
+            NumericOperator.GreaterThanOrEquals.Validate("paramName");
+            NumericOperator.NotLessThan.Validate("paramName");
+            NumericOperator.LessThanOrEquals.Validate("paramName");
+            NumericOperator.NotGreaterThan.Validate("paramName");
+            NumericOperator.Between.Validate("paramName");
+            NumericOperator.NotBetween.Validate("paramName");
+            TestHelper.ExpectException<ArgumentException>(() => (NumericOperator.Equals - 1).Validate("paramName"));
+            TestHelper.ExpectException<ArgumentException>(() => (NumericOperator.NotBetween + 1).Validate("paramName"));
         }
 
         [Test]
@@ -782,7 +782,9 @@ namespace EnumsNET.Tests
             Assert.IsFalse((descriptionOrNameFormat + 2).IsValid());
             Assert.AreEqual("Ultra-Violet", Format(ColorFlagEnum.UltraViolet, descriptionOrNameFormat));
             Assert.AreEqual(nameof(ColorFlagEnum.Red), Format(ColorFlagEnum.Red, descriptionOrNameFormat));
+#if !NET20
             Assert.AreEqual(nameof(EnumMemberAttributeEnum.B), Format(EnumMemberAttributeEnum.B, descriptionOrNameFormat));
+#endif
         }
 
         [Test]
@@ -820,16 +822,20 @@ namespace EnumsNET.Tests
         [Test]
         public void HasAttribute()
         {
+#if !NET20
             Assert.IsTrue(HasAttribute<EnumMemberAttributeEnum, EnumMemberAttribute>(EnumMemberAttributeEnum.A));
-            Assert.IsFalse(HasAttribute<ColorFlagEnum, EnumMemberAttribute>(ColorFlagEnum.Blue));
+#endif
+            Assert.IsFalse(HasAttribute<ColorFlagEnum, DescriptionAttribute>(ColorFlagEnum.Blue));
             Assert.IsTrue(HasAttribute<ColorFlagEnum, DescriptionAttribute>(ColorFlagEnum.UltraViolet));
         }
 
         [Test]
         public void GetAttribute()
         {
+#if !NET20
             Assert.AreEqual("aye", GetAttribute<EnumMemberAttributeEnum, EnumMemberAttribute>(EnumMemberAttributeEnum.A).Value);
-            Assert.IsNull(GetAttribute<ColorFlagEnum, EnumMemberAttribute>(ColorFlagEnum.Blue));
+#endif
+            Assert.IsNull(GetAttribute<ColorFlagEnum, DescriptionAttribute>(ColorFlagEnum.Blue));
             Assert.AreEqual("Ultra-Violet", GetAttribute<ColorFlagEnum, DescriptionAttribute>(ColorFlagEnum.UltraViolet).Description);
         }
 
@@ -848,10 +854,10 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, Enums.GetAttributes(MultipleAttributeEnum.Single));
             CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, Enums.GetAttributes(MultipleAttributeEnum.Multi));
         }
-        #endregion
+#endregion
 
         // TODO
-        #region Parsing
-        #endregion
+#region Parsing
+#endregion
     }
 }

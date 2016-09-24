@@ -38,7 +38,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Collections\ConcurrentDictionary.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumInfo.cs" />
@@ -60,10 +59,6 @@
     <Compile Include="Numerics\UInt32NumericProvider.cs" />
     <Compile Include="Numerics\Int32NumericProvider.cs" />
     <Compile Include="EnumMemberInternal.cs" />
-    <Compile Include="Net20\Enumerable.cs" />
-    <Compile Include="Net20\ExtensionAttribute.cs" />
-    <Compile Include="Net20\FuncAndAction.cs" />
-    <Compile Include="Net20\PureAttribute.cs" />
     <Compile Include="NonGeneric\NonGenericEnums.cs" />
     <Compile Include="NonGeneric\NonGenericFlagEnums.cs" />
     <Compile Include="Preconditions.cs" />

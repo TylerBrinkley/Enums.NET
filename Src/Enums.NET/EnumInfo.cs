@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
@@ -48,12 +49,18 @@ namespace EnumsNET
 #else
         [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
+#if !(NET20 || NET35)
+        [SecuritySafeCritical]
+#endif
         private static extern TInt ToInt(TEnum value);
 
 #if NET45
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
 #else
         [MethodImpl(MethodImplOptions.ForwardRef)]
+#endif
+#if !(NET20 || NET35)
+        [SecuritySafeCritical]
 #endif
         internal static extern TEnum ToEnum(TInt value);
 
