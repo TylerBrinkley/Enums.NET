@@ -711,7 +711,7 @@ namespace EnumsNET
             return combinedFlags;
         }
 
-        public TInt ExcludeFlags(TInt value, TInt otherFlags) => _provider.And(value, _provider.Not(otherFlags));
+        public TInt RemoveFlags(TInt value, TInt otherFlags) => _provider.And(value, _provider.Not(otherFlags));
         #endregion
 
         #region Parsing

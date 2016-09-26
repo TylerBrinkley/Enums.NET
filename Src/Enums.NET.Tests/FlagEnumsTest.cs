@@ -280,27 +280,27 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void ExcludeFlags()
+        public void RemoveFlags()
         {
-            Assert.AreEqual(ColorFlagEnum.Red, (ColorFlagEnum.Red | ColorFlagEnum.Green).ExcludeFlags(ColorFlagEnum.Green));
-            Assert.AreEqual(ColorFlagEnum.Green, ColorFlagEnum.Green.ExcludeFlags(ColorFlagEnum.Red));
-            Assert.AreEqual(ColorFlagEnum.Green, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ExcludeFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).ExcludeFlags(ColorFlagEnum.Red | ColorFlagEnum.UltraViolet));
-            Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Blue.ExcludeFlags(ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Red, (ColorFlagEnum.Red | ColorFlagEnum.Green).RemoveFlags(ColorFlagEnum.Green));
+            Assert.AreEqual(ColorFlagEnum.Green, ColorFlagEnum.Green.RemoveFlags(ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Green, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).RemoveFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, (ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue).RemoveFlags(ColorFlagEnum.Red | ColorFlagEnum.UltraViolet));
+            Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Blue.RemoveFlags(ColorFlagEnum.Blue));
         }
 
         [Test]
-        public void ExcludeFlags_ThrowsArgumentException_WhenUsingInvalidValue()
+        public void RemoveFlags_ThrowsArgumentException_WhenUsingInvalidValue()
         {
-            Assert.AreEqual(((ColorFlagEnum)16), ((ColorFlagEnum)16).ExcludeFlags(ColorFlagEnum.Red));
-            Assert.AreEqual(((ColorFlagEnum)16), (((ColorFlagEnum)16) | ColorFlagEnum.Red).ExcludeFlags(ColorFlagEnum.Red));
+            Assert.AreEqual(((ColorFlagEnum)16), ((ColorFlagEnum)16).RemoveFlags(ColorFlagEnum.Red));
+            Assert.AreEqual(((ColorFlagEnum)16), (((ColorFlagEnum)16) | ColorFlagEnum.Red).RemoveFlags(ColorFlagEnum.Red));
         }
 
         [Test]
-        public void ExcludeFlags_ThrowsArgumentException_WhenUsingInvalidOtherFlags()
+        public void RemoveFlags_ThrowsArgumentException_WhenUsingInvalidOtherFlags()
         {
-            Assert.AreEqual(ColorFlagEnum.Red, ColorFlagEnum.Red.ExcludeFlags((ColorFlagEnum)16));
-            Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Red.ExcludeFlags(((ColorFlagEnum)16) | ColorFlagEnum.Red));
+            Assert.AreEqual(ColorFlagEnum.Red, ColorFlagEnum.Red.RemoveFlags((ColorFlagEnum)16));
+            Assert.AreEqual(ColorFlagEnum.Black, ColorFlagEnum.Red.RemoveFlags(((ColorFlagEnum)16) | ColorFlagEnum.Red));
         }
         #endregion
 

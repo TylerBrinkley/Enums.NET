@@ -447,7 +447,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is an invalid type.</exception>
-        public static object ExcludeFlags(Type enumType, object value, object otherFlags)
+        public static object RemoveFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
@@ -468,7 +468,7 @@ namespace EnumsNET.NonGeneric
                 }
             }
 
-            return enumInfo.ExcludeFlags(value, otherFlags);
+            return enumInfo.RemoveFlags(value, otherFlags);
         }
         #endregion
 

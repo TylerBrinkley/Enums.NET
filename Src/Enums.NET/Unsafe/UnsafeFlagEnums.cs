@@ -255,7 +255,7 @@ namespace EnumsNET.Unsafe
         /// <param name="otherFlags"></param>
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static TEnum ExcludeFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().ExcludeFlags(value, otherFlags);
+        public static TEnum RemoveFlags<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().RemoveFlags(value, otherFlags);
         #endregion
 
         #region Parsing

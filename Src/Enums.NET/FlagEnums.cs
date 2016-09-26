@@ -260,8 +260,8 @@ namespace EnumsNET
         /// <param name="value"></param>
         /// <param name="otherFlags"></param>
         /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
-        public static TEnum ExcludeFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct => Enums<TEnum>.Info.ExcludeFlags(value, otherFlags);
+        public static TEnum RemoveFlags<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.RemoveFlags(value, otherFlags);
         #endregion
 
         #region Parsing

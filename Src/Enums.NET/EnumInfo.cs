@@ -265,7 +265,7 @@ namespace EnumsNET
 
         public TEnum CombineFlags(IEnumerable<TEnum> flags) => ToEnum(_cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
 
-        public TEnum ExcludeFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.ExcludeFlags(ToInt(value), ToInt(otherFlags)));
+        public TEnum RemoveFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.RemoveFlags(ToInt(value), ToInt(otherFlags)));
         #endregion
 
         #region Parsing
@@ -302,7 +302,7 @@ namespace EnumsNET
 
         public string AsString(object value, EnumFormat[] formatOrder) => AsString(ToObject(value), formatOrder);
 
-        public object ExcludeFlags(object value, object otherFlags) => ExcludeFlags(ToObject(value), ToObject(otherFlags));
+        public object RemoveFlags(object value, object otherFlags) => RemoveFlags(ToObject(value), ToObject(otherFlags));
 
         public object CommonFlags(object value, object otherFlags) => CommonFlags(ToObject(value), ToObject(otherFlags));
 

@@ -50,7 +50,7 @@ namespace EnumsNET
         string AsString(object value, EnumFormat format0, EnumFormat format1);
         string AsString(object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string AsString(object value, EnumFormat[] formatOrder);
-        object ExcludeFlags(object value, object otherFlags);
+        object RemoveFlags(object value, object otherFlags);
         object CommonFlags(object value, object otherFlags);
         int CompareTo(object value, object other);
         bool Equals(object value, object other);
@@ -110,7 +110,7 @@ namespace EnumsNET
         string AsString(TEnum value, EnumFormat format0, EnumFormat format1);
         string AsString(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string AsString(TEnum value, EnumFormat[] formatOrder);
-        TEnum ExcludeFlags(TEnum value, TEnum otherFlags);
+        TEnum RemoveFlags(TEnum value, TEnum otherFlags);
         TEnum CommonFlags(TEnum value, TEnum otherFlags);
         int CompareTo(TEnum value, TEnum other);
         bool Equals(TEnum value, TEnum other);
