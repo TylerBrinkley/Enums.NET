@@ -24,14 +24,9 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-
-#if NET20 || NET35 || NETSTANDARD10
-using EnumsNET.Collections;
-#else
-using System.Collections.Concurrent;
-#endif
 
 namespace EnumsNET.NonGeneric
 {
@@ -50,14 +45,21 @@ namespace EnumsNET.NonGeneric
             NonGenericEnumInfo info;
             if (!_enumInfosDictionary.TryGetValue(enumType, out info))
             {
-                if (enumType.IsEnum)
+                if (enumType.IsEnum())
                 {
-                    info = new NonGenericEnumInfo((IEnumInfo)typeof(Enums<>).MakeGenericType(enumType).GetField("Info", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null), false);
+                    var closedEnumsType = typeof(Enums<>).MakeGenericType(enumType);
+                    info = new NonGenericEnumInfo((IEnumInfo)closedEnumsType.
+#if TYPE_REFLECTION
+                        GetField("Info", BindingFlags.Static | BindingFlags.Public)
+#else
+                        GetTypeInfo().GetDeclaredField("Info")
+#endif
+                    .GetValue(null), false);
                 }
                 else
                 {
                     var nonNullableEnumType = Nullable.GetUnderlyingType(enumType);
-                    if (nonNullableEnumType?.IsEnum != true)
+                    if (nonNullableEnumType?.IsEnum() != true)
                     {
                         throw new ArgumentException("must be an enum type", nameof(enumType));
                     }
@@ -92,6 +94,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static Type GetUnderlyingType(Type enumType) => GetInfo(enumType).UnderlyingType;
 
+#if ICONVERTIBLE
         /// <summary>
         /// Gets <paramref name="enumType"/>'s underlying type's <see cref="TypeCode"/>.
         /// </summary>
@@ -100,6 +103,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static TypeCode GetTypeCode(Type enumType) => GetInfo(enumType).TypeCode;
+#endif
         #endregion
 
         #region Type Methods

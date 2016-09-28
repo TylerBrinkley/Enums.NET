@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -32,26 +33,23 @@ using System.Reflection;
 using System.Threading;
 using EnumsNET.Numerics;
 
-#if !NET20
+#if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
-#endif
-
-#if !(NET20 || NET35 || NETSTANDARD10)
-using System.Collections.Concurrent;
-#else
-using EnumsNET.Collections;
 #endif
 
 namespace EnumsNET
 {
     internal sealed class EnumCache<TInt, TIntProvider>
-        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
         #region Static
-        private static readonly TIntProvider _provider = new TIntProvider();
+        internal static readonly TIntProvider Provider = new TIntProvider();
 
-        private static bool IsPowerOfTwo(TInt x) => _provider.And(x, _provider.Subtract(x, _provider.One)).Equals(_provider.Zero);
+        private static bool IsPowerOfTwo(TInt x) => Provider.And(x, Provider.Subtract(x, Provider.One)).Equals(Provider.Zero);
 
         private static bool IsNumeric(string value)
         {
@@ -91,7 +89,12 @@ namespace EnumsNET
             EnumInfo = enumInfo;
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
-            var fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+            var fields =
+#if TYPE_REFLECTION
+                enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+#else
+                enumType.GetTypeInfo().DeclaredFields.Where(fieldInfo => (fieldInfo.Attributes & (FieldAttributes.Static | FieldAttributes.Public)) == (FieldAttributes.Static | FieldAttributes.Public)).ToArray();
+#endif
             _valueMap = new Dictionary<TInt, EnumMemberInternal<TInt, TIntProvider>>(fields.Length);
             if (fields.Length == 0)
             {
@@ -102,7 +105,12 @@ namespace EnumsNET
             {
                 var value = (TInt)field.GetValue(null);
                 var name = field.Name;
-                var attributes = Attribute.GetCustomAttributes(field, false);
+                var attributes =
+#if TYPE_REFLECTION
+                    Attribute.GetCustomAttributes(field, false);
+#else
+                    field.GetCustomAttributes(false).ToArray();
+#endif
                 var isPrimary = false;
                 foreach (var attribute in attributes)
                 {
@@ -128,7 +136,7 @@ namespace EnumsNET
                     _valueMap.Add(value, member);
                     if (IsPowerOfTwo(value))
                     {
-                        AllFlags = _provider.Or(AllFlags, value);
+                        AllFlags = Provider.Or(AllFlags, value);
                     }
                 }
             }
@@ -144,7 +152,7 @@ namespace EnumsNET
 
             _maxDefined = values[values.Length - 1].Key;
             _minDefined = values[0].Key;
-            IsContiguous = _provider.Subtract(_maxDefined, _provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
+            IsContiguous = Provider.Subtract(_maxDefined, Provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
 
             if (duplicateValues.Count > 0)
             {
@@ -176,7 +184,7 @@ namespace EnumsNET
                     var duplicateMember = duplicateEnumerator.Current;
                     while (primaryIsActive || duplicateIsActive)
                     {
-                        if (duplicateIsActive && (!primaryIsActive || _provider.LessThan(duplicateMember.Value, primaryMember.Value)))
+                        if (duplicateIsActive && (!primaryIsActive || Provider.LessThan(duplicateMember.Value, primaryMember.Value)))
                         {
                             yield return duplicateMember;
                             if (duplicateIsActive = duplicateEnumerator.MoveNext())
@@ -215,7 +223,7 @@ namespace EnumsNET
 
             var type = value.GetType();
 
-            switch (Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type))
+            switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
             {
                 case TypeCode.SByte:
                     return ToObject((sbyte)value, validate);
@@ -246,12 +254,12 @@ namespace EnumsNET
 
         public TInt ToObject(long value, bool validate)
         {
-            if (!_provider.IsInValueRange(value))
+            if (!Provider.IsInValueRange(value))
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
 
-            var result = _provider.Create(value);
+            var result = Provider.Create(value);
             if (validate)
             {
                 Validate(result, nameof(value));
@@ -261,12 +269,12 @@ namespace EnumsNET
 
         public TInt ToObject(ulong value, bool validate)
         {
-            if (!_provider.IsInValueRange(value))
+            if (!Provider.IsInValueRange(value))
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
 
-            var result = _provider.Create(value);
+            var result = Provider.Create(value);
             if (validate)
             {
                 Validate(result, nameof(value));
@@ -286,7 +294,7 @@ namespace EnumsNET
 
                 var type = value.GetType();
 
-                switch (Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type))
+                switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
                 {
                     case TypeCode.SByte:
                         return TryToObject((sbyte)value, out result, validate);
@@ -312,29 +320,29 @@ namespace EnumsNET
                         break;
                 }
             }
-            result = _provider.Zero;
+            result = Provider.Zero;
             return false;
         }
 
         public bool TryToObject(long value, out TInt result, bool validate)
         {
-            if (_provider.IsInValueRange(value))
+            if (Provider.IsInValueRange(value))
             {
-                result = _provider.Create(value);
+                result = Provider.Create(value);
                 return !validate || IsValid(result);
             }
-            result = _provider.Zero;
+            result = Provider.Zero;
             return false;
         }
 
         public bool TryToObject(ulong value, out TInt result, bool validate)
         {
-            if (_provider.IsInValueRange(value))
+            if (Provider.IsInValueRange(value))
             {
-                result = _provider.Create(value);
+                result = Provider.Create(value);
                 return !validate || IsValid(result);
             }
-            result = _provider.Zero;
+            result = Provider.Zero;
             return false;
         }
         #endregion
@@ -342,7 +350,7 @@ namespace EnumsNET
         #region All Values Main Methods
         public bool IsValid(TInt value) => EnumInfo.CustomValidate(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
 
-        public bool IsDefined(TInt value) => IsContiguous ? !(_provider.LessThan(value, _minDefined) || _provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
+        public bool IsDefined(TInt value) => IsContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
 
         public void Validate(TInt value, string paramName)
         {
@@ -404,7 +412,7 @@ namespace EnumsNET
                     return value.ToString("D", null);
                 case "X":
                 case "x":
-                    return value.ToString(_provider.HexFormatString, null);
+                    return value.ToString(Provider.HexFormatString, null);
             }
             throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
         }
@@ -413,7 +421,7 @@ namespace EnumsNET
         {
             if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
             {
-                return value.ToString(format == EnumFormat.DecimalValue ? "D" : _provider.HexFormatString, null);
+                return value.ToString(format == EnumFormat.DecimalValue ? "D" : Provider.HexFormatString, null);
             }
             if (!isInitialized)
             {
@@ -426,7 +434,7 @@ namespace EnumsNET
                     return member?.Name;
                 case EnumFormat.Description:
                     return member?.GetAttribute<DescriptionAttribute>()?.Description;
-#if !NET20
+#if ENUM_MEMBER_ATTRIBUTE
                 case EnumFormat.EnumMemberValue:
                     return member?.GetAttribute<EnumMemberAttribute>()?.Value;
 #endif
@@ -567,7 +575,7 @@ namespace EnumsNET
                 EnumMemberInternal<TInt, TIntProvider> member;
                 return TryParseInternal(value, ignoreCase, out result, out member, parseFormatOrder, true);
             }
-            result = _provider.Zero;
+            result = Provider.Zero;
             return false;
         }
 
@@ -595,7 +603,7 @@ namespace EnumsNET
             {
                 if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
                 {
-                    if (_provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
+                    if (Provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
                     {
                         member = getValueOnly ? null : GetEnumMember(result);
                         return true;
@@ -628,7 +636,7 @@ namespace EnumsNET
 
         #region Flag Enum Operations
         #region Main Methods
-        public bool IsValidFlagCombination(TInt value) => _provider.And(AllFlags, value).Equals(value);
+        public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
 
         public string FormatFlags(TInt value, string delimiter, EnumFormat[] formatOrder) => FormatFlagsInternal(value, null, delimiter, formatOrder);
 
@@ -644,7 +652,7 @@ namespace EnumsNET
                 member = GetEnumMember(value);
             }
 
-            if (member != null || value.Equals(_provider.Zero) || !IsValidFlagCombination(value))
+            if (member != null || value.Equals(Provider.Zero) || !IsValidFlagCombination(value))
             {
                 return FormatInternal(value, member, formatOrder);
             }
@@ -664,9 +672,9 @@ namespace EnumsNET
 
         public IEnumerable<TInt> GetFlags(TInt value)
         {
-            var validValue = _provider.And(value, AllFlags);
-            var isLessThanZero = _provider.LessThan(validValue, _provider.Zero);
-            for (var currentValue = _provider.One; (isLessThanZero || !_provider.LessThan(validValue, currentValue)) && !currentValue.Equals(_provider.Zero); currentValue = _provider.LeftShift(currentValue, 1))
+            var validValue = Provider.And(value, AllFlags);
+            var isLessThanZero = Provider.LessThan(validValue, Provider.Zero);
+            for (var currentValue = Provider.One; (isLessThanZero || !Provider.LessThan(validValue, currentValue)) && !currentValue.Equals(Provider.Zero); currentValue = Provider.LeftShift(currentValue, 1))
             {
                 if (HasAnyFlags(validValue, currentValue))
                 {
@@ -677,41 +685,41 @@ namespace EnumsNET
 
         public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetEnumMember(flag));
 
-        public bool HasAnyFlags(TInt value) => !value.Equals(_provider.Zero);
+        public bool HasAnyFlags(TInt value) => !value.Equals(Provider.Zero);
 
-        public bool HasAnyFlags(TInt value, TInt otherFlags) => !_provider.And(value, otherFlags).Equals(_provider.Zero);
+        public bool HasAnyFlags(TInt value, TInt otherFlags) => !Provider.And(value, otherFlags).Equals(Provider.Zero);
 
         public bool HasAllFlags(TInt value) => HasAllFlags(value, AllFlags);
 
-        public bool HasAllFlags(TInt value, TInt otherFlags) => _provider.And(value, otherFlags).Equals(otherFlags);
+        public bool HasAllFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags).Equals(otherFlags);
 
-        public TInt ToggleFlags(TInt value) => _provider.Xor(value, AllFlags);
+        public TInt ToggleFlags(TInt value) => Provider.Xor(value, AllFlags);
 
-        public TInt ToggleFlags(TInt value, TInt otherFlags) => _provider.Xor(value, otherFlags);
+        public TInt ToggleFlags(TInt value, TInt otherFlags) => Provider.Xor(value, otherFlags);
 
-        public TInt CommonFlags(TInt value, TInt otherFlags) => _provider.And(value, otherFlags);
+        public TInt CommonFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags);
 
-        public TInt CombineFlags(TInt value, TInt otherFlags) => _provider.Or(value, otherFlags);
+        public TInt CombineFlags(TInt value, TInt otherFlags) => Provider.Or(value, otherFlags);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2) => _provider.Or(_provider.Or(flag0, flag1), flag2);
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2) => Provider.Or(Provider.Or(flag0, flag1), flag2);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3) => _provider.Or(_provider.Or(_provider.Or(flag0, flag1), flag2), flag3);
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3) => Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3);
 
-        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4) => _provider.Or(_provider.Or(_provider.Or(_provider.Or(flag0, flag1), flag2), flag3), flag4);
+        public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4) => Provider.Or(Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3), flag4);
 
         public TInt CombineFlags(IEnumerable<TInt> flags)
         {
             Preconditions.NotNull(flags, nameof(flags));
 
-            var combinedFlags = _provider.Zero;
+            var combinedFlags = Provider.Zero;
             foreach (var flag in flags)
             {
-                combinedFlags = _provider.Or(combinedFlags, flag);
+                combinedFlags = Provider.Or(combinedFlags, flag);
             }
             return combinedFlags;
         }
 
-        public TInt RemoveFlags(TInt value, TInt otherFlags) => _provider.And(value, _provider.Not(otherFlags));
+        public TInt RemoveFlags(TInt value, TInt otherFlags) => Provider.And(value, Provider.Not(otherFlags));
         #endregion
 
         #region Parsing
@@ -735,7 +743,7 @@ namespace EnumsNET
                 parseFormatOrder = Enums.DefaultFormatOrder;
             }
 
-            var result = _provider.Zero;
+            var result = Provider.Zero;
             var startIndex = 0;
             var valueLength = value.Length;
             while (startIndex < valueLength)
@@ -759,7 +767,7 @@ namespace EnumsNET
                 EnumMemberInternal<TInt, TIntProvider> member;
                 if (TryParseInternal(indValue, ignoreCase, out valueAsTInt, out member, parseFormatOrder, true))
                 {
-                    result = _provider.Or(result, valueAsTInt);
+                    result = Provider.Or(result, valueAsTInt);
                 }
                 else
                 {
@@ -778,7 +786,7 @@ namespace EnumsNET
         {
             if (value == null)
             {
-                result = _provider.Zero;
+                result = Provider.Zero;
                 return false;
             }
 
@@ -798,7 +806,7 @@ namespace EnumsNET
                 parseFormatOrder = Enums.DefaultFormatOrder;
             }
 
-            var resultAsInt = _provider.Zero;
+            var resultAsInt = Provider.Zero;
             var startIndex = 0;
             var valueLength = value.Length;
             while (startIndex < valueLength)
@@ -822,10 +830,10 @@ namespace EnumsNET
                 EnumMemberInternal<TInt, TIntProvider> member;
                 if (!TryParseInternal(indValue, ignoreCase, out valueAsTInt, out member, parseFormatOrder, true))
                 {
-                    result = _provider.Zero;
+                    result = Provider.Zero;
                     return false;
                 }
-                resultAsInt = _provider.Or(resultAsInt, valueAsTInt);
+                resultAsInt = Provider.Or(resultAsInt, valueAsTInt);
                 startIndex = newStartIndex;
             }
             result = resultAsInt;

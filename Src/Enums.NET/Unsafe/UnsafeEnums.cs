@@ -60,6 +60,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static Type GetUnderlyingType<TEnum>() => GetInfo<TEnum>().UnderlyingType;
 
+#if ICONVERTIBLE
         /// <summary>
         ///  Gets <typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.
         /// </summary>
@@ -67,6 +68,7 @@ namespace EnumsNET.Unsafe
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static TypeCode GetTypeCode<TEnum>() => GetInfo<TEnum>().TypeCode;
+#endif
         #endregion
 
         #region Type Methods
@@ -1211,6 +1213,6 @@ namespace EnumsNET.Unsafe
 
     internal static class UnsafeEnums<TEnum>
     {
-        public static bool IsEnum { get; } = typeof(TEnum).IsEnum;
+        public static bool IsEnum { get; } = typeof(TEnum).IsEnum();
     }
 }

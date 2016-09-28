@@ -29,7 +29,7 @@ using System.Globalization;
 namespace EnumsNET.Numerics
 {
     internal interface INumericProvider<TInt>
-        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
     {
         bool LessThan(TInt left, TInt right);
 
@@ -60,5 +60,23 @@ namespace EnumsNET.Numerics
         TInt Zero { get; }
 
         TInt One { get; }
+
+#if !ICONVERTIBLE
+        sbyte ToSByte(TInt value);
+
+        byte ToByte(TInt value);
+
+        short ToInt16(TInt value);
+
+        ushort ToUInt16(TInt value);
+
+        int ToInt32(TInt value);
+
+        uint ToUInt32(TInt value);
+
+        long ToInt64(TInt value);
+
+        ulong ToUInt64(TInt value);
+#endif
     }
 }

@@ -857,7 +857,7 @@ namespace EnumsNET.Tests
 #endregion
 
         // TODO
-#region Parsing
-#endregion
+        #region Parsing
+        #endregion
     }
 }

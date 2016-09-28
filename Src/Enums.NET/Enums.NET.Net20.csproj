@@ -20,7 +20,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\Net20\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET20</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Net20\Enums.NET.XML</DocumentationFile>
@@ -29,7 +29,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\Net20\</OutputPath>
-    <DefineConstants>TRACE;NET20</DefineConstants>
+    <DefineConstants>TRACE;NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Net20\Enums.NET.XML</DocumentationFile>
@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Collections\ConcurrentDictionary.cs" />
+    <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumInfo.cs" />

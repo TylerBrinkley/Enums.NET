@@ -41,25 +41,28 @@ namespace EnumsNET
     /// <typeparam name="TIntProvider"></typeparam>
     internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
         where TEnum : struct
-        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
 #if NET45
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#else
+#elif !NETSTANDARD
         [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
-#if !(NET20 || NET35)
+#if SECURITY_SAFE_CRITICAL
         [SecuritySafeCritical]
 #endif
         private static extern TInt ToInt(TEnum value);
 
 #if NET45
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#else
+#elif !NETSTANDARD
         [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
-#if !(NET20 || NET35)
+#if SECURITY_SAFE_CRITICAL
         [SecuritySafeCritical]
 #endif
         internal static extern TEnum ToEnum(TInt value);
@@ -74,7 +77,9 @@ namespace EnumsNET
 
         #region Enums
         #region Properties
+#if ICONVERTIBLE
         public TypeCode TypeCode => new TInt().GetTypeCode();
+#endif
 
         public Type UnderlyingType => typeof(TInt);
 
@@ -159,6 +164,7 @@ namespace EnumsNET
 
         public object GetUnderlyingValue(TEnum value) => ToInt(value);
 
+#if ICONVERTIBLE
         public sbyte ToSByte(TEnum value) => ToInt(value).ToSByte(null);
 
         public byte ToByte(TEnum value) => ToInt(value).ToByte(null);
@@ -174,6 +180,23 @@ namespace EnumsNET
         public long ToInt64(TEnum value) => ToInt(value).ToInt64(null);
 
         public ulong ToUInt64(TEnum value) => ToInt(value).ToUInt64(null);
+#else
+        public sbyte ToSByte(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToSByte(ToInt(value));
+
+        public byte ToByte(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToByte(ToInt(value));
+
+        public short ToInt16(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToInt16(ToInt(value));
+
+        public ushort ToUInt16(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToUInt16(ToInt(value));
+
+        public int ToInt32(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToInt32(ToInt(value));
+
+        public uint ToUInt32(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToUInt32(ToInt(value));
+
+        public long ToInt64(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToInt64(ToInt(value));
+
+        public ulong ToUInt64(TEnum value) => EnumCache<TInt, TIntProvider>.Provider.ToUInt64(ToInt(value));
+#endif
 
         public int GetHashCode(TEnum value) => ToInt(value).GetHashCode();
 
@@ -323,7 +346,7 @@ namespace EnumsNET
         EnumMember IEnumInfo.GetEnumMember(string name, bool ignoreCase) => GetEnumMember(name, ignoreCase);
 
         IEnumerable<EnumMember> IEnumInfo.GetEnumMembers(bool uniqueValued) => GetEnumMembers(uniqueValued)
-#if NET20 || NET35
+#if !COVARIANCE
             .Select(member => (EnumMember)member)
 #endif
             ;
@@ -331,7 +354,7 @@ namespace EnumsNET
         public IEnumerable<object> GetFlags(object value) => GetFlags(ToObject(value)).Select(flag => (object)flag);
 
         public IEnumerable<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value))
-#if NET20 || NET35
+#if !COVARIANCE
             .Select(flag => (EnumMember)flag)
 #endif
             ;

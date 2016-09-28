@@ -59,5 +59,23 @@ namespace EnumsNET.Numerics
         public bool TryParse(string s, NumberStyles style, IFormatProvider provider, out sbyte result) => sbyte.TryParse(s, style, provider, out result);
 
         public sbyte Xor(sbyte left, sbyte right) => (sbyte)(left ^ right);
+
+#if !ICONVERTIBLE
+        public sbyte ToSByte(sbyte value) => value;
+
+        public byte ToByte(sbyte value) => Convert.ToByte(value);
+
+        public short ToInt16(sbyte value) => value;
+
+        public ushort ToUInt16(sbyte value) => Convert.ToUInt16(value);
+
+        public int ToInt32(sbyte value) => value;
+
+        public uint ToUInt32(sbyte value) => Convert.ToUInt32(value);
+
+        public long ToInt64(sbyte value) => value;
+
+        public ulong ToUInt64(sbyte value) => Convert.ToUInt64(value);
+#endif
     }
 }

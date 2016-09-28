@@ -263,6 +263,7 @@ namespace EnumsNET
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => Member.ToString(format, formatProvider);
 
+#if ICONVERTIBLE
         TypeCode IConvertible.GetTypeCode() => Member.GetTypeCode();
 
         bool IConvertible.ToBoolean(IFormatProvider provider) => Member.ToBoolean(provider);
@@ -296,6 +297,7 @@ namespace EnumsNET
         string IConvertible.ToString(IFormatProvider provider) => Member.ToString(provider);
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Member.ToType(conversionType, provider);
+#endif
 
         // implemented in derived class
         int IComparable.CompareTo(object obj) => 0;
@@ -349,7 +351,7 @@ namespace EnumsNET
         internal sealed override IEnumerable<object> GetFlags() => GetGenericFlags().Select(flag => (object)flag);
 
         internal sealed override IEnumerable<EnumMember> GetFlagMembers() => GetGenericFlagMembers()
-#if NET20 || NET35
+#if !COVARIANCE
             .Select(flag => (EnumMember)flag)
 #endif
             ;
@@ -362,7 +364,10 @@ namespace EnumsNET
 
     internal sealed class EnumMember<TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
         where TEnum : struct
-        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
         internal new EnumMemberInternal<TInt, TIntProvider> Member => (EnumMemberInternal<TInt, TIntProvider>)base.Member;

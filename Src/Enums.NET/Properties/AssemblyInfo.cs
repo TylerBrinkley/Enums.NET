@@ -15,6 +15,15 @@ using System.Security;
 #elif NET40
 [assembly: AssemblyTitle("Enums.NET .NET 4.0")]
 [assembly: AllowPartiallyTrustedCallers]
+#elif NETSTANDARD1_0
+[assembly: AssemblyTitle("Enums.NET .NET Standard 1.0")]
+[assembly: AllowPartiallyTrustedCallers]
+#elif NETSTANDARD1_1
+[assembly: AssemblyTitle("Enums.NET .NET Standard 1.1")]
+[assembly: AllowPartiallyTrustedCallers]
+#elif NETSTANDARD1_3
+[assembly: AssemblyTitle("Enums.NET .NET Standard 1.3")]
+[assembly: AllowPartiallyTrustedCallers]
 #else
 [assembly: AssemblyTitle("Enums.NET")]
 [assembly: AllowPartiallyTrustedCallers]
@@ -28,13 +37,15 @@ using System.Security;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
+#if !NETSTANDARD
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f2059370-3a4e-4885-8234-9aedade06108")]
+[assembly: GuidAttribute("f2059370-3a4e-4885-8234-9aedade06108")]
+#endif
 
 // Version information for an assembly consists of the following four values:
 //

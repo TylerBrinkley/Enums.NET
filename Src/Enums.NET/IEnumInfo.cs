@@ -31,7 +31,9 @@ namespace EnumsNET
 {
     internal interface ICommonEnumInfo
     {
+#if ICONVERTIBLE
         TypeCode TypeCode { get; }
+#endif
         Type UnderlyingType { get; }
         bool IsContiguous { get; }
         bool IsFlagEnum { get; }
@@ -167,7 +169,10 @@ namespace EnumsNET
     }
 
     internal interface IEnumInfoInternal<TInt, TIntProvider>
-        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
         EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member);

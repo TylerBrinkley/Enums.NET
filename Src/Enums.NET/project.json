@@ -1,28 +1,112 @@
 {
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-*",
   "title": "Enums.NET",
-  "description": "Enums.NET is a high performance type-safe .NET enum utility library",
-  "authors": [ "Tyler Brinkley" ],
-  "tags": [ "enum" ],
-  "projectUrl": "https://github.com/TylerBrinkley/Enums.NET",
-  "licenseUrl": "https://github.com/TylerBrinkley/Enums.NET/blob/master/LICENSE",
+  "description": "Enums.NET is a high-performance type-safe .NET enum utility library",
   "language": "en-US",
-
+  "authors": [ "Tyler Brinkley" ],
+  "packOptions": {
+    "projectUrl": "https://github.com/TylerBrinkley/Enums.NET",
+    "tags": [ "enum" ],
+    "licenseUrl": "https://github.com/TylerBrinkley/Enums.NET/blob/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/TylerBrinkley/Enums.NET"
+    }
+  },
+  "tools": {
+    "dotnet-fody": {
+      "version": "0.0.1-alpha",
+      "imports": "net452"
+    },
+    "ExtraConstraints.Fody": {
+      "version": "1.10.8",
+      "imports": "net452"
+    }
+  },
+  "scripts": {
+    "postcompile": "dotnet fody %compile:CompilerExitCode% %compile:ResponseFile%"
+  },
   "frameworks": {
     "net45": {
       "frameworkAssemblies": {
+        "System.Runtime.Serialization": ""
+      },
+      "buildOptions": {
+        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net40": {
       "frameworkAssemblies": {
+        "System.Runtime.Serialization": ""
+      },
+      "buildOptions": {
+        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net35": {
       "frameworkAssemblies": {
+        "System.Runtime.Serialization": ""
+      },
+      "buildOptions": {
+        "define": [ "NET35", "ENUM_MEMBER_ATTRIBUTE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net20": {
-      "frameworkAssemblies": {
+      "buildOptions": {
+        "define": [ "NET20", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+      }
+    },
+    "netstandard1.0": {
+      "buildOptions": {
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE" ]
+      },
+      "dependencies": {
+        "System.Collections": "4.0.11",
+        "System.ComponentModel.Primitives": "4.1.0",
+        "System.Linq": "4.1.0",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Resources.ResourceManager": "4.0.1",
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Runtime.Serialization.Primitives": "4.1.1",
+        "System.Threading": "4.0.11"
+      }
+    },
+    "netstandard1.1": {
+      "buildOptions": {
+        "define": [ "NETSTANDARD", "NETSTANDARD1_1", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE" ]
+      },
+      "dependencies": {
+        "System.Collections": "4.0.11",
+        "System.Collections.Concurrent": "4.0.12",
+        "System.ComponentModel.Primitives": "4.1.0",
+        "System.Linq": "4.1.0",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Resources.ResourceManager": "4.0.1",
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Runtime.Serialization.Primitives": "4.1.1",
+        "System.Threading": "4.0.11"
+      }
+    },
+    "netstandard1.3": {
+      "buildOptions": {
+        "define": [ "NETSTANDARD", "NETSTANDARD1_3", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE" ]
+      },
+      "dependencies": {
+        "System.Collections": "4.0.11",
+        "System.Collections.Concurrent": "4.0.12",
+        "System.ComponentModel.Primitives": "4.1.0",
+        "System.Linq": "4.1.0",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Resources.ResourceManager": "4.0.1",
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Runtime.Serialization.Primitives": "4.1.1",
+        "System.Threading": "4.0.11"
       }
     }
   }

@@ -42,10 +42,10 @@ namespace EnumsNET
         internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
         private const int _startingCustomEnumFormatValue = (int)EnumFormat.
-#if NET20
-            Description
-#else
+#if ENUM_MEMBER_ATTRIBUTE
             EnumMemberValue
+#else
+            Description
 #endif
             + 1;
 
@@ -89,6 +89,7 @@ namespace EnumsNET
         public static Type GetUnderlyingType<[EnumConstraint] TEnum>()
             where TEnum : struct => Enums<TEnum>.Info.UnderlyingType;
 
+#if ICONVERTIBLE
         /// <summary>
         /// Gets <typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.
         /// </summary>
@@ -96,6 +97,7 @@ namespace EnumsNET
         /// <returns></returns>
         public static TypeCode GetTypeCode<[EnumConstraint] TEnum>()
             where TEnum : struct => Enums<TEnum>.Info.TypeCode;
+#endif
         #endregion
 
         #region Type Methods
@@ -1233,7 +1235,7 @@ namespace EnumsNET
 
         private static Type GetNumericProviderType(Type underlyingType)
         {
-            switch (Type.GetTypeCode(underlyingType))
+            switch (underlyingType.GetTypeCode())
             {
                 case TypeCode.SByte:
                     return typeof(SByteNumericProvider);
@@ -1275,6 +1277,6 @@ namespace EnumsNET
 
     internal static class Enums<TEnum>
     {
-        internal static readonly IEnumInfo<TEnum> Info = (IEnumInfo<TEnum>)Enums.GetEnumInfo(typeof(TEnum));
+        public static readonly IEnumInfo<TEnum> Info = (IEnumInfo<TEnum>)Enums.GetEnumInfo(typeof(TEnum));
     }
 }

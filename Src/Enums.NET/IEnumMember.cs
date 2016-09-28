@@ -28,7 +28,10 @@ using System.Collections.Generic;
 
 namespace EnumsNET
 {
-    internal interface IEnumMember : IConvertible, IFormattable
+    internal interface IEnumMember : IFormattable
+#if ICONVERTIBLE
+        , IConvertible
+#endif
     {
         string Name { get; }
         IEnumerable<Attribute> Attributes { get; }

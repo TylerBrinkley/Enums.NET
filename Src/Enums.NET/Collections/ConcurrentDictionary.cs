@@ -23,13 +23,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if NET20 || NET35 || NETSTANDARD10
+#if !CONCURRENT_COLLECTIONS
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace EnumsNET.Collections
+namespace System.Collections.Concurrent
 {
     internal sealed class ConcurrentDictionary<TKey, TValue>// : IDictionary<TKey, TValue>
     {

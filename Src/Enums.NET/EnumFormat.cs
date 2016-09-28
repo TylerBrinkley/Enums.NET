@@ -26,7 +26,7 @@
 using System;
 using System.ComponentModel;
 
-#if !NET20
+#if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
 #endif
 
@@ -54,7 +54,7 @@ namespace EnumsNET
         /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>
         /// </summary>
         Description,
-#if !NET20
+#if ENUM_MEMBER_ATTRIBUTE
         /// <summary>
         /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>
         /// </summary>

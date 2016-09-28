@@ -32,7 +32,10 @@ using EnumsNET.Numerics;
 namespace EnumsNET
 {
     internal sealed class EnumMemberInternal<TInt, TIntProvider> : IEnumMember
-        where TInt : struct, IFormattable, IConvertible, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
         private readonly Attribute[] _attributes;
@@ -129,6 +132,7 @@ namespace EnumsNET
             return _enumCache.FormatInternal(Value, this, formatOrder);
         }
 
+#if ICONVERTIBLE
         public sbyte ToSByte() => Value.ToSByte(null);
 
         public byte ToByte() => Value.ToByte(null);
@@ -144,6 +148,23 @@ namespace EnumsNET
         public long ToInt64() => Value.ToInt64(null);
 
         public ulong ToUInt64() => Value.ToUInt64(null);
+#else
+        public sbyte ToSByte() => EnumCache<TInt, TIntProvider>.Provider.ToSByte(Value);
+
+        public byte ToByte() => EnumCache<TInt, TIntProvider>.Provider.ToByte(Value);
+
+        public short ToInt16() => EnumCache<TInt, TIntProvider>.Provider.ToInt16(Value);
+
+        public ushort ToUInt16() => EnumCache<TInt, TIntProvider>.Provider.ToUInt16(Value);
+
+        public int ToInt32() => EnumCache<TInt, TIntProvider>.Provider.ToInt32(Value);
+
+        public uint ToUInt32() => EnumCache<TInt, TIntProvider>.Provider.ToUInt32(Value);
+
+        public long ToInt64() => EnumCache<TInt, TIntProvider>.Provider.ToInt64(Value);
+
+        public ulong ToUInt64() => EnumCache<TInt, TIntProvider>.Provider.ToUInt64(Value);
+#endif
 
         public override int GetHashCode() => Value.GetHashCode();
 
@@ -162,6 +183,7 @@ namespace EnumsNET
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
 
+#if ICONVERTIBLE
         TypeCode IConvertible.GetTypeCode() => Value.GetTypeCode();
 
         bool IConvertible.ToBoolean(IFormatProvider provider) => Value.ToBoolean(provider);
@@ -195,6 +217,7 @@ namespace EnumsNET
         string IConvertible.ToString(IFormatProvider provider) => ToString();
 
         object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
+#endif
 
         object IEnumMember.GetUnderlyingValue() => Value;
         #endregion
