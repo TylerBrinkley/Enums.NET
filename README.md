@@ -1,7 +1,15 @@
 # Enums.NET
-Enums.NET is a high performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as C# extension methods for ease of use. It very closely matches System.Enum's API so it should be very comfortable to work with the first time. It's currently an RC and the API should be very stable.
+Enums.NET is a high performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as C# extension methods for ease of use. It's currently in an RC status.
 
-## Demo
+## The Woes of `System.Enum`
+1. Most of its static methods are non-generic which make them a pain to use and cause boxing.
+2. Most of its methods use reflection on each call without any sort of caching leading to operations being much slower than necessary.
+3. Its support for flag enum operations is extremely limited. The only flag enum method on `System.Enum` is the `HasFlag` method which is extremely slow, is not type-safe, and is ambiguous as to whether it determines if the value has all or any of the specified flags.
+4. It has no built-in support for retrieval of `Attribute`s applied to enum members.
+
+Enums.NET solves all of these issues and more.
+
+## Enums.NET Demo
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -73,9 +81,9 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
             Assert.AreEqual(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
             Assert.AreEqual(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
 
-            // ExcludeFlags
-            Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).ExcludeFlags(DaysOfWeek.Monday));
-            Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).ExcludeFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+            // RemoveFlags
+            Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday));
+            Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
 
             // GetFlags
             List<DaysOfWeek> flags = DaysOfWeek.Weekend.GetFlags().ToList();
@@ -192,20 +200,20 @@ Enums.NET is a high performance type-safe .NET enum utility library which caches
     }
 
 ## How Is It Type-Safe
-As you may know there is no way to constrain a type or method's generic type parameter to an Enum in C#. This is a limitation the C# compiler imposes, not a limitation of the CLR itself thus a valid .NET assembly can contain these constraints. How this library works is that the C# compiler can understand when this constraint is applied, it just can't express it. Utilizing Simon Cropp's Fody.ExtraConstraints, Enums.NET is able to automatically apply a post-processing step on build to the compiled assembly to add these constraints to the assembly, thus achieving type safety.
+There is currently no way to constrain a type or method's generic type parameter to an enum in C#. This is a limitation the C# compiler imposes, not a limitation of the CLR itself thus a valid .NET assembly can contain these constraints. How this library works is that the C# compiler can understand when this constraint is applied, it just can't express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety.
 
 ## Interface
-EnumsNET.Enums static class for type-safe standard enum operations, with many exposed as C# extension methods.
+`EnumsNET.Enums` static class for type-safe standard enum operations, with many exposed as C# extension methods.
 
-EnumsNET.FlagEnums static class for type-safe flag enum operations, with many exposed as C# extension methods.
+`EnumsNET.FlagEnums` static class for type-safe flag enum operations, with many exposed as C# extension methods.
 
-EnumsNET.Unsafe.UnsafeEnums static class for standard enum operations without the enum constraint for use in generic programming.
+`EnumsNET.Unsafe.UnsafeEnums` static class for standard enum operations without the enum constraint for use in generic programming.
 
-EnumsNET.Unsafe.UnsafeFlagEnums static class for flag enum operations without the enum constraint for use in generic programming.
+`EnumsNET.Unsafe.UnsafeFlagEnums` static class for flag enum operations without the enum constraint for use in generic programming.
 
-EnumsNET.NonGeneric.NonGenericEnums static class for non-generic standard enum operations, mostly a superset of .NET's System.Enum class.
+`EnumsNET.NonGeneric.NonGenericEnums` static class for non-generic standard enum operations, mostly a superset of .NET's `System.Enum` class.
 
-EnumsNET.NonGeneric.NonGenericFlagEnums static class for non-generic flag enum operations.
+`EnumsNET.NonGeneric.NonGenericFlagEnums` static class for non-generic flag enum operations.
 
 ## Requirements
 .NET Framework 2.0 or greater, .NET Standard support to come
