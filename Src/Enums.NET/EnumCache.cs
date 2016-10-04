@@ -159,6 +159,7 @@ namespace EnumsNET
                 // Makes sure is in increasing order
                 duplicateValues.Sort((first, second) => first.Value.CompareTo(second.Value));
                 _duplicateValues = duplicateValues;
+                _duplicateValues.Capacity = _duplicateValues.Count;
             }
         }
 
@@ -611,13 +612,13 @@ namespace EnumsNET
                 }
                 else
                 {
+                    ConcurrentDictionary<EnumFormat, EnumMemberParser> enumMemberParsers;
+                    enumMemberParsers = _enumMemberParsers ?? Interlocked.CompareExchange(ref _enumMemberParsers, (enumMemberParsers = new ConcurrentDictionary<EnumFormat, EnumMemberParser>(EnumComparer<EnumFormat>.Instance)), null) ?? enumMemberParsers;
                     EnumMemberParser parser;
-                    var enumMemberParsers = _enumMemberParsers;
-                    if (enumMemberParsers == null || !enumMemberParsers.TryGetValue(format, out parser))
+                    if (!enumMemberParsers.TryGetValue(format, out parser))
                     {
                         format.Validate(nameof(format));
                         parser = new EnumMemberParser(format, this);
-                        enumMemberParsers = enumMemberParsers ?? Interlocked.CompareExchange(ref _enumMemberParsers, (enumMemberParsers = new ConcurrentDictionary<EnumFormat, EnumMemberParser>(EnumComparer<EnumFormat>.Instance)), null) ?? enumMemberParsers;
                         enumMemberParsers.TryAdd(format, parser);
                     }
                     if (parser.TryParse(value, ignoreCase, out member))

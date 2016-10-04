@@ -29,6 +29,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
 using EnumsNET.Numerics;
+using ExtraConstraints;
 
 namespace EnumsNET
 {
@@ -39,7 +40,7 @@ namespace EnumsNET
     /// <typeparam name="TEnum"></typeparam>
     /// <typeparam name="TInt"></typeparam>
     /// <typeparam name="TIntProvider"></typeparam>
-    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
+    internal sealed class EnumInfo<[EnumConstraint] TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
         where TEnum : struct
         where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
@@ -304,12 +305,6 @@ namespace EnumsNET
         #endregion
         #endregion
 
-        #region IEnumInfoInternal
-        public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
-
-        public EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
-        #endregion
-
         #region NonGeneric
         object IEnumInfo.AllFlags => AllFlags;
 
@@ -464,6 +459,12 @@ namespace EnumsNET
         }
 
         public object Validate(object value, string paramName) => Validate(ToObject(value), paramName);
+        #endregion
+
+        #region IEnumInfoInternal
+        public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
+
+        public EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
         #endregion
     }
 }

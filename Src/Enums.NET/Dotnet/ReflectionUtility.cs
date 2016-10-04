@@ -45,11 +45,11 @@ namespace EnumsNET
 
         public static bool IsEnum(this Type type)
         {
-#if TYPE_REFLECTION
-            return type.IsEnum;
-#else
-            return type.GetTypeInfo().IsEnum;
+            return type.
+#if !TYPE_REFLECTION
+                GetTypeInfo().
 #endif
+                IsEnum;
         }
     }
 }

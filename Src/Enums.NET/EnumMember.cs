@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EnumsNET.Numerics;
+using ExtraConstraints;
 
 namespace EnumsNET
 {
@@ -362,7 +363,7 @@ namespace EnumsNET
         #endregion
     }
 
-    internal sealed class EnumMember<TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
+    internal sealed class EnumMember<[EnumConstraint] TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
         where TEnum : struct
         where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE

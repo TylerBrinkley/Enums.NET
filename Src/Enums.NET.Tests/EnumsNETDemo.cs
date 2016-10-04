@@ -8,11 +8,12 @@ using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 [TestFixture]
 class EnumsNETDemo
 {
-    // Test enum definitions at the end
+    // Test enum definitions at the bottom
 
     [Test]
     public void Enumerate()
     {
+        // Retrieves enum members in increasing value order
         foreach (EnumMember<NumericOperator> member in Enums.GetEnumMembers<NumericOperator>())
         {
             NumericOperator value = member.Value;
@@ -21,16 +22,6 @@ class EnumsNETDemo
         }
         Assert.AreEqual(8, Enums.GetEnumMembers<NumericOperator>().Count());
         Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(uniqueValued: true).Count());
-
-        foreach (NumericOperator value in Enums.GetValues<NumericOperator>())
-        {
-            // Do stuff
-        }
-
-        foreach (string name in Enums.GetNames<NumericOperator>())
-        {
-            // Do stuff
-        }
     }
 
     [Test]
@@ -42,7 +33,7 @@ class EnumsNETDemo
 
         // Flag Enums, checks is valid flag combination or is defined
         Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
-        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | (DaysOfWeek.All + 1)).IsValid());
+        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
 
         // Custom validation through IEnumValidatorAttribute
         Assert.IsTrue(DayType.Weekday.IsValid());
@@ -73,11 +64,14 @@ class EnumsNETDemo
         Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday));
         Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
 
-        // GetFlags
+        // GetFlags, splits out the individual flags in increasing value order
         List<DaysOfWeek> flags = DaysOfWeek.Weekend.GetFlags().ToList();
         Assert.AreEqual(2, flags.Count);
         Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
         Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
+
+        // GetAllFlags
+        Assert.AreEqual(DaysOfWeek.All, FlagEnums.GetAllFlags<DaysOfWeek>());
     }
 
     [Test]

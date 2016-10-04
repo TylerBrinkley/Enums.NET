@@ -23,13 +23,16 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using ExtraConstraints;
+
 namespace EnumsNET
 {
     /// <summary>
     /// Interface to be implemented on an enum validator attribute class to allow custom validation logic.
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public interface IEnumValidatorAttribute<TEnum>
+    public interface IEnumValidatorAttribute<[EnumConstraint] TEnum>
+        where TEnum : struct
     {
         /// <summary>
         /// Custom validation method

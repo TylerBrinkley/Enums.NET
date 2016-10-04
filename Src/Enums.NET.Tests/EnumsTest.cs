@@ -566,9 +566,9 @@ namespace EnumsNET.Tests
             Assert.IsTrue(TypeNameHandling.None.IsValid());
             Assert.IsTrue(TypeNameHandling.Objects.IsValid());
             Assert.IsTrue(TypeNameHandling.Arrays.IsValid());
-            Assert.IsTrue(TypeNameHandling.All.IsValid());
+            Assert.IsTrue((TypeNameHandling.Objects | TypeNameHandling.Arrays).IsValid());
             Assert.IsTrue(TypeNameHandling.Auto.IsValid());
-            Assert.IsFalse((TypeNameHandling.Auto | TypeNameHandling.All).IsValid());
+            Assert.IsFalse((TypeNameHandling.Auto | TypeNameHandling.Objects).IsValid());
         }
 
         [Test]
