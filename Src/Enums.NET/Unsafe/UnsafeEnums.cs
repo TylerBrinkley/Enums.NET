@@ -410,7 +410,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(object value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -436,7 +436,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(sbyte value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(sbyte value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -460,7 +460,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryToObject<TEnum>(byte value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(byte value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -484,7 +484,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryToObject<TEnum>(short value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(short value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -510,7 +510,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(ushort value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(ushort value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -534,7 +534,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryToObject<TEnum>(int value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(int value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -560,7 +560,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(uint value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(uint value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -584,7 +584,7 @@ namespace EnumsNET.Unsafe
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(long value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -610,7 +610,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
+        public static bool TryToObject<TEnum>(ulong value, bool validate, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result, validate);
         #endregion
 
         #region All Values Main Methods

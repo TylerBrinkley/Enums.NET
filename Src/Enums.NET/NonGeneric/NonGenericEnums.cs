@@ -465,7 +465,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, object value, out object result) => TryToObject(enumType, value, out result, false);
+        public static bool TryToObject(Type enumType, object value, out object result) => TryToObject(enumType, value, false, out result);
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -480,7 +480,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, object value, out object result, bool validate)
+        public static bool TryToObject(Type enumType, object value, bool validate, out object result)
         {
             var info = GetNonGenericEnumInfo(enumType);
 
@@ -519,7 +519,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, sbyte value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, sbyte value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -545,7 +545,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, byte value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, byte value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -571,7 +571,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, short value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, short value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -599,7 +599,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ushort value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, ushort value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -625,7 +625,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, int value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, int value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -653,7 +653,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, uint value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, uint value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -679,7 +679,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, long value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, long value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -707,7 +707,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ulong value, out object result, bool validate) => GetInfo(enumType).TryToObject(value, out result, validate);
+        public static bool TryToObject(Type enumType, ulong value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
         #endregion
 
         #region All Values Main Methods
