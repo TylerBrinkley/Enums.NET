@@ -21,7 +21,7 @@ class EnumsNETDemo
             // Do stuff
         }
         Assert.AreEqual(8, Enums.GetEnumMembers<NumericOperator>().Count());
-        Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(uniqueValued: true).Count());
+        Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(excludeDuplicates: true).Count());
     }
 
     [Test]
@@ -126,7 +126,7 @@ class EnumsNETDemo
         NotEquals,
         [Symbol("<")]
         LessThan,
-        [PrimaryEnumMember]
+        [PrimaryEnumMember] // Indicates enum member as primary duplicate for extension methods
         [Symbol(">=")]
         GreaterThanOrEquals,
         NotLessThan = GreaterThanOrEquals,

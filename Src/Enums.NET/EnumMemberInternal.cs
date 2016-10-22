@@ -31,6 +31,8 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
+    // Putting the logic here as opposed to directly in EnumMember<TEnum, TInt, TIntProvider>
+    // reduces memory usage because it doesn't have the enum type as a generic type parameter.
     internal sealed class EnumMemberInternal<TInt, TIntProvider> : IEnumMember
         where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
@@ -95,15 +97,7 @@ namespace EnumsNET
             }
         }
 
-        public override string ToString() => _enumCache.AsStringInternal(Value, this);
-
-        public string ToString(string format) => _enumCache.AsStringInternal(Value, this, format);
-
-        public string ToString(params EnumFormat[] formatOrder) => _enumCache.AsStringInternal(Value, this, formatOrder);
-
-        public string AsString() => ToString();
-
-        public string AsString(string format) => ToString(format);
+        public string AsString(string format) => _enumCache.AsStringInternal(Value, this, format);
 
         public string AsString(EnumFormat format)
         {
@@ -116,7 +110,7 @@ namespace EnumsNET
 
         public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.FormatInternal(Value, this, format0, format1, format2);
 
-        public string AsString(params EnumFormat[] formatOrder) => ToString(formatOrder);
+        public string AsString(params EnumFormat[] formats) => _enumCache.FormatInternal(Value, this, formats);
 
         public string Format(string format)
         {
@@ -125,11 +119,11 @@ namespace EnumsNET
             return _enumCache.FormatInternal(Value, this, format);
         }
 
-        public string Format(params EnumFormat[] formatOrder)
+        public string Format(params EnumFormat[] formats)
         {
-            Preconditions.NotNull(formatOrder, nameof(formatOrder));
+            Preconditions.NotNull(formats, nameof(formats));
 
-            return _enumCache.FormatInternal(Value, this, formatOrder);
+            return _enumCache.FormatInternal(Value, this, formats);
         }
 
 #if ICONVERTIBLE
@@ -181,7 +175,7 @@ namespace EnumsNET
         public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
 
         #region Explicit Interface Implementation
-        string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format);
+        string IFormattable.ToString(string format, IFormatProvider formatProvider) => AsString(format);
 
 #if ICONVERTIBLE
         TypeCode IConvertible.GetTypeCode() => Value.GetTypeCode();

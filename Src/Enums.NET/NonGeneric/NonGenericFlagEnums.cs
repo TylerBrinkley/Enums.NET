@@ -30,7 +30,8 @@ using System.Linq;
 namespace EnumsNET.NonGeneric
 {
     /// <summary>
-    /// A non-generic implementation of the static class <see cref="FlagEnums"/>. When the type is known the <see cref="FlagEnums"/> class should be used instead, to provide type safety and to avoid boxing.
+    /// A non-generic implementation of the static class <see cref="FlagEnums"/>.
+    /// When the type is known at compile-time the <see cref="FlagEnums"/> class should be used instead, to provide type safety and to avoid boxing.
     /// </summary>
     public static class NonGenericFlagEnums
     {
@@ -38,33 +39,33 @@ namespace EnumsNET.NonGeneric
         /// <summary>
         /// Indicates if <paramref name="enumType"/> is marked with the <see cref="FlagsAttribute"/>.
         /// </summary>
-        /// <param name="enumType"></param>
+        /// <param name="enumType">The enum type.</param>
         /// <returns>Indication if <paramref name="enumType"/> is marked with the <see cref="FlagsAttribute"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool IsFlagEnum(Type enumType) => NonGenericEnums.GetInfo(enumType).IsFlagEnum;
 
         /// <summary>
         /// Retrieves all the flags defined by <paramref name="enumType"/>.
         /// </summary>
-        /// <param name="enumType"></param>
+        /// <param name="enumType">The enum type.</param>
         /// <returns>All the flags defined by <paramref name="enumType"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static object GetAllFlags(Type enumType) => NonGenericEnums.GetInfo(enumType).AllFlags;
         #endregion
 
         #region Main Methods
         /// <summary>
-        /// Indicates whether <paramref name="value"/> is a valid flag combination of the defined enum values.
+        /// Indicates whether <paramref name="value"/> is a valid flag combination of <paramref name="enumType"/>'s defined flags.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns>Indication of whether <paramref name="value"/> is a valid flag combination of the defined enum values.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>Indication of whether <paramref name="value"/> is a valid flag combination of <paramref name="enumType"/>'s defined flags.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static bool IsValidFlagCombination(Type enumType, object value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -78,63 +79,72 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns the names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
-        /// If <paramref name="value"/> is not a valid flag combination null is returned.
+        /// Retrieves the names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>The names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static string FormatFlags(Type enumType, object value) => FormatFlags(enumType, value, null, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with commas
-        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
+        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
+        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
+        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
+        /// <paramref name="value"/> is of an invalid type
         /// -or-
-        /// <paramref name="formatOrder"/> contains an invalid value.</exception>
-        public static string FormatFlags(Type enumType, object value, params EnumFormat[] formatOrder) => FormatFlags(enumType, value, null, formatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static string FormatFlags(Type enumType, object value, params EnumFormat[] formats) => FormatFlags(enumType, value, null, formats);
 
         /// <summary>
-        /// Returns the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
+        /// Retrieves the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <returns>The names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static string FormatFlags(Type enumType, object value, string delimiter) => FormatFlags(enumType, value, delimiter, null);
 
         /// <summary>
-        /// Returns <paramref name="value"/>'s flags formatted with <paramref name="formatOrder"/> and delimited with <paramref name="delimiter"/>
-        /// or if empty return the zero flag formatted with <paramref name="formatOrder"/>.
+        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type
+        /// <paramref name="value"/> is of an invalid type
         /// -or-
-        /// <paramref name="formatOrder"/> contains an invalid value.</exception>
-        public static string FormatFlags(Type enumType, object value, string delimiter, params EnumFormat[] formatOrder)
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static string FormatFlags(Type enumType, object value, string delimiter, params EnumFormat[] formats)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
@@ -143,19 +153,19 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.FormatFlags(value, delimiter, formatOrder);
+            return info.EnumInfo.FormatFlags(value, delimiter, formats);
         }
 
         /// <summary>
-        /// Returns an IEnumerable of the flags that compose <paramref name="value"/>.
+        /// Retrieves the flags that compose <paramref name="value"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns>IEnumerable of the flags that compose <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>The flags that compose <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static IEnumerable<object> GetFlags(Type enumType, object value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -169,15 +179,15 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns an IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.
+        /// Retrieves the <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns>IEnumerable of the flags that compose <paramref name="value"/> as EnumMember's.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static IEnumerable<EnumMember> GetFlagMembers(Type enumType, object value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -191,15 +201,15 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has any flags set.
+        /// Indicates if <paramref name="value"/> has any flags.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns>Indication if <paramref name="value"/> has any flags set.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> has any flags.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static bool HasAnyFlags(Type enumType, object value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -213,16 +223,16 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.
+        /// Indicates if <paramref name="value"/> has any flags that are in <paramref name="otherFlags"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="otherFlags"></param>
-        /// <returns>Indication if <paramref name="value"/> has any flags set that are also set in <paramref name="otherFlags"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> has any flags that are in <paramref name="otherFlags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
         public static bool HasAnyFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -245,15 +255,15 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has all flags set that are defined in <paramref name="enumType"/>.
+        /// Indicates if <paramref name="value"/> has all of the flags that are defined in <paramref name="enumType"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns>Indication if <paramref name="value"/> has all flags set that are defined in <paramref name="enumType"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> has all of the flags that are defined in <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static bool HasAllFlags(Type enumType, object value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -267,16 +277,16 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Indicates if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.
+        /// Indicates if <paramref name="value"/> has all of the flags that are in <paramref name="otherFlags"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="otherFlags"></param>
-        /// <returns>Indication if <paramref name="value"/> has all of the flags set that are also set in <paramref name="otherFlags"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> has all of the flags that are in <paramref name="otherFlags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
         public static bool HasAllFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -301,13 +311,13 @@ namespace EnumsNET.NonGeneric
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags(Type)"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static object ToggleFlags(Type enumType, object value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -322,16 +332,16 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
+        /// Returns <paramref name="value"/> while toggling the flags that are in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="otherFlags"></param>
-        /// <returns><paramref name="value"/> while toggling the flags that are set in <paramref name="otherFlags"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns><paramref name="value"/> while toggling the flags that are in <paramref name="otherFlags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
         public static object ToggleFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -353,16 +363,16 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
+        /// Returns <paramref name="value"/> with only the flags that are also in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="otherFlags"></param>
-        /// <returns><paramref name="value"/> with only the flags that are also set in <paramref name="otherFlags"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns><paramref name="value"/> with only the flags that are also in <paramref name="otherFlags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
         public static object CommonFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -389,16 +399,16 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set. Equivalent to the bitwise "or" operation.
+        /// Combines the flags of <paramref name="value"/> and <paramref name="otherFlags"/>. Equivalent to the bitwise "or" operation.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="otherFlags"></param>
-        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> set.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns>Combination of <paramref name="value"/> with the flags in <paramref name="otherFlags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
         public static object CombineFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -420,15 +430,15 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns all of <paramref name="flags"/> combined with the bitwise "or" operation.
+        /// Combines all of the flags of <paramref name="flags"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="flags">Must be valid flag combinations.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="flags"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="flags">The flags enum values.</param>
+        /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="flags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="flags"/> contains an object that is an invalid type.</exception>
+        /// <paramref name="flags"/> contains a value that is of an invalid type.</exception>
         public static object CombineFlags(Type enumType, params object[] flags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -437,16 +447,16 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns <paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.
+        /// Returns <paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="otherFlags"></param>
-        /// <returns><paramref name="value"/> with the flags specified in <paramref name="otherFlags"/> cleared.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns><paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is an invalid type.</exception>
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
         public static object RemoveFlags(Type enumType, object value, object otherFlags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
@@ -474,156 +484,134 @@ namespace EnumsNET.NonGeneric
 
         #region Parsing
         /// <summary>
-        /// Converts the string representation of one or more enum members to an equivalent enum value.
+        /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <paramref name="enumType"/>'s underlying type.</exception>
         public static object ParseFlags(Type enumType, string value) => ParseFlags(enumType, value, false, null, null);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members to an equivalent enum value.
-        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        public static object ParseFlags(Type enumType, string value, params EnumFormat[] parseFormatOrder) => ParseFlags(enumType, value, false, null, parseFormatOrder);
+        public static object ParseFlags(Type enumType, string value, params EnumFormat[] formats) => ParseFlags(enumType, value, false, null, formats);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members to an equivalent enum value.
-        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
+        /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
         public static object ParseFlags(Type enumType, string value, bool ignoreCase) => ParseFlags(enumType, value, ignoreCase, null, null);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members to an equivalent enum value.
-        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        public static object ParseFlags(Type enumType, string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => ParseFlags(enumType, value, ignoreCase, null, parseFormatOrder);
+        public static object ParseFlags(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => ParseFlags(enumType, value, ignoreCase, null, formats);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
+        /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="delimiter">The effective delimiter will be the <paramref name="delimiter"/> trimmed if it's not all whitespace.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="delimiter"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="delimiter"/> is an empty string.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <paramref name="enumType"/>'s underlying type.</exception>
         public static object ParseFlags(Type enumType, string value, string delimiter) => ParseFlags(enumType, value, false, delimiter, null);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
-        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        public static object ParseFlags(Type enumType, string value, string delimiter, params EnumFormat[] parseFormatOrder) => ParseFlags(enumType, value, false, delimiter, parseFormatOrder);
+        public static object ParseFlags(Type enumType, string value, string delimiter, params EnumFormat[] formats) => ParseFlags(enumType, value, false, delimiter, formats);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
-        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="delimiter">The effective delimiter will be the <paramref name="delimiter"/> trimmed if it's not all whitespace.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="delimiter"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="delimiter"/> is an empty string.</exception>
+        /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
         public static object ParseFlags(Type enumType, string value, bool ignoreCase, string delimiter) => ParseFlags(enumType, value, ignoreCase, delimiter, null);
 
         /// <summary>
-        /// Converts the string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value.
-        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        public static object ParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] parseFormatOrder)
+        public static object ParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, params EnumFormat[] formats)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
@@ -632,126 +620,126 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.ParseFlags(value, ignoreCase, delimiter, parseFormatOrder);
+            return info.EnumInfo.ParseFlags(value, ignoreCase, delimiter, formats);
         }
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded.
+        /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParseFlags(Type enumType, string value, out object result) => TryParseFlags(enumType, value, false, null, out result, null);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParseFlags(Type enumType, string value, out object result, params EnumFormat[] parseFormatOrder) => TryParseFlags(enumType, value, false, null, out result, parseFormatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryParseFlags(Type enumType, string value, out object result, params EnumFormat[] formats) => TryParseFlags(enumType, value, false, null, out result, formats);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object result) => TryParseFlags(enumType, value, ignoreCase, null, out result, null);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] parseFormatOrder) => TryParseFlags(enumType, value, ignoreCase, null, out result, parseFormatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] formats) => TryParseFlags(enumType, value, ignoreCase, null, out result, formats);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded.
+        /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParseFlags(Type enumType, string value, string delimiter, out object result) => TryParseFlags(enumType, value, false, delimiter, out result, null);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded. The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParseFlags(Type enumType, string value, string delimiter, out object result, params EnumFormat[] parseFormatOrder) => TryParseFlags(enumType, value, false, delimiter, out result, parseFormatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryParseFlags(Type enumType, string value, string delimiter, out object result, params EnumFormat[] formats) => TryParseFlags(enumType, value, false, delimiter, out result, formats);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, out object result) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, null);
 
         /// <summary>
-        /// Tries to convert the specified string representation of one or more enum members delimited with the specified <paramref name="delimiter"/> to an equivalent enum value. The return value
-        /// indicates whether the conversion succeeded. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The parameter <paramref name="parseFormatOrder"/> specifies the order of enum parsing formats.
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="enumType"></param>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="delimiter"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is null.</exception>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] parseFormatOrder)
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string delimiter, out object result, params EnumFormat[] formats)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
@@ -761,16 +749,17 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            return info.EnumInfo.TryParseFlags(value, ignoreCase, delimiter, out result, parseFormatOrder);
+            return info.EnumInfo.TryParseFlags(value, ignoreCase, delimiter, out result, formats);
         }
         #endregion
 
         #region EnumMember Extensions
         /// <summary>
-        /// Returns an IEnumerable of the flags that compose <paramref name="member"/>.
+        /// Retrieves the flags that compose <paramref name="member"/>'s value.
         /// </summary>
-        /// <param name="member"></param>
-        /// <returns>IEnumerable of the flags that compose <paramref name="member"/>.</returns>
+        /// <param name="member">The enum member.</param>
+        /// <returns>The flags that compose <paramref name="member"/>'s value.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
         public static IEnumerable<object> GetFlags(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
@@ -778,10 +767,11 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Returns an IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.
+        /// Retrieves the <see cref="EnumMember"/>s of the flags that compose <paramref name="member"/>'s value.
         /// </summary>
-        /// <param name="member"></param>
-        /// <returns>IEnumerable of the flags that compose <paramref name="member"/> as EnumMember's.</returns>
+        /// <param name="member">The enum member.</param>
+        /// <returns>The <see cref="EnumMember"/>s of the flags that compose <paramref name="member"/>'s value.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
         public static IEnumerable<EnumMember> GetFlagMembers(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));

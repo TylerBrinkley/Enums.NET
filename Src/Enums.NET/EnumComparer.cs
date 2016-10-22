@@ -30,41 +30,45 @@ using ExtraConstraints;
 namespace EnumsNET
 {
     /// <summary>
-    /// An efficient type-safe enum comparer which doesn't box the values, to access use the <see cref="EnumComparer{TEnum}.Instance"/> property
+    /// An efficient type-safe enum comparer which doesn't box the values.
     /// </summary>
-    /// <typeparam name="TEnum"></typeparam>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
     public sealed class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
         where TEnum : struct
     {
         /// <summary>
-        /// The singleton instance of the <see cref="EnumComparer{TEnum}"/>. 
+        /// The singleton instance of <see cref="EnumComparer{TEnum}"/>. 
         /// </summary>
         public static EnumComparer<TEnum> Instance { get; } = new EnumComparer<TEnum>();
 
-        private EnumComparer()
+        /// <summary>
+        /// <see cref="EnumComparer{TEnum}"/> constructor, should use singleton property <see cref="Instance"/> instead.
+        /// This constructor's public for visibility and serialization.
+        /// </summary>
+        public EnumComparer()
         {
         }
 
         /// <summary>
         /// Indicates if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The first enum value.</param>
+        /// <param name="y">The second enum value.</param>
         /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
         public bool Equals(TEnum x, TEnum y) => Enums<TEnum>.Info.Equals(x, y);
 
         /// <summary>
         /// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">The enum value.</param>
         /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
         public int GetHashCode(TEnum obj) => Enums<TEnum>.Info.GetHashCode(obj);
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The first enum value.</param>
+        /// <param name="y">The second enum value.</param>
         /// <returns></returns>
         public int Compare(TEnum x, TEnum y) => Enums<TEnum>.Info.CompareTo(x, y);
 

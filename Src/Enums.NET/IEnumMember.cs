@@ -37,17 +37,13 @@ namespace EnumsNET
         IEnumerable<Attribute> Attributes { get; }
 
         object GetUnderlyingValue();
-        string ToString();
-        string ToString(string format);
-        string ToString(params EnumFormat[] formatOrder);
-        string AsString();
         string AsString(string format);
-        string AsString(params EnumFormat[] formatOrder);
+        string AsString(params EnumFormat[] formats);
         string Format(string format);
         string AsString(EnumFormat format);
         string AsString(EnumFormat format0, EnumFormat format1);
         string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string Format(params EnumFormat[] formatOrder);
+        string Format(params EnumFormat[] formats);
         bool HasAttribute<TAttribute>() where TAttribute : Attribute;
         TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
         IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute;

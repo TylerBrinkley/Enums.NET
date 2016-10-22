@@ -33,30 +33,30 @@ using System.Runtime.Serialization;
 namespace EnumsNET
 {
     /// <summary>
-    /// Defines the various enum formats
+    /// Specifies the enum string representation formats.
     /// </summary>
     [EnumFormatValidator]
     public enum EnumFormat
     {
         /// <summary>
-        /// Enum is represented by its decimal value
+        /// Enum is represented by its decimal value.
         /// </summary>
         DecimalValue,
         /// <summary>
-        /// Enum is represented by its hexadecimal value
+        /// Enum is represented by its hexadecimal value.
         /// </summary>
         HexadecimalValue,
         /// <summary>
-        /// Enum is represented by its name
+        /// Enum is represented by its name.
         /// </summary>
         Name,
         /// <summary>
-        /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>
+        /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>.
         /// </summary>
         Description,
 #if ENUM_MEMBER_ATTRIBUTE
         /// <summary>
-        /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>
+        /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>.
         /// </summary>
         EnumMemberValue
 #endif

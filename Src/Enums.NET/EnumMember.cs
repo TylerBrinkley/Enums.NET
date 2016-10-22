@@ -32,24 +32,24 @@ using ExtraConstraints;
 namespace EnumsNET
 {
     /// <summary>
-    /// Represents an enum member's Name, Value, and Attributes
+    /// An enum member which composes its name, value, and attributes.
     /// </summary>
     public abstract class EnumMember : IEnumMember, IComparable<EnumMember>, IEquatable<EnumMember>, IComparable
     {
         internal readonly IEnumMember Member;
 
         /// <summary>
-        /// The defined enum member's value
+        /// The enum member's value.
         /// </summary>
         public object Value => GetValue();
 
         /// <summary>
-        /// The defined enum member's name
+        /// The enum member's name.
         /// </summary>
         public string Name => Member.Name;
 
         /// <summary>
-        /// The defined enum member's attributes
+        /// The enum member's attributes.
         /// </summary>
         public IEnumerable<Attribute> Attributes => Member.Attributes;
 
@@ -59,124 +59,110 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// The defined enum member's underlying integer value
+        /// Retrieves the enum member's name.
         /// </summary>
-        public object GetUnderlyingValue() => Member.GetUnderlyingValue();
+        /// <returns>The enum member's name.</returns>
+        public sealed override string ToString() => Member.Name;
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation.
+        /// Retrieves the enum member's name.
         /// </summary>
-        /// <returns></returns>
-        public sealed override string ToString() => Member.ToString();
+        /// <returns>The enum member's name.</returns>
+        public string AsString() => Member.Name;
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
         /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        public string ToString(string format) => Member.ToString(format);
-
-        /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
-        /// </summary>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
-        public string ToString(params EnumFormat[] formatOrder) => Member.ToString(formatOrder);
-
-        /// <summary>
-        /// Converts the specified <see cref="Value"/> to its equivalent string representation.
-        /// </summary>
-        /// <returns></returns>
-        public string AsString() => Member.AsString();
-
-        /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public string AsString(string format) => Member.AsString(format);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
         /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public string AsString(EnumFormat format) => Member.AsString(format);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
+        /// Converts the enum member to its string representation using the specified formats.
         /// </summary>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <returns></returns>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
+        /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public string AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(format0, format1);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation in the specified format order.
+        /// Converts the enum member to its string representation using the specified formats.
         /// </summary>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <param name="format2"></param>
-        /// <returns></returns>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
+        /// <param name="format2">The third output format to use if using the first and second both resolve to <c>null</c>.</param>
+        /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(format0, format1, format2);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
+        /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
-        public string AsString(params EnumFormat[] formatOrder) => Member.AsString(formatOrder);
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        public string AsString(params EnumFormat[] formats) => Member.AsString(formats);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
         /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="format"/> is null.</exception>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public string Format(string format) => Member.Format(format);
 
         /// <summary>
-        /// Converts <see cref="Value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
+        /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
-        /// <exception cref="ArgumentException"><paramref name="formatOrder"/> contains an invalid value.</exception>
-        public string Format(params EnumFormat[] formatOrder) => Member.Format(formatOrder);
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        public string Format(params EnumFormat[] formats) => Member.Format(formats);
 
         /// <summary>
         /// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
+        /// <typeparam name="TAttribute">The attribute type.</typeparam>
         /// <returns>Indication if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.</returns>
         public bool HasAttribute<TAttribute>() where TAttribute : Attribute => Member.HasAttribute<TAttribute>();
 
         /// <summary>
-        /// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined else null.
+        /// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TAttribute">The attribute type.</typeparam>
+        /// <returns>The first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.</returns>
         public TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute => Member.GetAttribute<TAttribute>();
 
         /// <summary>
         /// Retrieves all <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TAttribute">The attribute type.</typeparam>
+        /// <returns>All <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.</returns>
         public IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute => Member.GetAttributes<TAttribute>();
+
+
+        /// <summary>
+        /// Retrieves the enum member's underlying integral value.
+        /// </summary>
+        /// <returns>The enum member's underlying integral value.</returns>
+        public object GetUnderlyingValue() => Member.GetUnderlyingValue();
 
         /// <summary>
         /// Converts <see cref="Value"/> to an <see cref="sbyte"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to an <see cref="sbyte"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public sbyte ToSByte() => Member.ToSByte();
@@ -184,21 +170,21 @@ namespace EnumsNET
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="byte"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to a <see cref="byte"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="byte"/>'s value range without overflowing.</exception>
         public byte ToByte() => Member.ToByte();
 
         /// <summary>
         /// Converts <see cref="Value"/> to an <see cref="short"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to an <see cref="short"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="short"/>'s value range without overflowing.</exception>
         public short ToInt16() => Member.ToInt16();
 
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="ushort"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to a <see cref="ushort"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public ushort ToUInt16() => Member.ToUInt16();
@@ -206,14 +192,14 @@ namespace EnumsNET
         /// <summary>
         /// Converts <see cref="Value"/> to an <see cref="int"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to an <see cref="int"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="int"/>'s value range without overflowing.</exception>
         public int ToInt32() => Member.ToInt32();
 
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="uint"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to a <see cref="uint"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="uint"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public uint ToUInt32() => Member.ToUInt32();
@@ -221,41 +207,39 @@ namespace EnumsNET
         /// <summary>
         /// Converts <see cref="Value"/> to an <see cref="long"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to an <see cref="long"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="long"/>'s value range without overflowing.</exception>
         public long ToInt64() => Member.ToInt64();
 
         /// <summary>
         /// Converts <see cref="Value"/> to a <see cref="ulong"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="Value"/> converted to a <see cref="ulong"/>.</returns>
         /// <exception cref="OverflowException"><see cref="Value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public ulong ToUInt64() => Member.ToUInt64();
 
         /// <summary>
-        /// A more efficient GetHashCode method as it doesn't require boxing and unboxing of the value
+        /// Retrieves the hash code of <see cref="Value"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The hash code of <see cref="Value"/></returns>
         public sealed override int GetHashCode() => Member.GetHashCode();
 
         /// <summary>
-        /// Determines whether the specified <see cref="EnumMember"/> is equal to the current <see cref="EnumMember"/>.
+        /// Indicates whether the specified <see cref="EnumMember"/> is equal to the current <see cref="EnumMember"/>.
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Equals(EnumMember other) => EqualsMethod(other);
+        /// <param name="other">The other <see cref="EnumMember"/>.</param>
+        /// <returns>Indication whether the specified <see cref="EnumMember"/> is equal to the current <see cref="EnumMember"/>.</returns>
+        public bool Equals(EnumMember other) => ReferenceEquals(this, other);
 
         /// <summary>
-        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
+        /// Indicates whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public sealed override bool Equals(object other) => EqualsMethod(other as EnumMember);
+        /// <param name="other">The other <see cref="object"/>.</param>
+        /// <returns>Indication whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.</returns>
+        public sealed override bool Equals(object other) => ReferenceEquals(this, other);
 
         internal abstract object GetValue();
-
-        internal abstract bool EqualsMethod(EnumMember other);
 
         internal abstract IEnumerable<object> GetFlags();
 
@@ -315,13 +299,13 @@ namespace EnumsNET
     }
 
     /// <summary>
-    /// Represents a <typeparamref name="TEnum"/> member's Name, Value, and Attributes
+    /// An enum member which composes its name, value, and attributes.
     /// </summary>
-    /// <typeparam name="TEnum"></typeparam>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
     public abstract class EnumMember<TEnum> : EnumMember, IComparable<EnumMember<TEnum>>, IEquatable<EnumMember<TEnum>>
     {
         /// <summary>
-        /// The defined enum member's value
+        /// The enum member's value.
         /// </summary>
         public new TEnum Value => GetGenericValue();
 
@@ -331,23 +315,19 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>
+        /// Indicates whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>.
         /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Equals(EnumMember<TEnum> other) => GenericEqualsMethod(other);
+        /// <param name="other">The other <see cref="EnumMember{TEnum}"/>.</param>
+        /// <returns>Indication whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>.</returns>
+        public bool Equals(EnumMember<TEnum> other) => ReferenceEquals(this, other);
 
         internal abstract TEnum GetGenericValue();
-
-        internal abstract bool GenericEqualsMethod(EnumMember<TEnum> other);
 
         internal abstract IEnumerable<TEnum> GetGenericFlags();
 
         internal abstract IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers();
 
         internal sealed override object GetValue() => GetGenericValue();
-
-        internal sealed override bool EqualsMethod(EnumMember other) => GenericEqualsMethod(other as EnumMember<TEnum>);
 
         internal sealed override IEnumerable<object> GetFlags() => GetGenericFlags().Select(flag => (object)flag);
 
@@ -378,28 +358,18 @@ namespace EnumsNET
         {
         }
 
-        internal override bool GenericEqualsMethod(EnumMember<TEnum> other) => other != null && Member.Value.Equals(((EnumMember<TEnum, TInt, TIntProvider>)other).Member.Value) && Name == other.Name;
-
         internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Member.Value);
 
         internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(flag));
 
         internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(flag => (EnumMember<TEnum>)flag.EnumMember);
 
-        #region Explicit Interface Implementation
-        int IComparable.CompareTo(object other)
-        {
-            var otherMember = other as EnumMember<TEnum, TInt, TIntProvider>;
-            return otherMember != null ? Member.CompareTo(otherMember.Member) : 1;
-        }
+        #region Interface Implementation
+        public int CompareTo(object other) => CompareTo(other as EnumMember<TEnum>);
 
-        int IComparable<EnumMember>.CompareTo(EnumMember other)
-        {
-            var otherMember = other as EnumMember<TEnum, TInt, TIntProvider>;
-            return otherMember != null ? Member.CompareTo(otherMember.Member) : 1;
-        }
+        public int CompareTo(EnumMember other) => CompareTo(other as EnumMember<TEnum>);
 
-        int IComparable<EnumMember<TEnum>>.CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(((EnumMember<TEnum, TInt, TIntProvider>)other).Member) : 1;
+        public int CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(((EnumMember<TEnum, TInt, TIntProvider>)other).Member) : 1;
         #endregion
     }
 }

@@ -29,8 +29,8 @@ using System.Collections.Generic;
 namespace EnumsNET.Unsafe
 {
     /// <summary>
-    /// Identical to <see cref="Enums"/> but is not type safe which is useful when dealing with generics
-    /// and instead throws an <see cref="ArgumentException"/> if TEnum is not an enum/>
+    /// A type-unsafe version of <see cref="Enums"/> which is useful when dealing with generics
+    /// and instead throws an <see cref="ArgumentException"/> if TEnum is not an enum type.
     /// </summary>
     public static class UnsafeEnums
     {
@@ -43,11 +43,11 @@ namespace EnumsNET.Unsafe
             return Enums<TEnum>.Info;
         }
 
-        #region "Properties"
+        #region Type Methods
         /// <summary>
         /// Indicates if <typeparamref name="TEnum"/>'s defined values are contiguous.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns>Indication if <typeparamref name="TEnum"/>'s defined values are contiguous.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool IsContiguous<TEnum>() => GetInfo<TEnum>().IsContiguous;
@@ -55,103 +55,104 @@ namespace EnumsNET.Unsafe
         /// <summary>
         /// Retrieves the underlying type of <typeparamref name="TEnum"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns>The underlying type of <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static Type GetUnderlyingType<TEnum>() => GetInfo<TEnum>().UnderlyingType;
 
 #if ICONVERTIBLE
         /// <summary>
-        ///  Gets <typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.
+        /// Retrieves <typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static TypeCode GetTypeCode<TEnum>() => GetInfo<TEnum>().TypeCode;
 #endif
-        #endregion
 
-        #region Type Methods
         /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s count of defined constants.
+        /// Retrieves <typeparamref name="TEnum"/>'s member count.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <returns><typeparamref name="TEnum"/>'s count of defined constants.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static int GetEnumMemberCount<TEnum>() => GetInfo<TEnum>().GetEnumMemberCount();
 
         /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s count of defined constants.
+        /// Retrieves <typeparamref name="TEnum"/>'s member count.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="uniqueValued"></param>
-        /// <returns><typeparamref name="TEnum"/>'s count of defined constants.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static int GetEnumMemberCount<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetEnumMemberCount(uniqueValued);
+        public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetEnumMemberCount(excludeDuplicates);
 
         /// <summary>
-        /// Retrieves in value order an array of info on <typeparamref name="TEnum"/>'s members.
+        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>() => GetInfo<TEnum>().GetEnumMembers();
 
         /// <summary>
-        /// Retrieves in value order an array of info on <typeparamref name="TEnum"/>'s members.
-        /// The parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="uniqueValued"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetEnumMembers(uniqueValued);
+        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetEnumMembers(excludeDuplicates);
 
         /// <summary>
-        /// Retrieves an array of <typeparamref name="TEnum"/>'s defined constants' names in value order.
+        /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' names in value order.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static IEnumerable<string> GetNames<TEnum>() => GetInfo<TEnum>().GetNames();
 
         /// <summary>
-        /// Retrieves an array of <typeparamref name="TEnum"/>'s defined constants' names in value order.
-        /// The parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+        /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="uniqueValued"></param>
-        /// <returns>Array of <typeparamref name="TEnum"/>'s defined constants' names in value order.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<string> GetNames<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetNames(uniqueValued);
+        public static IEnumerable<string> GetNames<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetNames(excludeDuplicates);
 
         /// <summary>
-        /// Retrieves an array of <typeparamref name="TEnum"/> defined constants' values in value order.
+        /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <returns>Array of <typeparamref name="TEnum"/> defined constants' values in value order.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static IEnumerable<TEnum> GetValues<TEnum>() => GetInfo<TEnum>().GetValues();
 
         /// <summary>
-        /// Retrieves an array of <typeparamref name="TEnum"/> defined constants' values in value order.
-        /// The parameter <paramref name="uniqueValued"/> indicates whether to exclude duplicate values.
+        /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="uniqueValued"></param>
-        /// <returns>Array of <typeparamref name="TEnum"/> defined constants' values in value order.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<TEnum> GetValues<TEnum>(bool uniqueValued) => GetInfo<TEnum>().GetValues(uniqueValued);
+        public static IEnumerable<TEnum> GetValues<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetValues(excludeDuplicates);
         #endregion
 
         #region ToObject
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <typeparamref name="TEnum"/>, <see cref="string"/>, or Nullable of one of these.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is not a valid type.</exception>
@@ -159,458 +160,454 @@ namespace EnumsNET.Unsafe
         public static TEnum ToObject<TEnum>(object value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <typeparamref name="TEnum"/>, <see cref="string"/>, or Nullable of one of these.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is not a valid type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(object value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(sbyte value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(sbyte value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(byte value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(byte value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(short value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(short value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ushort value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ushort value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(int value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(int value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(uint value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(uint value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(long value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(long value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ulong value) => GetInfo<TEnum>().ToObject(value);
 
         /// <summary>
-        /// Converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid.
+        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="validate"/> is true and <paramref name="value"/> is not a valid value.</exception>
+        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ulong value, bool validate) => GetInfo<TEnum>().ToObject(value, validate);
 
         /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <typeparamref name="TEnum"/>, <see cref="string"/>, or Nullable of one of these.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(object value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to an enumeration member while checking that the result is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value">must be <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, or <see cref="string"/></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <typeparamref name="TEnum"/>, <see cref="string"/>, or Nullable of one of these.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(object value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 8-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(byte value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 8-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(byte value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(short value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 16-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(short value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 16-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(int value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 32-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(int value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 32-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(long value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 64-bit signed integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryToObject<TEnum>(long value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
 
         /// <summary>
-        /// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. An indication if the operation succeeded is returned and the result of the operation or if it fails
-        /// the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, out TEnum result) => GetInfo<TEnum>().TryToObject(value, out result);
 
         /// <summary>
-        /// Tries to converts the specified 64-bit unsigned integer <paramref name="value"/> to an enumeration member while checking that the <paramref name="value"/> is within the
-        /// underlying types value range. The parameter <paramref name="validate"/> indicates whether to check that the result is valid. An indication
-        /// if the operation succeeded is returned and the result of the operation or if it fails the default enumeration value is stored in the output parameter <paramref name="result"/>.
+        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="validate"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validate">Indicates whether to check that the result is valid.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, out TEnum result, bool validate) => GetInfo<TEnum>().TryToObject(value, out result, validate);
@@ -618,596 +615,445 @@ namespace EnumsNET.Unsafe
 
         #region All Values Main Methods
         /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.
+        /// Indicates if <paramref name="value"/> is valid. If <typeparamref name="TEnum"/> is a standard enum it returns whether the value is defined.
+        /// If <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/> it returns whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values
+        /// or is defined. Or if <typeparamref name="TEnum"/> has an attribute that implements <see cref="IEnumValidatorAttribute{TEnum}"/>
+        /// then that attribute's <see cref="IEnumValidatorAttribute{TEnum}.IsValid(TEnum)"/> method is used.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication whether the specified <paramref name="value"/> is defined or if <typeparamref name="TEnum"/> is marked with <see cref="FlagsAttribute"/>
-        /// whether it's a valid flag combination of <typeparamref name="TEnum"/>'s defined values.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> is valid.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool IsValid<TEnum>(TEnum value) => GetInfo<TEnum>().IsValid(value);
 
         /// <summary>
-        /// Indicates whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.
+        /// Indicates if <paramref name="value"/> is defined.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication whether <paramref name="value"/> is defined in <typeparamref name="TEnum"/>.</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> is defined.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool IsDefined<TEnum>(TEnum value) => GetInfo<TEnum>().IsDefined(value);
 
         /// <summary>
-        /// Validates that <paramref name="value"/> is valid. If it's not it throws an <see cref="ArgumentException"/> with the given <paramref name="paramName"/>.
+        /// Validates that <paramref name="value"/> is valid. If it's not it throws an <see cref="ArgumentException"/> with the specified <paramref name="paramName"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="paramName"></param>
-        /// <returns><paramref name="value"/> for use in constructor initializers and fluent API's</returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="paramName">The parameter name to be used if throwing an <see cref="ArgumentException"/>.</param>
+        /// <returns><paramref name="value"/> for use in fluent API's and base constructor method calls.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is invalid.</exception>
         public static TEnum Validate<TEnum>(TEnum value, string paramName) => GetInfo<TEnum>().Validate(value, paramName);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation.
+        /// Converts the specified <paramref name="value"/> to its string representation.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static string AsString<TEnum>(TEnum value) => GetInfo<TEnum>().AsString(value);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static string AsString<TEnum>(TEnum value, string format) => GetInfo<TEnum>().AsString(value, format);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="format"/> is an invalid value.</exception>
         public static string AsString<TEnum>(TEnum value, EnumFormat format) => GetInfo<TEnum>().AsString(value, format);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <returns></returns>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1) => GetInfo<TEnum>().AsString(value, format0, format1);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation in the specified format order.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="format0"></param>
-        /// <param name="format1"></param>
-        /// <param name="format2"></param>
-        /// <returns></returns>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
+        /// <param name="format2">The third output format to use if using the first and second both resolve to <c>null</c>.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static string AsString<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetInfo<TEnum>().AsString(value, format0, format1, format2);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="formatOrder"/> contains an invalid value.</exception>
-        public static string AsString<TEnum>(TEnum value, params EnumFormat[] formatOrder) => GetInfo<TEnum>().AsString(value, formatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static string AsString<TEnum>(TEnum value, params EnumFormat[] formats) => GetInfo<TEnum>().AsString(value, formats);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="format"/>.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="format"/> is null.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static string Format<TEnum>(TEnum value, string format) => GetInfo<TEnum>().Format(value, format);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its equivalent string representation according to the specified <paramref name="formatOrder"/>.
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="formatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formatOrder"/> is null.</exception>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="formatOrder"/> contains an invalid value.</exception>
-        public static string Format<TEnum>(TEnum value, params EnumFormat[] formatOrder) => GetInfo<TEnum>().Format(value, formatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static string Format<TEnum>(TEnum value, params EnumFormat[] formats) => GetInfo<TEnum>().Format(value, formats);
 
         /// <summary>
-        /// Returns an object with the enum's underlying value.
+        /// Returns <paramref name="value"/>'s underlying integral value.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/>'s underlying integral value.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static object GetUnderlyingValue<TEnum>(TEnum value) => GetInfo<TEnum>().GetUnderlyingValue(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to an <see cref="sbyte"/>.
+        /// Converts <paramref name="value"/> to an <see cref="sbyte"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to an <see cref="sbyte"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static sbyte ToSByte<TEnum>(TEnum value) => GetInfo<TEnum>().ToSByte(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to a <see cref="byte"/>.
+        /// Converts <paramref name="value"/> to a <see cref="byte"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to a <see cref="byte"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="byte"/>'s value range without overflowing.</exception>
         public static byte ToByte<TEnum>(TEnum value) => GetInfo<TEnum>().ToByte(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to an <see cref="short"/>.
+        /// Converts <paramref name="value"/> to an <see cref="short"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to an <see cref="short"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="short"/>'s value range without overflowing.</exception>
         public static short ToInt16<TEnum>(TEnum value) => GetInfo<TEnum>().ToInt16(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to a <see cref="ushort"/>.
+        /// Converts <paramref name="value"/> to a <see cref="ushort"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to a <see cref="ushort"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static ushort ToUInt16<TEnum>(TEnum value) => GetInfo<TEnum>().ToUInt16(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to an <see cref="int"/>.
+        /// Converts <paramref name="value"/> to an <see cref="int"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to an <see cref="int"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="int"/>'s value range without overflowing.</exception>
         public static int ToInt32<TEnum>(TEnum value) => GetInfo<TEnum>().ToInt32(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to a <see cref="uint"/>.
+        /// Converts <paramref name="value"/> to a <see cref="uint"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to a <see cref="uint"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static uint ToUInt32<TEnum>(TEnum value) => GetInfo<TEnum>().ToUInt32(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to an <see cref="long"/>.
+        /// Converts <paramref name="value"/> to an <see cref="long"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to an <see cref="long"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="long"/>'s value range without overflowing.</exception>
         public static long ToInt64<TEnum>(TEnum value) => GetInfo<TEnum>().ToInt64(value);
 
         /// <summary>
-        /// Tries to convert <paramref name="value"/> to a <see cref="ulong"/>.
+        /// Converts <paramref name="value"/> to a <see cref="ulong"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/> converted to a <see cref="ulong"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static ulong ToUInt64<TEnum>(TEnum value) => GetInfo<TEnum>().ToUInt64(value);
 
         /// <summary>
-        /// A more efficient GetHashCode method as it doesn't require boxing and unboxing of <paramref name="value"/>.
+        /// Retrieves the hash code of <paramref name="value"/>. It's more efficient as it doesn't require boxing and unboxing of <paramref name="value"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Hash code of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static int GetHashCode<TEnum>(TEnum value) => GetInfo<TEnum>().GetHashCode(value);
 
         /// <summary>
-        /// Indicates if the two values are equal to each other
+        /// Indicates if <paramref name="value"/> equals <paramref name="other"/>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="other"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="other">The other enum value.</param>
+        /// <returns>Indication if <paramref name="value"/> equals <paramref name="other"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool Equals<TEnum>(TEnum value, TEnum other) => GetInfo<TEnum>().Equals(value, other);
 
         /// <summary>
-        /// Returns -1 if <paramref name="x"/> is less than <paramref name="y"/> and returns 0 if <paramref name="x"/> equals <paramref name="y"/>
-        /// and returns 1 if <paramref name="x"/> is greater than <paramref name="y"/>.
+        /// Compares <paramref name="value"/> to <paramref name="other"/> for ordering.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="other">The other enum value.</param>
+        /// <returns>1 if <paramref name="value"/> is greater than <paramref name="other"/>, 0 if <paramref name="value"/> equals <paramref name="other"/>,
+        /// and -1 if <paramref name="value"/> is less than <paramref name="other"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static int CompareTo<TEnum>(TEnum x, TEnum y) => GetInfo<TEnum>().CompareTo(x, y);
+        public static int CompareTo<TEnum>(TEnum value, TEnum other) => GetInfo<TEnum>().CompareTo(value, other);
         #endregion
 
         #region Defined Values Main Methods
         /// <summary>
-        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="value"/>.
-        /// If no enum member exists with the given <paramref name="value"/> <see langref="null"/> is returned.
+        /// Retrieves <paramref name="value"/>'s enum member name if defined otherwise <c>null</c>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/>'s enum member name if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static string GetName<TEnum>(TEnum value) => GetInfo<TEnum>().GetName(value);
+
+        /// <summary>
+        /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static EnumMember<TEnum> GetEnumMember<TEnum>(TEnum value) => GetInfo<TEnum>().GetEnumMember(value);
 
         /// <summary>
-        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="name"/>.
-        /// If no enum member exists with the given <paramref name="name"/> null is returned. Is case-sensitive.
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// Is case-sensitive.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="name">The enum member name.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string name) => GetInfo<TEnum>().GetEnumMember(name);
 
         /// <summary>
-        /// Gets the enum member info, which consists of the name, value, and attributes, with the given <paramref name="name"/>.
-        /// If no enum member exists with the given <paramref name="name"/> null is returned.
-        /// The parameter <paramref name="ignoreCase"/> indicates if the name comparison should ignore the casing.
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="ignoreCase"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="name">The enum member name.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string name, bool ignoreCase) => GetInfo<TEnum>().GetEnumMember(name, ignoreCase);
 
         /// <summary>
-        /// Retrieves the name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
-        /// is not defined null is returned.
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Name of the constant in <typeparamref name="TEnum"/> that has the specified <paramref name="value"/>. If <paramref name="value"/>
-        /// is not defined null is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static string GetName<TEnum>(TEnum value) => GetInfo<TEnum>().GetName(value);
-        #endregion
-
-        #region Attributes
-        /// <summary>
-        /// Indicates if the enumerated constant with the specified <paramref name="value"/> has a <typeparamref name="TAttribute"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="value"></param>
-        /// <returns>Indication if the enumerated constant with the specified <paramref name="value"/> has a <typeparamref name="TAttribute"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool HasAttribute<TEnum, TAttribute>(TEnum value)
-            where TAttribute : Attribute => GetAttribute<TEnum, TAttribute>(value) != null;
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, params EnumFormat[] formats) => GetInfo<TEnum>().GetEnumMember(value, false, formats);
 
         /// <summary>
-        /// Retrieves the <typeparamref name="TAttribute"/> if it exists of the enumerated constant with the specified <paramref name="value"/>.
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="value"></param>
-        /// <returns><typeparamref name="TAttribute"/> of the enumerated constant with the specified <paramref name="value"/> if defined and has attribute, else null</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static TAttribute GetAttribute<TEnum, TAttribute>(TEnum value)
-            where TAttribute : Attribute => GetInfo<TEnum>().GetAttribute<TAttribute>(value);
-
-        /// <summary>
-        /// Retrieves an array of <typeparamref name="TAttribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="value"></param>
-        /// <returns><typeparamref name="TAttribute"/> array</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<TAttribute> GetAttributes<TEnum, TAttribute>(TEnum value)
-            where TAttribute : Attribute => GetInfo<TEnum>().GetAttributes<TAttribute>(value);
-
-        /// <summary>
-        /// Retrieves an array of all the <see cref="Attribute"/>'s of the constant in the enumeration that has the specified <paramref name="value"/>.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns><see cref="Attribute"/> array if value is defined, else null</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<Attribute> GetAttributes<TEnum>(TEnum value) => GetInfo<TEnum>().GetAttributes(value);
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo<TEnum>().GetEnumMember(value, ignoreCase, formats);
         #endregion
 
         #region Parsing
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated object.
+        /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        /// <paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
         public static TEnum Parse<TEnum>(string value) => GetInfo<TEnum>().Parse(value);
 
         /// <summary>
-        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        public static TEnum Parse<TEnum>(string value, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().Parse(value, false, parseFormatOrder);
+        public static TEnum Parse<TEnum>(string value, params EnumFormat[] formats) => GetInfo<TEnum>().Parse(value, false, formats);
 
         /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated object. A parameter specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value, bool ignoreCase) => GetInfo<TEnum>().Parse(value, ignoreCase);
 
         /// <summary>
-        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-        /// A parameter specifies whether the operation is case-insensitive.
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
+        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
         /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().Parse(value, ignoreCase, parseFormatOrder);
+        public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo<TEnum>().Parse(value, ignoreCase, formats);
 
         /// <summary>
-        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
+        /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
+        /// The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryParse<TEnum>(string value, out TEnum result) => GetInfo<TEnum>().TryParse(value, false, out result);
 
         /// <summary>
-        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-        /// The return value indicates whether the conversion succeeded.
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParse(value, false, out result, parseFormatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] formats) => GetInfo<TEnum>().TryParse(value, false, out result, formats);
 
         /// <summary>
-        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated object. The return value indicates whether the conversion succeeded.
-        /// A parameter specifies whether the operation is case-insensitive.
+        /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive. The return value indicates whether the conversion succeeded.
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member names or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result) => GetInfo<TEnum>().TryParse(value, ignoreCase, out result);
 
         /// <summary>
-        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-        /// The return value indicates whether the conversion succeeded. A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParse(value, ignoreCase, out result, parseFormatOrder);
-
-        /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated member object.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        public static EnumMember<TEnum> ParseMember<TEnum>(string value) => GetInfo<TEnum>().ParseMember(value);
-
-        /// <summary>
-        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        public static EnumMember<TEnum> ParseMember<TEnum>(string value, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().ParseMember(value, false, parseFormatOrder);
-
-        /// <summary>
-        /// Converts the string representation of the name or numeric value of one or more enumerated constants
-        /// to an equivalent enumerated member object. A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        public static EnumMember<TEnum> ParseMember<TEnum>(string value, bool ignoreCase) => GetInfo<TEnum>().ParseMember(value, ignoreCase);
-
-        /// <summary>
-        /// Converts the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-        /// A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is either an empty string or only contains white space.
-        /// -or-
-        /// <paramref name="value"/> is a name, but not one of the named constants defined for the enumeration
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        public static EnumMember<TEnum> ParseMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().ParseMember(value, ignoreCase, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated member object. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryParseMember<TEnum>(string value, out EnumMember<TEnum> result) => GetInfo<TEnum>().TryParseMember(value, false, out result);
-
-        /// <summary>
-        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// The return value indicates whether the conversion succeeded.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParseMember<TEnum>(string value, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, false, out result, parseFormatOrder);
-
-        /// <summary>
-        /// Tries to convert the string representation of the name or numeric value of one or more enumerated
-        /// constants to an equivalent enumerated member object. The return value indicates whether the conversion succeeded.
-        /// A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result);
-
-        /// <summary>
-        /// Tries to convert the string representation of an enumerated constant using the given <paramref name="parseFormatOrder"/>.
-        /// The return value indicates whether the conversion succeeded. A parameter specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value"></param>
-        /// <param name="ignoreCase"></param>
-        /// <param name="result"></param>
-        /// <param name="parseFormatOrder"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="parseFormatOrder"/> contains an invalid value.</exception>
-        public static bool TryParseMember<TEnum>(string value, bool ignoreCase, out EnumMember<TEnum> result, params EnumFormat[] parseFormatOrder) => GetInfo<TEnum>().TryParseMember(value, ignoreCase, out result, parseFormatOrder);
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] formats) => GetInfo<TEnum>().TryParse(value, ignoreCase, out result, formats);
         #endregion
     }
 

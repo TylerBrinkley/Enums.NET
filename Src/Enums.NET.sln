@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET", "Enums.NET\Enums.NET.csproj", "{F2059370-3A4E-4885-8234-9AEDADE06108}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,6 +13,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.PerfTestConsole", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.csproj", "{5786F98C-F8FA-479A-8AE8-094B1287B385}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weavers", "Weavers\Weavers.csproj", "{0BE636C9-A909-431F-AED0-C6B7F25DE336}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{791E169D-AB9B-49A2-89D7-61905505F8F2}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
