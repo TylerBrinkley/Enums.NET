@@ -257,7 +257,7 @@ namespace EnumsNET
         {
             if (!Provider.IsInValueRange(value))
             {
-                throw new OverflowException("value is outside the underlying type");
+                throw new OverflowException("value is outside the underlying type's value range");
             }
 
             var result = Provider.Create(value);
@@ -272,7 +272,7 @@ namespace EnumsNET
         {
             if (!Provider.IsInValueRange(value))
             {
-                throw new OverflowException("value is outside the underlying type");
+                throw new OverflowException("value is outside the underlying type's value range");
             }
 
             var result = Provider.Create(value);
@@ -525,7 +525,7 @@ namespace EnumsNET
             }
             if (IsNumeric(value))
             {
-                throw new OverflowException("value is outside the underlying type");
+                throw new OverflowException("value is outside the underlying type's value range");
             }
             throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
         }
@@ -730,7 +730,7 @@ namespace EnumsNET
                 {
                     if (IsNumeric(indValue))
                     {
-                        throw new OverflowException("value is outside the underlying type");
+                        throw new OverflowException("value is outside the underlying type's value range");
                     }
                     throw new ArgumentException("value is not a valid combination of flag enum values");
                 }

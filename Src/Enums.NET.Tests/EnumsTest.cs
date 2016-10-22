@@ -148,7 +148,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetValues_excludeDuplicates()
+        public void GetValues_ExcludeDuplicates()
         {
             CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true));
             CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true));
