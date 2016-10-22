@@ -33,7 +33,7 @@ Enums.NET solves all of these issues and more.
                 // Do stuff
             }
             Assert.AreEqual(8, Enums.GetEnumMembers<NumericOperator>().Count());
-            Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(uniqueValued: true).Count());
+            Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(excludeDuplicates: true).Count());
         }
 
         [Test]
@@ -138,7 +138,7 @@ Enums.NET solves all of these issues and more.
             NotEquals,
             [Symbol("<")]
             LessThan,
-            [PrimaryEnumMember]
+            [PrimaryEnumMember] // Indicates enum member as primary duplicate for extension methods
             [Symbol(">=")]
             GreaterThanOrEquals,
             NotLessThan = GreaterThanOrEquals,
