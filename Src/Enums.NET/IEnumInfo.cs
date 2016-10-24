@@ -167,7 +167,9 @@ namespace EnumsNET
 #endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
+        bool HasCustomValidator { get; }
+
         EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member);
-        bool? CustomValidate(TInt value);
+        bool CustomValidate(TInt value);
     }
 }

@@ -134,7 +134,7 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
-        public bool IsValid(TEnum value) => _cache.IsValid(ToInt(value));
+        public bool IsValid(TEnum value) => _customEnumValidator?.IsValid(value) ?? _cache.IsValidSimple(ToInt(value));
 
         public bool IsDefined(TEnum value) => _cache.IsDefined(ToInt(value));
 
@@ -425,7 +425,9 @@ namespace EnumsNET
         #endregion
 
         #region IEnumInfoInternal
-        public bool? CustomValidate(TInt value) => _customEnumValidator?.IsValid(ToEnum(value));
+        public bool HasCustomValidator => _customEnumValidator != null;
+
+        public bool CustomValidate(TInt value) => _customEnumValidator.IsValid(ToEnum(value));
 
         public EnumMember CreateEnumMember(EnumMemberInternal<TInt, TIntProvider> member) => new EnumMember<TEnum, TInt, TIntProvider>(member);
         #endregion

@@ -306,7 +306,7 @@ namespace EnumsNET.Tests
 
         #region Parsing
         [Test]
-        public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidName()
+        public void ParseFlags_ReturnsValidValue_WhenUsingValidName()
         {
             Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("Black"));
             Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("Red"));
@@ -320,7 +320,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidNumber()
+        public void ParseFlags_ReturnsValidValue_WhenUsingValidNumber()
         {
             Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("0"));
             Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1"));
@@ -336,7 +336,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidStringWhileIgnoringCase()
+        public void ParseFlags_ReturnsValidValue_WhenUsingValidStringWhileIgnoringCase()
         {
             Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("black", true));
             Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("0", true));
@@ -360,7 +360,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
+        public void ParseFlags_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
         {
             Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("Red", "|"));
             Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1", "|"));
@@ -371,7 +371,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiterWhileIgnoringCase()
+        public void ParseFlags_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiterWhileIgnoringCase()
         {
             Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("black", true, "|"));
             Assert.AreEqual(ColorFlagEnum.Black, FlagEnums.ParseFlags<ColorFlagEnum>("0", true, "|"));
@@ -396,49 +396,49 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsParse_ThrowsArgumentNullException_WhenUsingNullString()
+        public void ParseFlags_ThrowsArgumentNullException_WhenUsingNullString()
         {
             TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(null));
         }
 
         [Test]
-        public void FlagEnumsParse_ThrowsArgumentException_WhenUsingWhiteSpaceString()
+        public void ParseFlags_ThrowsArgumentException_WhenUsingWhiteSpaceString()
         {
             TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(" "));
         }
 
         [Test]
-        public void FlagEnumsParse_ThrowsArgumentException_WhenUsingUndefinedString()
+        public void ParseFlags_ThrowsArgumentException_WhenUsingUndefinedString()
         {
             TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("Turquoise"));
         }
 
         [Test]
-        public void FlagEnumsParse_ReturnsValidValue_WhenUsingInvalidNumber()
+        public void ParseFlags_ReturnsValidValue_WhenUsingInvalidNumber()
         {
             Assert.AreEqual((ColorFlagEnum)16, FlagEnums.ParseFlags<ColorFlagEnum>("16"));
         }
 
         [Test]
-        public void FlagEnumsParse_ThrowsOverflowException_WhenUsingLargeNumber()
+        public void ParseFlags_ThrowsOverflowException_WhenUsingLargeNumber()
         {
             TestHelper.ExpectException<OverflowException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("128"));
         }
 
         [Test]
-        public void FlagEnumsParse_UsesDefaultDelimiter_WhenUsingNullDelimiter()
+        public void ParseFlags_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
             Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", (string)null));
         }
 
         [Test]
-        public void FlagEnumsParse_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
+        public void ParseFlags_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
             Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", string.Empty));
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidName()
+        public void TryParseFlags_ReturnsValidValue_WhenUsingValidName()
         {
             ColorFlagEnum result;
             Assert.IsTrue(FlagEnums.TryParseFlags("Black", out result));
@@ -464,7 +464,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidNumber()
+        public void TryParseFlags_ReturnsValidValue_WhenUsingValidNumber()
         {
             ColorFlagEnum result;
             Assert.IsTrue(FlagEnums.TryParseFlags("0", out result));
@@ -492,7 +492,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidStringWhileIgnoringCase()
+        public void TryParseFlags_ReturnsValidValue_WhenUsingValidStringWhileIgnoringCase()
         {
             ColorFlagEnum result;
             Assert.IsTrue(FlagEnums.TryParseFlags("black", true, out result));
@@ -536,7 +536,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
+        public void TryParseFlags_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
         {
             ColorFlagEnum result;
             Assert.IsTrue(FlagEnums.TryParseFlags("Red", "|", out result));
@@ -554,7 +554,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiterWhileIgnoringCase()
+        public void TryParseFlags_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiterWhileIgnoringCase()
         {
             ColorFlagEnum result;
             Assert.IsTrue(FlagEnums.TryParseFlags("black", true, "|", out result));
@@ -600,7 +600,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsFalse_WhenUsingNullString()
+        public void TryParseFlags_ReturnsFalse_WhenUsingNullString()
         {
             ColorFlagEnum result;
             Assert.IsFalse(FlagEnums.TryParseFlags(null, out result));
@@ -608,7 +608,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsFalse_WhenUsingWhiteSpaceString()
+        public void TryParseFlags_ReturnsFalse_WhenUsingWhiteSpaceString()
         {
             ColorFlagEnum result;
             Assert.IsFalse(FlagEnums.TryParseFlags(" ", out result));
@@ -616,7 +616,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsFalse_WhenUsingUndefinedString()
+        public void TryParseFlags_ReturnsFalse_WhenUsingUndefinedString()
         {
             ColorFlagEnum result;
             Assert.IsFalse(FlagEnums.TryParseFlags("Turquoise", out result));
@@ -624,7 +624,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsTrue_WhenUsingInvalidNumber()
+        public void TryParseFlags_ReturnsTrue_WhenUsingInvalidNumber()
         {
             ColorFlagEnum result;
             Assert.IsTrue(FlagEnums.TryParseFlags("16", out result));
@@ -632,7 +632,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_ReturnsFalse_WhenUsingLargeNumber()
+        public void TryParseFlags_ReturnsFalse_WhenUsingLargeNumber()
         {
             ColorFlagEnum result;
             Assert.IsFalse(FlagEnums.TryParseFlags("128", out result));
@@ -640,7 +640,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_UsesDefaultDelimiter_WhenUsingNullDelimiter()
+        public void TryParseFlags_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
             ColorFlagEnum result0;
             ColorFlagEnum result1;
@@ -649,7 +649,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void FlagEnumsTryParse_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
+        public void TryParseFlags_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
             ColorFlagEnum result0;
             ColorFlagEnum result1;

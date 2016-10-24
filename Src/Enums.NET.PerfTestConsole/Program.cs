@@ -71,7 +71,7 @@ namespace EnumsNET.PerfTestConsole
 
             const int parseIterations = 10000;
 
-            using (new OperationTimer("Enum.Parse Names"))
+            using (new OperationTimer("Enum.Parse (Names)"))
             {
                 foreach (var tuple in list)
                 {
@@ -86,7 +86,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("NonGenericEnums.Parse Names"))
+            using (new OperationTimer("NonGenericEnums.Parse (Names)"))
             {
                 foreach (var tuple in list)
                 {
@@ -101,7 +101,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("Enum.Parse Decimal Values"))
+            using (new OperationTimer("Enum.Parse (Decimal)"))
             {
                 foreach (var tuple in list)
                 {
@@ -116,7 +116,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("NonGenericEnums.Parse Decimal Values"))
+            using (new OperationTimer("NonGenericEnums.Parse (Decimal)"))
             {
                 foreach (var tuple in list)
                 {
@@ -136,11 +136,11 @@ namespace EnumsNET.PerfTestConsole
         {
             const int iterations = 1000000;
 
-            using (new OperationTimer("Enum.ToString"))
+            using (new OperationTimer("Enum.ToString (Name)"))
             {
-                for (var i = 0; i < iterations; ++i)
+                for (var i = 0; i < (iterations << 1); ++i)
                 {
-                    for (var j = 0; j < dayOfWeekArray.Length; ++j)
+                    for (var j = 0; j < 7; ++j)
                     {
                         dayOfWeekArray[j].ToString();
                     }
@@ -149,29 +149,29 @@ namespace EnumsNET.PerfTestConsole
 
             var dayOfWeekType = typeof(DayOfWeek);
 
-            using (new OperationTimer("NonGenericEnums.AsString"))
+            using (new OperationTimer("NonGenericEnums.AsString (Name)"))
             {
-                for (var i = 0; i < iterations; ++i)
+                for (var i = 0; i < (iterations << 1); ++i)
                 {
-                    for (var j = 0; j < dayOfWeekArray.Length; ++j)
+                    for (var j = 0; j < 7; ++j)
                     {
                         NonGenericEnums.AsString(dayOfWeekType, dayOfWeekArray[j]);
                     }
                 }
             }
 
-            using (new OperationTimer("Enums.AsString"))
+            using (new OperationTimer("Enums.AsString (Name)"))
             {
-                for (var i = 0; i < iterations; ++i)
+                for (var i = 0; i < (iterations << 1); ++i)
                 {
-                    for (var j = 0; j < dayOfWeekArray.Length; ++j)
+                    for (var j = 0; j < 7; ++j)
                     {
                         dayOfWeekArray[j].AsString();
                     }
                 }
             }
 
-            using (new OperationTimer("Enum.ToString Decimal"))
+            using (new OperationTimer("Enum.ToString (Decimal)"))
             {
                 for (var i = 0; i < iterations; ++i)
                 {
@@ -182,7 +182,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("NonGenericEnums.AsString Decimal"))
+            using (new OperationTimer("NonGenericEnums.AsString (Decimal)"))
             {
                 var decimalValueArray = new[] { EnumFormat.DecimalValue };
                 for (var i = 0; i < iterations; ++i)
@@ -194,7 +194,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("Enums.AsString Decimal"))
+            using (new OperationTimer("Enums.AsString (Decimal)"))
             {
                 for (var i = 0; i < iterations; ++i)
                 {
@@ -241,6 +241,17 @@ namespace EnumsNET.PerfTestConsole
                     for (var j = 0; j < dayOfWeekArray.Length; ++j)
                     {
                         dayOfWeekArray[j].IsDefined();
+                    }
+                }
+            }
+
+            using (new OperationTimer("Enums.IsValid Performance"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    for (var j = 0; j < dayOfWeekArray.Length; ++j)
+                    {
+                        dayOfWeekArray[j].IsValid();
                     }
                 }
             }

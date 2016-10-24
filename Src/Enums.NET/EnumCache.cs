@@ -32,6 +32,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using EnumsNET.Numerics;
+using System.Runtime.CompilerServices;
 
 #if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
@@ -67,6 +68,8 @@ namespace EnumsNET
 
         internal readonly IEnumInfoInternal<TInt, TIntProvider> EnumInfo;
 
+        private readonly bool _hasCustomValidator;
+
         private readonly string _enumTypeName;
 
         private readonly TInt _maxDefined;
@@ -87,6 +90,8 @@ namespace EnumsNET
         {
             _enumTypeName = enumType.Name;
             EnumInfo = enumInfo;
+            _hasCustomValidator = enumInfo.HasCustomValidator;
+
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
 
             var fields =
@@ -349,8 +354,16 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
-        public bool IsValid(TInt value) => EnumInfo.CustomValidate(value) ?? (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
+        public bool IsValid(TInt value) => _hasCustomValidator ? EnumInfo.CustomValidate(value) : IsValidSimple(value);
 
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        public bool IsValidSimple(TInt value) => (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
+
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool IsDefined(TInt value) => IsContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
 
         public void Validate(TInt value, string paramName)
@@ -592,6 +605,9 @@ namespace EnumsNET
 
         #region Flag Enum Operations
         #region Main Methods
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
 
         public string FormatFlags(TInt value, string delimiter, EnumFormat[] formats) => FormatFlagsInternal(value, null, delimiter, formats);
@@ -641,12 +657,24 @@ namespace EnumsNET
 
         public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetEnumMember(flag));
 
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool HasAnyFlags(TInt value) => !value.Equals(Provider.Zero);
 
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool HasAnyFlags(TInt value, TInt otherFlags) => !Provider.And(value, otherFlags).Equals(Provider.Zero);
 
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool HasAllFlags(TInt value) => HasAllFlags(value, AllFlags);
 
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool HasAllFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags).Equals(otherFlags);
 
         public TInt ToggleFlags(TInt value) => Provider.Xor(value, AllFlags);
