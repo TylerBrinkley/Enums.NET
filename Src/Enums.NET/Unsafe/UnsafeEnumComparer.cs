@@ -82,7 +82,8 @@ namespace EnumsNET.Unsafe
         /// </summary>
         /// <param name="x">The first enum value.</param>
         /// <param name="y">The second enum value.</param>
-        /// <returns></returns>
+        /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
+        /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
         public int Compare(TEnum x, TEnum y) => Enums<TEnum>.Info.CompareTo(x, y);
 
         #region Explicit Interface Implementation

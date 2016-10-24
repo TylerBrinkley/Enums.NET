@@ -49,6 +49,7 @@
     <Compile Include="IEnumInfo.cs" />
     <Compile Include="IEnumMember.cs" />
     <Compile Include="IEnumValidatorAttribute.cs" />
+    <Compile Include="NonGeneric\NonGenericEnumComparer.cs" />
     <Compile Include="NonGeneric\NonGenericEnumInfo.cs" />
     <Compile Include="Numerics\INumericProvider.cs" />
     <Compile Include="Numerics\ByteNumericProvider.cs" />

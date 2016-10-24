@@ -1114,9 +1114,10 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> or <paramref name="other"/> is of an invalid type.</exception>
-        public static bool Equals(Type enumType, object value, object other)
+        public static bool Equals(Type enumType, object value, object other) => EqualsInternal(GetNonGenericEnumInfo(enumType), value, other);
+
+        internal static bool EqualsInternal(NonGenericEnumInfo info, object value, object other)
         {
-            var info = GetNonGenericEnumInfo(enumType);
             var enumInfo = info.EnumInfo;
 
             if (info.IsNullable)
@@ -1152,11 +1153,11 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> or <paramref name="other"/> is of an invalid type.</exception>
-        public static int CompareTo(Type enumType, object value, object other)
-        {
-            var info = GetNonGenericEnumInfo(enumType);
-            var enumInfo = info.EnumInfo;
+        public static int CompareTo(Type enumType, object value, object other) => CompareToInternal(GetNonGenericEnumInfo(enumType), value, other);
 
+        internal static int CompareToInternal(NonGenericEnumInfo info, object value, object other)
+        {
+            var enumInfo = info.EnumInfo;
             if (info.IsNullable)
             {
                 if (value == null)

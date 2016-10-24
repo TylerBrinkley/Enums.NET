@@ -554,7 +554,7 @@ namespace EnumsNET
         /// <summary>
         /// Indicates if <paramref name="member"/>'s value has all of the flags that are defined in its enum type.
         /// </summary>
-        /// <param name="member"></param>
+        /// <param name="member">The enum member.</param>
         /// <returns>Indication if <paramref name="member"/> has all of the flags that are defined in its enum type.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
         public static bool HasAllFlags(this EnumMember member)

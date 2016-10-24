@@ -236,7 +236,6 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">Value to convert.</param>
         /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <returns></returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(short value) => GetInfo<TEnum>().ToObject(value);

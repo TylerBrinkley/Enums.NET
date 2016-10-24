@@ -222,7 +222,7 @@ namespace EnumsNET
         /// <summary>
         /// Retrieves the hash code of <see cref="Value"/>.
         /// </summary>
-        /// <returns>The hash code of <see cref="Value"/></returns>
+        /// <returns>The hash code of <see cref="Value"/>.</returns>
         public sealed override int GetHashCode() => Member.GetHashCode();
 
         /// <summary>
