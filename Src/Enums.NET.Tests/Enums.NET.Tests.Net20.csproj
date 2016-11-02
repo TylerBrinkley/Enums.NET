@@ -33,7 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumsNETDemo.cs" />
-    <Compile Include="Net20\Enumerable.cs" />
     <Compile Include="Net20\ExtensionAttribute.cs" />
     <Compile Include="Net20\FuncAndAction.cs" />
     <Compile Include="TestEnums\ByteEnum.cs" />
