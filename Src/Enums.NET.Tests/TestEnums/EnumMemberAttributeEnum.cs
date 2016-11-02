@@ -1,4 +1,4 @@
-﻿#if !NET20
+﻿#if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
 
 namespace EnumsNET.Tests.TestEnums

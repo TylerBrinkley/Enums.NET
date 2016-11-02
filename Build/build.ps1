@@ -1,11 +1,11 @@
 ﻿properties { 
-  $zipFileName = "Enums100rc1.zip"
+  $zipFileName = "Enums.NET.1.0.0.zip"
   $majorVersion = "1.0"
   $majorWithReleaseVersion = "1.0.0"
   $nugetPrelease = "rc1"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Enums.NET"
-  $signAssemblies = $true
+  $signAssemblies = $false
   $signKeyPath = "C:\Development\Release\enumsnet.snk"
   $buildDocumentation = $false
   $buildNuGet = $true
@@ -22,10 +22,12 @@
   $workingDir = "$baseDir\$workingName"
   $workingSourceDir = "$workingDir\Src"
   $builds = @(
-    @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET45"; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"},
-    @{Name = "Enums.NET.Net40"; TestsName = "Enums.NET.Tests.Net40"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"},
-    @{Name = "Enums.NET.Net35"; TestsName = "Enums.NET.Tests.Net35"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET35"; FinalDir="Net35"; NuGetDir = "net35"; Framework="net-2.0"},
-    @{Name = "Enums.NET.Net20"; TestsName = "Enums.NET.Tests.Net20"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET20"; FinalDir="Net20"; NuGetDir = "net20"; Framework="net-2.0"}
+    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE"; FinalDir="netstandard1.0"; NuGetDir = "netstandard1.0"; Framework=$null},
+    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE"; FinalDir="netstandard1.3"; NuGetDir = "netstandard1.3"; Framework=$null},
+    @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"},
+    @{Name = "Enums.NET.Net40"; TestsName = "Enums.NET.Tests.Net40"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"},
+    @{Name = "Enums.NET.Net35"; TestsName = "Enums.NET.Tests.Net35"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET35;ENUM_MEMBER_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net35"; NuGetDir = "net35"; Framework="net-2.0"},
+    @{Name = "Enums.NET.Net20"; TestsName = "Enums.NET.Tests.Net20"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net20"; NuGetDir = "net20"; Framework="net-2.0"}
   )
 }
 
@@ -50,8 +52,7 @@ task Clean {
 }
 
 # Build each solution, optionally signed
-task Build -depends Clean { 
-
+task Build -depends Clean {
   Write-Host "Copying source to working source directory $workingSourceDir"
   robocopy $sourceDir $workingSourceDir /MIR /NP /XD bin obj TestResults AppPackages $packageDirs .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
 
@@ -82,16 +83,12 @@ task Package -depends Build {
     $name = $build.TestsName
     $finalDir = $build.FinalDir
     
-    robocopy "$workingSourceDir\Enum.NET\bin\Release\$finalDir" $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
+    robocopy "$workingSourceDir\Enums.NET\bin\Release\$finalDir" $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
   }
   
   if ($buildNuGet)
   {
-    $nugetVersion = $majorWithReleaseVersion
-    if ($nugetPrelease -ne $null)
-    {
-      $nugetVersion = $nugetVersion + "-" + $nugetPrelease
-    }
+    $nugetVersion = GetNuGetVersion
 
     New-Item -Path $workingDir\NuGet -ItemType Directory
 
@@ -110,7 +107,6 @@ task Package -depends Build {
     $xml.save($nuspecPath)
 
     New-Item -Path $workingDir\NuGet\tools -ItemType Directory
-    #Copy-Item -Path "$buildDir\install.ps1" -Destination $workingDir\NuGet\tools\install.ps1 -recurse
     
     foreach ($build in $builds)
     {
@@ -127,12 +123,13 @@ task Package -depends Build {
       }
     }
   
-    robocopy $workingSourceDir $workingDir\NuGet\src *.cs /S /NFL /NDL /NJS /NC /NS /NP /XD Enums.NET.Tests Enums.NET.TestConsole obj .vs artifacts | Out-Default
+    robocopy $workingSourceDir $workingDir\NuGet\src *.cs /S /NFL /NDL /NJS /NC /NS /NP /XD Enums.NET.Tests Enums.NET.PerfTestConsole obj .vs artifacts | Out-Default
 
     Write-Host "Building NuGet package with ID $packageId and version $nugetVersion" -ForegroundColor Green
     Write-Host
 
     exec { .\Tools\NuGet\NuGet.exe pack $nuspecPath -Symbols }
+    exec { dotnet pack $workingSourceDir\Enums.NET\project.json -c Release }
     move -Path .\*.nupkg -Destination $workingDir\NuGet
   }
 
@@ -152,13 +149,9 @@ task Package -depends Build {
     
     move -Path $workingDir\Documentation\LastBuild.log -Destination $workingDir\Documentation.log
   }
-  
-  #Copy-Item -Path $docDir\readme.txt -Destination $workingDir\Package\
-  #Copy-Item -Path $docDir\license.txt -Destination $workingDir\Package\
 
   robocopy $workingSourceDir $workingDir\Package\Source\Src /MIR /NFL /NDL /NJS /NC /NS /NP /XD bin obj TestResults AppPackages .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
   robocopy $buildDir $workingDir\Package\Source\Build /MIR /NFL /NDL /NJS /NC /NS /NP /XF runbuild.txt | Out-Default
-  robocopy $docDir $workingDir\Package\Source\Doc /MIR /NFL /NDL /NJS /NC /NS /NP | Out-Default
   robocopy $toolsDir $workingDir\Package\Source\Tools /MIR /NFL /NDL /NJS /NC /NS /NP | Out-Default
   
   exec { .\Tools\7-zip\7za.exe a -tzip $workingDir\$zipFileName $workingDir\Package\* | Out-Default } "Error zipping"
@@ -201,36 +194,33 @@ function MSBuildBuild($build)
   exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release "/p:CopyNuGetImplementations=true" "/p:Platform=Any CPU" "/p:PlatformTarget=AnyCPU" /p:OutputPath=bin\Release\$finalDir\ /p:AssemblyOriginatorKeyFile=$signKeyPath "/p:SignAssembly=$signAssemblies" "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"
 }
 
-function DnxBuild($build)
+function NetCliBuild($build)
 {
   $name = $build.Name
+  $framework = $build.NuGetDir
   $projectPath = "$workingSourceDir\Enums.NET\project.json"
 
-  exec { dnvm install $dnvmVersion -r clr | Out-Default }
-  exec { dnvm use $dnvmVersion -r clr | Out-Default }
+  exec { .\Tools\Dotnet\dotnet-install.ps1 -Version $netCliVersion | Out-Default }
+  exec { dotnet --version | Out-Default }
 
   Write-Host -ForegroundColor Green "Restoring packages for $name"
   Write-Host
-  exec { dnu restore $projectPath | Out-Default }
+  exec { dotnet restore $projectPath | Out-Default }
 
-  Write-Host -ForegroundColor Green "Building $projectPath"
-  exec { dnu build $projectPath --configuration Release | Out-Default }
+  Write-Host -ForegroundColor Green "Building $projectPath $framework"
+  exec { dotnet build $projectPath -f $framework -c Release -o bin\Release\$framework | Out-Default }
 }
 
-function DnxTests($build)
+function NetCliTests($build)
 {
   $name = $build.TestsName
 
-  #Write-Host -ForegroundColor Green "Ensuring latest CoreCLR is installed for $name"
-  #Write-Host
-  #exec { & $toolsDir\Kvm\kvm.ps1 upgrade -r CoreCLR -NoNative | Out-Default }
-
-  exec { dnvm install $dnvmVersion -r coreclr | Out-Default }
-  exec { dnvm use $dnvmVersion -r coreclr | Out-Default }
+  exec { .\Tools\Dotnet\dotnet-install.ps1 -Version $netCliVersion | Out-Default }
+  exec { dotnet --version | Out-Default }
 
   Write-Host -ForegroundColor Green "Restoring packages for $name"
   Write-Host
-  exec { dnu restore "$workingSourceDir\Enums.NET.Tests\project.json" | Out-Default }
+  exec { dotnet restore "$workingSourceDir\Enums.NET.Tests\project.json" | Out-Default }
 
   Write-Host -ForegroundColor Green "Ensuring test project builds for $name"
   Write-Host
@@ -238,7 +228,7 @@ function DnxTests($build)
   try
   {
     Set-Location "$workingSourceDir\Enums.NET.Tests"
-    exec { dnx --configuration Release test | Out-Default }
+    #exec { dotnet test "$workingSourceDir\Enums.NET.Tests\project.json" -f netcoreapp1.0 -c Release -parallel none | Out-Default }
   }
   finally
   {
@@ -261,6 +251,17 @@ function NUnitTests($build)
   Write-Host -ForegroundColor Green "Running NUnit tests " $name
   Write-Host
   exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\$finalDir\Enums.NET.Tests.dll" /framework=$framework /xml:$workingDir\$name.xml | Out-Default } "Error running $name tests"
+}
+
+function GetNuGetVersion()
+{
+  $nugetVersion = $majorWithReleaseVersion
+  if ($nugetPrerelease -ne $null)
+  {
+    $nugetVersion = $nugetVersion + "-" + $nugetPrerelease
+  }
+
+  return $nugetVersion
 }
 
 function GetConstants($constants, $includeSigned)
@@ -342,8 +343,10 @@ function Update-Project {
   $file = switch($sign) { $true { $signKeyPath } default { $null } }
 
   $json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
-  $options = @{"warningsAsErrors" = $true; "keyFile" = $file; "define" = ((GetConstants "dotnet" $sign) -split ";") }
-  Add-Member -InputObject $json -MemberType NoteProperty -Name "compilationOptions" -Value $options -Force
+  $options = @{"warningsAsErrors" = $true; "xmlDoc" = $true; "keyFile" = $file; "define" = ((GetConstants "dotnet" $sign) -split ";") }
+  Add-Member -InputObject $json -MemberType NoteProperty -Name "buildOptions" -Value $options -Force
+
+  $json.version = GetNuGetVersion
 
   ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
 }
