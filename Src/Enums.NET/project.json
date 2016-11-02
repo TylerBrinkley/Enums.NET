@@ -15,7 +15,7 @@
   },
   "tools": {
     "dotnet-fody": {
-      "version": "0.0.1-alpha",
+      "version": "0.0.1-alpha2",
       "imports": "net452"
     },
     "ExtraConstraints.Fody": {
@@ -32,7 +32,7 @@
         "System.Runtime.Serialization": ""
       },
       "buildOptions": {
-        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net40": {
@@ -40,7 +40,7 @@
         "System.Runtime.Serialization": ""
       },
       "buildOptions": {
-        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net35": {
@@ -73,31 +73,12 @@
         "System.Threading": "4.0.11"
       }
     },
-    "netstandard1.1": {
-      "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_1", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE" ]
-      },
-      "dependencies": {
-        "System.Collections": "4.0.11",
-        "System.Collections.Concurrent": "4.0.12",
-        "System.ComponentModel.Primitives": "4.1.0",
-        "System.Linq": "4.1.0",
-        "System.Reflection": "4.1.0",
-        "System.Reflection.Extensions": "4.0.1",
-        "System.Resources.ResourceManager": "4.0.1",
-        "System.Runtime": "4.1.0",
-        "System.Runtime.Extensions": "4.1.0",
-        "System.Runtime.Serialization.Primitives": "4.1.1",
-        "System.Threading": "4.0.11"
-      }
-    },
     "netstandard1.3": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_3", "ENUM_MEMBER_ATTRIBUTE", "CONCURRENT_COLLECTIONS", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE" ]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_3", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE" ]
       },
       "dependencies": {
         "System.Collections": "4.0.11",
-        "System.Collections.Concurrent": "4.0.12",
         "System.ComponentModel.Primitives": "4.1.0",
         "System.Linq": "4.1.0",
         "System.Reflection": "4.1.0",

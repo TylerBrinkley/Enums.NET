@@ -24,9 +24,10 @@
 #endregion
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace EnumsNET.NonGeneric
 {
@@ -36,14 +37,15 @@ namespace EnumsNET.NonGeneric
     /// </summary>
     public static class NonGenericEnums
     {
-        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _nonGenericEnumInfos = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
-
+        private static Dictionary<Type, NonGenericEnumInfo> _nonGenericEnumInfos = new Dictionary<Type, NonGenericEnumInfo>();
+        
         internal static NonGenericEnumInfo GetNonGenericEnumInfo(Type enumType)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
-            
+
+            var nonGenericEnumInfos = _nonGenericEnumInfos;
             NonGenericEnumInfo info;
-            if (!_nonGenericEnumInfos.TryGetValue(enumType, out info))
+            if (!nonGenericEnumInfos.TryGetValue(enumType, out info))
             {
                 if (enumType.IsEnum())
                 {
@@ -65,14 +67,25 @@ namespace EnumsNET.NonGeneric
                     }
                     info = new NonGenericEnumInfo(GetInfo(nonNullableEnumType), true);
                 }
-                if (!_nonGenericEnumInfos.TryAdd(enumType, info))
+                Dictionary<Type, NonGenericEnumInfo> oldNonGenericEnumInfos;
+                do
                 {
-                    info = _nonGenericEnumInfos[enumType];
-                }
+                    NonGenericEnumInfo foundInfo;
+                    if (nonGenericEnumInfos.TryGetValue(enumType, out foundInfo))
+                    {
+                        return foundInfo;
+                    }
+                    oldNonGenericEnumInfos = nonGenericEnumInfos;
+                    nonGenericEnumInfos = new Dictionary<Type, NonGenericEnumInfo>(nonGenericEnumInfos);
+                    nonGenericEnumInfos.Add(enumType, info);
+                } while ((nonGenericEnumInfos = Interlocked.CompareExchange(ref _nonGenericEnumInfos, nonGenericEnumInfos, oldNonGenericEnumInfos)) != oldNonGenericEnumInfos);
             }
             return info;
         }
 
+#if NET45
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         internal static IEnumInfo GetInfo(Type enumType) => GetNonGenericEnumInfo(enumType).EnumInfo;
 
         #region Type Methods

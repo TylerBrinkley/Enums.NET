@@ -23,7 +23,7 @@
 // determine if the object is one of these values.
 namespace System
 {
-    public enum TypeCode
+    internal enum TypeCode
     {
         Empty = 0,          // Null reference
         Object = 1,         // Instance that isn't a value

@@ -20,9 +20,9 @@ namespace EnumsNET.Tests
         [Test]
         public void NonGenericEnumsNullableTest()
         {
-            Assert.AreEqual("Black", NonGenericEnums.GetName(typeof(ConsoleColor?), (ConsoleColor?)ConsoleColor.Black));
-            Assert.AreEqual("Black", NonGenericEnums.GetName(typeof(ConsoleColor?), ConsoleColor.Black));
-            Assert.AreEqual(null, NonGenericEnums.GetName(typeof(ConsoleColor?), null));
+            Assert.AreEqual("Today", NonGenericEnums.GetName(typeof(DateFilterOperator?), (DateFilterOperator?)DateFilterOperator.Today));
+            Assert.AreEqual("Today", NonGenericEnums.GetName(typeof(DateFilterOperator?), DateFilterOperator.Today));
+            Assert.AreEqual(null, NonGenericEnums.GetName(typeof(DateFilterOperator?), null));
         }
     }
 }

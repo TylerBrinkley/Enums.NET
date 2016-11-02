@@ -31,7 +31,13 @@ namespace EnumsNET.Tests
         public void TestGenericConstraints()
         {
             var enumTypeArgs = new[] { typeof(Enums), typeof(FlagEnums) }
-                .SelectMany(type => type.GetMethods(BindingFlags.Static | BindingFlags.Public))
+                .SelectMany(type => type.
+#if TYPE_REFLECTION
+                        GetMethods(BindingFlags.Static | BindingFlags.Public)
+#else
+                        GetTypeInfo().DeclaredMethods
+#endif
+                )
                 .Where(method => method.IsGenericMethod && ((method.Name != nameof(FlagEnums.GetFlags) && method.Name != nameof(FlagEnums.GetFlagMembers)) || method.GetParameters()[0].Name != "member"))
                 .Select(method => method.GetGenericArguments()[0])
                 .Where(genericArg => genericArg != null)
@@ -65,6 +71,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(typeof(ulong), GetUnderlyingType<UInt64Enum>());
         }
 
+#if ICONVERTIBLE
         [Test]
         public void GetTypeCode()
         {
@@ -77,6 +84,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(TypeCode.Int64, GetTypeCode<Int64Enum>());
             Assert.AreEqual(TypeCode.UInt64, GetTypeCode<UInt64Enum>());
         }
+#endif
         #endregion
 
         #region Type Methods

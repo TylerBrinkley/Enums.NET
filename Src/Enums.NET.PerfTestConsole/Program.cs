@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Diagnostics;
-using EnumsNET.NonGeneric;
 using System.Collections.Generic;
-
-#if !NET20
+using System.Diagnostics;
 using System.Linq;
-#endif
+using EnumsNET.NonGeneric;
+using EnumsNET.Unsafe;
 
 namespace EnumsNET.PerfTestConsole
 {
-    class Program
+    static class Program
     {
         private class EnumInfo
         {
             public Type Type { get; set; }
 
             public List<string> Names { get; set; }
-
-            public List<object> Values { get; set; }
-
+            
             public List<string> NumericValues { get; set; }
+
+            public Parser GenericParser { get; set; }
         }
 
         static void Main()
@@ -50,6 +48,17 @@ namespace EnumsNET.PerfTestConsole
 
             GetHashCode(dayOfWeekArray);
 
+            var attributeTargetsArray = new AttributeTargets[15];
+            attributeTargetsArray[0] = (AttributeTargets)0;
+            attributeTargetsArray[1] = (AttributeTargets)1;
+            for (var i = 2; i < attributeTargetsArray.Length; ++i)
+            {
+                attributeTargetsArray[i] = (AttributeTargets)(1 << (i - 1)) | (AttributeTargets)(1 << (i - 2));
+            }
+            var allAttributeTargets = (AttributeTargets[])Enum.GetValues(typeof(AttributeTargets));
+
+            HasFlag(attributeTargetsArray, allAttributeTargets);
+
             Console.ReadLine();
         }
 
@@ -59,17 +68,16 @@ namespace EnumsNET.PerfTestConsole
             foreach (var enumType in enumTypes)
             {
                 var names = Enum.GetNames(enumType).ToList();
-                var values = new object[names.Count];
-                Enum.GetValues(enumType).CopyTo(values, 0);
                 var numericValues = new List<string>(names.Count);
-                foreach (var value in values)
+                foreach (var value in Enum.GetValues(enumType))
                 {
                     numericValues.Add(Enum.Format(enumType, value, "D"));
                 }
-                list.Add(new EnumInfo { Type = enumType, Names = names, Values = values.ToList(), NumericValues = numericValues });
+                var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
+                list.Add(new EnumInfo { Type = enumType, Names = names, NumericValues = numericValues, GenericParser = parser });
             }
 
-            const int parseIterations = 10000;
+            const int parseIterations = 375;
 
             using (new OperationTimer("Enum.Parse (Names)"))
             {
@@ -86,6 +94,15 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
+            // Primes the pump
+            foreach (var tuple in list)
+            {
+                if (tuple.Names.Count > 0)
+                {
+                    NonGenericEnums.Parse(tuple.Type, tuple.Names[0]);
+                }
+            }
+
             using (new OperationTimer("NonGenericEnums.Parse (Names)"))
             {
                 foreach (var tuple in list)
@@ -96,6 +113,30 @@ namespace EnumsNET.PerfTestConsole
                         foreach (var name in tuple.Names)
                         {
                             NonGenericEnums.Parse(enumType, name);
+                        }
+                    }
+                }
+            }
+
+            // Primes the pump
+            foreach (var tuple in list)
+            {
+                if (tuple.Names.Count > 0)
+                {
+                    tuple.GenericParser.Parse(tuple.Names[0]);
+                }
+            }
+
+            using (new OperationTimer("UnsafeEnums.Parse (Names)"))
+            {
+                foreach (var tuple in list)
+                {
+                    var parser = tuple.GenericParser;
+                    for (var i = 0; i < parseIterations; ++i)
+                    {
+                        foreach (var name in tuple.Names)
+                        {
+                            parser.Parse(name);
                         }
                     }
                 }
@@ -130,11 +171,39 @@ namespace EnumsNET.PerfTestConsole
                     }
                 }
             }
+
+            using (new OperationTimer("UnsafeEnums.Parse (Decimal)"))
+            {
+                foreach (var tuple in list)
+                {
+                    var parser = tuple.GenericParser;
+                    for (var i = 0; i < parseIterations; ++i)
+                    {
+                        foreach (var numericValue in tuple.NumericValues)
+                        {
+                            parser.Parse(numericValue);
+                        }
+                    }
+                }
+            }
+        }
+
+        public abstract class Parser
+        {
+            public abstract void Parse(string value);
+        }
+
+        public sealed class Parser<TEnum> : Parser
+        {
+            public override void Parse(string value)
+            {
+                UnsafeEnums.Parse<TEnum>(value);
+            }
         }
 
         public static void ToString(DayOfWeek[] dayOfWeekArray)
         {
-            const int iterations = 1000000;
+            const int iterations = 50000;
 
             using (new OperationTimer("Enum.ToString (Name)"))
             {
@@ -184,12 +253,11 @@ namespace EnumsNET.PerfTestConsole
 
             using (new OperationTimer("NonGenericEnums.AsString (Decimal)"))
             {
-                var decimalValueArray = new[] { EnumFormat.DecimalValue };
                 for (var i = 0; i < iterations; ++i)
                 {
                     for (var j = 0; j < dayOfWeekArray.Length; ++j)
                     {
-                        NonGenericEnums.AsString(dayOfWeekType, dayOfWeekArray[j], decimalValueArray);
+                        NonGenericEnums.AsString(dayOfWeekType, dayOfWeekArray[j], EnumFormat.DecimalValue);
                     }
                 }
             }
@@ -208,7 +276,7 @@ namespace EnumsNET.PerfTestConsole
 
         public static void IsDefined(DayOfWeek[] dayOfWeekArray)
         {
-            const int iterations = 10000000;
+            const int iterations = 250000;
 
             var dayOfWeekType = typeof(DayOfWeek);
 
@@ -259,7 +327,7 @@ namespace EnumsNET.PerfTestConsole
 
         public static void GetHashCode(DayOfWeek[] dayOfWeekArray)
         {
-            const int iterations = 10000000;
+            const int iterations = 5000000;
 
             using (new OperationTimer("Enum.GetHashCode Performance"))
             {
@@ -283,6 +351,76 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
         }
+
+        private static void HasFlag(AttributeTargets[] attributeTargetsArray, AttributeTargets[] allAttributeTargets)
+        {
+            const int iterations = 160000;
+
+            using (new OperationTimer("Enum.HasFlag"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    foreach (var attributeTargets in attributeTargetsArray)
+                    {
+                        foreach (var otherAttributeTargets in allAttributeTargets)
+                        {
+                            attributeTargets.HasFlag(otherAttributeTargets);
+                        }
+                    }
+                }
+            }
+
+            var attributeTargetsType = typeof(AttributeTargets);
+
+            using (new OperationTimer("NonGenericFlagEnums.HasAllFlags"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    foreach (var attributeTargets in attributeTargetsArray)
+                    {
+                        foreach (var otherAttributeTargets in allAttributeTargets)
+                        {
+                            NonGenericFlagEnums.HasAllFlags(attributeTargetsType, attributeTargets, otherAttributeTargets);
+                        }
+                    }
+                }
+            }
+
+            using (new OperationTimer("Enums.HasAllFlags"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    foreach (var attributeTargets in attributeTargetsArray)
+                    {
+                        foreach (var otherAttributeTargets in allAttributeTargets)
+                        {
+                            attributeTargets.HasAllFlags(otherAttributeTargets);
+                        }
+                    }
+                }
+            }
+
+            var temp = false;
+            using (new OperationTimer("Manual HasAllFlags"))
+            {
+                for (var i = 0; i < iterations; ++i)
+                {
+                    foreach (var attributeTargets in attributeTargetsArray)
+                    {
+                        foreach (var otherAttributeTargets in allAttributeTargets)
+                        {
+                            temp |= attributeTargets.ManualHasAllFlags(otherAttributeTargets);
+                        }
+                    }
+                }
+            }
+            if (temp)
+            {
+                Console.WriteLine();
+            }
+        }
+
+        public static bool ManualHasAllFlags(this AttributeTargets flags, AttributeTargets otherFlags) => (flags & otherFlags) == otherFlags;
     }
 
     // This class is useful for doing operation performance timing
@@ -328,7 +466,7 @@ namespace EnumsNET.PerfTestConsole
 }
 
 #if NET20
-namespace EnumsNET
+namespace System.Linq
 {
     internal static class Enumerable
     {

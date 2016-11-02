@@ -18,9 +18,6 @@ using System.Security;
 #elif NETSTANDARD1_0
 [assembly: AssemblyTitle("Enums.NET .NET Standard 1.0")]
 [assembly: AllowPartiallyTrustedCallers]
-#elif NETSTANDARD1_1
-[assembly: AssemblyTitle("Enums.NET .NET Standard 1.1")]
-[assembly: AllowPartiallyTrustedCallers]
 #elif NETSTANDARD1_3
 [assembly: AssemblyTitle("Enums.NET .NET Standard 1.3")]
 [assembly: AllowPartiallyTrustedCallers]

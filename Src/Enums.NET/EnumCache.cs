@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -82,8 +81,30 @@ namespace EnumsNET
 
         // Duplicate values are stored here with a key of the constant's name, is null if no duplicates
         private readonly List<EnumMemberInternal<TInt, TIntProvider>> _duplicateValues;
+        
+        private EnumMemberParser[] _enumMemberParsers;
 
-        private ConcurrentDictionary<EnumFormat, EnumMemberParser> _enumMemberParsers;
+        private EnumMemberParser GetEnumMemberParser(EnumFormat format)
+        {
+            var index = format - EnumFormat.Name;
+            var parsers = _enumMemberParsers;
+            EnumMemberParser parser;
+            if (index < 0 || parsers == null || index >= parsers.Length || (parser = parsers[index]) == null)
+            {
+                format.Validate(nameof(format));
+
+                parser = new EnumMemberParser(format, this);
+                EnumMemberParser[] oldParsers;
+                do
+                {
+                    oldParsers = parsers;
+                    parsers = new EnumMemberParser[Math.Max(oldParsers?.Length ?? 0, index + 1)];
+                    oldParsers?.CopyTo(parsers, 0);
+                    parsers[index] = parser;
+                } while ((parsers = Interlocked.CompareExchange(ref _enumMemberParsers, parsers, oldParsers)) != oldParsers);
+            }
+            return parser;
+        }
         #endregion
 
         public EnumCache(Type enumType, IEnumInfoInternal<TInt, TIntProvider> enumInfo)
@@ -423,7 +444,7 @@ namespace EnumsNET
                     return FormatFlagsInternal(value, member, null, null);
                 case "D":
                 case "d":
-                    return value.ToString("D", null);
+                    return value.ToString();
                 case "X":
                 case "x":
                     return value.ToString(Provider.HexFormatString, null);
@@ -433,9 +454,13 @@ namespace EnumsNET
 
         internal string FormatInternal(TInt value, ref bool isInitialized, ref EnumMemberInternal<TInt, TIntProvider> member, EnumFormat format)
         {
-            if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
+            if (format == EnumFormat.DecimalValue)
             {
-                return value.ToString(format == EnumFormat.DecimalValue ? "D" : Provider.HexFormatString, null);
+                return value.ToString();
+            }
+            if (format == EnumFormat.HexadecimalValue)
+            {
+                return value.ToString(Provider.HexFormatString, null);
             }
             if (!isInitialized)
             {
@@ -580,15 +605,7 @@ namespace EnumsNET
                 }
                 else
                 {
-                    ConcurrentDictionary<EnumFormat, EnumMemberParser> enumMemberParsers;
-                    enumMemberParsers = _enumMemberParsers ?? Interlocked.CompareExchange(ref _enumMemberParsers, (enumMemberParsers = new ConcurrentDictionary<EnumFormat, EnumMemberParser>(EnumComparer<EnumFormat>.Instance)), null) ?? enumMemberParsers;
-                    EnumMemberParser parser;
-                    if (!enumMemberParsers.TryGetValue(format, out parser))
-                    {
-                        format.Validate(nameof(format));
-                        parser = new EnumMemberParser(format, this);
-                        enumMemberParsers.TryAdd(format, parser);
-                    }
+                    var parser = GetEnumMemberParser(format);
                     if (parser.TryParse(value, ignoreCase, out member))
                     {
                         result = member.Value;

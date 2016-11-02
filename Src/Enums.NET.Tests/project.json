@@ -1,0 +1,73 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Enums.NET": "1.0.0-*",
+    "NETStandard.Library": "1.6.0"
+  },
+  "testRunner": "nunit",
+  "runtimes": {
+    "win7-x64": {}
+  },
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": ""
+      },
+      "dependencies": {
+        "NUnit": "3.5.0"
+      },
+      "buildOptions": {
+        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+      }
+    },
+    "net40": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": ""
+      },
+      "dependencies": {
+        "NUnit": "3.5.0"
+      },
+      "buildOptions": {
+        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+      }
+    },
+    "net35": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": ""
+      },
+      "dependencies": {
+        "NUnit": "3.5.0"
+      },
+      "buildOptions": {
+        "define": [ "NET35", "ENUM_MEMBER_ATTRIBUTE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+      }
+    },
+    "net20": {
+      "dependencies": {
+        "NUnit": "3.5.0"
+      },
+      "buildOptions": {
+        "define": [ "NET20", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+      }
+    },
+    "netstandard1.0": {
+      "buildOptions": {
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE" ]
+      },
+      "dependencies": {
+        "NUnit": "3.5.0"
+      },
+      "imports": "dnxcore50"
+    },
+    "netstandard1.3": {
+      "buildOptions": {
+        "define": [ "NETSTANDARD", "NETSTANDARD1_3", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE" ]
+      },
+      "dependencies": {
+        "NUnit": "3.5.0"
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

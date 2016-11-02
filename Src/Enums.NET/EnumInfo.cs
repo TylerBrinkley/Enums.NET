@@ -34,7 +34,9 @@ using ExtraConstraints;
 namespace EnumsNET
 {
     // Class that acts as a bridge from the enum type to the underlying type
-    // through the use of IEnumInfo<TEnum> and IEnumInfo.
+    // through the use of the implemented interfaces IEnumInfo<TEnum> and IEnumInfo.
+    // Also acts as a bridge in the reverse from the underlying type to the enum type
+    // through the use of the implemented interface IEnumInfoInternal<TInt, TIntProvider>
     // Putting the logic in EnumCache<TInt, TIntProvider> reduces memory usage
     // because it doesn't have the enum type as a generic type parameter.
     internal sealed class EnumInfo<[EnumConstraint] TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>

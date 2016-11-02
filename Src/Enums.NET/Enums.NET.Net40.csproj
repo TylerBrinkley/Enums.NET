@@ -20,7 +20,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\Net40\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET40;ENUM_MEMBER_ATTRIBUTE;CONCURRENT_COLLECTIONS;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Net40\Enums.NET.XML</DocumentationFile>
@@ -29,7 +29,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\Net40\</OutputPath>
-    <DefineConstants>TRACE;NET40;ENUM_MEMBER_ATTRIBUTE;CONCURRENT_COLLECTIONS;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>TRACE;NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Net40\Enums.NET.XML</DocumentationFile>
