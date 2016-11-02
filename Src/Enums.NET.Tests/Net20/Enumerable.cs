@@ -23,7 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if NET200
+#if NET20
 using System.Collections;
 using System.Collections.Generic;
 using EnumsNET;

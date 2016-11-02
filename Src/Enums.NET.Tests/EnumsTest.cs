@@ -35,7 +35,7 @@ namespace EnumsNET.Tests
 #if TYPE_REFLECTION
                         GetMethods(BindingFlags.Static | BindingFlags.Public)
 #else
-                        GetTypeInfo().DeclaredMethods
+                        GetTypeInfo().DeclaredMethods.Where(method => method.IsPublic)
 #endif
                 )
                 .Where(method => method.IsGenericMethod && ((method.Name != nameof(FlagEnums.GetFlags) && method.Name != nameof(FlagEnums.GetFlagMembers)) || method.GetParameters()[0].Name != "member"))
@@ -48,7 +48,7 @@ namespace EnumsNET.Tests
             }
         }
 
-        #region "Properties"
+        #region Type Methods
         [Test]
         public void IsContiguous()
         {
@@ -85,9 +85,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(TypeCode.UInt64, GetTypeCode<UInt64Enum>());
         }
 #endif
-        #endregion
 
-        #region Type Methods
         [Test]
         public void GetEnumMemberCount()
         {
@@ -169,90 +167,90 @@ namespace EnumsNET.Tests
         [Test]
         public void ToObject_ReturnsValidValue_WhenUsingValidNumber()
         {
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((sbyte)1, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((byte)1, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((short)1, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((ushort)1, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1U, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1L, false));
-            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1UL, false));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((sbyte)1));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((byte)1));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((short)1));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>((ushort)1));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1U));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1L));
+            Assert.AreEqual((SByteEnum)1, ToObject<SByteEnum>(1UL));
 
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((sbyte)1, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((byte)1, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((short)1, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((ushort)1, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1U, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1L, false));
-            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1UL, false));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((sbyte)1));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((byte)1));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((short)1));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>((ushort)1));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1U));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1L));
+            Assert.AreEqual((ByteEnum)1, ToObject<ByteEnum>(1UL));
 
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((sbyte)1, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((byte)1, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((short)1, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((ushort)1, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1U, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1L, false));
-            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1UL, false));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((sbyte)1));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((byte)1));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((short)1));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>((ushort)1));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1U));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1L));
+            Assert.AreEqual((Int16Enum)1, ToObject<Int16Enum>(1UL));
 
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((sbyte)1, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((byte)1, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((short)1, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((ushort)1, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1U, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1L, false));
-            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1UL, false));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((sbyte)1));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((byte)1));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((short)1));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>((ushort)1));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1U));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1L));
+            Assert.AreEqual((UInt16Enum)1, ToObject<UInt16Enum>(1UL));
 
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((sbyte)1, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((byte)1, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((short)1, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((ushort)1, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1U, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1L, false));
-            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1UL, false));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((sbyte)1));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((byte)1));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((short)1));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>((ushort)1));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1U));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1L));
+            Assert.AreEqual((Int32Enum)1, ToObject<Int32Enum>(1UL));
 
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((sbyte)1, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((byte)1, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((short)1, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((ushort)1, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1U, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1L, false));
-            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1UL, false));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((sbyte)1));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((byte)1));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((short)1));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>((ushort)1));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1U));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1L));
+            Assert.AreEqual((UInt32Enum)1, ToObject<UInt32Enum>(1UL));
 
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((sbyte)1, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((byte)1, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((short)1, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((ushort)1, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1U, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1L, false));
-            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1UL, false));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((sbyte)1));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((byte)1));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((short)1));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>((ushort)1));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1U));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1L));
+            Assert.AreEqual((Int64Enum)1, ToObject<Int64Enum>(1UL));
 
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((sbyte)1, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((byte)1, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((short)1, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((ushort)1, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1U, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1L, false));
-            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1UL, false));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((sbyte)1));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((byte)1));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((short)1));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>((ushort)1));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1U));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1L));
+            Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1UL));
         }
 
         [Test]
         public void ToObject_ThrowsOverflowException_WhenUsingValuesOutsideValueRange()
         {
-            TestHelper.ExpectException<OverflowException>(() => ToObject<SByteEnum>(byte.MaxValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<ByteEnum>(sbyte.MinValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<Int16Enum>(ushort.MaxValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt16Enum>(short.MinValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<Int32Enum>(uint.MaxValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt32Enum>(int.MinValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<Int64Enum>(ulong.MaxValue, false));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt64Enum>(long.MinValue, false));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<SByteEnum>(byte.MaxValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<ByteEnum>(sbyte.MinValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<Int16Enum>(ushort.MaxValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt16Enum>(short.MinValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<Int32Enum>(uint.MaxValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt32Enum>(int.MinValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<Int64Enum>(ulong.MaxValue));
+            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt64Enum>(long.MinValue));
         }
 
         [Test]
@@ -273,154 +271,154 @@ namespace EnumsNET.Tests
         {
             SByteEnum sbyteResult;
             var sbyteValue = (SByteEnum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out sbyteResult));
+            Assert.IsTrue(TryToObject((sbyte)1, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject((byte)1, false, out sbyteResult));
+            Assert.IsTrue(TryToObject((byte)1, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject((short)1, false, out sbyteResult));
+            Assert.IsTrue(TryToObject((short)1, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject((ushort)1, false, out sbyteResult));
+            Assert.IsTrue(TryToObject((ushort)1, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject(1, false, out sbyteResult));
+            Assert.IsTrue(TryToObject(1, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject(1U, false, out sbyteResult));
+            Assert.IsTrue(TryToObject(1U, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject(1L, false, out sbyteResult));
+            Assert.IsTrue(TryToObject(1L, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
-            Assert.IsTrue(TryToObject(1UL, false, out sbyteResult));
+            Assert.IsTrue(TryToObject(1UL, out sbyteResult));
             Assert.AreEqual(sbyteValue, sbyteResult);
 
             ByteEnum byteResult;
             var byteValue = (ByteEnum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out byteResult));
+            Assert.IsTrue(TryToObject((sbyte)1, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject((byte)1, false, out byteResult));
+            Assert.IsTrue(TryToObject((byte)1, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject((short)1, false, out byteResult));
+            Assert.IsTrue(TryToObject((short)1, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject((ushort)1, false, out byteResult));
+            Assert.IsTrue(TryToObject((ushort)1, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject(1, false, out byteResult));
+            Assert.IsTrue(TryToObject(1, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject(1U, false, out byteResult));
+            Assert.IsTrue(TryToObject(1U, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject(1L, false, out byteResult));
+            Assert.IsTrue(TryToObject(1L, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
-            Assert.IsTrue(TryToObject(1UL, false, out byteResult));
+            Assert.IsTrue(TryToObject(1UL, out byteResult));
             Assert.AreEqual(byteValue, byteResult);
 
             Int16Enum int16Result;
             var int16Value = (Int16Enum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out int16Result));
+            Assert.IsTrue(TryToObject((sbyte)1, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject((byte)1, false, out int16Result));
+            Assert.IsTrue(TryToObject((byte)1, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject((short)1, false, out int16Result));
+            Assert.IsTrue(TryToObject((short)1, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject((ushort)1, false, out int16Result));
+            Assert.IsTrue(TryToObject((ushort)1, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject(1, false, out int16Result));
+            Assert.IsTrue(TryToObject(1, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject(1U, false, out int16Result));
+            Assert.IsTrue(TryToObject(1U, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject(1L, false, out int16Result));
+            Assert.IsTrue(TryToObject(1L, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
-            Assert.IsTrue(TryToObject(1UL, false, out int16Result));
+            Assert.IsTrue(TryToObject(1UL, out int16Result));
             Assert.AreEqual(int16Value, int16Result);
 
             UInt16Enum uint16Result;
             var uint16Value = (UInt16Enum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out uint16Result));
+            Assert.IsTrue(TryToObject((sbyte)1, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject((byte)1, false, out uint16Result));
+            Assert.IsTrue(TryToObject((byte)1, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject((short)1, false, out uint16Result));
+            Assert.IsTrue(TryToObject((short)1, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject((ushort)1, false, out uint16Result));
+            Assert.IsTrue(TryToObject((ushort)1, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject(1, false, out uint16Result));
+            Assert.IsTrue(TryToObject(1, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject(1U, false, out uint16Result));
+            Assert.IsTrue(TryToObject(1U, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject(1L, false, out uint16Result));
+            Assert.IsTrue(TryToObject(1L, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
-            Assert.IsTrue(TryToObject(1UL, false, out uint16Result));
+            Assert.IsTrue(TryToObject(1UL, out uint16Result));
             Assert.AreEqual(uint16Value, uint16Result);
 
             Int32Enum int32Result;
             var int32Value = (Int32Enum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out int32Result));
+            Assert.IsTrue(TryToObject((sbyte)1, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject((byte)1, false, out int32Result));
+            Assert.IsTrue(TryToObject((byte)1, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject((short)1, false, out int32Result));
+            Assert.IsTrue(TryToObject((short)1, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject((ushort)1, false, out int32Result));
+            Assert.IsTrue(TryToObject((ushort)1, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject(1, false, out int32Result));
+            Assert.IsTrue(TryToObject(1, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject(1U, false, out int32Result));
+            Assert.IsTrue(TryToObject(1U, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject(1L, false, out int32Result));
+            Assert.IsTrue(TryToObject(1L, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
-            Assert.IsTrue(TryToObject(1UL, false, out int32Result));
+            Assert.IsTrue(TryToObject(1UL, out int32Result));
             Assert.AreEqual(int32Value, int32Result);
 
             UInt32Enum uint32Result;
             var uint32Value = (UInt32Enum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out uint32Result));
+            Assert.IsTrue(TryToObject((sbyte)1, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject((byte)1, false, out uint32Result));
+            Assert.IsTrue(TryToObject((byte)1, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject((short)1, false, out uint32Result));
+            Assert.IsTrue(TryToObject((short)1, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject((ushort)1, false, out uint32Result));
+            Assert.IsTrue(TryToObject((ushort)1, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject(1, false, out uint32Result));
+            Assert.IsTrue(TryToObject(1, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject(1U, false, out uint32Result));
+            Assert.IsTrue(TryToObject(1U, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject(1L, false, out uint32Result));
+            Assert.IsTrue(TryToObject(1L, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
-            Assert.IsTrue(TryToObject(1UL, false, out uint32Result));
+            Assert.IsTrue(TryToObject(1UL, out uint32Result));
             Assert.AreEqual(uint32Value, uint32Result);
 
             Int64Enum int64Result;
             var int64Value = (Int64Enum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out int64Result));
+            Assert.IsTrue(TryToObject((sbyte)1, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject((byte)1, false, out int64Result));
+            Assert.IsTrue(TryToObject((byte)1, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject((short)1, false, out int64Result));
+            Assert.IsTrue(TryToObject((short)1, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject((ushort)1, false, out int64Result));
+            Assert.IsTrue(TryToObject((ushort)1, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject(1, false, out int64Result));
+            Assert.IsTrue(TryToObject(1, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject(1U, false, out int64Result));
+            Assert.IsTrue(TryToObject(1U, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject(1L, false, out int64Result));
+            Assert.IsTrue(TryToObject(1L, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
-            Assert.IsTrue(TryToObject(1UL, false, out int64Result));
+            Assert.IsTrue(TryToObject(1UL, out int64Result));
             Assert.AreEqual(int64Value, int64Result);
 
             UInt64Enum uint64Result;
             var uint64Value = (UInt64Enum)1;
-            Assert.IsTrue(TryToObject((sbyte)1, false, out uint64Result));
+            Assert.IsTrue(TryToObject((sbyte)1, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject((byte)1, false, out uint64Result));
+            Assert.IsTrue(TryToObject((byte)1, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject((short)1, false, out uint64Result));
+            Assert.IsTrue(TryToObject((short)1, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject((ushort)1, false, out uint64Result));
+            Assert.IsTrue(TryToObject((ushort)1, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject(1, false, out uint64Result));
+            Assert.IsTrue(TryToObject(1, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject(1U, false, out uint64Result));
+            Assert.IsTrue(TryToObject(1U, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject(1L, false, out uint64Result));
+            Assert.IsTrue(TryToObject(1L, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
-            Assert.IsTrue(TryToObject(1UL, false, out uint64Result));
+            Assert.IsTrue(TryToObject(1UL, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
         }
 
@@ -443,21 +441,21 @@ namespace EnumsNET.Tests
         {
             ColorFlagEnum result;
             var value = (ColorFlagEnum)16;
-            Assert.IsTrue(TryToObject((sbyte)16, false, out result));
+            Assert.IsTrue(TryToObject((sbyte)16, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject((byte)16, false, out result));
+            Assert.IsTrue(TryToObject((byte)16, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject((short)16, false, out result));
+            Assert.IsTrue(TryToObject((short)16, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject((ushort)16, false, out result));
+            Assert.IsTrue(TryToObject((ushort)16, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject(16, false, out result));
+            Assert.IsTrue(TryToObject(16, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject(16U, false, out result));
+            Assert.IsTrue(TryToObject(16U, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject(16L, false, out result));
+            Assert.IsTrue(TryToObject(16L, out result));
             Assert.AreEqual(value, result);
-            Assert.IsTrue(TryToObject(16UL, false, out result));
+            Assert.IsTrue(TryToObject(16UL, out result));
             Assert.AreEqual(value, result);
         }
 
@@ -465,19 +463,19 @@ namespace EnumsNET.Tests
         public void TryToObject_ReturnsFalse_WhenUsingValueOutOfRange()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(TryToObject((byte)128, false, out result));
+            Assert.IsFalse(TryToObject((byte)128, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
-            Assert.IsFalse(TryToObject((short)128, false, out result));
+            Assert.IsFalse(TryToObject((short)128, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
-            Assert.IsFalse(TryToObject((ushort)128, false, out result));
+            Assert.IsFalse(TryToObject((ushort)128, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
-            Assert.IsFalse(TryToObject(128, false, out result));
+            Assert.IsFalse(TryToObject(128, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
-            Assert.IsFalse(TryToObject(128U, false, out result));
+            Assert.IsFalse(TryToObject(128U, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
-            Assert.IsFalse(TryToObject(128L, false, out result));
+            Assert.IsFalse(TryToObject(128L, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
-            Assert.IsFalse(TryToObject(128UL, false, out result));
+            Assert.IsFalse(TryToObject(128UL, out result));
             Assert.AreEqual(default(ColorFlagEnum), result);
 
             Assert.IsFalse(TryToObject((byte)128, out result));
