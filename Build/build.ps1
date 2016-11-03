@@ -1,33 +1,31 @@
-﻿properties { 
+﻿properties {
   $zipFileName = "Enums.NET.1.0.0.zip"
   $majorVersion = "1.0"
   $majorWithReleaseVersion = "1.0.0"
-  $nugetPrelease = "rc1"
+  $nugetPrelease = $null
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Enums.NET"
   $signAssemblies = $false
-  $signKeyPath = "C:\Development\Release\enumsnet.snk"
-  $buildDocumentation = $false
+  $signKeyPath = "C:\Development\Releases\enumsnet.snk"
   $buildNuGet = $true
   $treatWarningsAsErrors = $false
   $workingName = if ($workingName) {$workingName} else {"Working"}
-  $dnvmVersion = "1.0.0-beta8"
+  $netCliVersion = "1.0.0-preview3-003171"
   
   $baseDir  = resolve-path ..
   $buildDir = "$baseDir\Build"
   $sourceDir = "$baseDir\Src"
   $toolsDir = "$baseDir\Tools"
-  $docDir = "$baseDir\Doc"
   $releaseDir = "$baseDir\Release"
   $workingDir = "$baseDir\$workingName"
   $workingSourceDir = "$workingDir\Src"
   $builds = @(
-    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE"; FinalDir="netstandard1.0"; NuGetDir = "netstandard1.0"; Framework=$null},
-    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE"; FinalDir="netstandard1.3"; NuGetDir = "netstandard1.3"; Framework=$null},
     @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"},
     @{Name = "Enums.NET.Net40"; TestsName = "Enums.NET.Tests.Net40"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"},
     @{Name = "Enums.NET.Net35"; TestsName = "Enums.NET.Tests.Net35"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET35;ENUM_MEMBER_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net35"; NuGetDir = "net35"; Framework="net-2.0"},
-    @{Name = "Enums.NET.Net20"; TestsName = "Enums.NET.Tests.Net20"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net20"; NuGetDir = "net20"; Framework="net-2.0"}
+    @{Name = "Enums.NET.Net20"; TestsName = "Enums.NET.Tests.Net20"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net20"; NuGetDir = "net20"; Framework="net-2.0"},
+    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE"; FinalDir="netstandard1.0"; NuGetDir = "netstandard1.0"; Framework=$null},
+    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE"; FinalDir="netstandard1.3"; NuGetDir = "netstandard1.3"; Framework=$null}
   )
 }
 
@@ -133,23 +131,6 @@ task Package -depends Build {
     move -Path .\*.nupkg -Destination $workingDir\NuGet
   }
 
-  Write-Host "Build documentation: $buildDocumentation"
-  
-  if ($buildDocumentation)
-  {
-    $mainBuild = $builds | where { $_.Name -eq "Enums.NET" } | select -first 1
-    $mainBuildFinalDir = $mainBuild.FinalDir
-    $documentationSourcePath = "$workingDir\Package\Bin\$mainBuildFinalDir"
-    $docOutputPath = "$workingDir\Documentation\"
-    Write-Host -ForegroundColor Green "Building documentation from $documentationSourcePath"
-    Write-Host "Documentation output to $docOutputPath"
-
-    # Sandcastle has issues when compiling with .NET 4 MSBuild - http://shfb.codeplex.com/Thread/View.aspx?ThreadId=50652
-    exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release "/p:DocumentationSourcePath=$documentationSourcePath" "/p:OutputPath=$docOutputPath" $docDir\doc.shfbproj | Out-Default } "Error building documentation. Check that you have Sandcastle, Sandcastle Help File Builder and HTML Help Workshop installed."
-    
-    move -Path $workingDir\Documentation\LastBuild.log -Destination $workingDir\Documentation.log
-  }
-
   robocopy $workingSourceDir $workingDir\Package\Source\Src /MIR /NFL /NDL /NJS /NC /NS /NP /XD bin obj TestResults AppPackages .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
   robocopy $buildDir $workingDir\Package\Source\Build /MIR /NFL /NDL /NJS /NC /NS /NP /XF runbuild.txt | Out-Default
   robocopy $toolsDir $workingDir\Package\Source\Tools /MIR /NFL /NDL /NJS /NC /NS /NP | Out-Default
@@ -228,7 +209,7 @@ function NetCliTests($build)
   try
   {
     Set-Location "$workingSourceDir\Enums.NET.Tests"
-    #exec { dotnet test "$workingSourceDir\Enums.NET.Tests\project.json" -f netcoreapp1.0 -c Release -parallel none | Out-Default }
+    exec { dotnet test "$workingSourceDir\Enums.NET.Tests\project.json" -f netcoreapp1.0 -c Release | Out-Default }
   }
   finally
   {
@@ -250,7 +231,7 @@ function NUnitTests($build)
 
   Write-Host -ForegroundColor Green "Running NUnit tests " $name
   Write-Host
-  exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\$finalDir\Enums.NET.Tests.dll" /framework=$framework /xml:$workingDir\$name.xml | Out-Default } "Error running $name tests"
+  exec { .\Tools\NUnit\nunit3-console.exe "$workingDir\Deployed\Bin\$finalDir\Enums.NET.Tests.dll" /framework=$framework | Out-Default } "Error running $name tests"
 }
 
 function GetNuGetVersion()
@@ -266,7 +247,7 @@ function GetNuGetVersion()
 
 function GetConstants($constants, $includeSigned)
 {
-  $signed = switch($includeSigned) { $true { ";SIGNED" } default { "" } }
+  $signed = if ($includeSigned) {";SIGNED"} else {""}
 
   return "CODE_ANALYSIS;TRACE;$constants$signed"
 }
@@ -279,13 +260,9 @@ function GetVersion($majorVersion)
     $month = $now.Month
     $totalMonthsSince2000 = ($year * 12) + $month
     $day = $now.Day
-    $minor = "{0}{1:00}" -f $totalMonthsSince2000, $day
+    $revision = "{0}{1:00}" -f $totalMonthsSince2000, $day
     
-    $hour = $now.Hour
-    $minute = $now.Minute
-    $revision = "{0:00}{1:00}" -f $hour, $minute
-    
-    return $majorVersion + "." + $minor
+    return $majorVersion + "." + $revision
 }
 
 function Update-AssemblyInfoFiles ([string] $workingSourceDir, [string] $assemblyVersionNumber, [string] $fileVersionNumber)
@@ -337,10 +314,10 @@ function Edit-XmlNodes {
 function Update-Project {
   param (
     [string] $projectPath,
-    [string] $sign
+    [Boolean] $sign
   )
 
-  $file = switch($sign) { $true { $signKeyPath } default { $null } }
+  $file = if ($sign) {$signKeyPath} else {$null}
 
   $json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
   $options = @{"warningsAsErrors" = $true; "xmlDoc" = $true; "keyFile" = $file; "define" = ((GetConstants "dotnet" $sign) -split ";") }
