@@ -80,14 +80,6 @@ namespace EnumsNET
 
         #region Type Methods
         /// <summary>
-        /// Indicates if <typeparamref name="TEnum"/>'s defined values are contiguous.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <returns>Indication if <typeparamref name="TEnum"/>'s defined values are contiguous.</returns>
-        public static bool IsContiguous<[EnumConstraint] TEnum>()
-            where TEnum : struct => Enums<TEnum>.Info.IsContiguous;
-
-        /// <summary>
         /// Retrieves the underlying type of <typeparamref name="TEnum"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

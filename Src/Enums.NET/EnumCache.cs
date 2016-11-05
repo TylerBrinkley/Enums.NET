@@ -63,9 +63,9 @@ namespace EnumsNET
 
         internal readonly bool IsFlagEnum;
 
-        internal readonly bool IsContiguous;
-
         internal readonly IEnumInfoInternal<TInt, TIntProvider> EnumInfo;
+
+        private readonly bool _isContiguous;
 
         private readonly bool _hasCustomValidator;
 
@@ -178,7 +178,7 @@ namespace EnumsNET
 
             _maxDefined = values[values.Length - 1].Key;
             _minDefined = values[0].Key;
-            IsContiguous = Provider.Subtract(_maxDefined, Provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
+            _isContiguous = Provider.Subtract(_maxDefined, Provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
 
             if (duplicateValues.Count > 0)
             {
@@ -385,7 +385,7 @@ namespace EnumsNET
 #if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public bool IsDefined(TInt value) => IsContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
+        public bool IsDefined(TInt value) => _isContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
 
         public void Validate(TInt value, string paramName)
         {

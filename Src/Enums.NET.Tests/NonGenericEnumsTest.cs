@@ -9,12 +9,11 @@ namespace EnumsNET.Tests
     public class NonGenericEnumsTest
     {
         [Test]
-        public void NonGenericEnumsIsContiguous()
+        public void NonGenericEnumsGetUnderlyingType()
         {
-            Assert.IsTrue(NonGenericEnums.IsContiguous(typeof(DateFilterOperator)));
-            Assert.IsTrue(NonGenericEnums.IsContiguous(typeof(ContiguousUInt64Enum)));
-            Assert.IsFalse(NonGenericEnums.IsContiguous(typeof(NonContiguousEnum)));
-            Assert.IsFalse(NonGenericEnums.IsContiguous(typeof(NonContiguousUInt64Enum)));
+            Assert.AreEqual(typeof(short), NonGenericEnums.GetUnderlyingType(typeof(DateFilterOperator)));
+            Assert.AreEqual(typeof(ulong), NonGenericEnums.GetUnderlyingType(typeof(ContiguousUInt64Enum)));
+            Assert.AreEqual(typeof(long), NonGenericEnums.GetUnderlyingType(typeof(NonContiguousEnum)));
         }
 
         [Test]

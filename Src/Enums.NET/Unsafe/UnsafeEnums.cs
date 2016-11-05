@@ -45,14 +45,6 @@ namespace EnumsNET.Unsafe
 
         #region Type Methods
         /// <summary>
-        /// Indicates if <typeparamref name="TEnum"/>'s defined values are contiguous.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <returns>Indication if <typeparamref name="TEnum"/>'s defined values are contiguous.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool IsContiguous<TEnum>() => GetInfo<TEnum>().IsContiguous;
-
-        /// <summary>
         /// Retrieves the underlying type of <typeparamref name="TEnum"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

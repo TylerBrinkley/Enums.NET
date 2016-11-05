@@ -26,10 +26,10 @@ namespace EnumsNET.Tests
         [Test]
         public void UnsafeEnumsBasicTest()
         {
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<int>());
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<Enum>());
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.IsContiguous<string>());
-            Assert.IsTrue(UnsafeEnums.IsContiguous<DateFilterOperator>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<int>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<Enum>());
+            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<string>());
+            Assert.AreEqual(typeof(short), UnsafeEnums.GetUnderlyingType<DateFilterOperator>());
         }
 
         [Test]

@@ -82,8 +82,6 @@ namespace EnumsNET
 #endif
 
         public Type UnderlyingType => typeof(TInt);
-
-        public bool IsContiguous => _cache.IsContiguous;
         #endregion
 
         #region Type Methods
@@ -94,8 +92,6 @@ namespace EnumsNET
         public IEnumerable<string> GetNames(bool excludeDuplicates) => _cache.GetNames(excludeDuplicates);
 
         public IEnumerable<TEnum> GetValues(bool excludeDuplicates) => _cache.GetEnumMembers(excludeDuplicates).Select(member => ToEnum(member.Value));
-
-        public int CompareTo(TEnum value, TEnum other) => ToInt(value).CompareTo(ToInt(other));
         #endregion
 
         #region ToObject
@@ -201,6 +197,8 @@ namespace EnumsNET
         public int GetHashCode(TEnum value) => ToInt(value).GetHashCode();
 
         public bool Equals(TEnum value, TEnum other) => ToInt(value).Equals(ToInt(other));
+
+        public int CompareTo(TEnum value, TEnum other) => ToInt(value).CompareTo(ToInt(other));
         #endregion
 
         #region Defined Values Main Methods

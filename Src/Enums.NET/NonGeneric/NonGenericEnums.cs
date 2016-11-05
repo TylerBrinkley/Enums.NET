@@ -90,15 +90,6 @@ namespace EnumsNET.NonGeneric
 
         #region Type Methods
         /// <summary>
-        /// Indicates if <paramref name="enumType"/>'s defined values are contiguous.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <returns>Indication if <paramref name="enumType"/>'s defined values are contiguous.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool IsContiguous(Type enumType) => GetInfo(enumType).IsContiguous;
-
-        /// <summary>
         /// Retrieves the underlying type of <paramref name="enumType"/>.
         /// </summary>
         /// <param name="enumType">The enum type.</param>

@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Enums.NET.PerfTestConsole")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Stifel Nicolaus")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Enums.NET.PerfTestConsole")]
-[assembly: AssemblyCopyright("Copyright © Stifel Nicolaus 2016")]
+[assembly: AssemblyCopyright("Copyright © Tyler Brinkley 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

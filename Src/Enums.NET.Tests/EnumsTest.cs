@@ -50,15 +50,6 @@ namespace EnumsNET.Tests
 
         #region Type Methods
         [Test]
-        public void IsContiguous()
-        {
-            Assert.IsTrue(IsContiguous<DateFilterOperator>());
-            Assert.IsTrue(IsContiguous<ContiguousUInt64Enum>());
-            Assert.IsFalse(IsContiguous<NonContiguousEnum>());
-            Assert.IsFalse(IsContiguous<NonContiguousUInt64Enum>());
-        }
-
-        [Test]
         public void GetUnderlyingType()
         {
             Assert.AreEqual(typeof(sbyte), GetUnderlyingType<SByteEnum>());

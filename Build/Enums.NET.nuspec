@@ -10,5 +10,35 @@
     <projectUrl>https://github.com/TylerBrinkley/Enums.NET</projectUrl>
     <licenseUrl>https://github.com/TylerBrinkley/Enums.NET/blob/master/LICENSE</licenseUrl>
     <tags>enum</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETFramework4.0" />
+      <group targetFramework=".NETFramework3.5" />
+      <group targetFramework=".NETFramework2.0" />
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="System.Collections" version="4.0.11" />
+        <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
+        <dependency id="System.Linq" version="4.1.0" />
+        <dependency id="System.Reflection" version="4.1.0" />
+        <dependency id="System.Reflection.Extensions" version="4.0.1" />
+        <dependency id="System.Resources.ResourceManager" version="4.0.1" />
+        <dependency id="System.Runtime" version="4.1.0" />
+        <dependency id="System.Runtime.Extensions" version="4.1.0" />
+        <dependency id="System.Runtime.Serialization.Primitives" version="4.1.1" />
+        <dependency id="System.Threading" version="4.0.11" />
+      </group>
+      <group targetFramework=".NETStandard1.0">
+        <dependency id="System.Collections" version="4.0.11" />
+        <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
+        <dependency id="System.Linq" version="4.1.0" />
+        <dependency id="System.Reflection" version="4.1.0" />
+        <dependency id="System.Reflection.Extensions" version="4.0.1" />
+        <dependency id="System.Resources.ResourceManager" version="4.0.1" />
+        <dependency id="System.Runtime" version="4.1.0" />
+        <dependency id="System.Runtime.Extensions" version="4.1.0" />
+        <dependency id="System.Runtime.Serialization.Primitives" version="4.1.1" />
+        <dependency id="System.Threading" version="4.0.11" />
+      </group>
+    </dependencies>
   </metadata>
 </package>

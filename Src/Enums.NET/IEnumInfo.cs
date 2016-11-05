@@ -35,7 +35,6 @@ namespace EnumsNET
         TypeCode TypeCode { get; }
 #endif
         Type UnderlyingType { get; }
-        bool IsContiguous { get; }
         bool IsFlagEnum { get; }
 
         int GetEnumMemberCount(bool excludeDuplicates = false);

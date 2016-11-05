@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Enums.NET.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Stifel Nicolaus")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Enums.NET.Test")]
-[assembly: AssemblyCopyright("Copyright © Stifel Nicolaus 2015")]
+[assembly: AssemblyCopyright("Copyright © Tyler Brinkley 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

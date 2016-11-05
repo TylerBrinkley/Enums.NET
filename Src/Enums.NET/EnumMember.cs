@@ -152,7 +152,6 @@ namespace EnumsNET
         /// <returns>All <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.</returns>
         public IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute => Member.GetAttributes<TAttribute>();
 
-
         /// <summary>
         /// Retrieves the enum member's underlying integral value.
         /// </summary>
