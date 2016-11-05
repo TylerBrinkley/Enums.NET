@@ -213,7 +213,7 @@ There is currently no way to constrain a type or method's generic type parameter
 `EnumsNET.NonGeneric.NonGenericFlagEnums` static class for non-generic flag enum operations.
 
 ## Requirements
-.NET Framework 2.0 or greater, .NET Standard support to come
+.NET Framework 2.0+ or .NET Standard 1.0+
 
 ## Credits
 Inspired by Jon Skeet's [Unconstrained Melody] (https://github.com/jskeet/unconstrained-melody)
