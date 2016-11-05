@@ -193,6 +193,9 @@ Enums.NET solves all of these issues and more.
         }
     }
 
+## Performance Comparison
+![Performance](Doc/performance.png)
+
 ## How Is It Type-Safe
 There is currently no way to constrain a type or method's generic type parameter to an enum in C#. This is a limitation the C# compiler imposes, not a limitation of the CLR itself thus a valid .NET assembly can contain these constraints. How this library works is that the C# compiler can understand when this constraint is applied, it just can't express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety.
 
