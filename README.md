@@ -1,11 +1,11 @@
 # Enums.NET
-Enums.NET is a high-performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as C# extension methods for ease of use.
+Enums.NET is a high-performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as C# extension methods for ease of use. It is available as a [NuGet Package](https://www.nuget.org/packages/Enums.NET/) and is compatible with .NET Framework 2.0+ and .NET Standard 1.0+.
 
-## The Woes of `System.Enum`
-1. Most of its static methods are non-generic which make them a pain to use and cause boxing.
-2. Most of its methods use reflection on each call without any sort of caching leading to operations being much slower than necessary.
-3. Its support for flag enum operations is extremely limited. The only flag enum method on `System.Enum` is the `HasFlag` method which is extremely slow, is not type-safe, and is ambiguous as to whether it determines if the value has all or any of the specified flags.
-4. It has no built-in support for retrieval of `Attribute`s applied to enum members.
+## What's wrong with `System.Enum`
+1. Most of its static methods are non-generic which make them a pain to use and cause poor performance.
+2. Most of its methods use reflection on each call without any sort of caching causing poor performance.
+3. Its support for flag enum operations is extremely limited. The only flag enum method on `System.Enum` is the `HasFlag` method which is very slow, is not type-safe, and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
+4. It has no built-in support for retrieval of `Attribute`s applied to enum members which is a common practice for retrieval of the `DescriptionAttribute` or `EnumMemberAttribute`.
 
 Enums.NET solves all of these issues and more.
 
@@ -197,7 +197,7 @@ Enums.NET solves all of these issues and more.
 ![Performance](Doc/performance.png)
 
 ## How Is It Type-Safe
-There is currently no way to constrain a type or method's generic type parameter to an enum in C#. This is a limitation the C# compiler imposes, not a limitation of the CLR itself thus a valid .NET assembly can contain these constraints. How this library works is that the C# compiler can understand when this constraint is applied, it just can't express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety.
+There is currently no way to constrain a type or method's generic type parameter to an enum in C#. The C# compiler can understand when this constraint is applied, it just can't currently express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety.
 
 ## Interface
 `EnumsNET.Enums` static class for type-safe standard enum operations, with many exposed as C# extension methods.
@@ -208,16 +208,13 @@ There is currently no way to constrain a type or method's generic type parameter
 
 `EnumsNET.Unsafe.UnsafeFlagEnums` static class for flag enum operations without the enum constraint for use in generic programming.
 
-`EnumsNET.NonGeneric.NonGenericEnums` static class for non-generic standard enum operations, mostly a superset of .NET's `System.Enum` class.
+`EnumsNET.NonGeneric.NonGenericEnums` static class for non-generic standard enum operations.
 
 `EnumsNET.NonGeneric.NonGenericFlagEnums` static class for non-generic flag enum operations.
 
-## Requirements
-.NET Framework 2.0+ or .NET Standard 1.0+
-
 ## Credits
-Inspired by Jon Skeet's [Unconstrained Melody] (https://github.com/jskeet/unconstrained-melody)
+Inspired by Jon Skeet's [Unconstrained Melody] (https://github.com/jskeet/unconstrained-melody).
 
-Uses Simon Cropp's [Fody] (https://github.com/Fody/Fody) & [Fody.ExtraConstraints] (https://github.com/Fody/ExtraConstraints) which is built on Jb Evain's [Mono.Cecil] (https://github.com/jbevain/cecil)
+Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) & [Fody.ExtraConstraints](https://github.com/Fody/ExtraConstraints) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil).
 
-Uses modified build scripts and repository structure from James Newton-King's [Json.NET] (https://github.com/JamesNK/Newtonsoft.Json)
+Uses modified build scripts and repository structure from James Newton-King's [Json.NET](https://github.com/JamesNK/Newtonsoft.Json).
