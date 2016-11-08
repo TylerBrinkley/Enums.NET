@@ -118,6 +118,8 @@ Enums.NET solves all of these issues and more.
         {
             Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
             Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
+            // Gets the description if applied, otherwise the name
+            Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
         }
 
         [Test]
