@@ -52,7 +52,7 @@ namespace EnumsNET
 
         private static int _highestCustomEnumFormatIndex = -1;
 
-        private static List<Func<EnumMember, string>> _customEnumMemberFormatters = new List<Func<EnumMember, string>>();
+        private static Func<EnumMember, string>[] _customEnumMemberFormatters = new Func<EnumMember, string>[0];
 
         /// <summary>
         /// Registers a custom <see cref="EnumFormat"/> with the specified <see cref="EnumMember"/> formatter.
@@ -65,11 +65,13 @@ namespace EnumsNET
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
 
             var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
-            var customEnumMemberFormatters = _customEnumMemberFormatters;
-            while (customEnumMemberFormatters.Count != index)
+            while (_customEnumMemberFormatters.Length != index)
             {
             }
-            customEnumMemberFormatters.Add(enumMemberFormatter);
+            var customEnumMemberFormatters = new Func<EnumMember, string>[index + 1];
+            _customEnumMemberFormatters.CopyTo(customEnumMemberFormatters, 0);
+            customEnumMemberFormatters[index] = enumMemberFormatter;
+            _customEnumMemberFormatters = customEnumMemberFormatters;
             return (EnumFormat)(index + _startingCustomEnumFormatValue);
         }
 

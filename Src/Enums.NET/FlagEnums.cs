@@ -510,7 +510,7 @@ namespace EnumsNET
         public static bool IsValidFlagCombination(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return ((IEnumMember)member).IsValidFlagCombination();
+            return member.IsValidFlagCombination();
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace EnumsNET
         public static bool HasAnyFlags(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return ((IEnumMember)member).HasAnyFlags();
+            return member.HasAnyFlags();
         }
 
         /// <summary>
@@ -560,7 +560,7 @@ namespace EnumsNET
         public static bool HasAllFlags(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return ((IEnumMember)member).HasAllFlags();
+            return member.HasAllFlags();
         }
         #endregion
     }

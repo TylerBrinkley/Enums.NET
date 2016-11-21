@@ -34,7 +34,10 @@ namespace EnumsNET
     /// <summary>
     /// An enum member which composes its name, value, and attributes.
     /// </summary>
-    public abstract class EnumMember : IEnumMember, IComparable<EnumMember>, IEquatable<EnumMember>, IComparable
+    public abstract class EnumMember : IComparable<EnumMember>, IEquatable<EnumMember>, IComparable, IFormattable
+#if ICONVERTIBLE
+        , IConvertible
+#endif
     {
         internal readonly IEnumMember Member;
 
@@ -244,6 +247,12 @@ namespace EnumsNET
 
         internal abstract IEnumerable<EnumMember> GetFlagMembers();
 
+        internal bool IsValidFlagCombination() => Member.IsValidFlagCombination();
+
+        internal bool HasAnyFlags() => Member.HasAnyFlags();
+
+        internal bool HasAllFlags() => Member.HasAllFlags();
+
         #region Explicit Interface Implementation
         string IFormattable.ToString(string format, IFormatProvider formatProvider) => Member.ToString(format, formatProvider);
 
@@ -288,12 +297,6 @@ namespace EnumsNET
 
         // implemented in derived class
         int IComparable<EnumMember>.CompareTo(EnumMember other) => 0;
-
-        bool IEnumMember.IsValidFlagCombination() => Member.IsValidFlagCombination();
-
-        bool IEnumMember.HasAnyFlags() => Member.HasAnyFlags();
-
-        bool IEnumMember.HasAllFlags() => Member.HasAllFlags();
         #endregion
     }
 
