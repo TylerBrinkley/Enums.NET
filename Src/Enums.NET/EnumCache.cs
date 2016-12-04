@@ -49,8 +49,6 @@ namespace EnumsNET
         #region Static
         internal static readonly TIntProvider Provider = new TIntProvider();
 
-        private static bool IsPowerOfTwo(TInt x) => Provider.And(x, Provider.Subtract(x, Provider.One)).Equals(Provider.Zero);
-
         private static bool IsNumeric(string value)
         {
             char firstChar;
@@ -74,12 +72,9 @@ namespace EnumsNET
         private readonly TInt _maxDefined;
 
         private readonly TInt _minDefined;
-
-        // The main collection of values, names, and attributes with ~O(1) retrieval on name or value
-        // If constant contains a DescriptionAttribute it will be the first in the attribute array
+        
         private readonly Dictionary<TInt, EnumMemberInternal<TInt, TIntProvider>> _valueMap;
 
-        // Duplicate values are stored here with a key of the constant's name, is null if no duplicates
         private readonly List<EnumMemberInternal<TInt, TIntProvider>> _duplicateValues;
         
         private EnumMemberParser[] _enumMemberParsers;
@@ -160,24 +155,52 @@ namespace EnumsNET
                 else
                 {
                     _valueMap.Add(value, member);
-                    if (IsPowerOfTwo(value))
+                    // Is Power of Two
+                    if (Provider.And(value, Provider.Subtract(value, Provider.One)).Equals(Provider.Zero))
                     {
                         AllFlags = Provider.Or(AllFlags, value);
                     }
                 }
             }
-
-            // Makes sure is in increasing value order, due to no removals
-            var values = _valueMap.ToArray();
-            Array.Sort(values, (first, second) => first.Key.CompareTo(second.Key));
-            _valueMap = new Dictionary<TInt, EnumMemberInternal<TInt, TIntProvider>>(_valueMap.Count);
-            foreach (var pair in values)
+            
+            var isInOrder = true;
+            TInt previous = default(TInt);
+            var isFirst = true;
+            foreach (var pair in _valueMap)
             {
-                _valueMap.Add(pair.Key, pair.Value);
+                var key = pair.Key;
+                if (isFirst)
+                {
+                    _minDefined = key;
+                    isFirst = false;
+                }
+                else if (previous.CompareTo(key) > 0)
+                {
+                    isInOrder = false;
+                    break;
+                }
+                previous = key;
             }
+            if (isInOrder)
+            {
+                _maxDefined = previous;
+            }
+            else
+            {
+                // Makes sure is in increasing value order, due to no removals
+                var values = _valueMap.ToArray();
+                Array.Sort(values, (first, second) => first.Key.CompareTo(second.Key));
+                _valueMap = new Dictionary<TInt, EnumMemberInternal<TInt, TIntProvider>>(_valueMap.Count);
 
-            _maxDefined = values[values.Length - 1].Key;
-            _minDefined = values[0].Key;
+                foreach (var pair in values)
+                {
+                    _valueMap.Add(pair.Key, pair.Value);
+                }
+
+                _maxDefined = values[values.Length - 1].Key;
+                _minDefined = values[0].Key;
+            }
+            
             _isContiguous = Provider.Subtract(_maxDefined, Provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
 
             if (duplicateValues.Count > 0)
@@ -534,8 +557,6 @@ namespace EnumsNET
             TryParseInternal(value, ignoreCase, out valueAsTInt, out member, formats, false);
             return member;
         }
-
-        public string GetName(TInt value) => GetEnumMember(value)?.Name;
         #endregion
 
         #region Parsing

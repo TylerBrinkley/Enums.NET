@@ -38,7 +38,8 @@ namespace EnumsNET
     // Also acts as a bridge in the reverse from the underlying type to the enum type
     // through the use of the implemented interface IEnumInfoInternal<TInt, TIntProvider>
     // Putting the logic in EnumCache<TInt, TIntProvider> reduces memory usage
-    // because it doesn't have the enum type as a generic type parameter.
+    // because having the enum type as a generic type parameter causes code explosion
+    // due to how .NET generics are handled with enums.
     internal sealed class EnumInfo<[EnumConstraint] TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
         where TEnum : struct
         where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
@@ -202,7 +203,7 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public string GetName(TEnum value) => _cache.GetName(ToInt(value));
+        public string GetName(TEnum value) => _cache.GetEnumMember(ToInt(value))?.Name;
 
         public EnumMember<TEnum> GetEnumMember(TEnum value) => (EnumMember<TEnum>)_cache.GetEnumMember(ToInt(value))?.EnumMember;
 

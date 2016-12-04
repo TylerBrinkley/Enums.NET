@@ -50,8 +50,6 @@ namespace EnumsNET
 #endif
             + 1;
 
-        private static int _highestCustomEnumFormatIndex = -1;
-
         private static Func<EnumMember, string>[] _customEnumMemberFormatters = new Func<EnumMember, string>[0];
 
         /// <summary>
@@ -63,19 +61,20 @@ namespace EnumsNET
         public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> enumMemberFormatter)
         {
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
-
-            var index = Interlocked.Increment(ref _highestCustomEnumFormatIndex);
-            while (_customEnumMemberFormatters.Length != index)
+            
+            var customEnumMemberFormatters = _customEnumMemberFormatters;
+            Func<EnumMember, string>[] oldCustomEnumMemberFormatters;
+            do
             {
-            }
-            var customEnumMemberFormatters = new Func<EnumMember, string>[index + 1];
-            _customEnumMemberFormatters.CopyTo(customEnumMemberFormatters, 0);
-            customEnumMemberFormatters[index] = enumMemberFormatter;
-            _customEnumMemberFormatters = customEnumMemberFormatters;
-            return (EnumFormat)(index + _startingCustomEnumFormatValue);
+                oldCustomEnumMemberFormatters = customEnumMemberFormatters;
+                customEnumMemberFormatters = new Func<EnumMember, string>[oldCustomEnumMemberFormatters.Length + 1];
+                oldCustomEnumMemberFormatters.CopyTo(customEnumMemberFormatters, 0);
+                customEnumMemberFormatters[oldCustomEnumMemberFormatters.Length] = enumMemberFormatter;
+            } while ((customEnumMemberFormatters = Interlocked.CompareExchange(ref _customEnumMemberFormatters, customEnumMemberFormatters, oldCustomEnumMemberFormatters)) != oldCustomEnumMemberFormatters);
+            return (EnumFormat)(oldCustomEnumMemberFormatters.Length + _startingCustomEnumFormatValue);
         }
 
-        internal static bool EnumFormatIsValid(EnumFormat format) => format >= EnumFormat.DecimalValue && format <= (EnumFormat)(_highestCustomEnumFormatIndex + _startingCustomEnumFormatValue);
+        internal static bool EnumFormatIsValid(EnumFormat format) => format >= EnumFormat.DecimalValue && format <= (EnumFormat)(_customEnumMemberFormatters.Length - 1 + _startingCustomEnumFormatValue);
 
         internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format) => _customEnumMemberFormatters[(int)format - _startingCustomEnumFormatValue](member);
         #endregion
