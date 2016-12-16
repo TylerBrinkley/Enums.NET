@@ -214,15 +214,15 @@ namespace EnumsNET
 
         #region Standard Enum Operations
         #region Type Methods
-        public int GetEnumMemberCount(bool excludeDuplicates) => _valueMap.Count + (excludeDuplicates ? 0 : _duplicateValues?.Count ?? 0);
+        public int GetMemberCount(bool excludeDuplicates) => _valueMap.Count + (excludeDuplicates ? 0 : _duplicateValues?.Count ?? 0);
 
-        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetEnumMembers(bool excludeDuplicates) => excludeDuplicates || _duplicateValues == null
+        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembers(bool excludeDuplicates) => excludeDuplicates || _duplicateValues == null
             ? _valueMap.Values
-            : GetEnumMembersInternal();
+            : GetMembersInternal();
 
-        public IEnumerable<string> GetNames(bool excludeDuplicates) => GetEnumMembers(excludeDuplicates).Select(member => member.Name);
+        public IEnumerable<string> GetNames(bool excludeDuplicates) => GetMembers(excludeDuplicates).Select(member => member.Name);
 
-        private IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetEnumMembersInternal()
+        private IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembersInternal()
         {
             using (var primaryEnumerator = _valueMap.GetEnumerator())
             {
@@ -487,7 +487,7 @@ namespace EnumsNET
             }
             if (!isInitialized)
             {
-                member = GetEnumMember(value);
+                member = GetMember(value);
                 isInitialized = true;
             }
             switch (format)
@@ -534,14 +534,14 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public EnumMemberInternal<TInt, TIntProvider> GetEnumMember(TInt value)
+        public EnumMemberInternal<TInt, TIntProvider> GetMember(TInt value)
         {
             EnumMemberInternal<TInt, TIntProvider> member;
             _valueMap.TryGetValue(value, out member);
             return member;
         }
 
-        public EnumMemberInternal<TInt, TIntProvider> GetEnumMember(string value, bool ignoreCase, EnumFormat[] formats)
+        public EnumMemberInternal<TInt, TIntProvider> GetMember(string value, bool ignoreCase, EnumFormat[] formats)
         {
             Preconditions.NotNull(value, nameof(value));
 
@@ -620,7 +620,7 @@ namespace EnumsNET
                 {
                     if (Provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
                     {
-                        member = getValueOnly ? null : GetEnumMember(result);
+                        member = getValueOnly ? null : GetMember(result);
                         return true;
                     }
                 }
@@ -659,7 +659,7 @@ namespace EnumsNET
 
             if (member == null)
             {
-                member = GetEnumMember(value);
+                member = GetMember(value);
             }
 
             if (member != null || value.Equals(Provider.Zero) || !IsValidFlagCombination(value))
@@ -693,7 +693,7 @@ namespace EnumsNET
             }
         }
 
-        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetEnumMember(flag));
+        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetMember(flag));
 
 #if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -892,8 +892,8 @@ namespace EnumsNET
 
             public EnumMemberParser(EnumFormat format, EnumCache<TInt, TIntProvider> enumCache)
             {
-                _formatValueMap = new Dictionary<string, EnumMemberInternal<TInt, TIntProvider>>(enumCache.GetEnumMemberCount(false), StringComparer.Ordinal);
-                foreach (var member in enumCache.GetEnumMembers(false))
+                _formatValueMap = new Dictionary<string, EnumMemberInternal<TInt, TIntProvider>>(enumCache.GetMemberCount(false), StringComparer.Ordinal);
+                foreach (var member in enumCache.GetMembers(false))
                 {
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)

@@ -14,14 +14,14 @@ class EnumsNETDemo
     public void Enumerate()
     {
         // Retrieves enum members in increasing value order
-        foreach (EnumMember<NumericOperator> member in Enums.GetEnumMembers<NumericOperator>())
+        foreach (EnumMember<NumericOperator> member in Enums.GetMembers<NumericOperator>())
         {
             NumericOperator value = member.Value;
             string name = member.Name;
             // Do stuff
         }
-        Assert.AreEqual(8, Enums.GetEnumMembers<NumericOperator>().Count());
-        Assert.AreEqual(6, Enums.GetEnumMembers<NumericOperator>(excludeDuplicates: true).Count());
+        Assert.AreEqual(8, Enums.GetMembers<NumericOperator>().Count());
+        Assert.AreEqual(6, Enums.GetMembers<NumericOperator>(excludeDuplicates: true).Count());
     }
 
     [Test]
@@ -84,10 +84,10 @@ class EnumsNETDemo
     [Test]
     public void Attributes()
     {
-        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetEnumMember().HasAttribute<PrimaryEnumMemberAttribute>());
-        Assert.IsFalse(Enums.GetEnumMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
-        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
-        Assert.IsNull(NumericOperator.LessThan.GetEnumMember().GetAttribute<DescriptionAttribute>());
+        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetMember().HasAttribute<PrimaryEnumMemberAttribute>());
+        Assert.IsFalse(Enums.GetMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
+        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetMember().GetAttribute<DescriptionAttribute>().Description);
+        Assert.IsNull(NumericOperator.LessThan.GetMember().GetAttribute<DescriptionAttribute>());
     }
 
     [Test]

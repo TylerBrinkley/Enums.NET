@@ -103,8 +103,8 @@ namespace EnumsNET
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
-        public static int GetEnumMemberCount<[EnumConstraint] TEnum>()
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMemberCount();
+        public static int GetMemberCount<[EnumConstraint] TEnum>()
+            where TEnum : struct => Enums<TEnum>.Info.GetMemberCount();
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
@@ -113,16 +113,36 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
+        public static int GetMemberCount<[EnumConstraint] TEnum>(bool excludeDuplicates)
+            where TEnum : struct => Enums<TEnum>.Info.GetMemberCount(excludeDuplicates);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s member count.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
+        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        public static int GetEnumMemberCount<[EnumConstraint] TEnum>()
+            where TEnum : struct => GetMemberCount<TEnum>();
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s member count.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
+        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
         public static int GetEnumMemberCount<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMemberCount(excludeDuplicates);
+            where TEnum : struct => GetMemberCount<TEnum>(excludeDuplicates);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<[EnumConstraint] TEnum>()
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMembers();
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<[EnumConstraint] TEnum>()
+            where TEnum : struct => Enums<TEnum>.Info.GetMembers();
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -131,8 +151,28 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<[EnumConstraint] TEnum>(bool excludeDuplicates)
+            where TEnum : struct => Enums<TEnum>.Info.GetMembers(excludeDuplicates);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
+        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<[EnumConstraint] TEnum>()
+            where TEnum : struct => GetMembers<TEnum>();
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
+        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMembers(excludeDuplicates);
+            where TEnum : struct => GetMembers<TEnum>(excludeDuplicates);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -894,8 +934,8 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(this TEnum value)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(value);
+        public static EnumMember<TEnum> GetMember<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct => Enums<TEnum>.Info.GetMember(value);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -905,8 +945,8 @@ namespace EnumsNET
         /// <param name="name">The enum member name.</param>
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
-        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(name);
+        public static EnumMember<TEnum> GetMember<[EnumConstraint] TEnum>(string name)
+            where TEnum : struct => Enums<TEnum>.Info.GetMember(name);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -917,8 +957,8 @@ namespace EnumsNET
         /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
-        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name, bool ignoreCase)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(name, ignoreCase);
+        public static EnumMember<TEnum> GetMember<[EnumConstraint] TEnum>(string name, bool ignoreCase)
+            where TEnum : struct => Enums<TEnum>.Info.GetMember(name, ignoreCase);
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -929,8 +969,8 @@ namespace EnumsNET
         /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string value, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(value, false, formats);
+        public static EnumMember<TEnum> GetMember<[EnumConstraint] TEnum>(string value, params EnumFormat[] formats)
+            where TEnum : struct => Enums<TEnum>.Info.GetMember(value, false, formats);
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -943,8 +983,71 @@ namespace EnumsNET
         /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        public static EnumMember<TEnum> GetMember<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] formats)
+            where TEnum : struct => Enums<TEnum>.Info.GetMember(value, ignoreCase, formats);
+
+        /// <summary>
+        /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct => GetMember(value);
+
+        /// <summary>
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// Is case-sensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="name">The enum member name.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name)
+            where TEnum : struct => GetMember<TEnum>(name);
+
+        /// <summary>
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="name">The enum member name.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name, bool ignoreCase)
+            where TEnum : struct => GetMember<TEnum>(name, ignoreCase);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string value, params EnumFormat[] formats)
+            where TEnum : struct => GetMember<TEnum>(value, formats);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.GetEnumMember(value, ignoreCase, formats);
+            where TEnum : struct => GetMember<TEnum>(value, ignoreCase, formats);
         #endregion
 
         #region Parsing

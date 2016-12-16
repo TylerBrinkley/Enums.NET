@@ -68,7 +68,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static int GetEnumMemberCount<TEnum>() => GetInfo<TEnum>().GetEnumMemberCount();
+        public static int GetMemberCount<TEnum>() => GetInfo<TEnum>().GetMemberCount();
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
@@ -78,7 +78,27 @@ namespace EnumsNET.Unsafe
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetEnumMemberCount(excludeDuplicates);
+        public static int GetMemberCount<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetMemberCount(excludeDuplicates);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s member count.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        public static int GetEnumMemberCount<TEnum>() => GetMemberCount<TEnum>();
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s member count.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetMemberCount<TEnum>(excludeDuplicates);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -86,7 +106,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>() => GetInfo<TEnum>().GetEnumMembers();
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>() => GetInfo<TEnum>().GetMembers();
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -96,7 +116,27 @@ namespace EnumsNET.Unsafe
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetEnumMembers(excludeDuplicates);
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetMembers(excludeDuplicates);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>() => GetMembers<TEnum>();
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetMembers<TEnum>(excludeDuplicates);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -875,7 +915,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static EnumMember<TEnum> GetEnumMember<TEnum>(TEnum value) => GetInfo<TEnum>().GetEnumMember(value);
+        public static EnumMember<TEnum> GetMember<TEnum>(TEnum value) => GetInfo<TEnum>().GetMember(value);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -886,7 +926,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static EnumMember<TEnum> GetEnumMember<TEnum>(string name) => GetInfo<TEnum>().GetEnumMember(name);
+        public static EnumMember<TEnum> GetMember<TEnum>(string name) => GetInfo<TEnum>().GetMember(name);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -898,7 +938,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static EnumMember<TEnum> GetEnumMember<TEnum>(string name, bool ignoreCase) => GetInfo<TEnum>().GetEnumMember(name, ignoreCase);
+        public static EnumMember<TEnum> GetMember<TEnum>(string name, bool ignoreCase) => GetInfo<TEnum>().GetMember(name, ignoreCase);
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -911,7 +951,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, params EnumFormat[] formats) => GetInfo<TEnum>().GetEnumMember(value, false, formats);
+        public static EnumMember<TEnum> GetMember<TEnum>(string value, params EnumFormat[] formats) => GetInfo<TEnum>().GetMember(value, false, formats);
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -926,7 +966,72 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo<TEnum>().GetEnumMember(value, ignoreCase, formats);
+        public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo<TEnum>().GetMember(value, ignoreCase, formats);
+
+        /// <summary>
+        /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(TEnum value) => GetMember(value);
+
+        /// <summary>
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// Is case-sensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="name">The enum member name.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(string name) => GetMember<TEnum>(name);
+
+        /// <summary>
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="name">The enum member name.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(string name, bool ignoreCase) => GetMember<TEnum>(name, ignoreCase);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, params EnumFormat[] formats) => GetMember<TEnum>(value, formats);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) => GetMember<TEnum>(value, ignoreCase, formats);
         #endregion
 
         #region Parsing

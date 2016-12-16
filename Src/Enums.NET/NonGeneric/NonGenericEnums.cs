@@ -116,7 +116,7 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s member count.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static int GetEnumMemberCount(Type enumType) => GetInfo(enumType).GetEnumMemberCount();
+        public static int GetMemberCount(Type enumType) => GetInfo(enumType).GetMemberCount();
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s member count.
@@ -127,7 +127,29 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s member count.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static int GetEnumMemberCount(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetEnumMemberCount(excludeDuplicates);
+        public static int GetMemberCount(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetMemberCount(excludeDuplicates);
+
+        /// <summary>
+        /// Retrieves <paramref name="enumType"/>'s member count.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <returns><paramref name="enumType"/>'s member count.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        public static int GetEnumMemberCount(Type enumType) => GetMemberCount(enumType);
+
+        /// <summary>
+        /// Retrieves <paramref name="enumType"/>'s member count.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><paramref name="enumType"/>'s member count.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        public static int GetEnumMemberCount(Type enumType, bool excludeDuplicates) => GetMemberCount(enumType, excludeDuplicates);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
@@ -136,7 +158,7 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType) => GetInfo(enumType).GetEnumMembers();
+        public static IEnumerable<EnumMember> GetMembers(Type enumType) => GetInfo(enumType).GetMembers();
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
@@ -147,7 +169,29 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetEnumMembers(excludeDuplicates);
+        public static IEnumerable<EnumMember> GetMembers(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetMembers(excludeDuplicates);
+
+        /// <summary>
+        /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <returns><paramref name="enumType"/>'s members in increasing value order.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType) => GetMembers(enumType);
+
+        /// <summary>
+        /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
+        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <returns><paramref name="enumType"/>'s members in increasing value order.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool excludeDuplicates) => GetMembers(enumType, excludeDuplicates);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members' names in increasing value order.
@@ -1217,7 +1261,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
-        public static EnumMember GetEnumMember(Type enumType, object value)
+        public static EnumMember GetMember(Type enumType, object value)
         {
             var info = GetNonGenericEnumInfo(enumType);
 
@@ -1226,7 +1270,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.GetEnumMember(value);
+            return info.EnumInfo.GetMember(value);
         }
 
         /// <summary>
@@ -1238,7 +1282,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static EnumMember GetEnumMember(Type enumType, string name) => GetInfo(enumType).GetEnumMember(name);
+        public static EnumMember GetMember(Type enumType, string name) => GetInfo(enumType).GetMember(name);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -1250,7 +1294,7 @@ namespace EnumsNET.NonGeneric
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static EnumMember GetEnumMember(Type enumType, string name, bool ignoreCase) => GetInfo(enumType).GetEnumMember(name, ignoreCase);
+        public static EnumMember GetMember(Type enumType, string name, bool ignoreCase) => GetInfo(enumType).GetMember(name, ignoreCase);
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1263,7 +1307,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember GetEnumMember(Type enumType, string value, params EnumFormat[] formats) => GetInfo(enumType).GetEnumMember(value, false, formats);
+        public static EnumMember GetMember(Type enumType, string value, params EnumFormat[] formats) => GetInfo(enumType).GetMember(value, false, formats);
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1278,7 +1322,75 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember GetEnumMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo(enumType).GetEnumMember(value, ignoreCase, formats);
+        public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo(enumType).GetMember(value, ignoreCase, formats);
+
+        /// <summary>
+        /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember GetEnumMember(Type enumType, object value) => GetMember(enumType, value);
+
+        /// <summary>
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// Is case-sensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="name">The enum member name.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember GetEnumMember(Type enumType, string name) => GetMember(enumType, name);
+
+        /// <summary>
+        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="name">The enum member name.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember GetEnumMember(Type enumType, string name, bool ignoreCase) => GetMember(enumType, name, ignoreCase);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember GetEnumMember(Type enumType, string value, params EnumFormat[] formats) => GetMember(enumType, value, formats);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="formats">The parsing enum formats.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        public static EnumMember GetEnumMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => GetMember(enumType, value, ignoreCase, formats);
         #endregion
 
         #region Parsing

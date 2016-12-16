@@ -37,7 +37,7 @@ namespace EnumsNET
         Type UnderlyingType { get; }
         bool IsFlagEnum { get; }
 
-        int GetEnumMemberCount(bool excludeDuplicates = false);
+        int GetMemberCount(bool excludeDuplicates = false);
         IEnumerable<string> GetNames(bool excludeDuplicates = false);
     }
 
@@ -58,9 +58,9 @@ namespace EnumsNET
         string Format(object value, string format);
         string Format(object value, EnumFormat[] formats);
         string FormatFlags(object value, string delimiter, EnumFormat[] formats);
-        EnumMember GetEnumMember(object value);
-        EnumMember GetEnumMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
-        IEnumerable<EnumMember> GetEnumMembers(bool excludeDuplicates = false);
+        EnumMember GetMember(object value);
+        EnumMember GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
+        IEnumerable<EnumMember> GetMembers(bool excludeDuplicates = false);
         IEnumerable<object> GetFlags(object value);
         IEnumerable<EnumMember> GetFlagMembers(object value);
         string GetName(object value);
@@ -115,9 +115,9 @@ namespace EnumsNET
         string Format(TEnum value, string format);
         string Format(TEnum value, EnumFormat[] formats);
         string FormatFlags(TEnum value, string delimiter = null, EnumFormat[] formats = null);
-        EnumMember<TEnum> GetEnumMember(TEnum value);
-        EnumMember<TEnum> GetEnumMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
-        IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool excludeDuplicates = false);
+        EnumMember<TEnum> GetMember(TEnum value);
+        EnumMember<TEnum> GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
+        IEnumerable<EnumMember<TEnum>> GetMembers(bool excludeDuplicates = false);
         IEnumerable<TEnum> GetFlags(TEnum value);
         IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value);
         int GetHashCode(TEnum value);

@@ -78,39 +78,39 @@ namespace EnumsNET.Tests
 #endif
 
         [Test]
-        public void GetEnumMemberCount()
+        public void GetMemberCount()
         {
-            Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>());
-            Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>());
-            Assert.AreEqual(6, GetEnumMemberCount<ColorFlagEnum>());
-            Assert.AreEqual(10, GetEnumMemberCount<NumericOperator>());
+            Assert.AreEqual(0, GetMemberCount<ByteEnum>());
+            Assert.AreEqual(38, GetMemberCount<DateFilterOperator>());
+            Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>());
+            Assert.AreEqual(10, GetMemberCount<NumericOperator>());
 
-            Assert.AreEqual(0, GetEnumMemberCount<ByteEnum>(true));
-            Assert.AreEqual(38, GetEnumMemberCount<DateFilterOperator>(true));
-            Assert.AreEqual(6, GetEnumMemberCount<ColorFlagEnum>(true));
-            Assert.AreEqual(8, GetEnumMemberCount<NumericOperator>(true)); // Has 2 duplicates
+            Assert.AreEqual(0, GetMemberCount<ByteEnum>(true));
+            Assert.AreEqual(38, GetMemberCount<DateFilterOperator>(true));
+            Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>(true));
+            Assert.AreEqual(8, GetMemberCount<NumericOperator>(true)); // Has 2 duplicates
         }
 
         [Test]
-        public void GetEnumMembers()
+        public void GetMembers()
         {
-            Assert.AreEqual(0, GetEnumMembers<ByteEnum>().Count());
-            Assert.AreEqual(38, GetEnumMembers<DateFilterOperator>().Count());
-            Assert.AreEqual(6, GetEnumMembers<ColorFlagEnum>().Count());
-            Assert.AreEqual(10, GetEnumMembers<NumericOperator>().Count());
+            Assert.AreEqual(0, GetMembers<ByteEnum>().Count());
+            Assert.AreEqual(38, GetMembers<DateFilterOperator>().Count());
+            Assert.AreEqual(6, GetMembers<ColorFlagEnum>().Count());
+            Assert.AreEqual(10, GetMembers<NumericOperator>().Count());
 
-            Assert.AreEqual(0, GetEnumMembers<ByteEnum>(true).Count());
-            Assert.AreEqual(38, GetEnumMembers<DateFilterOperator>(true).Count());
-            Assert.AreEqual(6, GetEnumMembers<ColorFlagEnum>(true).Count());
-            Assert.AreEqual(8, GetEnumMembers<NumericOperator>(true).Count()); // Has 2 duplicates
+            Assert.AreEqual(0, GetMembers<ByteEnum>(true).Count());
+            Assert.AreEqual(38, GetMembers<DateFilterOperator>(true).Count());
+            Assert.AreEqual(6, GetMembers<ColorFlagEnum>(true).Count());
+            Assert.AreEqual(8, GetMembers<NumericOperator>(true).Count()); // Has 2 duplicates
 
-            var enumMembers = GetEnumMembers<ColorFlagEnum>().ToList();
-            AssertEnumMemberIsCorrect(enumMembers[0], ColorFlagEnum.Black, "Black");
-            AssertEnumMemberIsCorrect(enumMembers[1], ColorFlagEnum.Red, "Red");
-            AssertEnumMemberIsCorrect(enumMembers[2], ColorFlagEnum.Green, "Green");
-            AssertEnumMemberIsCorrect(enumMembers[3], ColorFlagEnum.Blue, "Blue");
-            AssertEnumMemberIsCorrect(enumMembers[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
-            AssertEnumMemberIsCorrect(enumMembers[5], ColorFlagEnum.All, "All");
+            var members = GetMembers<ColorFlagEnum>().ToList();
+            AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Black, "Black");
+            AssertEnumMemberIsCorrect(members[1], ColorFlagEnum.Red, "Red");
+            AssertEnumMemberIsCorrect(members[2], ColorFlagEnum.Green, "Green");
+            AssertEnumMemberIsCorrect(members[3], ColorFlagEnum.Blue, "Blue");
+            AssertEnumMemberIsCorrect(members[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
+            AssertEnumMemberIsCorrect(members[5], ColorFlagEnum.All, "All");
         }
 
         public void AssertEnumMemberIsCorrect<TEnum>(EnumMember<TEnum> member, TEnum value, string name, params Attribute[] attributes)
@@ -820,38 +820,38 @@ namespace EnumsNET.Tests
         public void HasAttribute()
         {
 #if ENUM_MEMBER_ATTRIBUTE
-            Assert.IsTrue(EnumMemberAttributeEnum.A.GetEnumMember().HasAttribute<EnumMemberAttribute>());
+            Assert.IsTrue(EnumMemberAttributeEnum.A.GetMember().HasAttribute<EnumMemberAttribute>());
 #endif
-            Assert.IsFalse(ColorFlagEnum.Blue.GetEnumMember().HasAttribute<DescriptionAttribute>());
-            Assert.IsTrue(ColorFlagEnum.UltraViolet.GetEnumMember().HasAttribute<DescriptionAttribute>());
+            Assert.IsFalse(ColorFlagEnum.Blue.GetMember().HasAttribute<DescriptionAttribute>());
+            Assert.IsTrue(ColorFlagEnum.UltraViolet.GetMember().HasAttribute<DescriptionAttribute>());
         }
 
         [Test]
         public void GetAttribute()
         {
 #if ENUM_MEMBER_ATTRIBUTE
-            Assert.AreEqual("aye", EnumMemberAttributeEnum.A.GetEnumMember().GetAttribute<EnumMemberAttribute>().Value);
+            Assert.AreEqual("aye", EnumMemberAttributeEnum.A.GetMember().GetAttribute<EnumMemberAttribute>().Value);
 #endif
-            Assert.IsNull(ColorFlagEnum.Blue.GetEnumMember().GetAttribute<DescriptionAttribute>());
-            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetEnumMember().GetAttribute<DescriptionAttribute>().Description);
+            Assert.IsNull(ColorFlagEnum.Blue.GetMember().GetAttribute<DescriptionAttribute>());
+            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetMember().GetAttribute<DescriptionAttribute>().Description);
         }
 
         [Test]
         public void GetAttributes()
         {
-            CollectionAssert.AreEquivalent(new OptionAttribute[0], MultipleAttributeEnum.None.GetEnumMember().GetAttributes<OptionAttribute>());
-            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Mono") }, MultipleAttributeEnum.Single.GetEnumMember().GetAttributes<OptionAttribute>());
-            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetEnumMember().GetAttributes<OptionAttribute>());
+            CollectionAssert.AreEquivalent(new OptionAttribute[0], MultipleAttributeEnum.None.GetMember().GetAttributes<OptionAttribute>());
+            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Mono") }, MultipleAttributeEnum.Single.GetMember().GetAttributes<OptionAttribute>());
+            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().GetAttributes<OptionAttribute>());
         }
 
         [Test]
         public void GetAllAttributes()
         {
-            CollectionAssert.AreEquivalent(new Attribute[0], MultipleAttributeEnum.None.GetEnumMember().Attributes);
-            CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, MultipleAttributeEnum.Single.GetEnumMember().Attributes);
-            CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetEnumMember().Attributes);
+            CollectionAssert.AreEquivalent(new Attribute[0], MultipleAttributeEnum.None.GetMember().Attributes);
+            CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, MultipleAttributeEnum.Single.GetMember().Attributes);
+            CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().Attributes);
         }
-#endregion
+        #endregion
 
         // TODO
         #region Parsing

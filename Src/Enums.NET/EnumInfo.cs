@@ -86,13 +86,13 @@ namespace EnumsNET
         #endregion
 
         #region Type Methods
-        public int GetEnumMemberCount(bool excludeDuplicates) => _cache.GetEnumMemberCount(excludeDuplicates);
+        public int GetMemberCount(bool excludeDuplicates) => _cache.GetMemberCount(excludeDuplicates);
 
-        public IEnumerable<EnumMember<TEnum>> GetEnumMembers(bool excludeDuplicates) => _cache.GetEnumMembers(excludeDuplicates).Select(member => (EnumMember<TEnum>)member.EnumMember);
+        public IEnumerable<EnumMember<TEnum>> GetMembers(bool excludeDuplicates) => _cache.GetMembers(excludeDuplicates).Select(member => (EnumMember<TEnum>)member.EnumMember);
 
         public IEnumerable<string> GetNames(bool excludeDuplicates) => _cache.GetNames(excludeDuplicates);
 
-        public IEnumerable<TEnum> GetValues(bool excludeDuplicates) => _cache.GetEnumMembers(excludeDuplicates).Select(member => ToEnum(member.Value));
+        public IEnumerable<TEnum> GetValues(bool excludeDuplicates) => _cache.GetMembers(excludeDuplicates).Select(member => ToEnum(member.Value));
         #endregion
 
         #region ToObject
@@ -203,11 +203,11 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public string GetName(TEnum value) => _cache.GetEnumMember(ToInt(value))?.Name;
+        public string GetName(TEnum value) => _cache.GetMember(ToInt(value))?.Name;
 
-        public EnumMember<TEnum> GetEnumMember(TEnum value) => (EnumMember<TEnum>)_cache.GetEnumMember(ToInt(value))?.EnumMember;
+        public EnumMember<TEnum> GetMember(TEnum value) => (EnumMember<TEnum>)_cache.GetMember(ToInt(value))?.EnumMember;
 
-        public EnumMember<TEnum> GetEnumMember(string value, bool ignoreCase, EnumFormat[] formats) => (EnumMember<TEnum>)_cache.GetEnumMember(value, ignoreCase, formats)?.EnumMember;
+        public EnumMember<TEnum> GetMember(string value, bool ignoreCase, EnumFormat[] formats) => (EnumMember<TEnum>)_cache.GetMember(value, ignoreCase, formats)?.EnumMember;
         #endregion
 
         #region Parsing
@@ -310,11 +310,11 @@ namespace EnumsNET
 
         public IEnumerable<Attribute> GetAttributes(object value) => GetAttributes(ToObject(value));
 
-        public EnumMember GetEnumMember(object value) => GetEnumMember(ToObject(value));
+        public EnumMember GetMember(object value) => GetMember(ToObject(value));
 
-        EnumMember IEnumInfo.GetEnumMember(string value, bool ignoreCase, EnumFormat[] formats) => GetEnumMember(value, ignoreCase, formats);
+        EnumMember IEnumInfo.GetMember(string value, bool ignoreCase, EnumFormat[] formats) => GetMember(value, ignoreCase, formats);
 
-        IEnumerable<EnumMember> IEnumInfo.GetEnumMembers(bool excludeDuplicates) => GetEnumMembers(excludeDuplicates)
+        IEnumerable<EnumMember> IEnumInfo.GetMembers(bool excludeDuplicates) => GetMembers(excludeDuplicates)
 #if !COVARIANCE
             .Select(member => (EnumMember)member)
 #endif
