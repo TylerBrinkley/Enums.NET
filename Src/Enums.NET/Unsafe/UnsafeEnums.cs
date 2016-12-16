@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace EnumsNET.Unsafe
 {
@@ -87,6 +88,7 @@ namespace EnumsNET.Unsafe
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount<TEnum>() => GetMemberCount<TEnum>();
 
         /// <summary>
@@ -98,6 +100,7 @@ namespace EnumsNET.Unsafe
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetMemberCount<TEnum>(excludeDuplicates);
 
         /// <summary>
@@ -125,6 +128,7 @@ namespace EnumsNET.Unsafe
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>() => GetMembers<TEnum>();
 
         /// <summary>
@@ -136,6 +140,7 @@ namespace EnumsNET.Unsafe
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetMembers<TEnum>(excludeDuplicates);
 
         /// <summary>
@@ -976,6 +981,7 @@ namespace EnumsNET.Unsafe
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(TEnum value) => GetMember(value);
 
         /// <summary>
@@ -988,6 +994,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string name) => GetMember<TEnum>(name);
 
         /// <summary>
@@ -1001,6 +1008,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string name, bool ignoreCase) => GetMember<TEnum>(name, ignoreCase);
 
         /// <summary>
@@ -1015,6 +1023,7 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, params EnumFormat[] formats) => GetMember<TEnum>(value, formats);
 
         /// <summary>
@@ -1031,6 +1040,7 @@ namespace EnumsNET.Unsafe
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) => GetMember<TEnum>(value, ignoreCase, formats);
         #endregion
 

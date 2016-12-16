@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -137,6 +138,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount(Type enumType) => GetMemberCount(enumType);
 
         /// <summary>
@@ -149,6 +151,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount(Type enumType, bool excludeDuplicates) => GetMemberCount(enumType, excludeDuplicates);
 
         /// <summary>
@@ -179,6 +182,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember> GetEnumMembers(Type enumType) => GetMembers(enumType);
 
         /// <summary>
@@ -191,6 +195,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool excludeDuplicates) => GetMembers(enumType, excludeDuplicates);
 
         /// <summary>
@@ -1335,6 +1340,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember GetEnumMember(Type enumType, object value) => GetMember(enumType, value);
 
         /// <summary>
@@ -1347,6 +1353,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember GetEnumMember(Type enumType, string name) => GetMember(enumType, name);
 
         /// <summary>
@@ -1360,6 +1367,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="name"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember GetEnumMember(Type enumType, string name, bool ignoreCase) => GetMember(enumType, name, ignoreCase);
 
         /// <summary>
@@ -1374,6 +1382,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember GetEnumMember(Type enumType, string value, params EnumFormat[] formats) => GetMember(enumType, value, formats);
 
         /// <summary>
@@ -1390,6 +1399,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember GetEnumMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => GetMember(enumType, value, ignoreCase, formats);
         #endregion
 

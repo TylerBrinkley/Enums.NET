@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using EnumsNET.Numerics;
 using ExtraConstraints;
@@ -122,6 +123,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount<[EnumConstraint] TEnum>()
             where TEnum : struct => GetMemberCount<TEnum>();
 
@@ -133,6 +135,7 @@ namespace EnumsNET
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount<[EnumConstraint] TEnum>(bool excludeDuplicates)
             where TEnum : struct => GetMemberCount<TEnum>(excludeDuplicates);
 
@@ -160,6 +163,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<[EnumConstraint] TEnum>()
             where TEnum : struct => GetMembers<TEnum>();
 
@@ -171,6 +175,7 @@ namespace EnumsNET
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<[EnumConstraint] TEnum>(bool excludeDuplicates)
             where TEnum : struct => GetMembers<TEnum>(excludeDuplicates);
 
@@ -993,6 +998,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => GetMember(value);
 
@@ -1005,6 +1011,7 @@ namespace EnumsNET
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name)
             where TEnum : struct => GetMember<TEnum>(name);
 
@@ -1018,6 +1025,7 @@ namespace EnumsNET
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string name, bool ignoreCase)
             where TEnum : struct => GetMember<TEnum>(name, ignoreCase);
 
@@ -1031,6 +1039,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string value, params EnumFormat[] formats)
             where TEnum : struct => GetMember<TEnum>(value, formats);
 
@@ -1046,6 +1055,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static EnumMember<TEnum> GetEnumMember<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] formats)
             where TEnum : struct => GetMember<TEnum>(value, ignoreCase, formats);
         #endregion
