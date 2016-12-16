@@ -23,47 +23,24 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.ComponentModel;
-
-#if ENUM_MEMBER_ATTRIBUTE
-using System.Runtime.Serialization;
-#endif
-
 namespace EnumsNET
 {
     /// <summary>
-    /// Specifies the enum string representation formats.
+    /// Specifies what enum members to include.
     /// </summary>
-    [EnumFormatValidator]
-    public enum EnumFormat
+    public enum EnumMemberSelection
     {
         /// <summary>
-        /// Enum is represented by its decimal value.
+        /// Include all enum members.
         /// </summary>
-        DecimalValue = 0,
+        All = 0,
         /// <summary>
-        /// Enum is represented by its hexadecimal value.
+        /// Include only distict valued enum members.
         /// </summary>
-        HexadecimalValue = 1,
+        Distinct = 1,
         /// <summary>
-        /// Enum is represented by its name.
+        /// Include each flag enum member.
         /// </summary>
-        Name = 2,
-        /// <summary>
-        /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>.
-        /// </summary>
-        Description = 3,
-#if ENUM_MEMBER_ATTRIBUTE
-        /// <summary>
-        /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>.
-        /// </summary>
-        EnumMemberValue = 4
-#endif
-    }
-
-    internal sealed class EnumFormatValidatorAttribute : Attribute, IEnumValidatorAttribute<EnumFormat>
-    {
-        public bool IsValid(EnumFormat value) => Enums.EnumFormatIsValid(value);
+        Flags = 2
     }
 }

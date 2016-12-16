@@ -86,13 +86,13 @@ namespace EnumsNET
         #endregion
 
         #region Type Methods
-        public int GetMemberCount(bool excludeDuplicates) => _cache.GetMemberCount(excludeDuplicates);
+        public int GetMemberCount(EnumMemberSelection selection) => _cache.GetMemberCount(selection);
 
-        public IEnumerable<EnumMember<TEnum>> GetMembers(bool excludeDuplicates) => _cache.GetMembers(excludeDuplicates).Select(member => (EnumMember<TEnum>)member.EnumMember);
+        public IEnumerable<EnumMember<TEnum>> GetMembers(EnumMemberSelection selection) => _cache.GetMembers(selection).Select(member => (EnumMember<TEnum>)member.EnumMember);
 
-        public IEnumerable<string> GetNames(bool excludeDuplicates) => _cache.GetNames(excludeDuplicates);
+        public IEnumerable<string> GetNames(EnumMemberSelection selection) => _cache.GetNames(selection);
 
-        public IEnumerable<TEnum> GetValues(bool excludeDuplicates) => _cache.GetMembers(excludeDuplicates).Select(member => ToEnum(member.Value));
+        public IEnumerable<TEnum> GetValues(EnumMemberSelection selection) => _cache.GetValues(selection).Select(value => ToEnum(value));
         #endregion
 
         #region ToObject
@@ -314,7 +314,7 @@ namespace EnumsNET
 
         EnumMember IEnumInfo.GetMember(string value, bool ignoreCase, EnumFormat[] formats) => GetMember(value, ignoreCase, formats);
 
-        IEnumerable<EnumMember> IEnumInfo.GetMembers(bool excludeDuplicates) => GetMembers(excludeDuplicates)
+        IEnumerable<EnumMember> IEnumInfo.GetMembers(EnumMemberSelection selection) => GetMembers(selection)
 #if !COVARIANCE
             .Select(member => (EnumMember)member)
 #endif
@@ -332,7 +332,7 @@ namespace EnumsNET
 
         public object GetUnderlyingValue(object value) => GetUnderlyingValue(ToObject(value));
 
-        IEnumerable<object> IEnumInfo.GetValues(bool excludeDuplicates) => GetValues(excludeDuplicates).Select(value => (object)value);
+        IEnumerable<object> IEnumInfo.GetValues(EnumMemberSelection selection) => GetValues(selection).Select(value => (object)value);
 
         public bool HasAllFlags(object value) => HasAllFlags(ToObject(value));
 

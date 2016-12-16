@@ -42,6 +42,7 @@
     <Compile Include="EnumInfo.cs" />
     <Compile Include="EnumMember.cs" />
     <Compile Include="EnumMemberInternal.cs" />
+    <Compile Include="EnumMemberSelection.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EnumCache.cs" />
     <Compile Include="FlagEnums.cs" />

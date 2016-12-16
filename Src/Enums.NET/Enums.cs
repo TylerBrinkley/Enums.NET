@@ -109,13 +109,14 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <param name="selection">Indicates what members to include.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
-        public static int GetMemberCount<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => Enums<TEnum>.Info.GetMemberCount(excludeDuplicates);
+        /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
+        public static int GetMemberCount<[EnumConstraint] TEnum>(EnumMemberSelection selection)
+            where TEnum : struct => Enums<TEnum>.Info.GetMemberCount(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
@@ -134,10 +135,10 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
-        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [Obsolete("Renamed to GetMemberCount and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static int GetEnumMemberCount<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => GetMemberCount<TEnum>(excludeDuplicates);
+            where TEnum : struct => GetMemberCount<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -149,13 +150,14 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <param name="selection">Indicates what members to include.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
-        public static IEnumerable<EnumMember<TEnum>> GetMembers<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => Enums<TEnum>.Info.GetMembers(excludeDuplicates);
+        /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<[EnumConstraint] TEnum>(EnumMemberSelection selection)
+            where TEnum : struct => Enums<TEnum>.Info.GetMembers(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -174,10 +176,10 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
-        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [Obsolete("Renamed to GetMembers and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => GetMembers<TEnum>(excludeDuplicates);
+            where TEnum : struct => GetMembers<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -189,13 +191,26 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="selection">Indicates what members to include.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
+        /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<string> GetNames<[EnumConstraint] TEnum>(EnumMemberSelection selection)
+            where TEnum : struct => Enums<TEnum>.Info.GetNames(selection);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
         /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
+        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<string> GetNames<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => Enums<TEnum>.Info.GetNames(excludeDuplicates);
+            where TEnum : struct => GetNames<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
@@ -207,13 +222,26 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="selection">Indicates what members to include.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
+        /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<TEnum> GetValues<[EnumConstraint] TEnum>(EnumMemberSelection selection)
+            where TEnum : struct => Enums<TEnum>.Info.GetValues(selection);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
         /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
+        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static IEnumerable<TEnum> GetValues<[EnumConstraint] TEnum>(bool excludeDuplicates)
-            where TEnum : struct => Enums<TEnum>.Info.GetValues(excludeDuplicates);
+            where TEnum : struct => GetValues<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
         #endregion
 
         #region ToObject

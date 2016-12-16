@@ -37,8 +37,8 @@ namespace EnumsNET
         Type UnderlyingType { get; }
         bool IsFlagEnum { get; }
 
-        int GetMemberCount(bool excludeDuplicates = false);
-        IEnumerable<string> GetNames(bool excludeDuplicates = false);
+        int GetMemberCount(EnumMemberSelection selection = EnumMemberSelection.All);
+        IEnumerable<string> GetNames(EnumMemberSelection selection = EnumMemberSelection.All);
     }
 
     internal interface IEnumInfo : ICommonEnumInfo
@@ -60,12 +60,12 @@ namespace EnumsNET
         string FormatFlags(object value, string delimiter, EnumFormat[] formats);
         EnumMember GetMember(object value);
         EnumMember GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
-        IEnumerable<EnumMember> GetMembers(bool excludeDuplicates = false);
+        IEnumerable<EnumMember> GetMembers(EnumMemberSelection selection = EnumMemberSelection.All);
         IEnumerable<object> GetFlags(object value);
         IEnumerable<EnumMember> GetFlagMembers(object value);
         string GetName(object value);
         object GetUnderlyingValue(object value);
-        IEnumerable<object> GetValues(bool excludeDuplicates = false);
+        IEnumerable<object> GetValues(EnumMemberSelection selection = EnumMemberSelection.All);
         bool HasAllFlags(object value);
         bool HasAllFlags(object value, object otherFlags);
         bool HasAnyFlags(object value);
@@ -117,13 +117,13 @@ namespace EnumsNET
         string FormatFlags(TEnum value, string delimiter = null, EnumFormat[] formats = null);
         EnumMember<TEnum> GetMember(TEnum value);
         EnumMember<TEnum> GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
-        IEnumerable<EnumMember<TEnum>> GetMembers(bool excludeDuplicates = false);
+        IEnumerable<EnumMember<TEnum>> GetMembers(EnumMemberSelection selection = EnumMemberSelection.All);
         IEnumerable<TEnum> GetFlags(TEnum value);
         IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value);
         int GetHashCode(TEnum value);
         string GetName(TEnum value);
         object GetUnderlyingValue(TEnum value);
-        IEnumerable<TEnum> GetValues(bool excludeDuplicates = false);
+        IEnumerable<TEnum> GetValues(EnumMemberSelection selection = EnumMemberSelection.All);
         bool HasAllFlags(TEnum value);
         bool HasAllFlags(TEnum value, TEnum otherFlags);
         bool HasAnyFlags(TEnum value);

@@ -121,14 +121,16 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s member count.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <param name="selection">Indicates what members to include.</param>
         /// <returns><paramref name="enumType"/>'s member count.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static int GetMemberCount(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetMemberCount(excludeDuplicates);
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static int GetMemberCount(Type enumType, EnumMemberSelection selection) => GetInfo(enumType).GetMemberCount(selection);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s member count.
@@ -150,9 +152,9 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s member count.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [Obsolete("Renamed to GetMemberCount and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static int GetEnumMemberCount(Type enumType, bool excludeDuplicates) => GetMemberCount(enumType, excludeDuplicates);
+        public static int GetEnumMemberCount(Type enumType, bool excludeDuplicates) => GetMemberCount(enumType, excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
@@ -165,14 +167,16 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <param name="selection">Indicates what members to include.</param>
         /// <returns><paramref name="enumType"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember> GetMembers(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetMembers(excludeDuplicates);
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<EnumMember> GetMembers(Type enumType, EnumMemberSelection selection) => GetInfo(enumType).GetMembers(selection);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members in increasing value order.
@@ -194,9 +198,9 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [Obsolete("Renamed to GetMembers and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool excludeDuplicates) => GetMembers(enumType, excludeDuplicates);
+        public static IEnumerable<EnumMember> GetEnumMembers(Type enumType, bool excludeDuplicates) => GetMembers(enumType, excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members' names in increasing value order.
@@ -209,6 +213,19 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members' names in increasing value order.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="selection">Indicates what members to include.</param>
+        /// <returns><paramref name="enumType"/>'s members' names in increasing value order.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<string> GetNames(Type enumType, EnumMemberSelection selection) => GetInfo(enumType).GetNames(selection);
+
+        /// <summary>
+        /// Retrieves <paramref name="enumType"/>'s members' names in increasing value order.
         /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -216,7 +233,9 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s members' names in increasing value order.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static IEnumerable<string> GetNames(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetNames(excludeDuplicates);
+        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static IEnumerable<string> GetNames(Type enumType, bool excludeDuplicates) => GetNames(enumType, excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members' values in increasing value order.
@@ -229,6 +248,19 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Retrieves <paramref name="enumType"/>'s members' values in increasing value order.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="selection">Indicates what members to include.</param>
+        /// <returns><paramref name="enumType"/>'s members' values in increasing value order.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<object> GetValues(Type enumType, EnumMemberSelection selection) => GetInfo(enumType).GetValues(selection);
+
+        /// <summary>
+        /// Retrieves <paramref name="enumType"/>'s members' values in increasing value order.
         /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -236,7 +268,9 @@ namespace EnumsNET.NonGeneric
         /// <returns><paramref name="enumType"/>'s members' values in increasing value order.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static IEnumerable<object> GetValues(Type enumType, bool excludeDuplicates) => GetInfo(enumType).GetValues(excludeDuplicates);
+        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static IEnumerable<object> GetValues(Type enumType, bool excludeDuplicates) => GetValues(enumType, excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
         #endregion
 
         #region ToObject

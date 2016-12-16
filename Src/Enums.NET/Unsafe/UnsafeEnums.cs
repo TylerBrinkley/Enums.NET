@@ -73,13 +73,15 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <param name="selection">Indicates what members to include.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static int GetMemberCount<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetMemberCount(excludeDuplicates);
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static int GetMemberCount<TEnum>(EnumMemberSelection selection) => GetInfo<TEnum>().GetMemberCount(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
@@ -99,9 +101,9 @@ namespace EnumsNET.Unsafe
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
+        [Obsolete("Renamed to GetMemberCount and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetMemberCount<TEnum>(excludeDuplicates);
+        public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetMemberCount<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -113,13 +115,15 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
+        /// <param name="selection">Indicates what members to include.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetMembers(excludeDuplicates);
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) => GetInfo<TEnum>().GetMembers(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -139,9 +143,9 @@ namespace EnumsNET.Unsafe
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
+        [Obsolete("Renamed to GetMembers and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetMembers<TEnum>(excludeDuplicates);
+        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetMembers<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -153,13 +157,27 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="selection">Indicates what members to include.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<string> GetNames<TEnum>(EnumMemberSelection selection) => GetInfo<TEnum>().GetNames(selection);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
         /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<string> GetNames<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetNames(excludeDuplicates);
+        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static IEnumerable<string> GetNames<TEnum>(bool excludeDuplicates) => GetNames<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
@@ -171,13 +189,27 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
+        /// The parameter <paramref name="selection"/> indicates what members to include.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="selection">Indicates what members to include.</param>
+        /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="selection"/> is an invalid value.</exception>
+        public static IEnumerable<TEnum> GetValues<TEnum>(EnumMemberSelection selection) => GetInfo<TEnum>().GetValues(selection);
+
+        /// <summary>
+        /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
         /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
         /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<TEnum> GetValues<TEnum>(bool excludeDuplicates) => GetInfo<TEnum>().GetValues(excludeDuplicates);
+        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static IEnumerable<TEnum> GetValues<TEnum>(bool excludeDuplicates) => GetValues<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
         #endregion
 
         #region ToObject

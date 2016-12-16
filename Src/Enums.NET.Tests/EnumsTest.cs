@@ -85,10 +85,10 @@ namespace EnumsNET.Tests
             Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>());
             Assert.AreEqual(10, GetMemberCount<NumericOperator>());
 
-            Assert.AreEqual(0, GetMemberCount<ByteEnum>(true));
-            Assert.AreEqual(38, GetMemberCount<DateFilterOperator>(true));
-            Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>(true));
-            Assert.AreEqual(8, GetMemberCount<NumericOperator>(true)); // Has 2 duplicates
+            Assert.AreEqual(0, GetMemberCount<ByteEnum>(EnumMemberSelection.Distinct));
+            Assert.AreEqual(38, GetMemberCount<DateFilterOperator>(EnumMemberSelection.Distinct));
+            Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>(EnumMemberSelection.Distinct));
+            Assert.AreEqual(8, GetMemberCount<NumericOperator>(EnumMemberSelection.Distinct)); // Has 2 duplicates
         }
 
         [Test]
@@ -99,10 +99,10 @@ namespace EnumsNET.Tests
             Assert.AreEqual(6, GetMembers<ColorFlagEnum>().Count());
             Assert.AreEqual(10, GetMembers<NumericOperator>().Count());
 
-            Assert.AreEqual(0, GetMembers<ByteEnum>(true).Count());
-            Assert.AreEqual(38, GetMembers<DateFilterOperator>(true).Count());
-            Assert.AreEqual(6, GetMembers<ColorFlagEnum>(true).Count());
-            Assert.AreEqual(8, GetMembers<NumericOperator>(true).Count()); // Has 2 duplicates
+            Assert.AreEqual(0, GetMembers<ByteEnum>(EnumMemberSelection.Distinct).Count());
+            Assert.AreEqual(38, GetMembers<DateFilterOperator>(EnumMemberSelection.Distinct).Count());
+            Assert.AreEqual(6, GetMembers<ColorFlagEnum>(EnumMemberSelection.Distinct).Count());
+            Assert.AreEqual(8, GetMembers<NumericOperator>(EnumMemberSelection.Distinct).Count()); // Has 2 duplicates
 
             var members = GetMembers<ColorFlagEnum>().ToList();
             AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Black, "Black");
@@ -147,10 +147,10 @@ namespace EnumsNET.Tests
         [Test]
         public void GetValues_ExcludeDuplicates()
         {
-            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(true));
-            CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(true));
-            CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(true));
-            CollectionAssert.AreEqual(new[] { NumericOperator.Equals, NumericOperator.NotEquals, NumericOperator.GreaterThan, NumericOperator.LessThan, NumericOperator.GreaterThanOrEquals, NumericOperator.NotGreaterThan, NumericOperator.Between, NumericOperator.NotBetween }, GetValues<NumericOperator>(true));
+            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>(EnumMemberSelection.Distinct));
+            CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>(EnumMemberSelection.Distinct));
+            CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>(EnumMemberSelection.Distinct));
+            CollectionAssert.AreEqual(new[] { NumericOperator.Equals, NumericOperator.NotEquals, NumericOperator.GreaterThan, NumericOperator.LessThan, NumericOperator.GreaterThanOrEquals, NumericOperator.NotGreaterThan, NumericOperator.Between, NumericOperator.NotBetween }, GetValues<NumericOperator>(EnumMemberSelection.Distinct));
         }
         #endregion
 

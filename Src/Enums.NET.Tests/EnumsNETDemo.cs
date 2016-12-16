@@ -21,7 +21,7 @@ class EnumsNETDemo
             // Do stuff
         }
         Assert.AreEqual(8, Enums.GetMembers<NumericOperator>().Count());
-        Assert.AreEqual(6, Enums.GetMembers<NumericOperator>(excludeDuplicates: true).Count());
+        Assert.AreEqual(6, Enums.GetMembers<NumericOperator>(EnumMemberSelection.Distinct).Count());
     }
 
     [Test]

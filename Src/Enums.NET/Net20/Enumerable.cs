@@ -80,6 +80,31 @@ namespace System.Linq
             }
             return list.ToArray();
         }
+
+        public static int Count<T>(this IEnumerable<T> source)
+        {
+            Preconditions.NotNull(source, nameof(source));
+
+            var collection = source as ICollection<T>;
+            if (collection != null)
+            {
+                return collection.Count;
+            }
+            var collection2 = source as ICollection;
+            if (collection2 != null)
+            {
+                return collection2.Count;
+            }
+            var count = 0;
+            using (var enumerator = source.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    ++count;
+                }
+            }
+            return count;
+        }
     }
 }
 #endif

@@ -214,13 +214,55 @@ namespace EnumsNET
 
         #region Standard Enum Operations
         #region Type Methods
-        public int GetMemberCount(bool excludeDuplicates) => _valueMap.Count + (excludeDuplicates ? 0 : _duplicateValues?.Count ?? 0);
+        public int GetMemberCount(EnumMemberSelection selection)
+        {
+            switch (selection)
+            {
+                case EnumMemberSelection.All:
+                    return _valueMap.Count + (_duplicateValues?.Count ?? 0);
+                case EnumMemberSelection.Distinct:
+                    return _valueMap.Count;
+                case EnumMemberSelection.Flags:
+                    return GetFlags(AllFlags).Count();
+                default:
+                    selection.Validate(nameof(selection));
+                    return 0;
+            }
+        }
 
-        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembers(bool excludeDuplicates) => excludeDuplicates || _duplicateValues == null
-            ? _valueMap.Values
-            : GetMembersInternal();
+        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembers(EnumMemberSelection selection)
+        {
+            switch (selection)
+            {
+                case EnumMemberSelection.All:
+                    return _duplicateValues == null ? _valueMap.Values : GetMembersInternal();
+                case EnumMemberSelection.Distinct:
+                    return _valueMap.Values;
+                case EnumMemberSelection.Flags:
+                    return GetFlagMembers(AllFlags);
+                default:
+                    selection.Validate(nameof(selection));
+                    return null;
+            }
+        }
 
-        public IEnumerable<string> GetNames(bool excludeDuplicates) => GetMembers(excludeDuplicates).Select(member => member.Name);
+        public IEnumerable<string> GetNames(EnumMemberSelection selection) => GetMembers(selection).Select(member => member.Name);
+
+        public IEnumerable<TInt> GetValues(EnumMemberSelection selection)
+        {
+            switch (selection)
+            {
+                case EnumMemberSelection.All:
+                    return _duplicateValues == null ? _valueMap.Keys : GetMembersInternal().Select(member => member.Value);
+                case EnumMemberSelection.Distinct:
+                    return _valueMap.Keys;
+                case EnumMemberSelection.Flags:
+                    return GetFlags(AllFlags);
+                default:
+                    selection.Validate(nameof(selection));
+                    return null;
+            }
+        }
 
         private IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembersInternal()
         {
@@ -892,8 +934,8 @@ namespace EnumsNET
 
             public EnumMemberParser(EnumFormat format, EnumCache<TInt, TIntProvider> enumCache)
             {
-                _formatValueMap = new Dictionary<string, EnumMemberInternal<TInt, TIntProvider>>(enumCache.GetMemberCount(false), StringComparer.Ordinal);
-                foreach (var member in enumCache.GetMembers(false))
+                _formatValueMap = new Dictionary<string, EnumMemberInternal<TInt, TIntProvider>>(enumCache.GetMemberCount(EnumMemberSelection.All), StringComparer.Ordinal);
+                foreach (var member in enumCache.GetMembers(EnumMemberSelection.All))
                 {
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)
