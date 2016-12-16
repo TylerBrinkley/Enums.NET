@@ -35,7 +35,7 @@ namespace EnumsNET
         /// </summary>
         All = 0,
         /// <summary>
-        /// Include only distict valued enum members.
+        /// Include only distinct valued enum members.
         /// </summary>
         Distinct = 1,
         /// <summary>
