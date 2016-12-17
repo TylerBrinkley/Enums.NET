@@ -50,7 +50,7 @@ namespace System {
 +       public static bool HasAnyFlags<TEnum>(this TEnum value, TEnum flags) where TEnum : struct, Enum;
 +       public static bool HasAllFlags<TEnum>(this TEnum value) where TEnum : struct, Enum;
 +       public static bool HasAllFlags<TEnum>(this TEnum value, TEnum flags) where TEnum : struct, Enum;
-+       public static bool CommonFlags<TEnum>(this TEnum value, TEnum flags) where TEnum : struct, Enum;
++       public static TEnum CommonFlags<TEnum>(this TEnum value, TEnum flags) where TEnum : struct, Enum;
 +       public static TEnum CombineFlags<TEnum>(this TEnum value, TEnum flags) where TEnum : struct, Enum;
 +       public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2) where TEnum : struct, Enum;
 +       public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3) where TEnum : struct, Enum;
@@ -104,7 +104,20 @@ Tier II
 ```diff
 namespace System {
     public class Enum {
+        // EnumFormat related
++       public static string ToString<TEnum>(this TEnum value, EnumFormat format) where TEnum : struct, Enum;
++       public static string ToString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1) where TEnum : struct, Enum;
++       public static string ToString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) where TEnum : struct, Enum;
++       public static string ToString<TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static string Format<TEnum>(TEnum value, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static EnumMember<TEnum> GetMember<TEnum>(string value, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static TEnum Parse<TEnum>(string value, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] formats) where TEnum : struct, Enum;
++       public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] formats) where TEnum : struct, Enum;
 +       public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> enumMemberFormatter);
+
 +       public static int GetMemberCount<TEnum>() where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(object value, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(sbyte value, out TEnum result) where TEnum : struct, Enum;
@@ -115,18 +128,7 @@ namespace System {
 +       public static bool TryToObject<TEnum>(uint value, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(long value, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(ulong value, out TEnum result) where TEnum : struct, Enum;
-+       public static string ToString<TEnum>(this TEnum value, EnumFormat format) where TEnum : struct, Enum;
-+       public static string ToString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1) where TEnum : struct, Enum;
-+       public static string ToString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) where TEnum : struct, Enum;
-+       public static string ToString<TEnum>(this TEnum value, params EnumFormat[] formats) where TEnum : struct, Enum;
-+       public static string Format<TEnum>(TEnum value, params EnumFormat[] formats) where TEnum : struct, Enum;
 +       public static object GetUnderlyingValue<TEnum>(TEnum value) where TEnum : struct, Enum;
-+       public static EnumMember<TEnum> GetMember<TEnum>(string value, params EnumFormat[] formats) where TEnum : struct, Enum;
-+       public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) where TEnum : struct, Enum;
-+       public static TEnum Parse<TEnum>(string value, params EnumFormat[] formats) where TEnum : struct, Enum;
-+       public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats) where TEnum : struct, Enum;
-+       public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] formats) where TEnum : struct, Enum;
-+       public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] formats) where TEnum : struct, Enum;
 +       public static bool IsFlagEnum<TEnum>() where TEnum : struct, Enum;
 +       public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) where TEnum : struct, Enum;
 +       public static TEnum ToggleFlags<TEnum>(TEnum value) where TEnum : struct, Enum;
