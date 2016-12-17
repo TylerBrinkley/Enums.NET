@@ -126,21 +126,13 @@ namespace EnumsNET
             {
                 var value = (TInt)field.GetValue(null);
                 var name = field.Name;
-                var attributes =
+                var attributes = new AttributeCollection(
 #if TYPE_REFLECTION
-                    Attribute.GetCustomAttributes(field, false);
+                    Attribute.GetCustomAttributes(field, false));
 #else
-                    field.GetCustomAttributes(false).ToArray();
+                    field.GetCustomAttributes(false).ToArray());
 #endif
-                var isPrimary = false;
-                foreach (var attribute in attributes)
-                {
-                    if (attribute is PrimaryEnumMemberAttribute)
-                    {
-                        isPrimary = true;
-                        break;
-                    }
-                }
+                var isPrimary = attributes.Has<PrimaryEnumMemberAttribute>();
                 var member = new EnumMemberInternal<TInt, TIntProvider>(value, name, attributes, this);
                 EnumMemberInternal<TInt, TIntProvider> existing;
                 if (_valueMap.TryGetValue(value, out existing))

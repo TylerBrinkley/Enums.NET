@@ -57,11 +57,11 @@ namespace EnumsNET
             }
         }
 
-        public EnumMemberInternal(TInt value, string name, Attribute[] attributes, EnumCache<TInt, TIntProvider> enumCache)
+        public EnumMemberInternal(TInt value, string name, AttributeCollection attributes, EnumCache<TInt, TIntProvider> enumCache)
         {
             Value = value;
             Name = name;
-            Attributes = new AttributeCollection(attributes);
+            Attributes = attributes;
             _enumCache = enumCache;
         }
 
