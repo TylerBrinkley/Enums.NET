@@ -537,10 +537,10 @@ namespace EnumsNET
                 case EnumFormat.Name:
                     return member?.Name;
                 case EnumFormat.Description:
-                    return member?.GetAttribute<DescriptionAttribute>()?.Description;
+                    return member?.Attributes.Get<DescriptionAttribute>()?.Description;
 #if ENUM_MEMBER_ATTRIBUTE
                 case EnumFormat.EnumMemberValue:
-                    return member?.GetAttribute<EnumMemberAttribute>()?.Value;
+                    return member?.Attributes.Get<EnumMemberAttribute>()?.Value;
 #endif
                 default:
                     format.Validate(nameof(format));

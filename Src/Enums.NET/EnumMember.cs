@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using EnumsNET.Numerics;
 using ExtraConstraints;
@@ -54,7 +55,7 @@ namespace EnumsNET
         /// <summary>
         /// The enum member's attributes.
         /// </summary>
-        public IEnumerable<Attribute> Attributes => Member.Attributes;
+        public AttributeCollection Attributes => Member.Attributes;
 
         internal EnumMember(IEnumMember member)
         {
@@ -139,21 +140,30 @@ namespace EnumsNET
         /// </summary>
         /// <typeparam name="TAttribute">The attribute type.</typeparam>
         /// <returns>Indication if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.</returns>
-        public bool HasAttribute<TAttribute>() where TAttribute : Attribute => Member.HasAttribute<TAttribute>();
+        [Obsolete("Use Attributes.Has instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool HasAttribute<TAttribute>()
+            where TAttribute : Attribute => Attributes.Has<TAttribute>();
 
         /// <summary>
         /// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.
         /// </summary>
         /// <typeparam name="TAttribute">The attribute type.</typeparam>
         /// <returns>The first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.</returns>
-        public TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute => Member.GetAttribute<TAttribute>();
+        [Obsolete("Use Attributes.Get instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public TAttribute GetAttribute<TAttribute>()
+            where TAttribute : Attribute => Attributes.Get<TAttribute>();
 
         /// <summary>
         /// Retrieves all <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.
         /// </summary>
         /// <typeparam name="TAttribute">The attribute type.</typeparam>
         /// <returns>All <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.</returns>
-        public IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute => Member.GetAttributes<TAttribute>();
+        [Obsolete("Use Attributes.GetAll instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public IEnumerable<TAttribute> GetAttributes<TAttribute>()
+            where TAttribute : Attribute => Attributes.GetAll<TAttribute>();
 
         /// <summary>
         /// Retrieves the enum member's underlying integral value.

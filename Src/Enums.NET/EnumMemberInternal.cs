@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading;
 using EnumsNET.Numerics;
 
@@ -40,7 +39,6 @@ namespace EnumsNET
 #endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
-        private readonly Attribute[] _attributes;
         private readonly EnumCache<TInt, TIntProvider> _enumCache;
         private EnumMember _enumMember;
 
@@ -48,7 +46,7 @@ namespace EnumsNET
 
         public string Name { get; }
 
-        public IEnumerable<Attribute> Attributes => new ReadOnlyCollection<Attribute>(_attributes);
+        public AttributeCollection Attributes { get; }
 
         internal EnumMember EnumMember
         {
@@ -63,38 +61,8 @@ namespace EnumsNET
         {
             Value = value;
             Name = name;
-            _attributes = attributes;
+            Attributes = new AttributeCollection(attributes);
             _enumCache = enumCache;
-        }
-
-        public bool HasAttribute<TAttribute>()
-            where TAttribute : Attribute => GetAttribute<TAttribute>() != null;
-
-        public TAttribute GetAttribute<TAttribute>()
-            where TAttribute : Attribute
-        {
-            foreach (var attribute in _attributes)
-            {
-                var castedAttr = attribute as TAttribute;
-                if (castedAttr != null)
-                {
-                    return castedAttr;
-                }
-            }
-            return null;
-        }
-
-        public IEnumerable<TAttribute> GetAttributes<TAttribute>()
-            where TAttribute : Attribute
-        {
-            foreach (var attribute in _attributes)
-            {
-                var castedAttr = attribute as TAttribute;
-                if (castedAttr != null)
-                {
-                    yield return castedAttr;
-                }
-            }
         }
 
         public string AsString(string format) => _enumCache.AsStringInternal(Value, this, format);
