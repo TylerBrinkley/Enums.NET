@@ -132,12 +132,11 @@ namespace EnumsNET
 #else
                     field.GetCustomAttributes(false).ToArray());
 #endif
-                var isPrimary = attributes.Has<PrimaryEnumMemberAttribute>();
                 var member = new EnumMemberInternal<TInt, TIntProvider>(value, name, attributes, this);
                 EnumMemberInternal<TInt, TIntProvider> existing;
                 if (_valueMap.TryGetValue(value, out existing))
                 {
-                    if (isPrimary)
+                    if (attributes.Has<PrimaryEnumMemberAttribute>())
                     {
                         _valueMap[value] = member;
                         member = existing;
