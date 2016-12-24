@@ -30,7 +30,9 @@ namespace EnumsNET.Numerics
 {
     internal struct ByteNumericProvider : INumericProvider<byte>
     {
-        public string HexFormatString => "X2";
+        public string ToHexidecimalString(byte value) => value.ToString("X2");
+
+        public string ToDecimalString(byte value) => value.ToString();
 
         public byte One => 1;
 
@@ -56,7 +58,9 @@ namespace EnumsNET.Numerics
 
         public byte Subtract(byte left, byte right) => (byte)(left - right);
 
-        public bool TryParse(string s, NumberStyles style, IFormatProvider provider, out byte result) => byte.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out byte result) => byte.TryParse(s, style, provider, out result);
+
+        public bool TryParseNative(string s, out byte result) => byte.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
         public byte Xor(byte left, byte right) => (byte)(left ^ right);
 

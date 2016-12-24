@@ -29,7 +29,7 @@ using System.Globalization;
 namespace EnumsNET.Numerics
 {
     internal interface INumericProvider<TInt>
-        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
     {
         bool LessThan(TInt left, TInt right);
 
@@ -53,9 +53,13 @@ namespace EnumsNET.Numerics
 
         bool IsInValueRange(ulong value);
 
-        bool TryParse(string s, NumberStyles style, IFormatProvider provider, out TInt result);
+        bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out TInt result);
 
-        string HexFormatString { get; }
+        bool TryParseNative(string s, out TInt result);
+
+        string ToHexidecimalString(TInt value);
+
+        string ToDecimalString(TInt value);
 
         TInt Zero { get; }
 

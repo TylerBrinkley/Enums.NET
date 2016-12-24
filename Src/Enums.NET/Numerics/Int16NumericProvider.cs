@@ -30,7 +30,9 @@ namespace EnumsNET.Numerics
 {
     internal struct Int16NumericProvider : INumericProvider<short>
     {
-        public string HexFormatString => "X4";
+        public string ToHexidecimalString(short value) => value.ToString("X4");
+
+        public string ToDecimalString(short value) => value.ToString();
 
         public short One => 1;
 
@@ -56,7 +58,9 @@ namespace EnumsNET.Numerics
 
         public short Subtract(short left, short right) => (short)(left - right);
 
-        public bool TryParse(string s, NumberStyles style, IFormatProvider provider, out short result) => short.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out short result) => short.TryParse(s, style, provider, out result);
+
+        public bool TryParseNative(string s, out short result) => short.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
         public short Xor(short left, short right) => (short)(left ^ right);
 

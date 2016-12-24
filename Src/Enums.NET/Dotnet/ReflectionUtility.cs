@@ -29,7 +29,9 @@ namespace EnumsNET
             { typeof(uint), TypeCode.UInt32 },
             { typeof(long), TypeCode.Int64 },
             { typeof(ulong), TypeCode.UInt64 },
-            { typeof(string), TypeCode.String }
+            { typeof(string), TypeCode.String },
+            { typeof(bool), TypeCode.Boolean },
+            { typeof(char), TypeCode.Char }
         };
 #endif
 

@@ -398,19 +398,19 @@ namespace EnumsNET.Tests
         [Test]
         public void ParseFlags_ThrowsArgumentNullException_WhenUsingNullString()
         {
-            TestHelper.ExpectException<ArgumentNullException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(null));
+            Assert.Throws<ArgumentNullException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(null));
         }
 
         [Test]
         public void ParseFlags_ThrowsArgumentException_WhenUsingWhiteSpaceString()
         {
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(" "));
+            Assert.Throws<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>(" "));
         }
 
         [Test]
         public void ParseFlags_ThrowsArgumentException_WhenUsingUndefinedString()
         {
-            TestHelper.ExpectException<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("Turquoise"));
+            Assert.Throws<ArgumentException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("Turquoise"));
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace EnumsNET.Tests
         [Test]
         public void ParseFlags_ThrowsOverflowException_WhenUsingLargeNumber()
         {
-            TestHelper.ExpectException<OverflowException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("128"));
+            Assert.Throws<OverflowException>(() => FlagEnums.ParseFlags<ColorFlagEnum>("128"));
         }
 
         [Test]

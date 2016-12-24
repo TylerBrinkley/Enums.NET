@@ -26,18 +26,18 @@ namespace EnumsNET.Tests
         [Test]
         public void UnsafeEnumsBasicTest()
         {
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<int>());
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<Enum>());
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<string>());
+            Assert.Throws<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<int>());
+            Assert.Throws<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<Enum>());
+            Assert.Throws<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<string>());
             Assert.AreEqual(typeof(short), UnsafeEnums.GetUnderlyingType<DateFilterOperator>());
         }
 
         [Test]
         public void UnsafeFlagEnumsBasicTest()
         {
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<int>());
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<Enum>());
-            TestHelper.ExpectException<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<string>());
+            Assert.Throws<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<int>());
+            Assert.Throws<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<Enum>());
+            Assert.Throws<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<string>());
             Assert.AreEqual(ColorFlagEnum.All, UnsafeFlagEnums.GetAllFlags<ColorFlagEnum>());
         }
     }

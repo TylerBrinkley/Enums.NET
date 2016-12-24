@@ -40,7 +40,7 @@ using System.Runtime.Serialization;
 namespace EnumsNET
 {
     internal sealed class EnumCache<TInt, TIntProvider>
-        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible
 #endif
@@ -122,10 +122,25 @@ namespace EnumsNET
                 return;
             }
             var duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>();
+
+            // This is necessary due to a .NET reflection bug with retrieving Boolean Enums values
+            Dictionary<string, TInt> fieldDictionary = null;
+            var isBoolean = typeof(TInt) == typeof(bool);
+            if (isBoolean)
+            {
+                fieldDictionary = new Dictionary<string, TInt>();
+                var values = (TInt[])Enum.GetValues(enumType);
+                var names = Enum.GetNames(enumType);
+                for (var i = 0; i < names.Length; ++i)
+                {
+                    fieldDictionary.Add(names[i], values[i]);
+                }
+            }
+
             foreach (var field in fields)
             {
-                var value = (TInt)field.GetValue(null);
                 var name = field.Name;
+                var value = isBoolean ? fieldDictionary[name] : (TInt)field.GetValue(null);
                 var attributes =
 #if TYPE_REFLECTION
                     Attribute.GetCustomAttributes(field, false);
@@ -340,6 +355,10 @@ namespace EnumsNET
                         Validate(result, nameof(value));
                     }
                     return result;
+                case TypeCode.Boolean:
+                    return ToObject(Convert.ToByte((bool)value), validate);
+                case TypeCode.Char:
+                    return ToObject((char)value, validate);
             }
             throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, or String.");
         }
@@ -410,6 +429,10 @@ namespace EnumsNET
                             return !validate || IsValid(result);
                         }
                         break;
+                    case TypeCode.Boolean:
+                        return TryToObject(Convert.ToByte((bool)value), out result, validate);
+                    case TypeCode.Char:
+                        return TryToObject((char)value, out result, validate);
                 }
             }
             result = Provider.Zero;
@@ -462,7 +485,7 @@ namespace EnumsNET
 
         public string AsString(TInt value) => AsStringInternal(value, null);
 
-        internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member) => IsFlagEnum ? FormatFlagsInternal(value, member, null, null) : FormatInternal(value, member, EnumFormat.Name, EnumFormat.DecimalValue);
+        internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member) => IsFlagEnum ? FormatFlagsInternal(value, member, null, null) : FormatInternal(value, member, EnumFormat.Name, EnumFormat.UnderlyingValue);
 
         public string AsString(TInt value, EnumFormat format)
         {
@@ -512,20 +535,24 @@ namespace EnumsNET
                     return value.ToString();
                 case "X":
                 case "x":
-                    return value.ToString(Provider.HexFormatString, null);
+                    return Provider.ToHexidecimalString(value);
             }
             throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
         }
 
         internal string FormatInternal(TInt value, ref bool isInitialized, ref EnumMemberInternal<TInt, TIntProvider> member, EnumFormat format)
         {
-            if (format == EnumFormat.DecimalValue)
+            if (format == EnumFormat.UnderlyingValue)
             {
                 return value.ToString();
             }
+            if (format == EnumFormat.DecimalValue)
+            {
+                return Provider.ToDecimalString(value);
+            }
             if (format == EnumFormat.HexadecimalValue)
             {
-                return value.ToString(Provider.HexFormatString, null);
+                return Provider.ToHexidecimalString(value);
             }
             if (!isInitialized)
             {
@@ -658,9 +685,17 @@ namespace EnumsNET
         {
             foreach (var format in formats)
             {
-                if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
+                if (format == EnumFormat.UnderlyingValue)
                 {
-                    if (Provider.TryParse(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
+                    if (Provider.TryParseNative(value, out result))
+                    {
+                        member = getValueOnly ? null : GetMember(result);
+                        return true;
+                    }
+                }
+                else if (format == EnumFormat.DecimalValue || format == EnumFormat.HexadecimalValue)
+                {
+                    if (Provider.TryParseNumber(value, format == EnumFormat.DecimalValue ? NumberStyles.AllowLeadingSign : NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out result))
                     {
                         member = getValueOnly ? null : GetMember(result);
                         return true;

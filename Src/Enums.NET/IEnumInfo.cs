@@ -160,7 +160,7 @@ namespace EnumsNET
     }
 
     internal interface IEnumInfoInternal<TInt, TIntProvider>
-        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible
 #endif

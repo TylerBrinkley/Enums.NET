@@ -30,7 +30,9 @@ namespace EnumsNET.Numerics
 {
     internal struct SByteNumericProvider : INumericProvider<sbyte>
     {
-        public string HexFormatString => "X2";
+        public string ToHexidecimalString(sbyte value) => value.ToString("X2");
+
+        public string ToDecimalString(sbyte value) => value.ToString();
 
         public sbyte One => 1;
 
@@ -56,7 +58,9 @@ namespace EnumsNET.Numerics
 
         public sbyte Subtract(sbyte left, sbyte right) => (sbyte)(left - right);
 
-        public bool TryParse(string s, NumberStyles style, IFormatProvider provider, out sbyte result) => sbyte.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out sbyte result) => sbyte.TryParse(s, style, provider, out result);
+
+        public bool TryParseNative(string s, out sbyte result) => sbyte.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
         public sbyte Xor(sbyte left, sbyte right) => (sbyte)(left ^ right);
 

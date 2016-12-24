@@ -33,9 +33,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumsNETDemo.cs" />
+    <Compile Include="EnumUnderlyingTypeAttribute.cs" />
     <Compile Include="Net20\ExtensionAttribute.cs" />
     <Compile Include="Net20\FuncAndAction.cs" />
+    <Compile Include="TestEnums\BooleanEnum.cs" />
     <Compile Include="TestEnums\ByteEnum.cs" />
+    <Compile Include="TestEnums\CharEnum.cs" />
     <Compile Include="TestEnums\ColorFlagEnum.cs" />
     <Compile Include="TestEnums\ContiguousUInt64Enum.cs" />
     <Compile Include="TestEnums\DateFilterOperator.cs" />
@@ -54,7 +57,6 @@
     <Compile Include="TestEnums\SByteEnum.cs" />
     <Compile Include="TestEnums\StringFilterOperator.cs" />
     <Compile Include="TestEnums\TypeNameHandling.cs" />
-    <Compile Include="TestHelper.cs" />
     <Compile Include="TestEnums\UInt16Enum.cs" />
     <Compile Include="TestEnums\UInt32Enum.cs" />
     <Compile Include="TestEnums\UInt64Enum.cs" />
@@ -73,7 +75,17 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Fody.1.29.4\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\dotnet\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
