@@ -30,7 +30,9 @@ namespace EnumsNET.Numerics
 {
     internal struct UInt64NumericProvider : INumericProvider<ulong>
     {
-        public string HexFormatString => "X16";
+        public string ToHexidecimalString(ulong value) => value.ToString("X16");
+
+        public string ToDecimalString(ulong value) => value.ToString();
 
         public ulong One => 1UL;
 
@@ -56,7 +58,9 @@ namespace EnumsNET.Numerics
 
         public ulong Subtract(ulong left, ulong right) => left - right;
 
-        public bool TryParse(string s, NumberStyles style, IFormatProvider provider, out ulong result) => ulong.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out ulong result) => ulong.TryParse(s, style, provider, out result);
+
+        public bool TryParseNative(string s, out ulong result) => ulong.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
         public ulong Xor(ulong left, ulong right) => left ^ right;
 

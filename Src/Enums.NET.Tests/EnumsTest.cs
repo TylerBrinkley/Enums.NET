@@ -60,6 +60,8 @@ namespace EnumsNET.Tests
             Assert.AreEqual(typeof(uint), GetUnderlyingType<UInt32Enum>());
             Assert.AreEqual(typeof(long), GetUnderlyingType<Int64Enum>());
             Assert.AreEqual(typeof(ulong), GetUnderlyingType<UInt64Enum>());
+            Assert.AreEqual(typeof(bool), GetUnderlyingType<BooleanEnum>());
+            Assert.AreEqual(typeof(char), GetUnderlyingType<CharEnum>());
         }
 
 #if ICONVERTIBLE
@@ -74,6 +76,8 @@ namespace EnumsNET.Tests
             Assert.AreEqual(TypeCode.UInt32, GetTypeCode<UInt32Enum>());
             Assert.AreEqual(TypeCode.Int64, GetTypeCode<Int64Enum>());
             Assert.AreEqual(TypeCode.UInt64, GetTypeCode<UInt64Enum>());
+            Assert.AreEqual(TypeCode.Boolean, GetTypeCode<BooleanEnum>());
+            Assert.AreEqual(TypeCode.Char, GetTypeCode<CharEnum>());
         }
 #endif
 
@@ -84,11 +88,15 @@ namespace EnumsNET.Tests
             Assert.AreEqual(38, GetMemberCount<DateFilterOperator>());
             Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>());
             Assert.AreEqual(10, GetMemberCount<NumericOperator>());
+            Assert.AreEqual(1, GetMemberCount<BooleanEnum>());
+            Assert.AreEqual(3, GetMemberCount<CharEnum>());
 
             Assert.AreEqual(0, GetMemberCount<ByteEnum>(EnumMemberSelection.Distinct));
             Assert.AreEqual(38, GetMemberCount<DateFilterOperator>(EnumMemberSelection.Distinct));
             Assert.AreEqual(6, GetMemberCount<ColorFlagEnum>(EnumMemberSelection.Distinct));
             Assert.AreEqual(8, GetMemberCount<NumericOperator>(EnumMemberSelection.Distinct)); // Has 2 duplicates
+            Assert.AreEqual(1, GetMemberCount<BooleanEnum>(EnumMemberSelection.Distinct));
+            Assert.AreEqual(3, GetMemberCount<CharEnum>(EnumMemberSelection.Distinct));
         }
 
         [Test]
@@ -98,11 +106,15 @@ namespace EnumsNET.Tests
             Assert.AreEqual(38, GetMembers<DateFilterOperator>().Count());
             Assert.AreEqual(6, GetMembers<ColorFlagEnum>().Count());
             Assert.AreEqual(10, GetMembers<NumericOperator>().Count());
+            Assert.AreEqual(1, GetMembers<BooleanEnum>().Count());
+            Assert.AreEqual(3, GetMembers<CharEnum>().Count());
 
             Assert.AreEqual(0, GetMembers<ByteEnum>(EnumMemberSelection.Distinct).Count());
             Assert.AreEqual(38, GetMembers<DateFilterOperator>(EnumMemberSelection.Distinct).Count());
             Assert.AreEqual(6, GetMembers<ColorFlagEnum>(EnumMemberSelection.Distinct).Count());
             Assert.AreEqual(8, GetMembers<NumericOperator>(EnumMemberSelection.Distinct).Count()); // Has 2 duplicates
+            Assert.AreEqual(1, GetMembers<BooleanEnum>(EnumMemberSelection.Distinct).Count());
+            Assert.AreEqual(3, GetMembers<CharEnum>(EnumMemberSelection.Distinct).Count());
 
             var members = GetMembers<ColorFlagEnum>().ToList();
             AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Black, "Black");
@@ -127,6 +139,8 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new[] { "Black", "Red", "Green", "Blue", "UltraViolet", "All" }, GetNames<ColorFlagEnum>());
             CollectionAssert.AreEqual(Enum.GetNames(typeof(DateFilterOperator)), GetNames<DateFilterOperator>());
             CollectionAssert.AreEqual(new string[0], GetNames<ByteEnum>());
+            CollectionAssert.AreEqual(new[] { "No" }, GetNames<BooleanEnum>());
+            CollectionAssert.AreEqual(new[] { "A", "B", "C" }, GetNames<CharEnum>());
         }
 
         [Test]
@@ -135,6 +149,8 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>());
             CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>());
             CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>());
+            CollectionAssert.AreEqual(new[] { BooleanEnum.No }, GetValues<BooleanEnum>());
+            CollectionAssert.AreEqual(new[] { CharEnum.A, CharEnum.B, CharEnum.C }, GetValues<CharEnum>());
 
             // Duplicate order check
             var numericFilterOperators = GetValues<NumericOperator>().ToArray();
@@ -229,32 +245,53 @@ namespace EnumsNET.Tests
             Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1U));
             Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1L));
             Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1UL));
+
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((sbyte)1));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((byte)1));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((short)1));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((ushort)1));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1U));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1L));
+            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1UL));
+
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((sbyte)1));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((byte)1));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((short)1));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((ushort)1));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1U));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1L));
+            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1UL));
         }
 
         [Test]
         public void ToObject_ThrowsOverflowException_WhenUsingValuesOutsideValueRange()
         {
-            TestHelper.ExpectException<OverflowException>(() => ToObject<SByteEnum>(byte.MaxValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<ByteEnum>(sbyte.MinValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<Int16Enum>(ushort.MaxValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt16Enum>(short.MinValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<Int32Enum>(uint.MaxValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt32Enum>(int.MinValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<Int64Enum>(ulong.MaxValue));
-            TestHelper.ExpectException<OverflowException>(() => ToObject<UInt64Enum>(long.MinValue));
+            Assert.Throws<OverflowException>(() => ToObject<SByteEnum>(byte.MaxValue));
+            Assert.Throws<OverflowException>(() => ToObject<ByteEnum>(sbyte.MinValue));
+            Assert.Throws<OverflowException>(() => ToObject<Int16Enum>(ushort.MaxValue));
+            Assert.Throws<OverflowException>(() => ToObject<UInt16Enum>(short.MinValue));
+            Assert.Throws<OverflowException>(() => ToObject<Int32Enum>(uint.MaxValue));
+            Assert.Throws<OverflowException>(() => ToObject<UInt32Enum>(int.MinValue));
+            Assert.Throws<OverflowException>(() => ToObject<Int64Enum>(ulong.MaxValue));
+            Assert.Throws<OverflowException>(() => ToObject<UInt64Enum>(long.MinValue));
+            Assert.Throws<OverflowException>(() => ToObject<CharEnum>(short.MinValue));
         }
 
         [Test]
         public void ToObject_ThrowsArgumentException_WhenUsingInvalidValueWithValidation()
         {
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int16Enum>(short.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt16Enum>(ushort.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int32Enum>(int.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt32Enum>(uint.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<Int64Enum>(long.MaxValue, true));
-            TestHelper.ExpectException<ArgumentException>(() => ToObject<UInt64Enum>(ulong.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<Int16Enum>(short.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<UInt16Enum>(ushort.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<Int32Enum>(int.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<UInt32Enum>(uint.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<Int64Enum>(long.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<UInt64Enum>(ulong.MaxValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<BooleanEnum>(1, true));
+            Assert.Throws<ArgumentException>(() => ToObject<CharEnum>(ushort.MinValue, true));
         }
 
         [Test]
@@ -411,6 +448,44 @@ namespace EnumsNET.Tests
             Assert.AreEqual(uint64Value, uint64Result);
             Assert.IsTrue(TryToObject(1UL, out uint64Result));
             Assert.AreEqual(uint64Value, uint64Result);
+
+            BooleanEnum booleanResult;
+            var booleanValue = (BooleanEnum)1;
+            Assert.IsTrue(TryToObject((sbyte)1, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject((byte)1, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject((short)1, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject((ushort)1, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject(1, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject(1U, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject(1L, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+            Assert.IsTrue(TryToObject(1UL, out booleanResult));
+            Assert.AreEqual(booleanValue, booleanResult);
+
+            CharEnum charResult;
+            var charValue = (CharEnum)1;
+            Assert.IsTrue(TryToObject((sbyte)1, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject((byte)1, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject((short)1, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject((ushort)1, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject(1, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject(1U, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject(1L, out charResult));
+            Assert.AreEqual(charValue, charResult);
+            Assert.IsTrue(TryToObject(1UL, out charResult));
+            Assert.AreEqual(charValue, charResult);
         }
 
         [Test]
@@ -643,7 +718,7 @@ namespace EnumsNET.Tests
             NonContiguousEnum.Elephant.Validate("paramName");
             NonContiguousEnum.Whale.Validate("paramName");
             NonContiguousEnum.Eagle.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousEnum)(-5)).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => ((NonContiguousEnum)(-5)).Validate("paramName"));
 
             UInt64FlagEnum.Flies.Validate("paramName");
             UInt64FlagEnum.Hops.Validate("paramName");
@@ -654,8 +729,8 @@ namespace EnumsNET.Tests
             UInt64FlagEnum.Walks.Validate("paramName");
             (UInt64FlagEnum.Flies | UInt64FlagEnum.Hops).Validate("paramName");
             (UInt64FlagEnum.Flies | UInt64FlagEnum.Slithers).Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => ((UInt64FlagEnum)8).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => ((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => ((UInt64FlagEnum)8).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => ((UInt64FlagEnum)8 | UInt64FlagEnum.Hops).Validate("paramName"));
 
             ContiguousUInt64Enum.A.Validate("paramName");
             ContiguousUInt64Enum.B.Validate("paramName");
@@ -663,16 +738,16 @@ namespace EnumsNET.Tests
             ContiguousUInt64Enum.D.Validate("paramName");
             ContiguousUInt64Enum.E.Validate("paramName");
             ContiguousUInt64Enum.F.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => (ContiguousUInt64Enum.A - 1).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => (ContiguousUInt64Enum.F + 1).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => (ContiguousUInt64Enum.A - 1).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => (ContiguousUInt64Enum.F + 1).Validate("paramName"));
 
             NonContiguousUInt64Enum.SaintLouis.Validate("paramName");
             NonContiguousUInt64Enum.Chicago.Validate("paramName");
             NonContiguousUInt64Enum.Cincinnati.Validate("paramName");
             NonContiguousUInt64Enum.Pittsburg.Validate("paramName");
             NonContiguousUInt64Enum.Milwaukee.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousUInt64Enum)5).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => ((NonContiguousUInt64Enum)50000000UL).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => ((NonContiguousUInt64Enum)5).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => ((NonContiguousUInt64Enum)50000000UL).Validate("paramName"));
 
             NumericOperator.Equals.Validate("paramName");
             NumericOperator.NotEquals.Validate("paramName");
@@ -684,8 +759,8 @@ namespace EnumsNET.Tests
             NumericOperator.NotGreaterThan.Validate("paramName");
             NumericOperator.Between.Validate("paramName");
             NumericOperator.NotBetween.Validate("paramName");
-            TestHelper.ExpectException<ArgumentException>(() => (NumericOperator.Equals - 1).Validate("paramName"));
-            TestHelper.ExpectException<ArgumentException>(() => (NumericOperator.NotBetween + 1).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => (NumericOperator.Equals - 1).Validate("paramName"));
+            Assert.Throws<ArgumentException>(() => (NumericOperator.NotBetween + 1).Validate("paramName"));
         }
 
         [Test]
@@ -702,6 +777,33 @@ namespace EnumsNET.Tests
                 var value = (DateFilterOperator)i;
                 Assert.AreEqual(value.ToString(), value.AsString());
             }
+
+            Assert.AreEqual("No", BooleanEnum.No.AsString());
+            Assert.AreEqual("True", ((BooleanEnum)1).AsString()); // true.ToString()
+            Assert.AreEqual("A", CharEnum.A.AsString());
+            Assert.AreEqual("B", CharEnum.B.AsString());
+            Assert.AreEqual("C", CharEnum.C.AsString());
+            Assert.AreEqual("d", ((CharEnum)'d').AsString());
+
+#if !NET20 && !NET35
+            Assert.AreEqual("No", BooleanEnum.No.ToString());
+            Assert.AreEqual("True", ((BooleanEnum)1).ToString());
+            Assert.AreEqual("A", CharEnum.A.ToString());
+            Assert.AreEqual("B", CharEnum.B.ToString());
+            Assert.AreEqual("C", CharEnum.C.ToString());
+            Assert.AreEqual("d", ((CharEnum)'d').ToString());
+#endif
+        }
+
+        [Test]
+        public void AsString_ReturnsValidResult_WhenUsingValidEnumFormat()
+        {
+            Assert.AreEqual("False", BooleanEnum.No.AsString(EnumFormat.UnderlyingValue));
+            Assert.AreEqual("0", BooleanEnum.No.AsString(EnumFormat.DecimalValue));
+            Assert.AreEqual("00", BooleanEnum.No.AsString(EnumFormat.HexadecimalValue));
+            Assert.AreEqual("a", CharEnum.A.AsString(EnumFormat.UnderlyingValue));
+            Assert.AreEqual(((ushort)'a').ToString(), CharEnum.A.AsString(EnumFormat.DecimalValue));
+            Assert.AreEqual(((ushort)'a').ToString("X4"), CharEnum.A.AsString(EnumFormat.HexadecimalValue));
         }
 
         [Test]
@@ -728,7 +830,7 @@ namespace EnumsNET.Tests
         [Test]
         public void AsString_ThrowsFormatException_WhenUsingInvalidFormat()
         {
-            TestHelper.ExpectException<FormatException>(() => ColorFlagEnum.Blue.AsString("a"));
+            Assert.Throws<FormatException>(() => ColorFlagEnum.Blue.AsString("a"));
         }
 
         [Test]
@@ -755,19 +857,19 @@ namespace EnumsNET.Tests
         [Test]
         public void Format_ThrowsArgumentNullException_WhenUsingNullFormat()
         {
-            TestHelper.ExpectException<ArgumentNullException>(() => Format(ColorFlagEnum.Blue, (string)null));
+            Assert.Throws<ArgumentNullException>(() => Format(ColorFlagEnum.Blue, (string)null));
         }
 
         [Test]
         public void Format_ThrowsFormatException_WhenUsingEmptyStringFormat()
         {
-            TestHelper.ExpectException<FormatException>(() => Format(ColorFlagEnum.Blue, string.Empty));
+            Assert.Throws<FormatException>(() => Format(ColorFlagEnum.Blue, string.Empty));
         }
 
         [Test]
         public void Format_ThrowsFormatException_WhenUsingInvalidStringFormat()
         {
-            TestHelper.ExpectException<FormatException>(() => Format(ColorFlagEnum.Blue, "a"));
+            Assert.Throws<FormatException>(() => Format(ColorFlagEnum.Blue, "a"));
         }
 
         [Test]
@@ -788,6 +890,8 @@ namespace EnumsNET.Tests
         public void GetUnderlyingValue_ReturnsExpected_OnAny()
         {
             Assert.AreEqual(2, GetUnderlyingValue(NumericOperator.GreaterThan));
+            Assert.AreEqual(false, GetUnderlyingValue(BooleanEnum.No));
+            Assert.AreEqual('b', GetUnderlyingValue(CharEnum.B));
         }
         #endregion
 
@@ -812,6 +916,20 @@ namespace EnumsNET.Tests
             Assert.AreEqual("GreaterThanOrEquals", NumericOperator.NotLessThan.GetName());
             Assert.AreEqual("NotGreaterThan", NumericOperator.LessThanOrEquals.GetName());
             Assert.AreEqual("NotGreaterThan", NumericOperator.NotGreaterThan.GetName());
+
+            Assert.AreEqual("No", BooleanEnum.No.GetName());
+            Assert.IsNull(((BooleanEnum)1).GetName());
+
+            Assert.AreEqual("A", CharEnum.A.GetName());
+            Assert.IsNull(((CharEnum)'d').GetName());
+
+#if !NET35 && !NET20
+            Assert.AreEqual("No", Enum.GetName(typeof(BooleanEnum), BooleanEnum.No));
+            Assert.IsNull(Enum.GetName(typeof(BooleanEnum), (BooleanEnum)1));
+            
+            Assert.AreEqual("A", Enum.GetName(typeof(CharEnum), CharEnum.A));
+            Assert.IsNull(Enum.GetName(typeof(CharEnum), (CharEnum)'d'));
+#endif
         }
         #endregion
 
@@ -837,7 +955,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetAttributes()
+        public void GetAllAttributes()
         {
             CollectionAssert.AreEquivalent(new OptionAttribute[0], MultipleAttributeEnum.None.GetMember().Attributes.GetAll<OptionAttribute>());
             CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Mono") }, MultipleAttributeEnum.Single.GetMember().Attributes.GetAll<OptionAttribute>());
@@ -845,7 +963,7 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void GetAllAttributes()
+        public void Attributes()
         {
             CollectionAssert.AreEquivalent(new Attribute[0], MultipleAttributeEnum.None.GetMember().Attributes);
             CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, MultipleAttributeEnum.Single.GetMember().Attributes);
@@ -857,8 +975,22 @@ namespace EnumsNET.Tests
         }
         #endregion
 
-        // TODO
         #region Parsing
+        [Test]
+        public void Parse()
+        {
+            Assert.AreEqual(BooleanEnum.No, Parse<BooleanEnum>("No"));
+            Assert.AreEqual(BooleanEnum.No, Parse<BooleanEnum>("False"));
+            Assert.AreEqual(BooleanEnum.No, Parse<BooleanEnum>("0", EnumFormat.DecimalValue));
+            Assert.AreEqual((BooleanEnum)1, Parse<BooleanEnum>("True"));
+            Assert.AreEqual((BooleanEnum)1, Parse<BooleanEnum>("1", EnumFormat.DecimalValue));
+
+            Assert.AreEqual(CharEnum.A, Parse<CharEnum>("A"));
+            Assert.AreEqual(CharEnum.A, Parse<CharEnum>("a"));
+            Assert.AreEqual(CharEnum.A, Parse<CharEnum>(((ushort)'a').ToString(), EnumFormat.DecimalValue));
+            Assert.AreEqual((CharEnum)'d', Parse<CharEnum>("d"));
+            Assert.AreEqual((CharEnum)'d', Parse<CharEnum>(((ushort)'d').ToString(), EnumFormat.DecimalValue));
+        }
         #endregion
     }
 }

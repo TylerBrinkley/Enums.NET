@@ -47,18 +47,22 @@ namespace EnumsNET
         /// </summary>
         HexadecimalValue = 1,
         /// <summary>
+        /// Enum is represented by its underlying value.
+        /// </summary>
+        UnderlyingValue = 2,
+        /// <summary>
         /// Enum is represented by its name.
         /// </summary>
-        Name = 2,
+        Name = 3,
         /// <summary>
         /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>.
         /// </summary>
-        Description = 3,
+        Description = 4,
 #if ENUM_MEMBER_ATTRIBUTE
         /// <summary>
         /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>.
         /// </summary>
-        EnumMemberValue = 4
+        EnumMemberValue = 5
 #endif
     }
 

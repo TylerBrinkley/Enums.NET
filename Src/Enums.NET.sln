@@ -9,6 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET", "Enums.NET\Enum
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Tests", "Enums.NET.Tests\Enums.NET.Tests.csproj", "{4C0ACB3B-9FFC-4605-B9EA-1884A0679C3F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0BE636C9-A909-431F-AED0-C6B7F25DE336} = {0BE636C9-A909-431F-AED0-C6B7F25DE336}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.PerfTestConsole", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.csproj", "{5786F98C-F8FA-479A-8AE8-094B1287B385}"
 EndProject

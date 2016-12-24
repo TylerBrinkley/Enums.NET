@@ -33,7 +33,7 @@ namespace EnumsNET
     // Putting the logic here as opposed to directly in EnumMember<TEnum, TInt, TIntProvider>
     // reduces memory usage because it doesn't have the enum type as a generic type parameter.
     internal sealed class EnumMemberInternal<TInt, TIntProvider> : IEnumMember
-        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible
 #endif

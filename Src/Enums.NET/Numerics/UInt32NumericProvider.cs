@@ -30,7 +30,9 @@ namespace EnumsNET.Numerics
 {
     internal struct UInt32NumericProvider : INumericProvider<uint>
     {
-        public string HexFormatString => "X8";
+        public string ToHexidecimalString(uint value) => value.ToString("X8");
+
+        public string ToDecimalString(uint value) => value.ToString();
 
         public uint One => 1U;
 
@@ -56,7 +58,9 @@ namespace EnumsNET.Numerics
 
         public uint Subtract(uint left, uint right) => left - right;
 
-        public bool TryParse(string s, NumberStyles style, IFormatProvider provider, out uint result) => uint.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out uint result) => uint.TryParse(s, style, provider, out result);
+
+        public bool TryParseNative(string s, out uint result) => uint.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
         public uint Xor(uint left, uint right) => left ^ right;
 

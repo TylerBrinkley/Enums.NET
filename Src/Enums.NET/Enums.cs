@@ -38,7 +38,7 @@ namespace EnumsNET
     /// </summary>
     public static class Enums
     {
-        internal static readonly EnumFormat[] DefaultFormats = { EnumFormat.Name, EnumFormat.DecimalValue };
+        internal static readonly EnumFormat[] DefaultFormats = { EnumFormat.Name, EnumFormat.UnderlyingValue };
 
         internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
@@ -1228,6 +1228,10 @@ namespace EnumsNET
                     return typeof(Int64NumericProvider);
                 case TypeCode.UInt64:
                     return typeof(UInt64NumericProvider);
+                case TypeCode.Boolean:
+                    return typeof(BooleanNumericProvider);
+                case TypeCode.Char:
+                    return typeof(CharNumericProvider);
             }
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
         }

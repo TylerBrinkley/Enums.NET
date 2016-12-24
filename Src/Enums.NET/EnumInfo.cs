@@ -42,7 +42,7 @@ namespace EnumsNET
     // due to how .NET generics are handled with enums.
     internal sealed class EnumInfo<[EnumConstraint] TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
         where TEnum : struct
-        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible
 #endif

@@ -8,7 +8,7 @@ public class EnumConvertWeaver
 
     public void Execute()
     {
-        var enumInfoType = ModuleDefinition.GetType("EnumsNET", "EnumInfo`3");
+        var enumInfoType = ModuleDefinition.GetType("EnumsNET.EnumInfo`3");
         foreach (var method in enumInfoType.Methods)
         {
             if (method.Name == "ToInt" || method.Name == "ToEnum")

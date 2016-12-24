@@ -6,6 +6,15 @@
       "target": "project"
     }
   },
+  "tools": {
+    "dotnet-fody": {
+      "version": "0.0.1-alpha2",
+      "imports": "net452"
+    }
+  },
+  "scripts": {
+    "postcompile": "dotnet fody %compile:CompilerExitCode% %compile:ResponseFile%"
+  },
   "testRunner": "nunit",
   "frameworks": {
     /*"net45": {
@@ -45,7 +54,7 @@
     }*/
     "netcoreapp1.0": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE"/*, "ICONVERTIBLE" */]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE" /*, "ICONVERTIBLE" */ ]
       },
       "dependencies": {
         "Microsoft.NETCore.App": {

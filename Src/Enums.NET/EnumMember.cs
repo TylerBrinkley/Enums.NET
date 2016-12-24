@@ -357,7 +357,7 @@ namespace EnumsNET
 
     internal sealed class EnumMember<[EnumConstraint] TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
         where TEnum : struct
-        where TInt : struct, IFormattable, IComparable<TInt>, IEquatable<TInt>
+        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible
 #endif

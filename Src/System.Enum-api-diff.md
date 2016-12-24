@@ -144,6 +144,7 @@ namespace System {
 +   public enum EnumFormat {
 +       DecimalValue,
 +       HexadecimalValue,
++       UnderlyingValue,
 +       Name
     }
     public sealed class AttributeCollection : IList<Attribute>, IReadOnlyList<Attribute> {
