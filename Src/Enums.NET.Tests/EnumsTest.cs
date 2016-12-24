@@ -850,6 +850,10 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEquivalent(new Attribute[0], MultipleAttributeEnum.None.GetMember().Attributes);
             CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, MultipleAttributeEnum.Single.GetMember().Attributes);
             CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().Attributes);
+
+            Assert.AreEqual(0, MultipleAttributeEnum.None.GetMember().Attributes.Count);
+            Assert.AreEqual(2, MultipleAttributeEnum.Single.GetMember().Attributes.Count);
+            Assert.AreEqual(3, MultipleAttributeEnum.Multi.GetMember().Attributes.Count);
         }
         #endregion
 
