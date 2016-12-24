@@ -141,26 +141,17 @@ namespace EnumsNET
             {
                 var name = field.Name;
                 var value = isBoolean ? fieldDictionary[name] : (TInt)field.GetValue(null);
-                var attributes =
+                var attributes = new AttributeCollection(
 #if TYPE_REFLECTION
-                    Attribute.GetCustomAttributes(field, false);
+                    Attribute.GetCustomAttributes(field, false));
 #else
-                    field.GetCustomAttributes(false).ToArray();
+                    field.GetCustomAttributes(false).ToArray());
 #endif
-                var isPrimary = false;
-                foreach (var attribute in attributes)
-                {
-                    if (attribute is PrimaryEnumMemberAttribute)
-                    {
-                        isPrimary = true;
-                        break;
-                    }
-                }
                 var member = new EnumMemberInternal<TInt, TIntProvider>(value, name, attributes, this);
                 EnumMemberInternal<TInt, TIntProvider> existing;
                 if (_valueMap.TryGetValue(value, out existing))
                 {
-                    if (isPrimary)
+                    if (attributes.Has<PrimaryEnumMemberAttribute>())
                     {
                         _valueMap[value] = member;
                         member = existing;
@@ -564,10 +555,10 @@ namespace EnumsNET
                 case EnumFormat.Name:
                     return member?.Name;
                 case EnumFormat.Description:
-                    return member?.GetAttribute<DescriptionAttribute>()?.Description;
+                    return member?.Attributes.Get<DescriptionAttribute>()?.Description;
 #if ENUM_MEMBER_ATTRIBUTE
                 case EnumFormat.EnumMemberValue:
-                    return member?.GetAttribute<EnumMemberAttribute>()?.Value;
+                    return member?.Attributes.Get<EnumMemberAttribute>()?.Value;
 #endif
                 default:
                     format.Validate(nameof(format));

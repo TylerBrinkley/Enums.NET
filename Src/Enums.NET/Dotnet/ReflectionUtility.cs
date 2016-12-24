@@ -16,6 +16,8 @@ namespace EnumsNET
         public static IEnumerable<Type> GetInterfaces(this Type type) => type.GetTypeInfo().ImplementedInterfaces;
 
         public static bool IsDefined(this Type type, Type attributeType, bool inherit) => type.GetTypeInfo().IsDefined(attributeType, inherit);
+
+        public static bool IsInstanceOfType(this Type type, object obj) => obj != null && type.GetTypeInfo().IsAssignableFrom(obj.GetType().GetTypeInfo());
 #endif
 
 #if !GET_TYPE_CODE

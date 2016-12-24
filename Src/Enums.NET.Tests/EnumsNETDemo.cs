@@ -84,10 +84,10 @@ class EnumsNETDemo
     [Test]
     public void Attributes()
     {
-        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetMember().HasAttribute<PrimaryEnumMemberAttribute>());
-        Assert.IsFalse(Enums.GetMember<NumericOperator>("NotLessThan").HasAttribute<PrimaryEnumMemberAttribute>());
-        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetMember().GetAttribute<DescriptionAttribute>().Description);
-        Assert.IsNull(NumericOperator.LessThan.GetMember().GetAttribute<DescriptionAttribute>());
+        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetMember().Attributes.Has<PrimaryEnumMemberAttribute>());
+        Assert.IsFalse(Enums.GetMember<NumericOperator>("NotLessThan").Attributes.Has<PrimaryEnumMemberAttribute>());
+        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetMember().Attributes.Get<DescriptionAttribute>().Description);
+        Assert.IsNull(NumericOperator.LessThan.GetMember().Attributes.Get<DescriptionAttribute>());
     }
 
     [Test]
@@ -113,7 +113,7 @@ class EnumsNETDemo
     [Test]
     public void CustomEnumFormat()
     {
-        EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.GetAttribute<SymbolAttribute>()?.Symbol);
+        EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.Attributes.Get<SymbolAttribute>()?.Symbol);
         Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(symbolFormat));
         Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", symbolFormat));
     }

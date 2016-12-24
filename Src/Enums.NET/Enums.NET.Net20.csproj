@@ -36,6 +36,7 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AttributeCollection.cs" />
     <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumComparer.cs" />
     <Compile Include="EnumFormat.cs" />

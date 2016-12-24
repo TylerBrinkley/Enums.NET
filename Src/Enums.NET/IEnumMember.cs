@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 
 namespace EnumsNET
 {
@@ -34,7 +33,7 @@ namespace EnumsNET
 #endif
     {
         string Name { get; }
-        IEnumerable<Attribute> Attributes { get; }
+        AttributeCollection Attributes { get; }
 
         object GetUnderlyingValue();
         string AsString(string format);
@@ -44,9 +43,6 @@ namespace EnumsNET
         string AsString(EnumFormat format0, EnumFormat format1);
         string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2);
         string Format(params EnumFormat[] formats);
-        bool HasAttribute<TAttribute>() where TAttribute : Attribute;
-        TAttribute GetAttribute<TAttribute>() where TAttribute : Attribute;
-        IEnumerable<TAttribute> GetAttributes<TAttribute>() where TAttribute : Attribute;
         byte ToByte();
         short ToInt16();
         int ToInt32();

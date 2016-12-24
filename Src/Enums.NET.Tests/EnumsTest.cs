@@ -938,28 +938,28 @@ namespace EnumsNET.Tests
         public void HasAttribute()
         {
 #if ENUM_MEMBER_ATTRIBUTE
-            Assert.IsTrue(EnumMemberAttributeEnum.A.GetMember().HasAttribute<EnumMemberAttribute>());
+            Assert.IsTrue(EnumMemberAttributeEnum.A.GetMember().Attributes.Has<EnumMemberAttribute>());
 #endif
-            Assert.IsFalse(ColorFlagEnum.Blue.GetMember().HasAttribute<DescriptionAttribute>());
-            Assert.IsTrue(ColorFlagEnum.UltraViolet.GetMember().HasAttribute<DescriptionAttribute>());
+            Assert.IsFalse(ColorFlagEnum.Blue.GetMember().Attributes.Has<DescriptionAttribute>());
+            Assert.IsTrue(ColorFlagEnum.UltraViolet.GetMember().Attributes.Has<DescriptionAttribute>());
         }
 
         [Test]
         public void GetAttribute()
         {
 #if ENUM_MEMBER_ATTRIBUTE
-            Assert.AreEqual("aye", EnumMemberAttributeEnum.A.GetMember().GetAttribute<EnumMemberAttribute>().Value);
+            Assert.AreEqual("aye", EnumMemberAttributeEnum.A.GetMember().Attributes.Get<EnumMemberAttribute>().Value);
 #endif
-            Assert.IsNull(ColorFlagEnum.Blue.GetMember().GetAttribute<DescriptionAttribute>());
-            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetMember().GetAttribute<DescriptionAttribute>().Description);
+            Assert.IsNull(ColorFlagEnum.Blue.GetMember().Attributes.Get<DescriptionAttribute>());
+            Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetMember().Attributes.Get<DescriptionAttribute>().Description);
         }
 
         [Test]
         public void GetAllAttributes()
         {
-            CollectionAssert.AreEquivalent(new OptionAttribute[0], MultipleAttributeEnum.None.GetMember().GetAttributes<OptionAttribute>());
-            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Mono") }, MultipleAttributeEnum.Single.GetMember().GetAttributes<OptionAttribute>());
-            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().GetAttributes<OptionAttribute>());
+            CollectionAssert.AreEquivalent(new OptionAttribute[0], MultipleAttributeEnum.None.GetMember().Attributes.GetAll<OptionAttribute>());
+            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Mono") }, MultipleAttributeEnum.Single.GetMember().Attributes.GetAll<OptionAttribute>());
+            CollectionAssert.AreEquivalent(new[] { new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().Attributes.GetAll<OptionAttribute>());
         }
 
         [Test]
@@ -968,6 +968,10 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEquivalent(new Attribute[0], MultipleAttributeEnum.None.GetMember().Attributes);
             CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, MultipleAttributeEnum.Single.GetMember().Attributes);
             CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().Attributes);
+
+            Assert.AreEqual(0, MultipleAttributeEnum.None.GetMember().Attributes.Count);
+            Assert.AreEqual(2, MultipleAttributeEnum.Single.GetMember().Attributes.Count);
+            Assert.AreEqual(3, MultipleAttributeEnum.Multi.GetMember().Attributes.Count);
         }
         #endregion
 
