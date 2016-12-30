@@ -96,50 +96,50 @@ namespace EnumsNET
         #endregion
 
         #region ToObject
-        public TEnum ToObject(object value, bool validate = false) => value is TEnum || value is TEnum? ? (validate ? Validate((TEnum)value, nameof(value)) : (TEnum)value) : ToEnum(_cache.ToObject(value, validate));
+        public TEnum ToObject(object value, EnumValidation validation = EnumValidation.None) => value is TEnum || value is TEnum? ? (validation == EnumValidation.None ? (TEnum)value : Validate((TEnum)value, nameof(value), validation)) : ToEnum(_cache.ToObject(value, validation));
 
-        public TEnum ToObject(long value, bool validate) => ToEnum(_cache.ToObject(value, validate));
+        public TEnum ToObject(long value, EnumValidation validation) => ToEnum(_cache.ToObject(value, validation));
 
-        public TEnum ToObject(ulong value, bool validate) => ToEnum(_cache.ToObject(value, validate));
+        public TEnum ToObject(ulong value, EnumValidation validation) => ToEnum(_cache.ToObject(value, validation));
 
-        public bool TryToObject(object value, out TEnum result, bool validate)
+        public bool TryToObject(object value, out TEnum result, EnumValidation validation)
         {
             if (value is TEnum || value is TEnum?)
             {
                 result = (TEnum)value;
-                return !validate || IsValid(result);
+                return IsValid(result, validation);
             }
             TInt resultAsInt;
-            var success = _cache.TryToObject(value, out resultAsInt, validate);
+            var success = _cache.TryToObject(value, out resultAsInt, validation);
             result = ToEnum(resultAsInt);
             return success;
         }
 
-        public bool TryToObject(long value, out TEnum result, bool validate)
+        public bool TryToObject(long value, out TEnum result, EnumValidation validation)
         {
             TInt resultAsInt;
-            var success = _cache.TryToObject(value, out resultAsInt, validate);
+            var success = _cache.TryToObject(value, out resultAsInt, validation);
             result = ToEnum(resultAsInt);
             return success;
         }
 
-        public bool TryToObject(ulong value, out TEnum result, bool validate)
+        public bool TryToObject(ulong value, out TEnum result, EnumValidation validation)
         {
             TInt resultAsInt;
-            var success = _cache.TryToObject(value, out resultAsInt, validate);
+            var success = _cache.TryToObject(value, out resultAsInt, validation);
             result = ToEnum(resultAsInt);
             return success;
         }
         #endregion
 
         #region All Values Main Methods
-        public bool IsValid(TEnum value) => _customEnumValidator?.IsValid(value) ?? _cache.IsValidSimple(ToInt(value));
+        public bool IsValid(TEnum value, EnumValidation validation) => validation == EnumValidation.Default ? (_customEnumValidator?.IsValid(value) ?? _cache.IsValidSimple(ToInt(value))) : _cache.IsValid(ToInt(value), validation);
 
         public bool IsDefined(TEnum value) => _cache.IsDefined(ToInt(value));
 
-        public TEnum Validate(TEnum value, string paramName)
+        public TEnum Validate(TEnum value, string paramName, EnumValidation validation)
         {
-            _cache.Validate(ToInt(value), paramName);
+            _cache.Validate(ToInt(value), paramName, validation);
             return value;
         }
 
@@ -344,7 +344,7 @@ namespace EnumsNET
 
         public bool IsDefined(object value) => IsDefined(ToObject(value));
 
-        public bool IsValid(object value) => IsValid(ToObject(value));
+        public bool IsValid(object value, EnumValidation validation) => IsValid(ToObject(value), validation);
 
         public bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
 
@@ -368,11 +368,11 @@ namespace EnumsNET
 
         public long ToInt64(object value) => ToInt64(ToObject(value));
 
-        object IEnumInfo.ToObject(ulong value, bool validate) => ToObject(value, validate);
+        object IEnumInfo.ToObject(ulong value, EnumValidation validation) => ToObject(value, validation);
 
-        object IEnumInfo.ToObject(object value, bool validate) => ToObject(value, validate);
+        object IEnumInfo.ToObject(object value, EnumValidation validation) => ToObject(value, validation);
 
-        object IEnumInfo.ToObject(long value, bool validate) => ToObject(value, validate);
+        object IEnumInfo.ToObject(long value, EnumValidation validation) => ToObject(value, validation);
 
         public sbyte ToSByte(object value) => ToSByte(ToObject(value));
 
@@ -398,31 +398,31 @@ namespace EnumsNET
             return success;
         }
 
-        public bool TryToObject(ulong value, out object result, bool validate)
+        public bool TryToObject(ulong value, out object result, EnumValidation validation)
         {
             TEnum resultAsTEnum;
-            var success = TryToObject(value, out resultAsTEnum, validate);
+            var success = TryToObject(value, out resultAsTEnum, validation);
             result = resultAsTEnum;
             return success;
         }
 
-        public bool TryToObject(object value, out object result, bool validate)
+        public bool TryToObject(object value, out object result, EnumValidation validation)
         {
             TEnum resultAsTEnum;
-            var success = TryToObject(value, out resultAsTEnum, validate);
+            var success = TryToObject(value, out resultAsTEnum, validation);
             result = resultAsTEnum;
             return success;
         }
 
-        public bool TryToObject(long value, out object result, bool validate)
+        public bool TryToObject(long value, out object result, EnumValidation validation)
         {
             TEnum resultAsTEnum;
-            var success = TryToObject(value, out resultAsTEnum, validate);
+            var success = TryToObject(value, out resultAsTEnum, validation);
             result = resultAsTEnum;
             return success;
         }
 
-        public object Validate(object value, string paramName) => Validate(ToObject(value), paramName);
+        public object Validate(object value, string paramName, EnumValidation validation) => Validate(ToObject(value), paramName, validation);
         #endregion
 
         #region IEnumInfoInternal

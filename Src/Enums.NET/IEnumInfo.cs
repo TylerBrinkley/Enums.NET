@@ -71,7 +71,7 @@ namespace EnumsNET
         bool HasAnyFlags(object value);
         bool HasAnyFlags(object value, object otherFlags);
         bool IsDefined(object value);
-        bool IsValid(object value);
+        bool IsValid(object value, EnumValidation validation = EnumValidation.Default);
         bool IsValidFlagCombination(object value);
         object Parse(string value, bool ignoreCase, EnumFormat[] formats);
         object ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] formats);
@@ -83,19 +83,19 @@ namespace EnumsNET
         short ToInt16(object value);
         int ToInt32(object value);
         long ToInt64(object value);
-        object ToObject(ulong value, bool validate = false);
-        object ToObject(object value, bool validate = false);
-        object ToObject(long value, bool validate = false);
+        object ToObject(ulong value, EnumValidation validation = EnumValidation.None);
+        object ToObject(object value, EnumValidation validation = EnumValidation.None);
+        object ToObject(long value, EnumValidation validation = EnumValidation.None);
         sbyte ToSByte(object value);
         ushort ToUInt16(object value);
         uint ToUInt32(object value);
         ulong ToUInt64(object value);
         bool TryParse(string value, bool ignoreCase, out object result, EnumFormat[] formats);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] formats);
-        bool TryToObject(ulong value, out object result, bool validate = false);
-        bool TryToObject(object value, out object result, bool validate = false);
-        bool TryToObject(long value, out object result, bool validate = false);
-        object Validate(object value, string paramName);
+        bool TryToObject(ulong value, out object result, EnumValidation validation = EnumValidation.None);
+        bool TryToObject(object value, out object result, EnumValidation validation = EnumValidation.None);
+        bool TryToObject(long value, out object result, EnumValidation validation = EnumValidation.None);
+        object Validate(object value, string paramName, EnumValidation validation = EnumValidation.Default);
     }
 
     internal interface IEnumInfo<TEnum> : ICommonEnumInfo
@@ -129,7 +129,7 @@ namespace EnumsNET
         bool HasAnyFlags(TEnum value);
         bool HasAnyFlags(TEnum value, TEnum otherFlags);
         bool IsDefined(TEnum value);
-        bool IsValid(TEnum value);
+        bool IsValid(TEnum value, EnumValidation validation = EnumValidation.Default);
         bool IsValidFlagCombination(TEnum value);
         TEnum Parse(string value, bool ignoreCase = false, EnumFormat[] formats = null);
         TEnum ParseFlags(string value, bool ignoreCase = false, string delimiter = null, EnumFormat[] formats = null);
@@ -144,19 +144,19 @@ namespace EnumsNET
         short ToInt16(TEnum value);
         int ToInt32(TEnum value);
         long ToInt64(TEnum value);
-        TEnum ToObject(ulong value, bool validate = false);
-        TEnum ToObject(object value, bool validate = false);
-        TEnum ToObject(long value, bool validate = false);
+        TEnum ToObject(ulong value, EnumValidation validation = EnumValidation.None);
+        TEnum ToObject(object value, EnumValidation validation = EnumValidation.None);
+        TEnum ToObject(long value, EnumValidation validation = EnumValidation.None);
         sbyte ToSByte(TEnum value);
         ushort ToUInt16(TEnum value);
         uint ToUInt32(TEnum value);
         ulong ToUInt64(TEnum value);
         bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] formats = null);
         bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] formats = null);
-        bool TryToObject(ulong value, out TEnum result, bool validate = false);
-        bool TryToObject(object value, out TEnum result, bool validate = false);
-        bool TryToObject(long value, out TEnum result, bool validate = false);
-        TEnum Validate(TEnum value, string paramName);
+        bool TryToObject(ulong value, out TEnum result, EnumValidation validation = EnumValidation.None);
+        bool TryToObject(object value, out TEnum result, EnumValidation validation = EnumValidation.None);
+        bool TryToObject(long value, out TEnum result, EnumValidation validation = EnumValidation.None);
+        TEnum Validate(TEnum value, string paramName, EnumValidation validation = EnumValidation.Default);
     }
 
     internal interface IEnumInfoInternal<TInt, TIntProvider>

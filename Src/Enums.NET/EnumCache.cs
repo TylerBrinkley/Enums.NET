@@ -305,17 +305,14 @@ namespace EnumsNET
         #endregion
 
         #region ToObject
-        public TInt ToObject(object value, bool validate)
+        public TInt ToObject(object value, EnumValidation validation)
         {
             Preconditions.NotNull(value, nameof(value));
 
             if (value is TInt || value is TInt?)
             {
                 var result = (TInt)value;
-                if (validate)
-                {
-                    Validate(result, nameof(value));
-                }
+                Validate(result, nameof(value), validation);
                 return result;
             }
 
@@ -324,37 +321,34 @@ namespace EnumsNET
             switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
             {
                 case TypeCode.SByte:
-                    return ToObject((sbyte)value, validate);
+                    return ToObject((sbyte)value, validation);
                 case TypeCode.Byte:
-                    return ToObject((byte)value, validate);
+                    return ToObject((byte)value, validation);
                 case TypeCode.Int16:
-                    return ToObject((short)value, validate);
+                    return ToObject((short)value, validation);
                 case TypeCode.UInt16:
-                    return ToObject((ushort)value, validate);
+                    return ToObject((ushort)value, validation);
                 case TypeCode.Int32:
-                    return ToObject((int)value, validate);
+                    return ToObject((int)value, validation);
                 case TypeCode.UInt32:
-                    return ToObject((uint)value, validate);
+                    return ToObject((uint)value, validation);
                 case TypeCode.Int64:
-                    return ToObject((long)value, validate);
+                    return ToObject((long)value, validation);
                 case TypeCode.UInt64:
-                    return ToObject((ulong)value, validate);
+                    return ToObject((ulong)value, validation);
                 case TypeCode.String:
                     var result = Parse((string)value, false, null);
-                    if (validate)
-                    {
-                        Validate(result, nameof(value));
-                    }
+                    Validate(result, nameof(value), validation);
                     return result;
                 case TypeCode.Boolean:
-                    return ToObject(Convert.ToByte((bool)value), validate);
+                    return ToObject(Convert.ToByte((bool)value), validation);
                 case TypeCode.Char:
-                    return ToObject((char)value, validate);
+                    return ToObject((char)value, validation);
             }
             throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, or String.");
         }
 
-        public TInt ToObject(long value, bool validate)
+        public TInt ToObject(long value, EnumValidation validation)
         {
             if (!Provider.IsInValueRange(value))
             {
@@ -362,14 +356,11 @@ namespace EnumsNET
             }
 
             var result = Provider.Create(value);
-            if (validate)
-            {
-                Validate(result, nameof(value));
-            }
+            Validate(result, nameof(value), validation);
             return result;
         }
 
-        public TInt ToObject(ulong value, bool validate)
+        public TInt ToObject(ulong value, EnumValidation validation)
         {
             if (!Provider.IsInValueRange(value))
             {
@@ -377,21 +368,18 @@ namespace EnumsNET
             }
 
             var result = Provider.Create(value);
-            if (validate)
-            {
-                Validate(result, nameof(value));
-            }
+            Validate(result, nameof(value), validation);
             return result;
         }
 
-        public bool TryToObject(object value, out TInt result, bool validate)
+        public bool TryToObject(object value, out TInt result, EnumValidation validation)
         {
             if (value != null)
             {
                 if (value is TInt || value is TInt?)
                 {
                     result = (TInt)value;
-                    return !validate || IsValid(result);
+                    return IsValid(result, validation);
                 }
 
                 var type = value.GetType();
@@ -399,54 +387,54 @@ namespace EnumsNET
                 switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
                 {
                     case TypeCode.SByte:
-                        return TryToObject((sbyte)value, out result, validate);
+                        return TryToObject((sbyte)value, out result, validation);
                     case TypeCode.Byte:
-                        return TryToObject((byte)value, out result, validate);
+                        return TryToObject((byte)value, out result, validation);
                     case TypeCode.Int16:
-                        return TryToObject((short)value, out result, validate);
+                        return TryToObject((short)value, out result, validation);
                     case TypeCode.UInt16:
-                        return TryToObject((ushort)value, out result, validate);
+                        return TryToObject((ushort)value, out result, validation);
                     case TypeCode.Int32:
-                        return TryToObject((int)value, out result, validate);
+                        return TryToObject((int)value, out result, validation);
                     case TypeCode.UInt32:
-                        return TryToObject((uint)value, out result, validate);
+                        return TryToObject((uint)value, out result, validation);
                     case TypeCode.Int64:
-                        return TryToObject((long)value, out result, validate);
+                        return TryToObject((long)value, out result, validation);
                     case TypeCode.UInt64:
-                        return TryToObject((ulong)value, out result, validate);
+                        return TryToObject((ulong)value, out result, validation);
                     case TypeCode.String:
                         if (TryParse((string)value, false, out result, null))
                         {
-                            return !validate || IsValid(result);
+                            return IsValid(result, validation);
                         }
                         break;
                     case TypeCode.Boolean:
-                        return TryToObject(Convert.ToByte((bool)value), out result, validate);
+                        return TryToObject(Convert.ToByte((bool)value), out result, validation);
                     case TypeCode.Char:
-                        return TryToObject((char)value, out result, validate);
+                        return TryToObject((char)value, out result, validation);
                 }
             }
             result = Provider.Zero;
             return false;
         }
 
-        public bool TryToObject(long value, out TInt result, bool validate)
+        public bool TryToObject(long value, out TInt result, EnumValidation validation)
         {
             if (Provider.IsInValueRange(value))
             {
                 result = Provider.Create(value);
-                return !validate || IsValid(result);
+                return IsValid(result, validation);
             }
             result = Provider.Zero;
             return false;
         }
 
-        public bool TryToObject(ulong value, out TInt result, bool validate)
+        public bool TryToObject(ulong value, out TInt result, EnumValidation validation)
         {
             if (Provider.IsInValueRange(value))
             {
                 result = Provider.Create(value);
-                return !validate || IsValid(result);
+                return IsValid(result, validation);
             }
             result = Provider.Zero;
             return false;
@@ -454,7 +442,23 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
-        public bool IsValid(TInt value) => _hasCustomValidator ? EnumInfo.CustomValidate(value) : IsValidSimple(value);
+        public bool IsValid(TInt value, EnumValidation validation)
+        {
+            switch (validation)
+            {
+                case EnumValidation.Default:
+                    return _hasCustomValidator ? EnumInfo.CustomValidate(value) : IsValidSimple(value);
+                case EnumValidation.IsDefined:
+                    return IsDefined(value);
+                case EnumValidation.IsValidFlagCombination:
+                    return IsValidFlagCombination(value);
+                case EnumValidation.None:
+                    return true;
+                default:
+                    validation.Validate(nameof(validation));
+                    return false;
+            }
+        }
 
 #if NET45
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -466,9 +470,9 @@ namespace EnumsNET
 #endif
         public bool IsDefined(TInt value) => _isContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
 
-        public void Validate(TInt value, string paramName)
+        public void Validate(TInt value, string paramName, EnumValidation validation)
         {
-            if (!IsValid(value))
+            if (!IsValid(value, validation))
             {
                 throw new ArgumentException($"invalid value of {AsString(value)} for {_enumTypeName}", paramName);
             }

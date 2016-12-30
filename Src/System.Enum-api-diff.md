@@ -37,7 +37,7 @@ namespace System {
 +       public static bool TryParse<TEnum>(string value, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result) where TEnum : struct, Enum;
 
-        // New API
+        // New Generic API
 +       public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>() where TEnum : struct, Enum;
 +       public static bool IsValid<TEnum>(this TEnum value) where TEnum : struct, Enum;
 +       public static EnumMember<TEnum> GetMember<TEnum>(this TEnum value) where TEnum : struct, Enum;
@@ -57,6 +57,27 @@ namespace System {
 +       public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) where TEnum : struct, Enum;
 +       public static TEnum CombineFlags<TEnum>(params TEnum[] flags) where TEnum : struct, Enum;
 +       public static TEnum RemoveFlags<TEnum>(this TEnum value, TEnum flags) where TEnum : struct, Enum;
+
+        // New Non-Generic API
++       public static IEnumerable<EnumMember> GetMembers(Type enumType);
++       public static bool IsValid(Type enumType, object value)
++       public static EnumMember GetMember(Type enumType, object value)
++       public static EnumMember GetMember(Type enumType, string name);
++       public static EnumMember GetMember(Type enumType, string name, bool ignoreCase);
++       public static object GetAllFlags(Type enumType);
++       public static bool IsValidFlagCombination(Type enumType, object value);
++       public static IEnumerable<object> GetFlags(Type enumType, object value);
++       public static bool HasAnyFlags(Type enumType, object value);
++       public static bool HasAnyFlags(Type enumType, object value, object flags);
++       public static bool HasAllFlags(Type enumType, object value);
++       public static bool HasAllFlags(Type enumType, object value, object flags);
++       public static object CommonFlags(Type enumType, object value, object flags);
++       public static object CombineFlags(Type enumType, object value, object flags);
++       public static object CombineFlags(Type enumType, object flag0, object flag1, object flag2);
++       public static object CombineFlags(Type enumType, object flag0, object flag1, object flag2, object flag3);
++       public static object CombineFlags(Type enumType, object flag0, object flag1, object flag2, object flag3, object flag4);
++       public static object CombineFlags(Type enumType, params object[] flags);
++       public static object RemoveFlags(Type enumType, object value, object flags);
     }
 +   public abstract class EnumMember : IEquatable<EnumMember>, IConvertible, IFormattable {
 +       public object Value { get; }
@@ -162,11 +183,36 @@ namespace System {
 +       public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) where TEnum : struct, Enum;
 +       public static IEnumerable<string> GetNames<TEnum>(EnumMemberSelection selection) where TEnum : struct, Enum;
 +       public static IEnumerable<TEnum> GetValues<TEnum>(EnumMemberSelection selection) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(object value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(sbyte value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(byte value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(short value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(ushort value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(int value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(uint value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(long value, EnumValidation validation) where TEnum : struct, Enum;
++       public static TEnum ToObject<TEnum>(ulong value, EnumValidation validation) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(object value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(sbyte value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(byte value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(short value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(ushort value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(int value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(uint value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(long value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(ulong value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
++       public static bool IsValid<TEnum>(this TEnum value, EnumValidation validation) where TEnum : struct, Enum;
     }
 +   public enum EnumMemberSelection {
 +       All,
 +       Distinct,
 +       Flags
+    }
++   public enum EnumValidation {
++       None,
++       Default,
++       IsDefined,
++       IsValidFlagCombination
     }
 +   public interface IEnumValidatorAttribute<TEnum> where TEnum : struct, Enum {
 +       bool IsValid(TEnum value);

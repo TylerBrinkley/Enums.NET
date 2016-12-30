@@ -287,7 +287,37 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is not a valid type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        public static object ToObject(Type enumType, object value) => ToObject(enumType, value, false);
+        public static object ToObject(Type enumType, object value) => ToObject(enumType, value, EnumValidation.None);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <paramref name="enumType"/>, <see cref="string"/>, or Nullable of one of these.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is not a valid type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        public static object ToObject(Type enumType, object value, EnumValidation validation)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.ToObject(value, validation);
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -305,17 +335,9 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        public static object ToObject(Type enumType, object value, bool validate)
-        {
-            var info = GetNonGenericEnumInfo(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.ToObject(value, validate);
-        }
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, object value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -332,6 +354,24 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [CLSCompliant(false)]
+        public static object ToObject(Type enumType, sbyte value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -344,7 +384,9 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, sbyte value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, sbyte value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -360,6 +402,23 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        public static object ToObject(Type enumType, byte value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -371,7 +430,9 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        public static object ToObject(Type enumType, byte value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, byte value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -387,6 +448,23 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        public static object ToObject(Type enumType, short value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -398,7 +476,9 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        public static object ToObject(Type enumType, short value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, short value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -415,6 +495,24 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [CLSCompliant(false)]
+        public static object ToObject(Type enumType, ushort value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -427,7 +525,9 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ushort value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, ushort value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -443,6 +543,23 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        public static object ToObject(Type enumType, int value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -454,7 +571,9 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        public static object ToObject(Type enumType, int value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, int value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -471,6 +590,24 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [CLSCompliant(false)]
+        public static object ToObject(Type enumType, uint value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -483,7 +620,9 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, uint value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, uint value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -499,6 +638,23 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        public static object ToObject(Type enumType, long value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -510,7 +666,9 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        public static object ToObject(Type enumType, long value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, long value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -527,6 +685,24 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <returns>The specified <paramref name="value"/> converted to a <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// the result is invalid with the specified <paramref name="validation"/>.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [CLSCompliant(false)]
+        public static object ToObject(Type enumType, ulong value, EnumValidation validation) => GetInfo(enumType).ToObject(value, validation);
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -539,7 +715,9 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ulong value, bool validate) => GetInfo(enumType).ToObject(value, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static object ToObject(Type enumType, ulong value, bool validate) => ToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -552,7 +730,35 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, object value, out object result) => TryToObject(enumType, value, false, out result);
+        public static bool TryToObject(Type enumType, object value, out object result) => TryToObject(enumType, value, EnumValidation.None, out result);
+
+        /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
+        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <paramref name="enumType"/>, <see cref="string"/>, or Nullable of one of these.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        public static bool TryToObject(Type enumType, object value, EnumValidation validation, out object result)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                result = null;
+                return true;
+            }
+
+            return info.EnumInfo.TryToObject(value, out result, validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -567,18 +773,9 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, object value, bool validate, out object result)
-        {
-            var info = GetNonGenericEnumInfo(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                result = null;
-                return true;
-            }
-
-            return info.EnumInfo.TryToObject(value, out result, validate);
-        }
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, object value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -594,6 +791,23 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, sbyte value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        [CLSCompliant(false)]
+        public static bool TryToObject(Type enumType, sbyte value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -606,7 +820,9 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, sbyte value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, sbyte value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -621,6 +837,22 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, byte value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        public static bool TryToObject(Type enumType, byte value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -632,7 +864,9 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, byte value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, byte value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -647,6 +881,22 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, short value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        public static bool TryToObject(Type enumType, short value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -658,7 +908,9 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, short value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, short value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -674,6 +926,23 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, ushort value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        [CLSCompliant(false)]
+        public static bool TryToObject(Type enumType, ushort value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -686,7 +955,9 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ushort value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, ushort value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -701,6 +972,22 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, int value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        public static bool TryToObject(Type enumType, int value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -712,7 +999,9 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, int value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, int value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -728,6 +1017,23 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, uint value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        [CLSCompliant(false)]
+        public static bool TryToObject(Type enumType, uint value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -740,7 +1046,9 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, uint value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, uint value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -755,6 +1063,22 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, long value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        public static bool TryToObject(Type enumType, long value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -766,7 +1090,9 @@ namespace EnumsNET.NonGeneric
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public static bool TryToObject(Type enumType, long value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, long value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
@@ -782,6 +1108,23 @@ namespace EnumsNET.NonGeneric
         public static bool TryToObject(Type enumType, ulong value, out object result) => GetInfo(enumType).TryToObject(value, out result);
 
         /// <summary>
+        /// Tries to convert the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
+        /// underlying type. The parameter <paramref name="validation"/> specifies the validation to perform on the result.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">Value to try to convert.</param>
+        /// <param name="validation">The validation to perform on the result.</param>
+        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> whose value is <paramref name="value"/>.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        [CLSCompliant(false)]
+        public static bool TryToObject(Type enumType, ulong value, EnumValidation validation, out object result) => GetInfo(enumType).TryToObject(value, out result, validation);
+
+        /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a value of type <paramref name="enumType"/> while checking that it doesn't overflow the
         /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
         /// The return value indicates whether the conversion succeeded.
@@ -794,7 +1137,9 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ulong value, bool validate, out object result) => GetInfo(enumType).TryToObject(value, out result, validate);
+        [Obsolete("Use EnumValidation overload instead")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static bool TryToObject(Type enumType, ulong value, bool validate, out object result) => TryToObject(enumType, value, validate ? EnumValidation.Default : EnumValidation.None, out result);
         #endregion
 
         #region All Values Main Methods
@@ -811,7 +1156,25 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
-        public static bool IsValid(Type enumType, object value)
+        public static bool IsValid(Type enumType, object value) => IsValid(enumType, value, EnumValidation.Default);
+
+        /// <summary>
+        /// Indicates if <paramref name="value"/> is valid. If <paramref name="enumType"/> is a standard enum it returns whether the value is defined.
+        /// If <paramref name="enumType"/> is marked with <see cref="FlagsAttribute"/> it returns whether it's a valid flag combination of <paramref name="enumType"/>'s defined values
+        /// or is defined. Or if <paramref name="enumType"/> has an attribute that implements <see cref="IEnumValidatorAttribute{TEnum}"/>
+        /// then that attribute's <see cref="IEnumValidatorAttribute{TEnum}.IsValid(TEnum)"/> method is used.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="validation">The validation to perform on the value.</param>
+        /// <returns>Indication if <paramref name="value"/> is valid.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value.</exception>
+        public static bool IsValid(Type enumType, object value, EnumValidation validation)
         {
             var info = GetNonGenericEnumInfo(enumType);
 
@@ -820,7 +1183,7 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            return info.EnumInfo.IsValid(value);
+            return info.EnumInfo.IsValid(value, validation);
         }
 
         /// <summary>
@@ -858,7 +1221,25 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="value"/> is of an invalid type
         /// -or-
         /// <paramref name="value"/> is invalid.</exception>
-        public static object Validate(Type enumType, object value, string paramName)
+        public static object Validate(Type enumType, object value, string paramName) => Validate(enumType, value, paramName, EnumValidation.Default);
+
+        /// <summary>
+        /// Validates that <paramref name="value"/> is valid. If it's not it throws an <see cref="ArgumentException"/> with the specified <paramref name="paramName"/>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="paramName">The parameter name to be used if throwing an <see cref="ArgumentException"/>.</param>
+        /// <param name="validation">The validation to perform on the value.</param>
+        /// <returns><paramref name="value"/> for use in fluent API's and base constructor method calls.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="validation"/> is an invalid value
+        /// -or-
+        /// <paramref name="value"/> is invalid.</exception>
+        public static object Validate(Type enumType, object value, string paramName, EnumValidation validation)
         {
             var info = GetNonGenericEnumInfo(enumType);
 
@@ -867,7 +1248,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.Validate(value, paramName);
+            return info.EnumInfo.Validate(value, paramName, validation);
         }
 
         /// <summary>

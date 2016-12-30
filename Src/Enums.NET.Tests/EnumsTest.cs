@@ -282,16 +282,16 @@ namespace EnumsNET.Tests
         [Test]
         public void ToObject_ThrowsArgumentException_WhenUsingInvalidValueWithValidation()
         {
-            Assert.Throws<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<Int16Enum>(short.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<UInt16Enum>(ushort.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<Int32Enum>(int.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<UInt32Enum>(uint.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<Int64Enum>(long.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<UInt64Enum>(ulong.MaxValue, true));
-            Assert.Throws<ArgumentException>(() => ToObject<BooleanEnum>(1, true));
-            Assert.Throws<ArgumentException>(() => ToObject<CharEnum>(ushort.MinValue, true));
+            Assert.Throws<ArgumentException>(() => ToObject<SByteEnum>(sbyte.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<ByteEnum>(byte.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<Int16Enum>(short.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<UInt16Enum>(ushort.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<Int32Enum>(int.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<UInt32Enum>(uint.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<Int64Enum>(long.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<UInt64Enum>(ulong.MaxValue, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<BooleanEnum>(1, EnumValidation.Default));
+            Assert.Throws<ArgumentException>(() => ToObject<CharEnum>(ushort.MinValue, EnumValidation.Default));
         }
 
         [Test]
@@ -492,14 +492,14 @@ namespace EnumsNET.Tests
         public void TryToObject_ReturnsFalse_WhenUsingValueInRangeButNotValid()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(TryToObject((sbyte)16, true, out result));
-            Assert.IsFalse(TryToObject((byte)16, true, out result));
-            Assert.IsFalse(TryToObject((short)16, true, out result));
-            Assert.IsFalse(TryToObject((ushort)16, true, out result));
-            Assert.IsFalse(TryToObject(16, true, out result));
-            Assert.IsFalse(TryToObject(16U, true, out result));
-            Assert.IsFalse(TryToObject(16L, true, out result));
-            Assert.IsFalse(TryToObject(16UL, true, out result));
+            Assert.IsFalse(TryToObject((sbyte)16, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject((byte)16, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject((short)16, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject((ushort)16, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject(16, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject(16U, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject(16L, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject(16UL, EnumValidation.Default, out result));
         }
 
         [Test]
