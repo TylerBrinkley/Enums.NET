@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using EnumsNET.Numerics;
-using ExtraConstraints;
 
 namespace EnumsNET
 {

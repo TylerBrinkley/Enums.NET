@@ -52,6 +52,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumConstraintWeaver.cs" />
     <Compile Include="EnumConvertWeaver.cs" />
     <Compile Include="EnumUnderlyingTypeChanger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -32,6 +32,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumsNETDemo.cs" />
     <Compile Include="EnumUnderlyingTypeAttribute.cs" />
     <Compile Include="Net20\ExtensionAttribute.cs" />

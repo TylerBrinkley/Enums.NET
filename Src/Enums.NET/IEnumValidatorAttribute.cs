@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using ExtraConstraints;
 
 namespace EnumsNET
 {

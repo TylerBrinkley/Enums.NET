@@ -27,16 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security;
 using EnumsNET.Numerics;
-using ExtraConstraints;
 
 namespace EnumsNET
 {
     // Class that acts as a bridge from the enum type to the underlying type
     // through the use of the implemented interfaces IEnumInfo<TEnum> and IEnumInfo.
     // Also acts as a bridge in the reverse from the underlying type to the enum type
-    // through the use of the implemented interface IEnumInfoInternal<TInt, TIntProvider>
+    // through the use of the implemented interface IEnumInfoInternal<TInt, TIntProvider>.
     // Putting the logic in EnumCache<TInt, TIntProvider> reduces memory usage
     // because having the enum type as a generic type parameter causes code explosion
     // due to how .NET generics are handled with enums.
@@ -49,24 +47,14 @@ namespace EnumsNET
         where TIntProvider : struct, INumericProvider<TInt>
     {
 #if NET45
-        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#elif !NETSTANDARD
-        [MethodImpl(MethodImplOptions.ForwardRef)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-#if SECURITY_SAFE_CRITICAL
-        [SecuritySafeCritical]
-#endif
-        private static extern TInt ToInt(TEnum value);
+        private static TInt ToInt(TEnum value) => (TInt)(object)value; // Actual implementation is changed using EnumConvertWeaver
 
 #if NET45
-        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#elif !NETSTANDARD
-        [MethodImpl(MethodImplOptions.ForwardRef)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-#if SECURITY_SAFE_CRITICAL
-        [SecuritySafeCritical]
-#endif
-        internal static extern TEnum ToEnum(TInt value);
+        internal static TEnum ToEnum(TInt value) => (TEnum)(object)value; // Actual implementation is changed using EnumConvertWeaver
 
         private readonly EnumCache<TInt, TIntProvider> _cache;
         private readonly IEnumValidatorAttribute<TEnum> _customEnumValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetCustomEnumValidator(typeof(TEnum));

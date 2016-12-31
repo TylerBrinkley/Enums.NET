@@ -28,7 +28,7 @@ namespace EnumsNET.Tests
     public class EnumsTest
     {
         [Test]
-        public void TestGenericConstraints()
+        public void TestEnumConstraints()
         {
             var enumTypeArgs = new[] { typeof(Enums), typeof(FlagEnums) }
                 .SelectMany(type => type.
@@ -46,6 +46,12 @@ namespace EnumsNET.Tests
             {
                 Assert.IsTrue(enumTypeArg.GetGenericParameterConstraints().Any(genericParamConstraint => genericParamConstraint == typeof(Enum)));
             }
+        }
+
+        [Test]
+        public void TestEnumConstraintAttributeRemoval()
+        {
+            Assert.IsFalse(typeof(Enums).GetAssembly().GetTypes().Any(type => type.Name == "EnumConstraintAttribute"));
         }
 
         #region Type Methods

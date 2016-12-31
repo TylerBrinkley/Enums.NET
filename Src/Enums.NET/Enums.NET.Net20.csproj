@@ -39,6 +39,7 @@
     <Compile Include="AttributeCollection.cs" />
     <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumComparer.cs" />
+    <Compile Include="EnumConstraintAttribute.cs" />
     <Compile Include="EnumFormat.cs" />
     <Compile Include="EnumInfo.cs" />
     <Compile Include="EnumMember.cs" />
@@ -77,10 +78,6 @@
     <Compile Include="Unsafe\UnsafeFlagEnums.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ExtraConstraints, Version=1.10.8.0, Culture=neutral, PublicKeyToken=8b9afd7f380a7d64, processorArchitecture=MSIL">
-      <HintPath>..\packages\ExtraConstraints.Fody.1.10.8\lib\portable-net4+sl5+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\ExtraConstraints.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>

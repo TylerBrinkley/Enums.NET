@@ -17,10 +17,6 @@
     "dotnet-fody": {
       "version": "0.0.1-alpha2",
       "imports": "net452"
-    },
-    "ExtraConstraints.Fody": {
-      "version": "1.10.8",
-      "imports": "net452"
     }
   },
   "scripts": {
@@ -32,7 +28,7 @@
         "System.Runtime.Serialization": ""
       },
       "buildOptions": {
-        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net40": {
@@ -40,7 +36,7 @@
         "System.Runtime.Serialization": ""
       },
       "buildOptions": {
-        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net35": {
@@ -58,7 +54,7 @@
     },
     "netstandard1.0": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE" ]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE" ]
       },
       "dependencies": {
         "System.Collections": "4.0.11",
@@ -75,7 +71,7 @@
     },
     "netstandard1.3": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_3", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE" ]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_3", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE", "ICONVERTIBLE" ]
       },
       "dependencies": {
         "System.Collections": "4.0.11",

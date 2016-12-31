@@ -17,7 +17,7 @@ public class EnumUnderlyingTypeChanger
 
     public void Execute()
     {
-        foreach (var enumType in ModuleDefinition.Types.Where(type => type.BaseType?.Name == "Enum"))
+        foreach (var enumType in ModuleDefinition.Types.Where(type => type.BaseType?.FullName == "System.Enum"))
         {
             var enumUnderlyingTypeAttr = enumType.CustomAttributes.FirstOrDefault(attr => attr.AttributeType.Name == "EnumUnderlyingTypeAttribute");
             if (enumUnderlyingTypeAttr != null)

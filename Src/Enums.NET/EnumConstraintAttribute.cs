@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExtraConstraints
+namespace EnumsNET
 {
     [AttributeUsage(AttributeTargets.GenericParameter)]
     internal sealed class EnumConstraintAttribute : Attribute

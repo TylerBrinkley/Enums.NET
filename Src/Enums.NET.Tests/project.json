@@ -22,7 +22,7 @@
         "System.Runtime.Serialization": ""
       },
       "buildOptions": {
-        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+        "define": [ "NET45", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net40": {
@@ -30,7 +30,7 @@
         "System.Runtime.Serialization": ""
       },
       "buildOptions": {
-        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
+        "define": [ "NET40", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE", "ICONVERTIBLE", "GET_TYPE_CODE", "TYPE_REFLECTION" ]
       }
     },
     "net35": {
@@ -48,13 +48,13 @@
     },
     "netstandard1.0": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE" ]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE" ]
       },
       "imports": "dnxcore50"
     }*/
     "netcoreapp1.0": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "SECURITY_SAFE_CRITICAL", "COVARIANCE" /*, "ICONVERTIBLE" */ ]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE" /*, "ICONVERTIBLE" */ ]
       },
       "dependencies": {
         "Microsoft.NETCore.App": {

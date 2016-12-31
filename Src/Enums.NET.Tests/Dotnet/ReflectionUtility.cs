@@ -1,7 +1,5 @@
 ﻿using System;
-#if !TYPE_REFLECTION
 using System.Reflection;
-#endif
 
 namespace EnumsNET
 {
@@ -12,5 +10,11 @@ namespace EnumsNET
 
         public static Type[] GetGenericParameterConstraints(this Type type) => type.GetTypeInfo().GetGenericParameterConstraints();
 #endif
+
+        public static Assembly GetAssembly(this Type type) => type.
+#if !TYPE_REFLECTION
+            GetTypeInfo().
+#endif
+            Assembly;
     }
 }

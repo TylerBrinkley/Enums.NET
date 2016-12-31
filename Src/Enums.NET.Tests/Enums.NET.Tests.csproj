@@ -50,6 +50,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumUnderlyingTypeAttribute.cs" />
     <Compile Include="TestEnums\BooleanEnum.cs" />
     <Compile Include="TestEnums\ByteEnum.cs" />
