@@ -103,6 +103,8 @@ namespace EnumsNET.Tests
             Assert.AreEqual(8, GetMemberCount<NumericOperator>(EnumMemberSelection.Distinct)); // Has 2 duplicates
             Assert.AreEqual(1, GetMemberCount<BooleanEnum>(EnumMemberSelection.Distinct));
             Assert.AreEqual(3, GetMemberCount<CharEnum>(EnumMemberSelection.Distinct));
+
+            Assert.AreEqual(4, GetMemberCount<ColorFlagEnum>(EnumMemberSelection.Flags));
         }
 
         [Test]
@@ -122,6 +124,8 @@ namespace EnumsNET.Tests
             Assert.AreEqual(1, GetMembers<BooleanEnum>(EnumMemberSelection.Distinct).Count());
             Assert.AreEqual(3, GetMembers<CharEnum>(EnumMemberSelection.Distinct).Count());
 
+            Assert.AreEqual(4, GetMembers<ColorFlagEnum>(EnumMemberSelection.Flags).Count());
+
             var members = GetMembers<ColorFlagEnum>().ToList();
             AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Black, "Black");
             AssertEnumMemberIsCorrect(members[1], ColorFlagEnum.Red, "Red");
@@ -129,6 +133,12 @@ namespace EnumsNET.Tests
             AssertEnumMemberIsCorrect(members[3], ColorFlagEnum.Blue, "Blue");
             AssertEnumMemberIsCorrect(members[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
             AssertEnumMemberIsCorrect(members[5], ColorFlagEnum.All, "All");
+
+            members = GetMembers<ColorFlagEnum>(EnumMemberSelection.Flags).ToList();
+            AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Red, "Red");
+            AssertEnumMemberIsCorrect(members[1], ColorFlagEnum.Green, "Green");
+            AssertEnumMemberIsCorrect(members[2], ColorFlagEnum.Blue, "Blue");
+            AssertEnumMemberIsCorrect(members[3], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
         }
 
         public void AssertEnumMemberIsCorrect<TEnum>(EnumMember<TEnum> member, TEnum value, string name, params Attribute[] attributes)
