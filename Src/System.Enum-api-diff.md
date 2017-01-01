@@ -125,7 +125,7 @@ Tier II
 ```diff
 namespace System {
     public class Enum {
-        // EnumFormat related
+        // New Generic API
 +       public static string ToString<TEnum>(this TEnum value, EnumFormat format) where TEnum : struct, Enum;
 +       public static string ToString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1) where TEnum : struct, Enum;
 +       public static string ToString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) where TEnum : struct, Enum;
@@ -138,22 +138,31 @@ namespace System {
 +       public static bool TryParse<TEnum>(string value, out TEnum result, params EnumFormat[] formats) where TEnum : struct, Enum;
 +       public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] formats) where TEnum : struct, Enum;
 +       public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> enumMemberFormatter);
-
 +       public static int GetMemberCount<TEnum>() where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(object value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(sbyte value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(byte value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(short value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(ushort value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(int value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(uint value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(long value, out TEnum result) where TEnum : struct, Enum;
-+       public static bool TryToObject<TEnum>(ulong value, out TEnum result) where TEnum : struct, Enum;
 +       public static object GetUnderlyingValue<TEnum>(TEnum value) where TEnum : struct, Enum;
 +       public static bool IsFlagEnum<TEnum>() where TEnum : struct, Enum;
 +       public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) where TEnum : struct, Enum;
 +       public static TEnum ToggleFlags<TEnum>(TEnum value) where TEnum : struct, Enum;
 +       public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum flags) where TEnum : struct, Enum;
+
+        // New Non-Generic API
++       public static string ToString(Type enumType, object value, EnumFormat format);
++       public static string ToString(Type enumType, object value, EnumFormat format0, EnumFormat format1);
++       public static string ToString(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2);
++       public static string ToString(Type enumType, object value, params EnumFormat[] formats);
++       public static string Format(Type enumType, object value, params EnumFormat[] formats);
++       public static EnumMember GetMember(Type enumType, string value, params EnumFormat[] formats);
++       public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats);
++       public static object Parse(Type enumType, string value, params EnumFormat[] formats);
++       public static object Parse(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats);
++       public static bool TryParse(Type enumType, string value, out object result, params EnumFormat[] formats);
++       public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, params EnumFormat[] formats);
++       public static int GetMemberCount(Type enumType);
++       public static object GetUnderlyingValue(Type enumType, object value);
++       public static bool IsFlagEnum(Type enumType);
++       public static IEnumerable<EnumMember> GetFlagMembers(Type enumType, object value);
++       public static object ToggleFlags(Type enumType, object value);
++       public static object ToggleFlags(Type enumType, object value, object flags);
     }
     public abstract class EnumMember {
 +       public string ToString(EnumFormat format);
@@ -179,6 +188,7 @@ Tier III
 ```diff
 namespace System {
     public class Enum {
+        // New Generic API
 +       public static int GetMemberCount<TEnum>(EnumMemberSelection selection) where TEnum : struct, Enum;
 +       public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) where TEnum : struct, Enum;
 +       public static IEnumerable<string> GetNames<TEnum>(EnumMemberSelection selection) where TEnum : struct, Enum;
@@ -192,6 +202,15 @@ namespace System {
 +       public static TEnum ToObject<TEnum>(uint value, EnumValidation validation) where TEnum : struct, Enum;
 +       public static TEnum ToObject<TEnum>(long value, EnumValidation validation) where TEnum : struct, Enum;
 +       public static TEnum ToObject<TEnum>(ulong value, EnumValidation validation) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(object value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(sbyte value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(byte value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(short value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(ushort value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(int value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(uint value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(long value, out TEnum result) where TEnum : struct, Enum;
++       public static bool TryToObject<TEnum>(ulong value, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(object value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(sbyte value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(byte value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
@@ -202,6 +221,40 @@ namespace System {
 +       public static bool TryToObject<TEnum>(long value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
 +       public static bool TryToObject<TEnum>(ulong value, EnumValidation validation, out TEnum result) where TEnum : struct, Enum;
 +       public static bool IsValid<TEnum>(this TEnum value, EnumValidation validation) where TEnum : struct, Enum;
+
+        // New Non-Generic API
++       public static int GetMemberCount(Type enumType, EnumMemberSelection selection);
++       public static IEnumerable<EnumMember> GetMembers(Type enumType, EnumMemberSelection selection);
++       public static IEnumerable<string> GetNames(Type enumType, EnumMemberSelection selection);
++       public static IEnumerable<object> GetValues(Type enumType, EnumMemberSelection selection);
++       public static object ToObject(Type enumType, object value, EnumValidation validation);
++       public static object ToObject(Type enumType, sbyte value, EnumValidation validation);
++       public static object ToObject(Type enumType, byte value, EnumValidation validation);
++       public static object ToObject(Type enumType, short value, EnumValidation validation);
++       public static object ToObject(Type enumType, ushort value, EnumValidation validation);
++       public static object ToObject(Type enumType, int value, EnumValidation validation);
++       public static object ToObject(Type enumType, uint value, EnumValidation validation);
++       public static object ToObject(Type enumType, long value, EnumValidation validation);
++       public static object ToObject(Type enumType, ulong value, EnumValidation validation);
++       public static bool TryToObject(Type enumType, object value, out object result);
++       public static bool TryToObject(Type enumType, sbyte value, out object result);
++       public static bool TryToObject(Type enumType, byte value, out object result);
++       public static bool TryToObject(Type enumType, short value, out object result);
++       public static bool TryToObject(Type enumType, ushort value, out object result);
++       public static bool TryToObject(Type enumType, int value, out object result);
++       public static bool TryToObject(Type enumType, uint value, out object result);
++       public static bool TryToObject(Type enumType, long value, out object result);
++       public static bool TryToObject(Type enumType, ulong value, out object result);
++       public static bool TryToObject(Type enumType, object value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, sbyte value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, byte value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, short value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, ushort value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, int value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, uint value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, long value, EnumValidation validation, out object result);
++       public static bool TryToObject(Type enumType, ulong value, EnumValidation validation, out object result);
++       public static bool IsValid(Type enumType, object value, EnumValidation validation);
     }
 +   public enum EnumMemberSelection {
 +       All,

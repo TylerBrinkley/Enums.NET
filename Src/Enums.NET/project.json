@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "2.0.0-*",
   "title": "Enums.NET",
   "description": "Enums.NET is a high-performance type-safe .NET enum utility library",
   "language": "en-US",
