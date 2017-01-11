@@ -25,6 +25,9 @@
 
 using System;
 using System.ComponentModel;
+#if NET45 || NET40
+using System.ComponentModel.DataAnnotations;
+#endif
 
 #if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
@@ -62,7 +65,13 @@ namespace EnumsNET
         /// <summary>
         /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>.
         /// </summary>
-        EnumMemberValue = 5
+        EnumMemberValue = 5,
+#endif
+#if NET45 || NET40
+        /// <summary>
+        /// Enum is represented by its <see cref="DisplayAttribute.Name"/>.
+        /// </summary>
+        DisplayName = 6
 #endif
     }
 

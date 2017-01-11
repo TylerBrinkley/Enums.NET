@@ -4,6 +4,9 @@ using System.Linq;
 using EnumsNET;
 using NUnit.Framework;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
+#if NET45 || NET40
+using DisplayAttribute = System.ComponentModel.DataAnnotations.DisplayAttribute;
+#endif
 
 [TestFixture]
 class EnumsNETDemo
@@ -110,6 +113,15 @@ class EnumsNETDemo
         Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
     }
 
+#if NET45 || NET40
+    [Test]
+    public void Display()
+    {
+        Assert.AreEqual("Equals", NumericOperator.Equals.AsString(EnumFormat.DisplayName));
+        Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.DisplayName));
+    }
+#endif
+
     [Test]
     public void CustomEnumFormat()
     {
@@ -121,9 +133,15 @@ class EnumsNETDemo
     enum NumericOperator
     {
         [Description("Is")]
+#if NET45 || NET40
+        [Display(Name = "_Equals", ResourceType = typeof(EnumsNET.Tests.Resources.Demo))]
+#endif
         [Symbol("=")]
         Equals,
         [Description("Is not")]
+#if NET45 || NET40
+        [Display(Name = "NotEquals", ResourceType = typeof(EnumsNET.Tests.Resources.Demo))]
+#endif
         [Symbol("!=")]
         NotEquals,
         [Symbol("<")]
