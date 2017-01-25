@@ -11,10 +11,18 @@
 +        public static Enums.EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, params Enums.EnumFormat[] formats) where TEnum : struct, Enum;
 +        public static TEnum Parse<TEnum>(string value, params Enums.EnumFormat[] formats) where TEnum : struct, Enum;
 +        public static TEnum Parse<TEnum>(string value, bool ignoreCase, params Enums.EnumFormat[] formats) where TEnum : struct, Enum;
++        public static byte ToByte<TEnum>(TEnum value) where TEnum : struct, Enum;
++        public static short ToInt16<TEnum>(TEnum value) where TEnum : struct, Enum;
++        public static int ToInt32<TEnum>(TEnum value) where TEnum : struct, Enum;
++        public static long ToInt64<TEnum>(TEnum value) where TEnum : struct, Enum;
++        public static sbyte ToSByte<TEnum>(TEnum value) where TEnum : struct, Enum;
 +        public static string ToString<TEnum>(this TEnum value, Enums.EnumFormat format) where TEnum : struct, Enum;
 +        public static string ToString<TEnum>(this TEnum value, Enums.EnumFormat format0, Enums.EnumFormat format1) where TEnum : struct, Enum;
 +        public static string ToString<TEnum>(this TEnum value, Enums.EnumFormat format0, Enums.EnumFormat format1, Enums.EnumFormat format2) where TEnum : struct, Enum;
 +        public static string ToString<TEnum>(this TEnum value, params Enums.EnumFormat[] formats) where TEnum : struct, Enum;
++        public static ushort ToUInt16<TEnum>(TEnum value) where TEnum : struct, Enum;
++        public static uint ToUInt32<TEnum>(TEnum value) where TEnum : struct, Enum;
++        public static ulong ToUInt64<TEnum>(TEnum value) where TEnum : struct, Enum;
 +        public static bool TryParse<TEnum>(string value, out TEnum result, params Enums.EnumFormat[] formats) where TEnum : struct, Enum;
 +        public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params Enums.EnumFormat[] formats) where TEnum : struct, Enum;
 

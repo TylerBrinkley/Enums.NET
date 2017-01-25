@@ -7,8 +7,8 @@ Enums are essential commonly used types but have several areas in need of improv
    * Requires casting/unboxing for methods with an enum return value, eg. `ToObject`, `Parse`, and `GetValues`.
    * Requires the enum type to be explicitly specified as an argument.
    * Requires invocation using static method syntax.
-2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe, is very inefficient, and is ambiguous as to whether it indicates if the value has all or any of the specified flags.
-3. Many of `Enum`'s methods use reflection on each invocation instead of caching the reflection results leading to very poor performance.
+2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe, is inefficient, and is ambiguous as to whether it indicates if the value has all or any of the specified flags.
+3. Many of `Enum`'s methods use reflection on each invocation instead of caching the reflection results leading to poor performance.
 4. Built-in support for enum validation is currently limited to the `IsDefined` method which doesn't support flag enum combinations and is inefficient due to a lack of caching of reflection results.
 5. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enums with the `DescriptionAttribute` and `EnumMemberAttribute`.
 
@@ -76,10 +76,6 @@ string description = value.GetAttributes()?.Get<DescriptionAttribute>()?.Descrip
 +        public static bool IsDefined<TEnum>(this TEnum value) where TEnum : struct, Enum;
 +        public static TEnum Parse<TEnum>(string value) where TEnum : struct, Enum;
 +        public static TEnum Parse<TEnum>(string value, bool ignoreCase) where TEnum : struct, Enum;
-+        public static byte ToByte<TEnum>(TEnum value) where TEnum : struct, Enum;
-+        public static short ToInt16<TEnum>(TEnum value) where TEnum : struct, Enum;
-+        public static int ToInt32<TEnum>(TEnum value) where TEnum : struct, Enum;
-+        public static long ToInt64<TEnum>(TEnum value) where TEnum : struct, Enum;
 +        public static TEnum ToObject<TEnum>(object value) where TEnum : struct, Enum;
 +        public static TEnum ToObject<TEnum>(sbyte value) where TEnum : struct, Enum;
 +        public static TEnum ToObject<TEnum>(byte value) where TEnum : struct, Enum;
@@ -89,10 +85,6 @@ string description = value.GetAttributes()?.Get<DescriptionAttribute>()?.Descrip
 +        public static TEnum ToObject<TEnum>(uint value) where TEnum : struct, Enum;
 +        public static TEnum ToObject<TEnum>(long value) where TEnum : struct, Enum;
 +        public static TEnum ToObject<TEnum>(ulong value) where TEnum : struct, Enum;
-+        public static sbyte ToSByte<TEnum>(TEnum value) where TEnum : struct, Enum;
-+        public static ushort ToUInt16<TEnum>(TEnum value) where TEnum : struct, Enum;
-+        public static uint ToUInt32<TEnum>(TEnum value) where TEnum : struct, Enum;
-+        public static ulong ToUInt64<TEnum>(TEnum value) where TEnum : struct, Enum;
 
          // Non-Generic versions of existing methods
 +        public static bool TryParse(Type enumType, string value, out object result);
@@ -165,16 +157,8 @@ string description = value.GetAttributes()?.Get<DescriptionAttribute>()?.Descrip
 +        public override bool Equals(object other);
 +        public override int GetHashCode();
 +        public object GetUnderlyingValue();
-+        public byte ToByte();
-+        public short ToInt16();
-+        public int ToInt32();
-+        public long ToInt64();
-+        public sbyte ToSByte();
 +        public override string ToString();
 +        public string ToString(string format);
-+        public ushort ToUInt16();
-+        public uint ToUInt32();
-+        public ulong ToUInt64();
 +    }
 +    public abstract class EnumMember<TEnum> : EnumMember, IEquatable<EnumMember<TEnum>> {
 +        public new TEnum Value { get; }
@@ -205,5 +189,12 @@ string description = value.GetAttributes()?.Get<DescriptionAttribute>()?.Descrip
 ```
 
 ## Details
+* `IsValidFlagCombination` is defined as `(value & All) == value` where `All` is all enum members values that are powers of two bitwise ored together.
+* `IsValid` is defined as `(IsFlagEnum && IsValidFlagCombination) || IsDefined` for the case of users with flag enums with an `All` member that is defined as `~0` or contains previously removed flag members.
+* `EnumMember` and `EnumMember<T>` only have internal constructors and there is only one instance of `EnumMember` for each enum member thus one can use `ReferenceEquals` for determining equality. This also prevents allocations after the first retrieval.
+* Internally there will need to be implemented two `extern` methods for converting back and forth between an enum and its underlying type.
+* The `PrimaryEnumMemberAttribute` is used to specify what enum member to retrieve when there are multiple enum members with the same value.
 
 ## Open Questions
+* Should there be added static generic versions of instance methods such as `ToString`, `GetHashCode`, and the `IConvertible` methods for performance reasons?
+* Can and should `Enum` implement `IComparable<T>` and `IEquatable<T>`?
