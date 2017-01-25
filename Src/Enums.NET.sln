@@ -20,6 +20,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{791E169D-AB9B-49A2-89D7-61905505F8F2}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
+		System.Enum-api-diff-tabled.md = System.Enum-api-diff-tabled.md
 		System.Enum-api-diff.md = System.Enum-api-diff.md
 	EndProjectSection
 EndProject
