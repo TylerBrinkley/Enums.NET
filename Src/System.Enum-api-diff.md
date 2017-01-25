@@ -109,7 +109,7 @@ string description = value.GetAttributes()?.Get<DescriptionAttribute>()?.Descrip
 +        public static bool IsValid(Type enumType, object value)
      }
  }
- // Separate namespace to make flag enum extension methods visibility optional
+ // Separate namespace to make flag enum extension methods' visibility optional
 +namespace System.Flags {
 +    public static class FlagEnum {
          // Generic API
@@ -192,8 +192,8 @@ string description = value.GetAttributes()?.Get<DescriptionAttribute>()?.Descrip
 * `IsValidFlagCombination` is defined as `(value & All) == value` where `All` is all enum members values that are powers of two bitwise ored together.
 * `IsValid` is defined as `(IsFlagEnum && IsValidFlagCombination) || IsDefined` for the case of users with flag enums with an `All` member that is defined as `~0` or contains previously removed flag members.
 * `EnumMember` and `EnumMember<T>` only have internal constructors and there is only one instance of `EnumMember` for each enum member thus one can use `ReferenceEquals` for determining equality. This also prevents allocations after the first retrieval.
-* Internally there will need to be implemented two `extern` methods for converting back and forth between an enum and its underlying type.
 * The `PrimaryEnumMemberAttribute` is used to specify what enum member to retrieve when there are multiple enum members with the same value.
+* Internally there will need to be implemented two `extern` methods for converting back and forth between an enum and its underlying type.
 
 ## Open Questions
 * Should there be added static generic versions of instance methods such as `ToString`, `GetHashCode`, and the `IConvertible` methods for performance reasons?
