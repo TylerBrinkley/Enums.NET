@@ -220,7 +220,7 @@ Currently, there is no direct way to constrain a type or method's generic type p
 `EnumsNET.NonGeneric.NonGenericFlagEnums` static class for non-generic flag enum operations.
 
 ## Credits
-Inspired by Jon Skeet's [Unconstrained Melody] (https://github.com/jskeet/unconstrained-melody).
+Inspired by Jon Skeet's [Unconstrained Melody](https://github.com/jskeet/unconstrained-melody).
 
 Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) & [Fody.ExtraConstraints](https://github.com/Fody/ExtraConstraints) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil).
 
