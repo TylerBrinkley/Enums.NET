@@ -33,8 +33,13 @@ using System.Threading;
 using EnumsNET.Numerics;
 using System.Runtime.CompilerServices;
 
+
 #if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
+#endif
+
+#if DISPLAY_ATTRIBUTE
+using System.ComponentModel.DataAnnotations;
 #endif
 
 namespace EnumsNET
@@ -563,6 +568,10 @@ namespace EnumsNET
 #if ENUM_MEMBER_ATTRIBUTE
                 case EnumFormat.EnumMemberValue:
                     return member?.Attributes.Get<EnumMemberAttribute>()?.Value;
+#endif
+#if DISPLAY_ATTRIBUTE
+                case EnumFormat.DisplayName:
+                    return member?.Attributes.Get<DisplayAttribute>()?.GetName();
 #endif
                 default:
                     format.Validate(nameof(format));

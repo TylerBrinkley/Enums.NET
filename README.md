@@ -100,10 +100,10 @@ class EnumsNETDemo
     [Test]
     public void Attributes()
     {
-        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetMember().Attributes.Has<PrimaryEnumMemberAttribute>());
+        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetAttributes().Has<PrimaryEnumMemberAttribute>());
         Assert.IsFalse(Enums.GetMember<NumericOperator>("NotLessThan").Attributes.Has<PrimaryEnumMemberAttribute>());
-        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetMember().Attributes.Get<DescriptionAttribute>().Description);
-        Assert.IsNull(NumericOperator.LessThan.GetMember().Attributes.Get<DescriptionAttribute>());
+        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetAttributes().Get<DescriptionAttribute>().Description);
+        Assert.IsNull(NumericOperator.LessThan.GetAttributes().Get<DescriptionAttribute>());
     }
 
     [Test]

@@ -814,6 +814,13 @@ namespace EnumsNET.Tests
         [Test]
         public void AsString_ReturnsValidResult_WhenUsingValidEnumFormat()
         {
+#if DISPLAY_ATTRIBUTE
+            Assert.AreEqual("Arriba", DisplayAttributeEnum.Up.AsString(EnumFormat.DisplayName));
+            Assert.AreEqual("Abajo", DisplayAttributeEnum.Down.AsString(EnumFormat.DisplayName));
+            Assert.AreEqual("Izquierda", DisplayAttributeEnum.Left.AsString(EnumFormat.DisplayName));
+            Assert.AreEqual("Derecho", DisplayAttributeEnum.Right.AsString(EnumFormat.DisplayName));
+#endif
+
             Assert.AreEqual("False", BooleanEnum.No.AsString(EnumFormat.UnderlyingValue));
             Assert.AreEqual("0", BooleanEnum.No.AsString(EnumFormat.DecimalValue));
             Assert.AreEqual("00", BooleanEnum.No.AsString(EnumFormat.HexadecimalValue));
@@ -909,7 +916,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(false, GetUnderlyingValue(BooleanEnum.No));
             Assert.AreEqual('b', GetUnderlyingValue(CharEnum.B));
         }
-        #endregion
+#endregion
 
         #region Defined Values Main Methods
         [Test]
@@ -985,9 +992,9 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEquivalent(new Attribute[] { new OptionAttribute("Mono"), new DescriptionAttribute("One") }, MultipleAttributeEnum.Single.GetMember().Attributes);
             CollectionAssert.AreEquivalent(new Attribute[] { new DescriptionAttribute("Many"), new OptionAttribute("Poly"), new OptionAttribute("Plural") }, MultipleAttributeEnum.Multi.GetMember().Attributes);
 
-            Assert.AreEqual(0, MultipleAttributeEnum.None.GetMember().Attributes.Count);
-            Assert.AreEqual(2, MultipleAttributeEnum.Single.GetMember().Attributes.Count);
-            Assert.AreEqual(3, MultipleAttributeEnum.Multi.GetMember().Attributes.Count);
+            Assert.AreEqual(0, MultipleAttributeEnum.None.GetAttributes().Count);
+            Assert.AreEqual(2, MultipleAttributeEnum.Single.GetAttributes().Count);
+            Assert.AreEqual(3, MultipleAttributeEnum.Multi.GetAttributes().Count);
         }
         #endregion
 

@@ -30,6 +30,10 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 #endif
 
+#if DISPLAY_ATTRIBUTE
+using System.ComponentModel.DataAnnotations;
+#endif
+
 namespace EnumsNET
 {
     /// <summary>
@@ -62,7 +66,13 @@ namespace EnumsNET
         /// <summary>
         /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>.
         /// </summary>
-        EnumMemberValue = 5
+        EnumMemberValue = 5,
+#endif
+#if DISPLAY_ATTRIBUTE
+        /// <summary>
+        /// Enum is represented by its <see cref="DisplayAttribute.Name"/>.
+        /// </summary>
+        DisplayName = 6
 #endif
     }
 

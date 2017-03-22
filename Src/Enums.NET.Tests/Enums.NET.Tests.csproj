@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <Choose>
@@ -52,12 +53,18 @@
   <ItemGroup>
     <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumUnderlyingTypeAttribute.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TestEnums\BooleanEnum.cs" />
     <Compile Include="TestEnums\ByteEnum.cs" />
     <Compile Include="TestEnums\CharEnum.cs" />
     <Compile Include="TestEnums\ColorFlagEnum.cs" />
     <Compile Include="TestEnums\ContiguousUInt64Enum.cs" />
     <Compile Include="TestEnums\DateFilterOperator.cs" />
+    <Compile Include="TestEnums\DisplayAttributeEnum.cs" />
     <Compile Include="TestEnums\EnumMemberAttributeEnum.cs" />
     <Compile Include="EnumsTest.cs" />
     <Compile Include="FlagEnumsTest.cs" />
@@ -91,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

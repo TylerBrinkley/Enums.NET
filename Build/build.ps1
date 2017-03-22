@@ -20,12 +20,13 @@
   $workingDir = "$baseDir\$workingName"
   $workingSourceDir = "$workingDir\Src"
   $builds = @(
-    @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"},
-    @{Name = "Enums.NET.Net40"; TestsName = "Enums.NET.Tests.Net40"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"},
+    @{Name = "Enums.NET"; TestsName = "Enums.NET.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;DISPLAY_ATTRIBUTE"; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"},
+    @{Name = "Enums.NET.Net40"; TestsName = "Enums.NET.Tests.Net40"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;DISPLAY_ATTRIBUTE"; FinalDir="Net40"; NuGetDir = "net40"; Framework="net-4.0"},
     @{Name = "Enums.NET.Net35"; TestsName = "Enums.NET.Tests.Net35"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET35;ENUM_MEMBER_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net35"; NuGetDir = "net35"; Framework="net-2.0"},
     @{Name = "Enums.NET.Net20"; TestsName = "Enums.NET.Tests.Net20"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants="NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION"; FinalDir="Net20"; NuGetDir = "net20"; Framework="net-2.0"},
     @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE"; FinalDir="netstandard1.0"; NuGetDir = "netstandard1.0"; Framework=$null},
-    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE"; FinalDir="netstandard1.3"; NuGetDir = "netstandard1.3"; Framework=$null}
+    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_1;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE"; FinalDir="netstandard1.1"; NuGetDir = "netstandard1.1"; Framework=$null},
+    @{Name = "Enums.NET.Dotnet"; TestsName = "Enums.NET.Tests.Dotnet"; BuildFunction = "NetCliBuild"; TestsFunction = "NetCliTests"; Constants="NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;ICONVERTIBLE;DISPLAY_ATTRIBUTE"; FinalDir="netstandard1.3"; NuGetDir = "netstandard1.3"; Framework=$null}
   )
 }
 

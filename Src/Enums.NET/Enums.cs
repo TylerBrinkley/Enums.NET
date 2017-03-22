@@ -43,7 +43,9 @@ namespace EnumsNET
 
         #region Custom EnumFormat
         private const int _startingCustomEnumFormatValue = (int)EnumFormat.
-#if ENUM_MEMBER_ATTRIBUTE
+#if DISPLAY_ATTRIBUTE
+            DisplayName
+#elif ENUM_MEMBER_ATTRIBUTE
             EnumMemberValue
 #else
             Description

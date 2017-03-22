@@ -17,6 +17,20 @@
       <group targetFramework=".NETFramework2.0" />
       <group targetFramework=".NETStandard1.3">
         <dependency id="System.Collections" version="4.0.11" />
+        <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
+        <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
+        <dependency id="System.Linq" version="4.1.0" />
+        <dependency id="System.Reflection" version="4.1.0" />
+        <dependency id="System.Reflection.Extensions" version="4.0.1" />
+        <dependency id="System.Resources.ResourceManager" version="4.0.1" />
+        <dependency id="System.Runtime" version="4.1.0" />
+        <dependency id="System.Runtime.Extensions" version="4.1.0" />
+        <dependency id="System.Runtime.Serialization.Primitives" version="4.1.1" />
+        <dependency id="System.Threading" version="4.0.11" />
+      </group>
+      <group targetFramework=".NETStandard1.1">
+        <dependency id="System.Collections" version="4.0.11" />
+        <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
         <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
         <dependency id="System.Linq" version="4.1.0" />
         <dependency id="System.Reflection" version="4.1.0" />
