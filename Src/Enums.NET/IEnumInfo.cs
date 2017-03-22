@@ -58,6 +58,7 @@ namespace EnumsNET
         string Format(object value, string format);
         string Format(object value, EnumFormat[] formats);
         string FormatFlags(object value, string delimiter, EnumFormat[] formats);
+        AttributeCollection GetAttributes(object value);
         EnumMember GetMember(object value);
         EnumMember GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
         IEnumerable<EnumMember> GetMembers(EnumMemberSelection selection = EnumMemberSelection.All);
@@ -115,6 +116,7 @@ namespace EnumsNET
         string Format(TEnum value, string format);
         string Format(TEnum value, EnumFormat[] formats);
         string FormatFlags(TEnum value, string delimiter = null, EnumFormat[] formats = null);
+        AttributeCollection GetAttributes(TEnum value);
         EnumMember<TEnum> GetMember(TEnum value);
         EnumMember<TEnum> GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
         IEnumerable<EnumMember<TEnum>> GetMembers(EnumMemberSelection selection = EnumMemberSelection.All);

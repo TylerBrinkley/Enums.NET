@@ -1302,6 +1302,15 @@ namespace EnumsNET.Unsafe
         public static string GetName<TEnum>(TEnum value) => GetInfo<TEnum>().GetName(value);
 
         /// <summary>
+        /// Retrieves <paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static AttributeCollection GetAttributes<TEnum>(TEnum value) => GetInfo<TEnum>().GetAttributes(value);
+
+        /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

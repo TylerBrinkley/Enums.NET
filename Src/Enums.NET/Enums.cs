@@ -1297,6 +1297,15 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.GetName(value);
 
         /// <summary>
+        /// Retrieves <paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.</returns>
+        public static AttributeCollection GetAttributes<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct => Enums<TEnum>.Info.GetAttributes(value);
+
+        /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

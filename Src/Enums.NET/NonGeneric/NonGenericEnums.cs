@@ -1672,6 +1672,28 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
+        /// Retrieves <paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <returns><paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type.</exception>
+        public static AttributeCollection GetAttributes(Type enumType, object value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.GetAttributes(value);
+        }
+
+        /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
