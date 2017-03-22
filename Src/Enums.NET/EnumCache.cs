@@ -32,6 +32,9 @@ using System.Reflection;
 using System.Threading;
 using EnumsNET.Numerics;
 using System.Runtime.CompilerServices;
+#if NET45 || NET40
+using System.ComponentModel.DataAnnotations;
+#endif
 
 #if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
@@ -563,6 +566,10 @@ namespace EnumsNET
 #if ENUM_MEMBER_ATTRIBUTE
                 case EnumFormat.EnumMemberValue:
                     return member?.Attributes.Get<EnumMemberAttribute>()?.Value;
+#endif
+#if NET45 || NET40
+                case EnumFormat.DisplayName:
+                    return member?.Attributes.Get<DisplayAttribute>()?.Name;
 #endif
                 default:
                     format.Validate(nameof(format));

@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -57,6 +58,11 @@
     <Compile Include="Dotnet\ReflectionUtility.cs" />
     <Compile Include="EnumsNETDemo.cs" />
     <Compile Include="EnumUnderlyingTypeAttribute.cs" />
+    <Compile Include="Resources\Demo.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Demo.resx</DependentUpon>
+    </Compile>
     <Compile Include="TestEnums\BooleanEnum.cs" />
     <Compile Include="TestEnums\ByteEnum.cs" />
     <Compile Include="TestEnums\CharEnum.cs" />
@@ -92,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Demo.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Demo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
