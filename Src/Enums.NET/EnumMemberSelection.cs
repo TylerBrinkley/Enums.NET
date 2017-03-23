@@ -23,11 +23,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
+
+#if DISPLAY_ATTRIBUTE
+using System.ComponentModel.DataAnnotations;
+#endif
+
 namespace EnumsNET
 {
     /// <summary>
     /// Specifies what enum members to include.
     /// </summary>
+    [Flags]
     public enum EnumMemberSelection
     {
         /// <summary>
@@ -41,6 +48,12 @@ namespace EnumsNET
         /// <summary>
         /// Include each flag enum member.
         /// </summary>
-        Flags = 2
+        Flags = 2,
+#if DISPLAY_ATTRIBUTE
+        /// <summary>
+        /// Include enum members in display order using <see cref="DisplayAttribute.Order"/>.
+        /// </summary>
+        DisplayOrder = 4
+#endif
     }
 }

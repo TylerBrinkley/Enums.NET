@@ -174,6 +174,11 @@ namespace EnumsNET.Tests
             {
                 Assert.IsTrue(numericFilterOperators[i - 1] <= numericFilterOperators[i]);
             }
+
+#if DISPLAY_ATTRIBUTE
+            CollectionAssert.AreEqual(new[] { DisplayAttributeEnum.Up, DisplayAttributeEnum.Down, DisplayAttributeEnum.Left, DisplayAttributeEnum.Right }, GetValues<DisplayAttributeEnum>());
+            CollectionAssert.AreEqual(new[] { DisplayAttributeEnum.Left, DisplayAttributeEnum.Up, DisplayAttributeEnum.Down, DisplayAttributeEnum.Right }, GetValues<DisplayAttributeEnum>(EnumMemberSelection.DisplayOrder));
+#endif
         }
 
         [Test]

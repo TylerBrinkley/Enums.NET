@@ -230,12 +230,19 @@ namespace EnumsNET
             switch (selection)
             {
                 case EnumMemberSelection.All:
+#if DISPLAY_ATTRIBUTE
+                case EnumMemberSelection.DisplayOrder:
+#endif
                     return _valueMap.Count + (_duplicateValues?.Count ?? 0);
-                case EnumMemberSelection.Distinct:
-                    return _valueMap.Count;
-                case EnumMemberSelection.Flags:
-                    return GetFlags(AllFlags).Count();
                 default:
+                    if (selection.HasAnyFlags(EnumMemberSelection.Flags))
+                    {
+                        return GetFlags(AllFlags).Count();
+                    }
+                    if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
+                    {
+                        return _valueMap.Count;
+                    }
                     selection.Validate(nameof(selection));
                     return 0;
             }
@@ -243,37 +250,44 @@ namespace EnumsNET
 
         public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembers(EnumMemberSelection selection)
         {
+            IEnumerable<EnumMemberInternal<TInt, TIntProvider>> members;
             switch (selection)
             {
                 case EnumMemberSelection.All:
-                    return _duplicateValues == null ? _valueMap.Values : GetMembersInternal();
-                case EnumMemberSelection.Distinct:
-                    return _valueMap.Values;
-                case EnumMemberSelection.Flags:
-                    return GetFlagMembers(AllFlags);
+#if DISPLAY_ATTRIBUTE
+                case EnumMemberSelection.DisplayOrder:
+#endif
+                    members = _duplicateValues == null ? _valueMap.Values : GetMembersInternal();
+                    break;
                 default:
-                    selection.Validate(nameof(selection));
-                    return null;
+                    if (selection.HasAnyFlags(EnumMemberSelection.Flags))
+                    {
+                        members = GetFlagMembers(AllFlags);
+                    }
+                    else if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
+                    {
+                        members = _valueMap.Values;
+                    }
+                    else
+                    {
+                        selection.Validate(nameof(selection));
+                        return null;
+                    }
+                    break;
             }
+
+#if DISPLAY_ATTRIBUTE
+            return selection.HasAnyFlags(EnumMemberSelection.DisplayOrder)
+                ? members.OrderBy(member => member.Attributes.Get<DisplayAttribute>()?.GetOrder() ?? int.MaxValue)
+                : members;
+#else
+            return members;
+#endif
         }
 
         public IEnumerable<string> GetNames(EnumMemberSelection selection) => GetMembers(selection).Select(member => member.Name);
 
-        public IEnumerable<TInt> GetValues(EnumMemberSelection selection)
-        {
-            switch (selection)
-            {
-                case EnumMemberSelection.All:
-                    return _duplicateValues == null ? _valueMap.Keys : GetMembersInternal().Select(member => member.Value);
-                case EnumMemberSelection.Distinct:
-                    return _valueMap.Keys;
-                case EnumMemberSelection.Flags:
-                    return GetFlags(AllFlags);
-                default:
-                    selection.Validate(nameof(selection));
-                    return null;
-            }
-        }
+        public IEnumerable<TInt> GetValues(EnumMemberSelection selection) => GetMembers(selection).Select(member => member.Value);
 
         private IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetMembersInternal()
         {
