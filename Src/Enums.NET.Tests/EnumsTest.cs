@@ -921,7 +921,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(false, GetUnderlyingValue(BooleanEnum.No));
             Assert.AreEqual('b', GetUnderlyingValue(CharEnum.B));
         }
-#endregion
+        #endregion
 
         #region Defined Values Main Methods
         [Test]

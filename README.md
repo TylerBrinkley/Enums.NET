@@ -7,7 +7,7 @@ I'm trying to integrate my improvements into [corefx](https://github.com/dotnet/
 1. Most of its static methods are non-generic which make them a pain to use and cause poor performance.
 2. Most of its methods use reflection on each call without any sort of caching causing poor performance.
 3. Its support for flag enum operations is extremely limited. The only flag enum method on `System.Enum` is the `HasFlag` method which is very slow, is not type-safe, and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
-4. It has no built-in support for retrieval of `Attribute`s applied to enum members which is a common practice for retrieval of the `DescriptionAttribute` or `EnumMemberAttribute`.
+4. It has no built-in support for retrieval of `Attribute`s applied to enum members which is a common practice for retrieval of the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
 
 Enums.NET solves all of these issues and more.
 

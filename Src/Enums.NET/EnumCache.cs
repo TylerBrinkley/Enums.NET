@@ -33,7 +33,6 @@ using System.Threading;
 using EnumsNET.Numerics;
 using System.Runtime.CompilerServices;
 
-
 #if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
 #endif
