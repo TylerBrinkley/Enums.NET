@@ -54,7 +54,7 @@
     }*/
     "netcoreapp1.0": {
       "buildOptions": {
-        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "DISPLAY_ATTRIBUTE", "COVARIANCE" /*, "ICONVERTIBLE" */ ]
+        "define": [ "NETSTANDARD", "NETSTANDARD1_0", "ENUM_MEMBER_ATTRIBUTE", "COVARIANCE"/*, "ICONVERTIBLE", "DISPLAY_ATTRIBUTE"*/ ]
       },
       "dependencies": {
         "Microsoft.NETCore.App": {
