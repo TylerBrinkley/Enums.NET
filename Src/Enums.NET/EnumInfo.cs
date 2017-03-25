@@ -90,11 +90,31 @@ namespace EnumsNET
         #region Type Methods
         public int GetMemberCount(EnumMemberSelection selection) => _cache.GetMemberCount(selection);
 
-        public IEnumerable<EnumMember<TEnum>> GetMembers(EnumMemberSelection selection) => _cache.GetMembers(selection).Select(member => (EnumMember<TEnum>)member.EnumMember);
+        public IEnumerable<EnumMember<TEnum>> GetMembers(EnumMemberSelection selection) => SelectEnumMembers(_cache.GetMembers(selection));
 
         public IEnumerable<string> GetNames(EnumMemberSelection selection) => _cache.GetNames(selection);
 
-        public IEnumerable<TEnum> GetValues(EnumMemberSelection selection) => _cache.GetValues(selection).Select(value => ToEnum(value));
+        public IEnumerable<TEnum> GetValues(EnumMemberSelection selection) => SelectEnumValues(_cache.GetValues(selection));
+
+        private IEnumerable<EnumMember<TEnum>> SelectEnumMembers(IEnumerable<EnumMemberInternal<TInt, TIntProvider>> members)
+        {
+            var list = new List<EnumMember<TEnum>>();
+            foreach (var member in members)
+            {
+                list.Add((EnumMember<TEnum>)member.EnumMember);
+            }
+            return list;
+        }
+
+        private IEnumerable<TEnum> SelectEnumValues(IEnumerable<TInt> values)
+        {
+            var list = new List<TEnum>();
+            foreach (var value in values)
+            {
+                list.Add(ToEnum(value));
+            }
+            return list;
+        }
         #endregion
 
         #region ToObject
@@ -239,9 +259,9 @@ namespace EnumsNET
 
         public string FormatFlags(TEnum value, string delimiter, EnumFormat[] formats) => _cache.FormatFlags(ToInt(value), delimiter, formats);
 
-        public IEnumerable<TEnum> GetFlags(TEnum value) => _cache.GetFlags(ToInt(value)).Select(flag => ToEnum(flag));
+        public IEnumerable<TEnum> GetFlags(TEnum value) => SelectEnumValues(_cache.GetFlags(ToInt(value)));
 
-        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => _cache.GetFlagMembers(ToInt(value)).Select(flag => (EnumMember<TEnum>)flag.EnumMember);
+        public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => SelectEnumMembers(_cache.GetFlagMembers(ToInt(value)));
 
         public bool HasAnyFlags(TEnum value) => _cache.HasAnyFlags(ToInt(value));
 
@@ -265,7 +285,18 @@ namespace EnumsNET
 
         public TEnum CombineFlags(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4) => ToEnum(_cache.CombineFlags(ToInt(flag0), ToInt(flag1), ToInt(flag2), ToInt(flag3), ToInt(flag4)));
 
-        public TEnum CombineFlags(IEnumerable<TEnum> flags) => ToEnum(_cache.CombineFlags(flags?.Select(flag => ToInt(flag))));
+        public TEnum CombineFlags(IEnumerable<TEnum> flags)
+        {
+            TInt result = default(TInt);
+            if (flags != null)
+            {
+                foreach (var flag in flags)
+                {
+                    result = _cache.CombineFlags(result, ToInt(flag));
+                }
+            }
+            return ToEnum(result);
+        }
 
         public TEnum RemoveFlags(TEnum value, TEnum otherFlags) => ToEnum(_cache.RemoveFlags(ToInt(value), ToInt(otherFlags)));
         #endregion
@@ -324,7 +355,17 @@ namespace EnumsNET
 #endif
             ;
 
-        public IEnumerable<object> GetFlags(object value) => GetFlags(ToObject(value)).Select(flag => (object)flag);
+        public IEnumerable<object> GetFlags(object value) => SelectEnumObjects(GetFlags(ToObject(value)));
+
+        private static IEnumerable<object> SelectEnumObjects(IEnumerable<TEnum> values)
+        {
+            var list = new List<object>();
+            foreach (var value in values)
+            {
+                list.Add(value);
+            }
+            return list;
+        }
 
         public IEnumerable<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value))
 #if !COVARIANCE
@@ -336,7 +377,7 @@ namespace EnumsNET
 
         public object GetUnderlyingValue(object value) => GetUnderlyingValue(ToObject(value));
 
-        IEnumerable<object> IEnumInfo.GetValues(EnumMemberSelection selection) => GetValues(selection).Select(value => (object)value);
+        IEnumerable<object> IEnumInfo.GetValues(EnumMemberSelection selection) => SelectEnumObjects(GetValues(selection));
 
         public bool HasAllFlags(object value) => HasAllFlags(ToObject(value));
 
@@ -356,7 +397,18 @@ namespace EnumsNET
 
         object IEnumInfo.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] formats) => ParseFlags(value, ignoreCase, delimiter, formats);
 
-        public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags?.Select(flag => ToObject(flag)));
+        public object CombineFlags(IEnumerable<object> flags)
+        {
+            var values = new List<TEnum>();
+            if (flags != null)
+            {
+                foreach (var flag in flags)
+                {
+                    values.Add(ToObject(flag));
+                }
+            }
+            return CombineFlags(values);
+        }
 
         public object CombineFlags(object value, object otherFlags) => CombineFlags(ToObject(value), ToObject(otherFlags));
 

@@ -216,6 +216,7 @@ namespace EnumsNET
 
             if (duplicateValues.Count > 0)
             {
+                duplicateValues.TrimExcess();
                 // Makes sure is in increasing order
                 duplicateValues.Sort((first, second) => first.Value.CompareTo(second.Value));
                 _duplicateValues = duplicateValues;
