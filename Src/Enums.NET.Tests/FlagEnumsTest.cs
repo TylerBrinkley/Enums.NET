@@ -45,11 +45,11 @@ namespace EnumsNET.Tests
             {
                 if (i >= 0 && i <= 15)
                 {
-                    Assert.IsTrue(FlagEnums.IsValidFlagCombination((ColorFlagEnum)i));
+                    Assert.IsTrue(((ColorFlagEnum)i).IsValidFlagCombination());
                 }
                 else
                 {
-                    Assert.IsFalse(FlagEnums.IsValidFlagCombination((ColorFlagEnum)i));
+                    Assert.IsFalse(((ColorFlagEnum)i).IsValidFlagCombination());
                 }
             }
         }

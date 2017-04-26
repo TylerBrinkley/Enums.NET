@@ -439,10 +439,22 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="flags"/> contains a value that is of an invalid type.</exception>
-        public static object CombineFlags(Type enumType, params object[] flags)
+        public static object CombineFlags(Type enumType, params object[] flags) => CombineFlags(enumType, (IEnumerable<object>)flags);
+
+        /// <summary>
+        /// Combines all of the flags of <paramref name="flags"/>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="flags">The flags enum values.</param>
+        /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="flags"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="flags"/> contains a value that is of an invalid type.</exception>
+        public static object CombineFlags(Type enumType, IEnumerable<object> flags)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
-            
+
             return info.EnumInfo.CombineFlags(info.IsNullable ? flags?.Where(flag => flag != null) : flags);
         }
 

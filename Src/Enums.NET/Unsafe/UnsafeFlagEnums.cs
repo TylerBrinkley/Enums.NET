@@ -259,6 +259,15 @@ namespace EnumsNET.Unsafe
         public static TEnum CombineFlags<TEnum>(params TEnum[] flags) => UnsafeEnums.GetInfo<TEnum>().CombineFlags(flags);
 
         /// <summary>
+        /// Combines all of the flags of <paramref name="flags"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="flags">The flags enum values.</param>
+        /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static TEnum CombineFlags<TEnum>(IEnumerable<TEnum> flags) => UnsafeEnums.GetInfo<TEnum>().CombineFlags(flags);
+
+        /// <summary>
         /// Returns <paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

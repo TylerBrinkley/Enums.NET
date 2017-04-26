@@ -61,7 +61,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The flags enum value.</param>
         /// <returns>Indication of whether <paramref name="value"/> is a valid flag combination of <typeparamref name="TEnum"/>'s defined flags.</returns>
-        public static bool IsValidFlagCombination<[EnumConstraint] TEnum>(TEnum value)
+        public static bool IsValidFlagCombination<[EnumConstraint] TEnum>(this TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.IsValidFlagCombination(value);
 
         /// <summary>
@@ -256,6 +256,15 @@ namespace EnumsNET
         /// <param name="flags">The flags enum values.</param>
         /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
         public static TEnum CombineFlags<[EnumConstraint] TEnum>(params TEnum[] flags)
+            where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flags);
+
+        /// <summary>
+        /// Combines all of the flags of <paramref name="flags"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="flags">The flags enum values.</param>
+        /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
+        public static TEnum CombineFlags<[EnumConstraint] TEnum>(IEnumerable<TEnum> flags)
             where TEnum : struct => Enums<TEnum>.Info.CombineFlags(flags);
 
         /// <summary>

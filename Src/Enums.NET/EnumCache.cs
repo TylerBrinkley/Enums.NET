@@ -125,7 +125,7 @@ namespace EnumsNET
             {
                 return;
             }
-            var duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>();
+            List<EnumMemberInternal<TInt, TIntProvider>> duplicateValues = null;
 
             // This is necessary due to a .NET reflection bug with retrieving Boolean Enums values
             Dictionary<string, TInt> fieldDictionary = null;
@@ -160,7 +160,7 @@ namespace EnumsNET
                         _valueMap[value] = member;
                         member = existing;
                     }
-                    duplicateValues.Add(member);
+                    (duplicateValues ?? (duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>())).Add(member);
                 }
                 else
                 {
@@ -213,7 +213,7 @@ namespace EnumsNET
             
             _isContiguous = Provider.Subtract(_maxDefined, Provider.Create(_valueMap.Count - 1)).Equals(_minDefined);
 
-            if (duplicateValues.Count > 0)
+            if (duplicateValues != null)
             {
                 duplicateValues.TrimExcess();
                 // Makes sure is in increasing order
