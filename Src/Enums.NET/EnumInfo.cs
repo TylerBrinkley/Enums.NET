@@ -96,25 +96,9 @@ namespace EnumsNET
 
         public IEnumerable<TEnum> GetValues(EnumMemberSelection selection) => SelectEnumValues(_cache.GetValues(selection));
 
-        private IEnumerable<EnumMember<TEnum>> SelectEnumMembers(IEnumerable<EnumMemberInternal<TInt, TIntProvider>> members)
-        {
-            var list = new List<EnumMember<TEnum>>();
-            foreach (var member in members)
-            {
-                list.Add((EnumMember<TEnum>)member.EnumMember);
-            }
-            return list;
-        }
+        private IEnumerable<EnumMember<TEnum>> SelectEnumMembers(IEnumerable<EnumMemberInternal<TInt, TIntProvider>> members) => members.Select(member => (EnumMember<TEnum>)member.EnumMember);
 
-        private IEnumerable<TEnum> SelectEnumValues(IEnumerable<TInt> values)
-        {
-            var list = new List<TEnum>();
-            foreach (var value in values)
-            {
-                list.Add(ToEnum(value));
-            }
-            return list;
-        }
+        private IEnumerable<TEnum> SelectEnumValues(IEnumerable<TInt> values) => values.Select(value => ToEnum(value));
         #endregion
 
         #region ToObject
@@ -357,15 +341,7 @@ namespace EnumsNET
 
         public IEnumerable<object> GetFlags(object value) => SelectEnumObjects(GetFlags(ToObject(value)));
 
-        private static IEnumerable<object> SelectEnumObjects(IEnumerable<TEnum> values)
-        {
-            var list = new List<object>();
-            foreach (var value in values)
-            {
-                list.Add(value);
-            }
-            return list;
-        }
+        private static IEnumerable<object> SelectEnumObjects(IEnumerable<TEnum> values) => values.Select(value => (object)value);
 
         public IEnumerable<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value))
 #if !COVARIANCE
@@ -397,18 +373,7 @@ namespace EnumsNET
 
         object IEnumInfo.ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] formats) => ParseFlags(value, ignoreCase, delimiter, formats);
 
-        public object CombineFlags(IEnumerable<object> flags)
-        {
-            var values = new List<TEnum>();
-            if (flags != null)
-            {
-                foreach (var flag in flags)
-                {
-                    values.Add(ToObject(flag));
-                }
-            }
-            return CombineFlags(values);
-        }
+        public object CombineFlags(IEnumerable<object> flags) => CombineFlags(flags?.Select(flag => ToObject(flag)));
 
         public object CombineFlags(object value, object otherFlags) => CombineFlags(ToObject(value), ToObject(otherFlags));
 
