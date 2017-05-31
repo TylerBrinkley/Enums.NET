@@ -21,6 +21,11 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="2.0.10" PrivateAssets="All" />
+  </ItemGroup>
+  
   <ItemGroup Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
@@ -40,15 +45,13 @@
     <AssemblyTitle>Enums.NET .NET 2.0</AssemblyTitle>
     <DefineConstants>NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
+  
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1' OR '$(TargetFramework)' == 'netstandard1.0'">
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.1.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.1.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1'">
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.1.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="Fody" Version="2.0.10" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <AssemblyTitle>Enums.NET .NET Standard 1.3</AssemblyTitle>
