@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET", "Enums.NET\Enums.NET.csproj", "{86547778-1DCF-43A6-B951-0D0A5207DF21}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -11,6 +11,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weavers", "Weavers\Weavers.csproj", "{0BE636C9-A909-431F-AED0-C6B7F25DE336}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Tests", "Enums.NET.Tests\Enums.NET.Tests.csproj", "{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0F202B3-6AF5-4E4F-8C42-2D70925D0E72}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		System.Enum-api-diff-tabled.md = System.Enum-api-diff-tabled.md
+		System.Enum-api-diff.md = System.Enum-api-diff.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.TestEnums", "Enums.NET.TestEnums\Enums.NET.TestEnums.csproj", "{D52F6046-879A-49C2-8E1D-810E8119FF80}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0BE636C9-A909-431F-AED0-C6B7F25DE336} = {0BE636C9-A909-431F-AED0-C6B7F25DE336}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +42,10 @@ Global
 		{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D52F6046-879A-49C2-8E1D-810E8119FF80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D52F6046-879A-49C2-8E1D-810E8119FF80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D52F6046-879A-49C2-8E1D-810E8119FF80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D52F6046-879A-49C2-8E1D-810E8119FF80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

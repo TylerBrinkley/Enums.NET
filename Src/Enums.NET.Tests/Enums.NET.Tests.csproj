@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.1;netcoreapp1.0;net45;net40;net35;net20</TargetFrameworks>
+    <TargetFrameworks>net45;net40;net35;net20;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.7.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0-alpha1" />
-    <PackageReference Include="Fody" Version="2.0.10" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'netcoreapp1.0' OR '$(TargetFramework)' == 'net45'">
@@ -15,11 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Enums.NET.TestEnums\Enums.NET.TestEnums.csproj" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <AssemblyTitle>Enums.NET Tests</AssemblyTitle>
