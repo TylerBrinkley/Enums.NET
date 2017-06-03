@@ -3,7 +3,8 @@
     <TargetFrameworks>net45;net40;net35;net20;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.1.1</FileVersion>
-    <Version>2.1.1</Version>
+    <VersionPrefix>2.1.1</VersionPrefix>
+    <VersionSufix></VersionSufix>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
     <Description>Enums.NET is a high-performance type-safe .NET enum utility library</Description>
@@ -11,7 +12,7 @@
     <Summary>Enums.NET is a high-performance type-safe .NET enum utility library</Summary>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>Enums.NET</PackageId>
-    <PackageTags>enum enums</PackageTags>
+    <PackageTags>enum enums flag flags</PackageTags>
     <PackageProjectUrl>https://github.com/TylerBrinkley/Enums.NET</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/TylerBrinkley/Enums.NET/master/LICENSE.md</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/TylerBrinkley/Enums.NET</RepositoryUrl>
