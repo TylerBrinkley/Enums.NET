@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#if DISPLAY_ATTRIBUTE
+using System.ComponentModel.DataAnnotations;
 using EnumsNET.Tests.Properties;
 
 namespace EnumsNET.Tests.TestEnums
@@ -15,3 +16,4 @@ namespace EnumsNET.Tests.TestEnums
         Right
     }
 }
+#endif

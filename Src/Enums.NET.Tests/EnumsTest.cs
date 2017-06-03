@@ -14,6 +14,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -165,8 +166,8 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new[] { ColorFlagEnum.Black, ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet, ColorFlagEnum.All }, GetValues<ColorFlagEnum>());
             CollectionAssert.AreEqual((DateFilterOperator[])Enum.GetValues(typeof(DateFilterOperator)), GetValues<DateFilterOperator>());
             CollectionAssert.AreEqual(new ByteEnum[0], GetValues<ByteEnum>());
-            CollectionAssert.AreEqual(new[] { BooleanEnum.No }, GetValues<BooleanEnum>());
-            CollectionAssert.AreEqual(new[] { CharEnum.A, CharEnum.B, CharEnum.C }, GetValues<CharEnum>());
+            CollectionAssert.AreEqual(new List<BooleanEnum> { ToObject<BooleanEnum>(0) }, GetValues<BooleanEnum>());
+            CollectionAssert.AreEqual(new List<CharEnum> { ToObject<CharEnum>('a'), ToObject<CharEnum>('b'), ToObject<CharEnum>('c') }, GetValues<CharEnum>());
 
             // Duplicate order check
             var numericFilterOperators = GetValues<NumericOperator>().ToArray();
@@ -267,23 +268,23 @@ namespace EnumsNET.Tests
             Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1L));
             Assert.AreEqual((UInt64Enum)1, ToObject<UInt64Enum>(1UL));
 
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((sbyte)1));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((byte)1));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((short)1));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>((ushort)1));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1U));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1L));
-            Assert.AreEqual((BooleanEnum)1, ToObject<BooleanEnum>(1UL));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>((sbyte)1));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>((byte)1));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>((short)1));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>((ushort)1));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>(1));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>(1U));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>(1L));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), ToObject<BooleanEnum>(1UL));
 
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((sbyte)1));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((byte)1));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((short)1));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>((ushort)1));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1U));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1L));
-            Assert.AreEqual((CharEnum)1, ToObject<CharEnum>(1UL));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>((sbyte)1));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>((byte)1));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>((short)1));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>((ushort)1));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>(1));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>(1U));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>(1L));
+            Assert.AreEqual(ToObject<CharEnum>(1), ToObject<CharEnum>(1UL));
         }
 
         [Test]
@@ -471,7 +472,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(uint64Value, uint64Result);
 
             BooleanEnum booleanResult;
-            var booleanValue = (BooleanEnum)1;
+            var booleanValue = ToObject<BooleanEnum>(1);
             Assert.IsTrue(TryToObject((sbyte)1, out booleanResult));
             Assert.AreEqual(booleanValue, booleanResult);
             Assert.IsTrue(TryToObject((byte)1, out booleanResult));
@@ -490,7 +491,7 @@ namespace EnumsNET.Tests
             Assert.AreEqual(booleanValue, booleanResult);
 
             CharEnum charResult;
-            var charValue = (CharEnum)1;
+            var charValue = ToObject<CharEnum>(1);
             Assert.IsTrue(TryToObject((sbyte)1, out charResult));
             Assert.AreEqual(charValue, charResult);
             Assert.IsTrue(TryToObject((byte)1, out charResult));
@@ -799,20 +800,20 @@ namespace EnumsNET.Tests
                 Assert.AreEqual(value.ToString(), value.AsString());
             }
 
-            Assert.AreEqual("No", BooleanEnum.No.AsString());
-            Assert.AreEqual("True", ((BooleanEnum)1).AsString()); // true.ToString()
-            Assert.AreEqual("A", CharEnum.A.AsString());
-            Assert.AreEqual("B", CharEnum.B.AsString());
-            Assert.AreEqual("C", CharEnum.C.AsString());
-            Assert.AreEqual("d", ((CharEnum)'d').AsString());
+            Assert.AreEqual("No", ToObject<BooleanEnum>(0).AsString());
+            Assert.AreEqual("True", ToObject<BooleanEnum>(1).AsString()); // true.ToString()
+            Assert.AreEqual("A", ToObject<CharEnum>('a').AsString());
+            Assert.AreEqual("B", ToObject<CharEnum>('b').AsString());
+            Assert.AreEqual("C", ToObject<CharEnum>('c').AsString());
+            Assert.AreEqual("d", ToObject<CharEnum>('d').AsString());
 
 #if !NET20 && !NET35
-            Assert.AreEqual("No", BooleanEnum.No.ToString());
-            Assert.AreEqual("True", ((BooleanEnum)1).ToString());
-            Assert.AreEqual("A", CharEnum.A.ToString());
-            Assert.AreEqual("B", CharEnum.B.ToString());
-            Assert.AreEqual("C", CharEnum.C.ToString());
-            Assert.AreEqual("d", ((CharEnum)'d').ToString());
+            Assert.AreEqual("No", ToObject<BooleanEnum>(0).ToString());
+            Assert.AreEqual("True", ToObject<BooleanEnum>(1).ToString());
+            Assert.AreEqual("A", ToObject<CharEnum>('a').ToString());
+            Assert.AreEqual("B", ToObject<CharEnum>('b').ToString());
+            Assert.AreEqual("C", ToObject<CharEnum>('c').ToString());
+            Assert.AreEqual("d", ToObject<CharEnum>('d').ToString());
 #endif
         }
 
@@ -826,12 +827,12 @@ namespace EnumsNET.Tests
             Assert.AreEqual("Derecho", DisplayAttributeEnum.Right.AsString(EnumFormat.DisplayName));
 #endif
 
-            Assert.AreEqual("False", BooleanEnum.No.AsString(EnumFormat.UnderlyingValue));
-            Assert.AreEqual("0", BooleanEnum.No.AsString(EnumFormat.DecimalValue));
-            Assert.AreEqual("00", BooleanEnum.No.AsString(EnumFormat.HexadecimalValue));
-            Assert.AreEqual("a", CharEnum.A.AsString(EnumFormat.UnderlyingValue));
-            Assert.AreEqual(((ushort)'a').ToString(), CharEnum.A.AsString(EnumFormat.DecimalValue));
-            Assert.AreEqual(((ushort)'a').ToString("X4"), CharEnum.A.AsString(EnumFormat.HexadecimalValue));
+            Assert.AreEqual("False", ToObject<BooleanEnum>(0).AsString(EnumFormat.UnderlyingValue));
+            Assert.AreEqual("0", ToObject<BooleanEnum>(0).AsString(EnumFormat.DecimalValue));
+            Assert.AreEqual("00", ToObject<BooleanEnum>(0).AsString(EnumFormat.HexadecimalValue));
+            Assert.AreEqual("a", ToObject<CharEnum>('a').AsString(EnumFormat.UnderlyingValue));
+            Assert.AreEqual(((ushort)'a').ToString(), ToObject<CharEnum>('a').AsString(EnumFormat.DecimalValue));
+            Assert.AreEqual(((ushort)'a').ToString("X4"), ToObject<CharEnum>('a').AsString(EnumFormat.HexadecimalValue));
         }
 
         [Test]
@@ -918,8 +919,8 @@ namespace EnumsNET.Tests
         public void GetUnderlyingValue_ReturnsExpected_OnAny()
         {
             Assert.AreEqual(2, GetUnderlyingValue(NumericOperator.GreaterThan));
-            Assert.AreEqual(false, GetUnderlyingValue(BooleanEnum.No));
-            Assert.AreEqual('b', GetUnderlyingValue(CharEnum.B));
+            Assert.AreEqual(false, GetUnderlyingValue(ToObject<BooleanEnum>(0)));
+            Assert.AreEqual('b', GetUnderlyingValue(ToObject<CharEnum>('b')));
         }
         #endregion
 
@@ -945,18 +946,18 @@ namespace EnumsNET.Tests
             Assert.AreEqual("NotGreaterThan", NumericOperator.LessThanOrEquals.GetName());
             Assert.AreEqual("NotGreaterThan", NumericOperator.NotGreaterThan.GetName());
 
-            Assert.AreEqual("No", BooleanEnum.No.GetName());
-            Assert.IsNull(((BooleanEnum)1).GetName());
+            Assert.AreEqual("No", ToObject<BooleanEnum>(0).GetName());
+            Assert.IsNull(ToObject<BooleanEnum>(1).GetName());
 
-            Assert.AreEqual("A", CharEnum.A.GetName());
-            Assert.IsNull(((CharEnum)'d').GetName());
+            Assert.AreEqual("A", ToObject<CharEnum>('a').GetName());
+            Assert.IsNull(ToObject<CharEnum>('d').GetName());
 
 #if !NET35 && !NET20
-            Assert.AreEqual("No", Enum.GetName(typeof(BooleanEnum), BooleanEnum.No));
-            Assert.IsNull(Enum.GetName(typeof(BooleanEnum), (BooleanEnum)1));
+            Assert.AreEqual("No", Enum.GetName(typeof(BooleanEnum), ToObject<BooleanEnum>(0)));
+            Assert.IsNull(Enum.GetName(typeof(BooleanEnum), ToObject<BooleanEnum>(1)));
             
-            Assert.AreEqual("A", Enum.GetName(typeof(CharEnum), CharEnum.A));
-            Assert.IsNull(Enum.GetName(typeof(CharEnum), (CharEnum)'d'));
+            Assert.AreEqual("A", Enum.GetName(typeof(CharEnum), ToObject<CharEnum>('a')));
+            Assert.IsNull(Enum.GetName(typeof(CharEnum), ToObject<CharEnum>('d')));
 #endif
         }
         #endregion
@@ -1007,17 +1008,17 @@ namespace EnumsNET.Tests
         [Test]
         public void Parse()
         {
-            Assert.AreEqual(BooleanEnum.No, Parse<BooleanEnum>("No"));
-            Assert.AreEqual(BooleanEnum.No, Parse<BooleanEnum>("False"));
-            Assert.AreEqual(BooleanEnum.No, Parse<BooleanEnum>("0", EnumFormat.DecimalValue));
-            Assert.AreEqual((BooleanEnum)1, Parse<BooleanEnum>("True"));
-            Assert.AreEqual((BooleanEnum)1, Parse<BooleanEnum>("1", EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("No"));
+            Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("False"));
+            Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("0", EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), Parse<BooleanEnum>("True"));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), Parse<BooleanEnum>("1", EnumFormat.DecimalValue));
 
-            Assert.AreEqual(CharEnum.A, Parse<CharEnum>("A"));
-            Assert.AreEqual(CharEnum.A, Parse<CharEnum>("a"));
-            Assert.AreEqual(CharEnum.A, Parse<CharEnum>(((ushort)'a').ToString(), EnumFormat.DecimalValue));
-            Assert.AreEqual((CharEnum)'d', Parse<CharEnum>("d"));
-            Assert.AreEqual((CharEnum)'d', Parse<CharEnum>(((ushort)'d').ToString(), EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>("A"));
+            Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>("a"));
+            Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>(((ushort)'a').ToString(), EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<CharEnum>('d'), Parse<CharEnum>("d"));
+            Assert.AreEqual(ToObject<CharEnum>('d'), Parse<CharEnum>(((ushort)'d').ToString(), EnumFormat.DecimalValue));
         }
         #endregion
     }
