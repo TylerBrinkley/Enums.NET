@@ -12,7 +12,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Tests", "Enums.NE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0F202B3-6AF5-4E4F-8C42-2D70925D0E72}"
 	ProjectSection(SolutionItems) = preProject
+		..\Build\build.ps1 = ..\Build\build.ps1
 		..\README.md = ..\README.md
+		..\Build\runbuild.ps1 = ..\Build\runbuild.ps1
 		System.Enum-api-diff-tabled.md = System.Enum-api-diff-tabled.md
 		System.Enum-api-diff.md = System.Enum-api-diff.md
 	EndProjectSection
