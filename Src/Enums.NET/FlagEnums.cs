@@ -61,7 +61,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The flags enum value.</param>
         /// <returns>Indication of whether <paramref name="value"/> is a valid flag combination of <typeparamref name="TEnum"/>'s defined flags.</returns>
-        public static bool IsValidFlagCombination<[EnumConstraint] TEnum>(this TEnum value)
+        public static bool IsValidFlagCombination<[EnumConstraint] TEnum>(TEnum value)
             where TEnum : struct => Enums<TEnum>.Info.IsValidFlagCombination(value);
 
         /// <summary>

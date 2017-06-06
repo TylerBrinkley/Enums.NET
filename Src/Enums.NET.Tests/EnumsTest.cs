@@ -590,7 +590,7 @@ namespace EnumsNET.Tests
             for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
             {
                 var value = (ColorFlagEnum)i;
-                Assert.AreEqual(value.IsValidFlagCombination(), value.IsValid());
+                Assert.AreEqual(FlagEnums.IsValidFlagCombination(value), value.IsValid());
             }
         }
 

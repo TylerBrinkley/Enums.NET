@@ -175,6 +175,6 @@ class EnumsNETDemo
     [AttributeUsage(AttributeTargets.Enum)]
     class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => value.IsValidFlagCombination() && !value.HasAllFlags(DayType.Weekday | DayType.Weekend);
+        public bool IsValid(DayType value) => FlagEnums.IsValidFlagCombination(value) && !value.HasAllFlags(DayType.Weekday | DayType.Weekend);
     }
 }
