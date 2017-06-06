@@ -1,7 +1,7 @@
 ﻿properties {
-  $zipFileName = "Enums.NET.2.1.1.zip"
+  $zipFileName = "Enums.NET.2.2.0.zip"
   $majorVersion = "2.0"
-  $majorWithReleaseVersion = "2.1.1"
+  $majorWithReleaseVersion = "2.2.0"
   $nugetPrelease = $null
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Enums.NET"
