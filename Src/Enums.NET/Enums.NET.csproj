@@ -35,11 +35,11 @@
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <AssemblyTitle>Enums.NET</AssemblyTitle>
-    <DefineConstants>NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;CONCURRENT_DICTIONARY</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
     <AssemblyTitle>Enums.NET .NET 4.0</AssemblyTitle>
-    <DefineConstants>NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;CONCURRENT_DICTIONARY</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net35'">
     <AssemblyTitle>Enums.NET .NET 3.5</AssemblyTitle>
@@ -59,11 +59,11 @@
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <AssemblyTitle>Enums.NET .NET Standard 1.3</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
+    <DefineConstants>NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;CONCURRENT_DICTIONARY</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
     <AssemblyTitle>Enums.NET .NET Standard 1.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD1_1;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE</DefineConstants>
+    <DefineConstants>NETSTANDARD;NETSTANDARD1_1;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;CONCURRENT_DICTIONARY</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.0'">
     <AssemblyTitle>Enums.NET .NET Standard 1.0</AssemblyTitle>

@@ -24,11 +24,11 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace EnumsNET.NonGeneric
 {
@@ -38,50 +38,37 @@ namespace EnumsNET.NonGeneric
     /// </summary>
     public static class NonGenericEnums
     {
-        private static Dictionary<Type, NonGenericEnumInfo> _nonGenericEnumInfos = new Dictionary<Type, NonGenericEnumInfo>();
+        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _nonGenericEnumInfos = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
         
         internal static NonGenericEnumInfo GetNonGenericEnumInfo(Type enumType)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
 
-            var nonGenericEnumInfos = _nonGenericEnumInfos;
-            NonGenericEnumInfo info;
-            if (!nonGenericEnumInfos.TryGetValue(enumType, out info))
+            return _nonGenericEnumInfos.GetOrAdd(enumType, GetEnumInfo);
+        }
+
+        private static NonGenericEnumInfo GetEnumInfo(Type enumType)
+        {
+            if (enumType.IsEnum())
             {
-                if (enumType.IsEnum())
-                {
-                    var closedEnumsType = typeof(Enums<>).MakeGenericType(enumType);
-                    info = new NonGenericEnumInfo((IEnumInfo)closedEnumsType.
+                var closedEnumsType = typeof(Enums<>).MakeGenericType(enumType);
+                return new NonGenericEnumInfo((IEnumInfo)closedEnumsType.
 #if TYPE_REFLECTION
                         GetField("Info", BindingFlags.Static | BindingFlags.Public)
 #else
                         GetTypeInfo().GetDeclaredField("Info")
 #endif
                     .GetValue(null), false);
-                }
-                else
-                {
-                    var nonNullableEnumType = Nullable.GetUnderlyingType(enumType);
-                    if (nonNullableEnumType?.IsEnum() != true)
-                    {
-                        throw new ArgumentException("must be an enum type", nameof(enumType));
-                    }
-                    info = new NonGenericEnumInfo(GetInfo(nonNullableEnumType), true);
-                }
-                Dictionary<Type, NonGenericEnumInfo> oldNonGenericEnumInfos;
-                do
-                {
-                    NonGenericEnumInfo foundInfo;
-                    if (nonGenericEnumInfos.TryGetValue(enumType, out foundInfo))
-                    {
-                        return foundInfo;
-                    }
-                    oldNonGenericEnumInfos = nonGenericEnumInfos;
-                    nonGenericEnumInfos = new Dictionary<Type, NonGenericEnumInfo>(nonGenericEnumInfos);
-                    nonGenericEnumInfos.Add(enumType, info);
-                } while ((nonGenericEnumInfos = Interlocked.CompareExchange(ref _nonGenericEnumInfos, nonGenericEnumInfos, oldNonGenericEnumInfos)) != oldNonGenericEnumInfos);
             }
-            return info;
+            else
+            {
+                var nonNullableEnumType = Nullable.GetUnderlyingType(enumType);
+                if (nonNullableEnumType?.IsEnum() != true)
+                {
+                    throw new ArgumentException("must be an enum type", nameof(enumType));
+                }
+                return new NonGenericEnumInfo(GetInfo(nonNullableEnumType), true);
+            }
         }
 
 #if NET45
