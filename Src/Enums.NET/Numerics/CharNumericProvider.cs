@@ -35,8 +35,7 @@ namespace EnumsNET.Numerics
 
         public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out char result)
         {
-            ushort resultAsUShort;
-            var success = ushort.TryParse(s, style, provider, out resultAsUShort);
+            var success = ushort.TryParse(s, style, provider, out var resultAsUShort);
             result = (char)resultAsUShort;
             return success;
         }

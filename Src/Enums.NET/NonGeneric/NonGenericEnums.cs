@@ -38,13 +38,13 @@ namespace EnumsNET.NonGeneric
     /// </summary>
     public static class NonGenericEnums
     {
-        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> _nonGenericEnumInfos = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
+        private static readonly ConcurrentDictionary<Type, NonGenericEnumInfo> s_nonGenericEnumInfos = new ConcurrentDictionary<Type, NonGenericEnumInfo>();
         
         internal static NonGenericEnumInfo GetNonGenericEnumInfo(Type enumType)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
 
-            return _nonGenericEnumInfos.GetOrAdd(enumType, GetEnumInfo);
+            return s_nonGenericEnumInfos.GetOrAdd(enumType, GetEnumInfo);
         }
 
         private static NonGenericEnumInfo GetEnumInfo(Type enumType)

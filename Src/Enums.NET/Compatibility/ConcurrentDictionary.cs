@@ -49,8 +49,10 @@ namespace System.Collections.Concurrent
                         break;
                     }
                     oldDictionary = dictionary;
-                    dictionary = new Dictionary<TKey, TValue>(dictionary, dictionary.Comparer);
-                    dictionary.Add(key, value);
+                    dictionary = new Dictionary<TKey, TValue>(dictionary, dictionary.Comparer)
+                    {
+                        { key, value }
+                    };
                 } while ((dictionary = Interlocked.CompareExchange(ref _dictionary, dictionary, oldDictionary)) != oldDictionary);
             }
             return value;

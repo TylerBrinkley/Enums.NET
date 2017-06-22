@@ -152,15 +152,14 @@ namespace EnumsNET
                     field.GetCustomAttributes(false).ToArray());
 #endif
                 var member = new EnumMemberInternal<TInt, TIntProvider>(value, name, attributes, this);
-                EnumMemberInternal<TInt, TIntProvider> existing;
-                if (_valueMap.TryGetValue(value, out existing))
+                if (_valueMap.TryGetValue(value, out var existing))
                 {
                     if (attributes.Has<PrimaryEnumMemberAttribute>())
                     {
                         _valueMap[value] = member;
                         member = existing;
                     }
-                    (duplicateValues ?? (duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>())).Add(member);
+    (duplicateValues ?? (duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>())).Add(member);
                 }
                 else
                 {
@@ -174,7 +173,7 @@ namespace EnumsNET
             }
             
             var isInOrder = true;
-            TInt previous = default(TInt);
+            var previous = default(TInt);
             var isFirst = true;
             foreach (var pair in _valueMap)
             {
@@ -623,8 +622,7 @@ namespace EnumsNET
         #region Defined Values Main Methods
         public EnumMemberInternal<TInt, TIntProvider> GetMember(TInt value)
         {
-            EnumMemberInternal<TInt, TIntProvider> member;
-            _valueMap.TryGetValue(value, out member);
+            _valueMap.TryGetValue(value, out var member);
             return member;
         }
 
@@ -639,9 +637,7 @@ namespace EnumsNET
                 formats = Enums.NameFormatArray;
             }
 
-            TInt valueAsTInt;
-            EnumMemberInternal<TInt, TIntProvider> member;
-            TryParseInternal(value, ignoreCase, out valueAsTInt, out member, formats, false);
+            TryParseInternal(value, ignoreCase, out _, out var member, formats, false);
             return member;
         }
         #endregion
@@ -663,9 +659,7 @@ namespace EnumsNET
                 formats = Enums.DefaultFormats;
             }
 
-            TInt result;
-            EnumMemberInternal<TInt, TIntProvider> member;
-            if (TryParseInternal(value, ignoreCase, out result, out member, formats, true))
+            if (TryParseInternal(value, ignoreCase, out var result, out _, formats, true))
             {
                 return result;
             }
@@ -692,8 +686,7 @@ namespace EnumsNET
                     formats = Enums.DefaultFormats;
                 }
 
-                EnumMemberInternal<TInt, TIntProvider> member;
-                return TryParseInternal(value, ignoreCase, out result, out member, formats, true);
+                return TryParseInternal(value, ignoreCase, out result, out _, formats, true);
             }
             result = Provider.Zero;
             return false;
@@ -881,9 +874,7 @@ namespace EnumsNET
                     --delimiterIndex;
                 }
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
-                TInt valueAsTInt;
-                EnumMemberInternal<TInt, TIntProvider> member;
-                if (TryParseInternal(indValue, ignoreCase, out valueAsTInt, out member, formats, true))
+                if (TryParseInternal(indValue, ignoreCase, out var valueAsTInt, out _, formats, true))
                 {
                     result = Provider.Or(result, valueAsTInt);
                 }
@@ -944,9 +935,7 @@ namespace EnumsNET
                     --delimiterIndex;
                 }
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
-                TInt valueAsTInt;
-                EnumMemberInternal<TInt, TIntProvider> member;
-                if (!TryParseInternal(indValue, ignoreCase, out valueAsTInt, out member, formats, true))
+                if (!TryParseInternal(indValue, ignoreCase, out var valueAsTInt, out _, formats, true))
                 {
                     result = Provider.Zero;
                     return false;

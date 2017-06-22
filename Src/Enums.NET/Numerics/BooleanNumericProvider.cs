@@ -35,8 +35,7 @@ namespace EnumsNET.Numerics
 
         public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out bool result)
         {
-            byte resultAsByte;
-            var success = byte.TryParse(s, style, provider, out resultAsByte);
+            var success = byte.TryParse(s, style, provider, out var resultAsByte);
             result = Convert.ToBoolean(resultAsByte);
             return success;
         }

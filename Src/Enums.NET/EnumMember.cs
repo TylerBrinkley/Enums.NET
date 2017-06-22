@@ -56,10 +56,7 @@ namespace EnumsNET
         /// </summary>
         public AttributeCollection Attributes => Member.Attributes;
 
-        internal EnumMember(IEnumMember member)
-        {
-            Member = member;
-        }
+        internal EnumMember(IEnumMember member) => Member = member;
 
         /// <summary>
         /// Retrieves the enum member's name.

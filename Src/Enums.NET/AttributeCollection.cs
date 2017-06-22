@@ -51,10 +51,7 @@ namespace EnumsNET
         /// </summary>
         public int Count => _attributes.Length;
 
-        internal AttributeCollection(Attribute[] attributes)
-        {
-            _attributes = attributes;
-        }
+        internal AttributeCollection(Attribute[] attributes) => _attributes = attributes;
 
         /// <summary>
         /// Indicates if the collection contains a <typeparamref name="TAttribute"/>.
@@ -82,8 +79,7 @@ namespace EnumsNET
         {
             foreach (var attribute in _attributes)
             {
-                var castedAttr = attribute as TAttribute;
-                if (castedAttr != null)
+                if (attribute is TAttribute castedAttr)
                 {
                     return castedAttr;
                 }
@@ -121,8 +117,7 @@ namespace EnumsNET
         {
             foreach (var attribute in _attributes)
             {
-                var castedAttr = attribute as TAttribute;
-                if (castedAttr != null)
+                if (attribute is TAttribute castedAttr)
                 {
                     yield return castedAttr;
                 }
@@ -159,10 +154,7 @@ namespace EnumsNET
 
         bool ICollection<Attribute>.Contains(Attribute item) => ((ICollection<Attribute>)_attributes).Contains(item);
 
-        void ICollection<Attribute>.CopyTo(Attribute[] array, int arrayIndex)
-        {
-            _attributes.CopyTo(array, arrayIndex);
-        }
+        void ICollection<Attribute>.CopyTo(Attribute[] array, int arrayIndex) => _attributes.CopyTo(array, arrayIndex);
 
         int IList<Attribute>.IndexOf(Attribute item) => ((IList<Attribute>)_attributes).IndexOf(item);
 
@@ -170,40 +162,19 @@ namespace EnumsNET
 
         Attribute IList<Attribute>.this[int index]
         {
-            get
-            {
-                return _attributes[index];
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+            get => _attributes[index];
+            set => throw new NotSupportedException();
         }
 
-        void ICollection<Attribute>.Add(Attribute item)
-        {
-            throw new NotSupportedException();
-        }
+        void ICollection<Attribute>.Add(Attribute item) => throw new NotSupportedException();
 
-        void ICollection<Attribute>.Clear()
-        {
-            throw new NotSupportedException();
-        }
+        void ICollection<Attribute>.Clear() => throw new NotSupportedException();
 
-        bool ICollection<Attribute>.Remove(Attribute item)
-        {
-            throw new NotSupportedException();
-        }
+        bool ICollection<Attribute>.Remove(Attribute item) => throw new NotSupportedException();
 
-        void IList<Attribute>.Insert(int index, Attribute item)
-        {
-            throw new NotSupportedException();
-        }
+        void IList<Attribute>.Insert(int index, Attribute item) => throw new NotSupportedException();
 
-        void IList<Attribute>.RemoveAt(int index)
-        {
-            throw new NotSupportedException();
-        }
+        void IList<Attribute>.RemoveAt(int index) => throw new NotSupportedException();
         #endregion
     }
 }

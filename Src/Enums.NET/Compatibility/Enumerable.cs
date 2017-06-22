@@ -85,13 +85,11 @@ namespace System.Linq
         {
             Preconditions.NotNull(source, nameof(source));
 
-            var collection = source as ICollection<T>;
-            if (collection != null)
+            if (source is ICollection<T> collection)
             {
                 return collection.Count;
             }
-            var collection2 = source as ICollection;
-            if (collection2 != null)
+            if (source is ICollection collection2)
             {
                 return collection2.Count;
             }

@@ -21,7 +21,7 @@ namespace EnumsNET
 #endif
 
 #if !GET_TYPE_CODE
-        private static readonly Dictionary<Type, TypeCode> _typeCodeMap = new Dictionary<Type, TypeCode>
+        private static readonly Dictionary<Type, TypeCode> s_typeCodeMap = new Dictionary<Type, TypeCode>(11)
         {
             { typeof(sbyte), TypeCode.SByte },
             { typeof(byte), TypeCode.Byte },
@@ -37,23 +37,17 @@ namespace EnumsNET
         };
 #endif
 
-        public static TypeCode GetTypeCode(this Type type)
-        {
+        public static TypeCode GetTypeCode(this Type type) =>
 #if GET_TYPE_CODE
-            return Type.GetTypeCode(type);
+            Type.GetTypeCode(type);
 #else
-            TypeCode typeCode;
-            return _typeCodeMap.TryGetValue(type, out typeCode) ? typeCode : TypeCode.Object;
+            s_typeCodeMap.TryGetValue(type, out var typeCode) ? typeCode : TypeCode.Object;
 #endif
-        }
 
-        public static bool IsEnum(this Type type)
-        {
-            return type.
+        public static bool IsEnum(this Type type) => type.
 #if !TYPE_REFLECTION
-                GetTypeInfo().
+            GetTypeInfo().
 #endif
-                IsEnum;
-        }
+            IsEnum;
     }
 }

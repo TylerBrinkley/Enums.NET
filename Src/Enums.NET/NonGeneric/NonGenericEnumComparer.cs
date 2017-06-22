@@ -41,10 +41,7 @@ namespace EnumsNET.NonGeneric
         /// <param name="enumType">The enum type.</param>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        public NonGenericEnumComparer(Type enumType)
-        {
-            _info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
-        }
+        public NonGenericEnumComparer(Type enumType) => _info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/>.

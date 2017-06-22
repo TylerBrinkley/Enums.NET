@@ -42,7 +42,7 @@ namespace EnumsNET
         internal static readonly EnumFormat[] NameFormatArray = { EnumFormat.Name };
 
         #region Custom EnumFormat
-        private const int _startingCustomEnumFormatValue = (int)EnumFormat.
+        private const int s_startingCustomEnumFormatValue = (int)EnumFormat.
 #if DISPLAY_ATTRIBUTE
             DisplayName
 #elif ENUM_MEMBER_ATTRIBUTE
@@ -52,7 +52,7 @@ namespace EnumsNET
 #endif
             + 1;
 
-        private static Func<EnumMember, string>[] _customEnumMemberFormatters = new Func<EnumMember, string>[0];
+        private static Func<EnumMember, string>[] s_customEnumMemberFormatters = new Func<EnumMember, string>[0];
 
         /// <summary>
         /// Registers a custom <see cref="EnumFormat"/> with the specified <see cref="EnumMember"/> formatter.
@@ -64,7 +64,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
             
-            var customEnumMemberFormatters = _customEnumMemberFormatters;
+            var customEnumMemberFormatters = s_customEnumMemberFormatters;
             Func<EnumMember, string>[] oldCustomEnumMemberFormatters;
             do
             {
@@ -72,13 +72,13 @@ namespace EnumsNET
                 customEnumMemberFormatters = new Func<EnumMember, string>[oldCustomEnumMemberFormatters.Length + 1];
                 oldCustomEnumMemberFormatters.CopyTo(customEnumMemberFormatters, 0);
                 customEnumMemberFormatters[oldCustomEnumMemberFormatters.Length] = enumMemberFormatter;
-            } while ((customEnumMemberFormatters = Interlocked.CompareExchange(ref _customEnumMemberFormatters, customEnumMemberFormatters, oldCustomEnumMemberFormatters)) != oldCustomEnumMemberFormatters);
-            return (EnumFormat)(oldCustomEnumMemberFormatters.Length + _startingCustomEnumFormatValue);
+            } while ((customEnumMemberFormatters = Interlocked.CompareExchange(ref s_customEnumMemberFormatters, customEnumMemberFormatters, oldCustomEnumMemberFormatters)) != oldCustomEnumMemberFormatters);
+            return (EnumFormat)(oldCustomEnumMemberFormatters.Length + s_startingCustomEnumFormatValue);
         }
 
-        internal static bool EnumFormatIsValid(EnumFormat format) => format >= EnumFormat.DecimalValue && format <= (EnumFormat)(_customEnumMemberFormatters.Length - 1 + _startingCustomEnumFormatValue);
+        internal static bool EnumFormatIsValid(EnumFormat format) => format >= EnumFormat.DecimalValue && format <= (EnumFormat)(s_customEnumMemberFormatters.Length - 1 + s_startingCustomEnumFormatValue);
 
-        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format) => _customEnumMemberFormatters[(int)format - _startingCustomEnumFormatValue](member);
+        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format) => s_customEnumMemberFormatters[(int)format - s_startingCustomEnumFormatValue](member);
         #endregion
 
         #region Type Methods

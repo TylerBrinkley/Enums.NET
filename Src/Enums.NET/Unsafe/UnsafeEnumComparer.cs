@@ -37,8 +37,8 @@ namespace EnumsNET.Unsafe
     /// <typeparam name="TEnum">The enum type.</typeparam>
     public sealed class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
     {
-        private static readonly IEnumInfo<TEnum> _info = UnsafeEnums<TEnum>.IsEnum ? Enums<TEnum>.Info : null;
-        private static UnsafeEnumComparer<TEnum> _instance;
+        private static readonly IEnumInfo<TEnum> s_info = UnsafeEnums<TEnum>.IsEnum ? Enums<TEnum>.Info : null;
+        private static UnsafeEnumComparer<TEnum> s_instance;
 
         /// <summary>
         /// The singleton instance of <see cref="UnsafeEnumComparer{TEnum}"/>.
@@ -49,7 +49,7 @@ namespace EnumsNET.Unsafe
             get
             {
                 UnsafeEnumComparer<TEnum> instance;
-                return _instance ?? (Interlocked.CompareExchange(ref _instance, (instance = new UnsafeEnumComparer<TEnum>()), null) ?? instance);
+                return s_instance ?? (Interlocked.CompareExchange(ref s_instance, (instance = new UnsafeEnumComparer<TEnum>()), null) ?? instance);
             }
         }
 
@@ -57,11 +57,7 @@ namespace EnumsNET.Unsafe
         /// <see cref="UnsafeEnumComparer{TEnum}"/> constructor, should use singleton property <see cref="Instance"/> instead.
         /// This constructor's public for visibility and serialization.
         /// </summary>
-        public UnsafeEnumComparer()
-        {
-            // Validates TEnum is an enum
-            UnsafeEnums.GetInfo<TEnum>();
-        }
+        public UnsafeEnumComparer() => UnsafeEnums.GetInfo<TEnum>(); // Validates TEnum is an enum
 
         /// <summary>
         /// Indicates if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.
@@ -69,14 +65,14 @@ namespace EnumsNET.Unsafe
         /// <param name="x">The first enum value.</param>
         /// <param name="y">The second enum value.</param>
         /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
-        public bool Equals(TEnum x, TEnum y) => _info.Equals(x, y);
+        public bool Equals(TEnum x, TEnum y) => s_info.Equals(x, y);
 
         /// <summary>
         /// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
         /// </summary>
         /// <param name="obj">The enum value.</param>
         /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-        public int GetHashCode(TEnum obj) => _info.GetHashCode(obj);
+        public int GetHashCode(TEnum obj) => s_info.GetHashCode(obj);
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
@@ -85,7 +81,7 @@ namespace EnumsNET.Unsafe
         /// <param name="y">The second enum value.</param>
         /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
         /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
-        public int Compare(TEnum x, TEnum y) => _info.CompareTo(x, y);
+        public int Compare(TEnum x, TEnum y) => s_info.CompareTo(x, y);
 
         #region Explicit Interface Implementation
         bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && Equals((TEnum)x, (TEnum)y);

@@ -73,10 +73,7 @@ namespace EnumsNET
         private readonly EnumCache<TInt, TIntProvider> _cache;
         private readonly IEnumValidatorAttribute<TEnum> _customEnumValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetCustomEnumValidator(typeof(TEnum));
 
-        public EnumInfo()
-        {
-            _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), this);
-        }
+        public EnumInfo() => _cache = new EnumCache<TInt, TIntProvider>(typeof(TEnum), this);
 
         #region Enums
         #region Properties
@@ -115,24 +112,21 @@ namespace EnumsNET
                 result = (TEnum)value;
                 return IsValid(result, validation);
             }
-            TInt resultAsInt;
-            var success = _cache.TryToObject(value, out resultAsInt, validation);
+            var success = _cache.TryToObject(value, out var resultAsInt, validation);
             result = ToEnum(resultAsInt);
             return success;
         }
 
         public bool TryToObject(long value, out TEnum result, EnumValidation validation)
         {
-            TInt resultAsInt;
-            var success = _cache.TryToObject(value, out resultAsInt, validation);
+            var success = _cache.TryToObject(value, out var resultAsInt, validation);
             result = ToEnum(resultAsInt);
             return success;
         }
 
         public bool TryToObject(ulong value, out TEnum result, EnumValidation validation)
         {
-            TInt resultAsInt;
-            var success = _cache.TryToObject(value, out resultAsInt, validation);
+            var success = _cache.TryToObject(value, out var resultAsInt, validation);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -223,8 +217,7 @@ namespace EnumsNET
 
         public bool TryParse(string value, bool ignoreCase, out TEnum result, EnumFormat[] formats)
         {
-            TInt resultAsInt;
-            var success = _cache.TryParse(value, ignoreCase, out resultAsInt, formats);
+            var success = _cache.TryParse(value, ignoreCase, out var resultAsInt, formats);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -271,7 +264,7 @@ namespace EnumsNET
 
         public TEnum CombineFlags(IEnumerable<TEnum> flags)
         {
-            TInt result = default(TInt);
+            var result = default(TInt);
             if (flags != null)
             {
                 foreach (var flag in flags)
@@ -290,8 +283,7 @@ namespace EnumsNET
 
         public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat[] formats)
         {
-            TInt resultAsInt;
-            var success = _cache.TryParseFlags(value, ignoreCase, delimiter, out resultAsInt, formats);
+            var success = _cache.TryParseFlags(value, ignoreCase, delimiter, out var resultAsInt, formats);
             result = ToEnum(resultAsInt);
             return success;
         }
@@ -405,40 +397,35 @@ namespace EnumsNET
 
         public bool TryParse(string value, bool ignoreCase, out object result, EnumFormat[] formats)
         {
-            TEnum resultAsTEnum;
-            var success = TryParse(value, ignoreCase, out resultAsTEnum, formats);
+            var success = TryParse(value, ignoreCase, out TEnum resultAsTEnum, formats);
             result = resultAsTEnum;
             return success;
         }
 
         public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, EnumFormat[] formats)
         {
-            TEnum resultAsTEnum;
-            var success = TryParseFlags(value, ignoreCase, delimiter, out resultAsTEnum, formats);
+            var success = TryParseFlags(value, ignoreCase, delimiter, out TEnum resultAsTEnum, formats);
             result = resultAsTEnum;
             return success;
         }
 
         public bool TryToObject(ulong value, out object result, EnumValidation validation)
         {
-            TEnum resultAsTEnum;
-            var success = TryToObject(value, out resultAsTEnum, validation);
+            var success = TryToObject(value, out TEnum resultAsTEnum, validation);
             result = resultAsTEnum;
             return success;
         }
 
         public bool TryToObject(object value, out object result, EnumValidation validation)
         {
-            TEnum resultAsTEnum;
-            var success = TryToObject(value, out resultAsTEnum, validation);
+            var success = TryToObject(value, out TEnum resultAsTEnum, validation);
             result = resultAsTEnum;
             return success;
         }
 
         public bool TryToObject(long value, out object result, EnumValidation validation)
         {
-            TEnum resultAsTEnum;
-            var success = TryToObject(value, out resultAsTEnum, validation);
+            var success = TryToObject(value, out TEnum resultAsTEnum, validation);
             result = resultAsTEnum;
             return success;
         }

@@ -24,6 +24,7 @@
     <SignAssembly>False</SignAssembly>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyFile>C:\Development\Releases\enumsnet.snk</AssemblyOriginatorKeyFile>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>
