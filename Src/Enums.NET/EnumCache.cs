@@ -159,7 +159,7 @@ namespace EnumsNET
                         _valueMap[value] = member;
                         member = existing;
                     }
-    (duplicateValues ?? (duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>())).Add(member);
+                    (duplicateValues ?? (duplicateValues = new List<EnumMemberInternal<TInt, TIntProvider>>())).Add(member);
                 }
                 else
                 {
