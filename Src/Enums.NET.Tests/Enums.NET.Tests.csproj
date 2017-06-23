@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.1;netcoreapp1.0;net45;net40;net35;net20</TargetFrameworks>
+    <TargetFrameworks>netcoreapp1.1;netcoreapp1.0;net46;net45;net40;net35;net20</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.7.0" />
+    <PackageReference Include="NUnit" Version="3.7.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0-alpha1" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'netcoreapp1.0' OR '$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'netcoreapp1.0' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
   </ItemGroup>
 
@@ -18,15 +18,25 @@
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'net46'">
+    <PackageReference Include="BenchmarkDotNet">
+      <Version>0.10.8</Version>
+    </PackageReference>
+  </ItemGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
+    <AssemblyTitle>Enums.NET Tests .NET 4.6</AssemblyTitle>
+    <DefineConstants>NET46;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <AssemblyTitle>Enums.NET Tests</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Tests .NET 4.5</AssemblyTitle>
     <DefineConstants>NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
@@ -43,7 +53,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 1.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
+    <DefineConstants>NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 1.0</AssemblyTitle>
