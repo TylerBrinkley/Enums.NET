@@ -27,11 +27,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using EnumsNET.Numerics;
-
 #if SECURITY_SAFE_CRITICAL
 using System.Security;
 #endif
+using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
@@ -50,9 +49,11 @@ namespace EnumsNET
 #endif
         where TIntProvider : struct, INumericProvider<TInt>
     {
-#if NET45
+#if FORWARD_REF && AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#elif !NETSTANDARD
+#elif AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#elif FORWARD_REF
         [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
 #if SECURITY_SAFE_CRITICAL
@@ -60,9 +61,11 @@ namespace EnumsNET
 #endif
         private static extern TInt ToInt(TEnum value);
 
-#if NET45
+#if FORWARD_REF && AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#elif !NETSTANDARD
+#elif AGGRESSIVE_INLINING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#elif FORWARD_REF
         [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
 #if SECURITY_SAFE_CRITICAL

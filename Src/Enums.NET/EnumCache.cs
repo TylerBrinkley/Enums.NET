@@ -26,20 +26,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using EnumsNET.Numerics;
-using System.Runtime.CompilerServices;
-
-#if ENUM_MEMBER_ATTRIBUTE
-using System.Runtime.Serialization;
-#endif
-
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
 #endif
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+#if ENUM_MEMBER_ATTRIBUTE
+using System.Runtime.Serialization;
+#endif
+using System.Threading;
+using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
@@ -478,12 +476,12 @@ namespace EnumsNET
             }
         }
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool IsValidSimple(TInt value) => (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool IsDefined(TInt value) => _isContiguous ? !(Provider.LessThan(value, _minDefined) || Provider.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
@@ -731,7 +729,7 @@ namespace EnumsNET
 
         #region Flag Enum Operations
         #region Main Methods
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
@@ -783,22 +781,22 @@ namespace EnumsNET
 
         public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetMember(flag));
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool HasAnyFlags(TInt value) => !value.Equals(Provider.Zero);
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool HasAnyFlags(TInt value, TInt otherFlags) => !Provider.And(value, otherFlags).Equals(Provider.Zero);
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool HasAllFlags(TInt value) => HasAllFlags(value, AllFlags);
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public bool HasAllFlags(TInt value, TInt otherFlags) => Provider.And(value, otherFlags).Equals(otherFlags);

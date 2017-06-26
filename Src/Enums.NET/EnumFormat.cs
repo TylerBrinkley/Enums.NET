@@ -25,13 +25,11 @@
 
 using System;
 using System.ComponentModel;
-
-#if ENUM_MEMBER_ATTRIBUTE
-using System.Runtime.Serialization;
-#endif
-
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
+#endif
+#if ENUM_MEMBER_ATTRIBUTE
+using System.Runtime.Serialization;
 #endif
 
 namespace EnumsNET

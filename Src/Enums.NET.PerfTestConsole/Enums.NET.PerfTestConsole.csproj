@@ -8,9 +8,6 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.8" />
     <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Enums.NET.Tests\Enums.NET.Tests.csproj" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
   </ItemGroup>

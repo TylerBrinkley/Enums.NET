@@ -1,6 +1,6 @@
 ﻿#if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
-using EnumsNET.Tests.Properties;
+using EnumsNET.Tests.TestEnums.Properties;
 
 namespace EnumsNET.Tests.TestEnums
 {

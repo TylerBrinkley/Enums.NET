@@ -33,7 +33,7 @@ namespace EnumsNET
     /// An <see cref="Attribute"/> collection. 
     /// </summary>
     public sealed class AttributeCollection : IList<Attribute>
-#if NET45 || NETSTANDARD
+#if IREADONLYLIST
         , IReadOnlyList<Attribute>
 #endif
     {

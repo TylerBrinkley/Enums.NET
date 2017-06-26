@@ -71,7 +71,7 @@ namespace EnumsNET.NonGeneric
             }
         }
 
-#if NET45
+#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         internal static IEnumInfo GetInfo(Type enumType) => GetNonGenericEnumInfo(enumType).EnumInfo;

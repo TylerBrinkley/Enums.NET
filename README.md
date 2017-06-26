@@ -15,7 +15,6 @@ Enums.NET solves all of these issues and more.
 
 ```cs
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using EnumsNET;
 using NUnit.Framework;
@@ -29,7 +28,7 @@ class EnumsNETDemo
     [Test]
     public void Enumerate()
     {
-        // Retrieves enum members in increasing value order
+        // Retrieves all enum members in increasing value order
         foreach (EnumMember<NumericOperator> member in Enums.GetMembers<NumericOperator>())
         {
             NumericOperator value = member.Value;
@@ -37,8 +36,42 @@ class EnumsNETDemo
             AttributeCollection attributes = member.Attributes;
             // Do stuff
         }
-        Assert.AreEqual(8, Enums.GetMembers<NumericOperator>().Count());
-        Assert.AreEqual(6, Enums.GetMembers<NumericOperator>(EnumMemberSelection.Distinct).Count());
+
+        // Retrieves distinct values in increasing value order
+        foreach (var value in Enums.GetValues<NumericOperator>(EnumMemberSelection.Distinct))
+        {
+            // Do stuff
+        }
+    }
+
+    [Test]
+    public void FlagEnumOperations()
+    {
+        // HasAllFlags
+        Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday).HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.IsFalse(DaysOfWeek.Monday.HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+
+        // HasAnyFlags
+        Assert.IsTrue(DaysOfWeek.Monday.HasAnyFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.IsFalse((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Friday));
+
+        // CombineFlags ~ bitwise OR
+        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
+        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday, FlagEnums.CombineFlags(DaysOfWeek.Monday, DaysOfWeek.Wednesday, DaysOfWeek.Friday));
+
+        // CommonFlags ~ bitwise AND
+        Assert.AreEqual(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.AreEqual(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
+
+        // RemoveFlags
+        Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday));
+        Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+
+        // GetFlags, splits out the individual flags in increasing significance bit order
+        var flags = DaysOfWeek.Weekend.GetFlags().ToList();
+        Assert.AreEqual(2, flags.Count);
+        Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
+        Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
     }
 
     [Test]
@@ -59,45 +92,38 @@ class EnumsNETDemo
     }
 
     [Test]
-    public void FlagEnumOperations()
+    public new void ToString()
     {
-        // HasAnyFlags
-        Assert.IsTrue(DaysOfWeek.Monday.HasAnyFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-        Assert.IsFalse((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Friday));
+        // AsString, equivalent to ToString
+        Assert.AreEqual("Equals", NumericOperator.Equals.AsString());
+        Assert.AreEqual("-1", ((NumericOperator)(-1)).AsString());
 
-        // HasAllFlags
-        Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday).HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-        Assert.IsFalse(DaysOfWeek.Monday.HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        // GetName
+        Assert.AreEqual("Equals", NumericOperator.Equals.GetName());
+        Assert.IsNull(((NumericOperator)(-1)).GetName());
 
-        // CombineFlags ~ bitwise OR
-        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
-        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday, FlagEnums.CombineFlags(DaysOfWeek.Monday, DaysOfWeek.Wednesday, DaysOfWeek.Friday));
+        // Get description
+        Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
+        Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
 
-        // CommonFlags ~ bitwise AND
-        Assert.AreEqual(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-        Assert.AreEqual(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
+        // Get description if applied, otherwise the name
+        Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
+    }
 
-        // RemoveFlags
-        Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday));
-        Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-
-        // GetFlags, splits out the individual flags in increasing value order
-        List<DaysOfWeek> flags = DaysOfWeek.Weekend.GetFlags().ToList();
-        Assert.AreEqual(2, flags.Count);
-        Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
-        Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
-
-        // GetAllFlags
-        Assert.AreEqual(DaysOfWeek.All, FlagEnums.GetAllFlags<DaysOfWeek>());
+    [Test]
+    public void CustomEnumFormat()
+    {
+        EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.Attributes.Get<SymbolAttribute>()?.Symbol);
+        Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(symbolFormat));
+        Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", symbolFormat));
     }
 
     [Test]
     public void Attributes()
     {
+        Assert.AreEqual("!=", NumericOperator.NotEquals.GetAttributes().Get<SymbolAttribute>().Symbol);
         Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetAttributes().Has<PrimaryEnumMemberAttribute>());
-        Assert.IsFalse(Enums.GetMember<NumericOperator>("NotLessThan").Attributes.Has<PrimaryEnumMemberAttribute>());
-        Assert.AreEqual("Is not", NumericOperator.NotEquals.GetAttributes().Get<DescriptionAttribute>().Description);
-        Assert.IsNull(NumericOperator.LessThan.GetAttributes().Get<DescriptionAttribute>());
+        Assert.IsFalse(NumericOperator.LessThan.GetAttributes().Has<DescriptionAttribute>());
     }
 
     [Test]
@@ -111,35 +137,11 @@ class EnumsNETDemo
         Assert.AreEqual(DaysOfWeek.Tuesday | DaysOfWeek.Thursday, FlagEnums.ParseFlags<DaysOfWeek>("Tuesday | Thursday", delimiter: "|"));
     }
 
-    [Test]
-    public void Name()
-    {
-        Assert.AreEqual("Equals", NumericOperator.Equals.GetName());
-        Assert.IsNull(((NumericOperator)(-1)).GetName());
-    }
-
-    [Test]
-    public void Description()
-    {
-        Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
-        Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
-        // Gets the description if applied, otherwise the name
-        Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
-    }
-
-    [Test]
-    public void CustomEnumFormat()
-    {
-        EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.Attributes.Get<SymbolAttribute>()?.Symbol);
-        Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(symbolFormat));
-        Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", symbolFormat));
-    }
-
     enum NumericOperator
     {
-        [Description("Is"), Symbol("=")]
+        [Symbol("="), Description("Is")]
         Equals,
-        [Description("Is not"), Symbol("!=")]
+        [Symbol("!="), Description("Is not")]
         NotEquals,
         [Symbol("<")]
         LessThan,
@@ -191,7 +193,7 @@ class EnumsNETDemo
     [AttributeUsage(AttributeTargets.Enum)]
     class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => FlagEnums.IsValidFlagCombination(value) && !value.HasAllFlags(DayType.Weekday | DayType.Weekend);
+        public bool IsValid(DayType value) => value.HasAnyFlags(DayType.Weekday | DayType.Weekend) && !value.HasAllFlags(DayType.Weekday | DayType.Weekend) && FlagEnums.IsValidFlagCombination(value);
     }
 }
 ```
