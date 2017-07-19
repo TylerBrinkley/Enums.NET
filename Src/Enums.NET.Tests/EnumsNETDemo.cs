@@ -13,7 +13,7 @@ class EnumsNETDemo
     public void Enumerate()
     {
         // Retrieves all enum members in increasing value order
-        foreach (EnumMember<NumericOperator> member in Enums.GetMembers<NumericOperator>())
+        foreach (var member in Enums.GetMembers<NumericOperator>())
         {
             NumericOperator value = member.Value;
             string name = member.Name;
@@ -59,23 +59,6 @@ class EnumsNETDemo
     }
 
     [Test]
-    public void Validate()
-    {
-        // Standard Enums, checks is defined
-        Assert.IsTrue(NumericOperator.LessThan.IsValid());
-        Assert.IsFalse(((NumericOperator)20).IsValid());
-
-        // Flag Enums, checks is valid flag combination or is defined
-        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
-        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
-
-        // Custom validation through IEnumValidatorAttribute<TEnum>
-        Assert.IsTrue(DayType.Weekday.IsValid());
-        Assert.IsTrue((DayType.Weekday | DayType.Holiday).IsValid());
-        Assert.IsFalse((DayType.Weekday | DayType.Weekend).IsValid());
-    }
-
-    [Test]
     public new void ToString()
     {
         // AsString, equivalent to ToString
@@ -92,6 +75,23 @@ class EnumsNETDemo
 
         // Get description if applied, otherwise the name
         Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
+    }
+
+    [Test]
+    public void Validate()
+    {
+        // Standard Enums, checks is defined
+        Assert.IsTrue(NumericOperator.LessThan.IsValid());
+        Assert.IsFalse(((NumericOperator)20).IsValid());
+
+        // Flag Enums, checks is valid flag combination or is defined
+        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
+        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
+
+        // Custom validation through IEnumValidatorAttribute<TEnum>
+        Assert.IsTrue(DayType.Weekday.IsValid());
+        Assert.IsTrue((DayType.Weekday | DayType.Holiday).IsValid());
+        Assert.IsFalse((DayType.Weekday | DayType.Weekend).IsValid());
     }
 
     [Test]

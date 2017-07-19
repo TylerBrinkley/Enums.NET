@@ -4,10 +4,13 @@ Enums.NET is a high-performance type-safe .NET enum utility library which caches
 I'm trying to integrate my improvements into [corefx](https://github.com/dotnet/corefx) so if interested in its progress please check out my proposal [here](https://github.com/dotnet/corefx/issues/15453).
 
 ## What's wrong with `System.Enum`
-1. Most of its static methods are non-generic which make them a pain to use and cause poor performance.
-2. Most of its methods use reflection on each call without any sort of caching causing poor performance.
-3. Its support for flag enum operations is extremely limited. The only flag enum method on `System.Enum` is the `HasFlag` method which is very slow, is not type-safe, and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
-4. It has no built-in support for retrieval of `Attribute`s applied to enum members which is a common practice for retrieval of the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
+1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
+   * Requires the enum type to be explicitly specified as an argument and requires invocation using static method syntax such as `Enum.IsDefined(typeof(ConsoleColor), value)` instead of what should be `value.IsDefined()`.
+   * Requires boxing for methods with enum input parameters losing type-safety, eg. `IsDefined` and `GetName`.
+   * Requires casting/unboxing for methods with an enum return value, eg. `ToObject`, `Parse`, and `GetValues`.
+2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe, is inefficient, and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
+3. Most of its methods use reflection on each call without any sort of caching causing poor performance.
+4. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enum members with the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
 
 Enums.NET solves all of these issues and more.
 
@@ -29,7 +32,7 @@ class EnumsNETDemo
     public void Enumerate()
     {
         // Retrieves all enum members in increasing value order
-        foreach (EnumMember<NumericOperator> member in Enums.GetMembers<NumericOperator>())
+        foreach (var member in Enums.GetMembers<NumericOperator>())
         {
             NumericOperator value = member.Value;
             string name = member.Name;
@@ -75,23 +78,6 @@ class EnumsNETDemo
     }
 
     [Test]
-    public void Validate()
-    {
-        // Standard Enums, checks is defined
-        Assert.IsTrue(NumericOperator.LessThan.IsValid());
-        Assert.IsFalse(((NumericOperator)20).IsValid());
-
-        // Flag Enums, checks is valid flag combination or is defined
-        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
-        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
-
-        // Custom validation through IEnumValidatorAttribute<TEnum>
-        Assert.IsTrue(DayType.Weekday.IsValid());
-        Assert.IsTrue((DayType.Weekday | DayType.Holiday).IsValid());
-        Assert.IsFalse((DayType.Weekday | DayType.Weekend).IsValid());
-    }
-
-    [Test]
     public new void ToString()
     {
         // AsString, equivalent to ToString
@@ -108,6 +94,23 @@ class EnumsNETDemo
 
         // Get description if applied, otherwise the name
         Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
+    }
+
+    [Test]
+    public void Validate()
+    {
+        // Standard Enums, checks is defined
+        Assert.IsTrue(NumericOperator.LessThan.IsValid());
+        Assert.IsFalse(((NumericOperator)20).IsValid());
+
+        // Flag Enums, checks is valid flag combination or is defined
+        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
+        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
+
+        // Custom validation through IEnumValidatorAttribute<TEnum>
+        Assert.IsTrue(DayType.Weekday.IsValid());
+        Assert.IsTrue((DayType.Weekday | DayType.Holiday).IsValid());
+        Assert.IsFalse((DayType.Weekday | DayType.Weekend).IsValid());
     }
 
     [Test]
@@ -202,18 +205,18 @@ class EnumsNETDemo
 ![Performance](Doc/performance.png)
 
 ## How Is It Type-Safe
-Currently, there is no direct way to constrain a type or method's generic type parameter to an enum in C#. The C# compiler can understand when this constraint is applied, it just can't currently express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety.
+Currently, there is no direct way to constrain a type or method's generic type parameter to an enum in C#. The C#, VB.NET, and F# compiler can understand when this constraint is applied, it just can't currently express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety and allowing for generic extension methods that are constrained to `Enum`.
 
 ## Interface
-[`EnumsNET.Enums`](Src/Enums.NET/Enums.cs) static class for type-safe standard enum operations, with many exposed as C# extension methods.
+[`EnumsNET.Enums`](Src/Enums.NET/Enums.cs) static class for type-safe enum operations, with many exposed as extension methods.
 
-[`EnumsNET.FlagEnums`](Src/Enums.NET/FlagEnums.cs) static class for type-safe flag enum operations, with many exposed as C# extension methods.
+[`EnumsNET.FlagEnums`](Src/Enums.NET/FlagEnums.cs) static class for type-safe flag enum operations, with many exposed as extension methods.
 
-[`EnumsNET.Unsafe.UnsafeEnums`](Src/Enums.NET/Unsafe/UnsafeEnums.cs) static class for standard enum operations without the enum constraint for use in generic programming.
+[`EnumsNET.Unsafe.UnsafeEnums`](Src/Enums.NET/Unsafe/UnsafeEnums.cs) static class for enum operations without the enum constraint for use in generic programming.
 
 [`EnumsNET.Unsafe.UnsafeFlagEnums`](Src/Enums.NET/Unsafe/UnsafeFlagEnums.cs) static class for flag enum operations without the enum constraint for use in generic programming.
 
-[`EnumsNET.NonGeneric.NonGenericEnums`](Src/Enums.NET/NonGeneric/NonGenericEnums.cs) static class for non-generic standard enum operations.
+[`EnumsNET.NonGeneric.NonGenericEnums`](Src/Enums.NET/NonGeneric/NonGenericEnums.cs) static class for non-generic enum operations.
 
 [`EnumsNET.NonGeneric.NonGenericFlagEnums`](Src/Enums.NET/NonGeneric/NonGenericFlagEnums.cs) static class for non-generic flag enum operations.
 
