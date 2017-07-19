@@ -1,5 +1,5 @@
 # Enums.NET
-Enums.NET is a high-performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as extension methods for ease of use. It is available as a [NuGet Package](https://www.nuget.org/packages/Enums.NET/) and is compatible with .NET Framework 2.0+ and .NET Standard 1.0+.
+Enums.NET is a high-performance type-safe .NET enum utility library which caches enum members' name, value, and attributes and provides many operations as extension methods. It is available as a [NuGet Package](https://www.nuget.org/packages/Enums.NET/) and is compatible with .NET Framework 2.0+ and .NET Standard 1.0+.
 
 I'm trying to integrate my improvements into [corefx](https://github.com/dotnet/corefx) so if interested in its progress please check out my proposal [here](https://github.com/dotnet/corefx/issues/15453).
 
