@@ -205,17 +205,17 @@ class EnumsNETDemo
 Currently, there is no direct way to constrain a type or method's generic type parameter to an enum in C#. The C# compiler can understand when this constraint is applied, it just can't currently express it. Utilizing Simon Cropp's Fody, on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety.
 
 ## Interface
-`EnumsNET.Enums` static class for type-safe standard enum operations, with many exposed as C# extension methods.
+[`EnumsNET.Enums`](Src/Enums.NET/Enums.cs) static class for type-safe standard enum operations, with many exposed as C# extension methods.
 
-`EnumsNET.FlagEnums` static class for type-safe flag enum operations, with many exposed as C# extension methods.
+[`EnumsNET.FlagEnums`](Src/Enums.NET/FlagEnums.cs) static class for type-safe flag enum operations, with many exposed as C# extension methods.
 
-`EnumsNET.Unsafe.UnsafeEnums` static class for standard enum operations without the enum constraint for use in generic programming.
+[`EnumsNET.Unsafe.UnsafeEnums`](Src/Enums.NET/Unsafe/UnsafeEnums.cs) static class for standard enum operations without the enum constraint for use in generic programming.
 
-`EnumsNET.Unsafe.UnsafeFlagEnums` static class for flag enum operations without the enum constraint for use in generic programming.
+[`EnumsNET.Unsafe.UnsafeFlagEnums`](Src/Enums.NET/Unsafe/UnsafeFlagEnums.cs) static class for flag enum operations without the enum constraint for use in generic programming.
 
-`EnumsNET.NonGeneric.NonGenericEnums` static class for non-generic standard enum operations.
+[`EnumsNET.NonGeneric.NonGenericEnums`](Src/Enums.NET/NonGeneric/NonGenericEnums.cs) static class for non-generic standard enum operations.
 
-`EnumsNET.NonGeneric.NonGenericFlagEnums` static class for non-generic flag enum operations.
+[`EnumsNET.NonGeneric.NonGenericFlagEnums`](Src/Enums.NET/NonGeneric/NonGenericFlagEnums.cs) static class for non-generic flag enum operations.
 
 ## Credits
 Inspired by Jon Skeet's [Unconstrained Melody](https://github.com/jskeet/unconstrained-melody).
