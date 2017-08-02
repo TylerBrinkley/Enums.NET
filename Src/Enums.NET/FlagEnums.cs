@@ -137,6 +137,33 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.GetFlagMembers(value);
 
         /// <summary>
+        /// Retrieves the flag count of <typeparamref name="TEnum"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns>The flag count of <typeparamref name="TEnum"/>.</returns>
+        public static int GetFlagCount<[EnumConstraint] TEnum>()
+            where TEnum : struct => Enums<TEnum>.Info.GetFlagCount();
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="value"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>The flag count of <paramref name="value"/>.</returns>
+        public static int GetFlagCount<[EnumConstraint] TEnum>(this TEnum value)
+            where TEnum : struct => Enums<TEnum>.Info.GetFlagCount(value);
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns>The flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.</returns>
+        public static int GetFlagCount<[EnumConstraint] TEnum>(this TEnum value, TEnum otherFlags)
+            where TEnum : struct => Enums<TEnum>.Info.GetFlagCount(value, otherFlags);
+
+        /// <summary>
         /// Indicates if <paramref name="value"/> has any flags.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -569,6 +596,17 @@ namespace EnumsNET
         {
             Preconditions.NotNull(member, nameof(member));
             return member.HasAllFlags();
+        }
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="member"/>.
+        /// </summary>
+        /// <param name="member">The flags enum value.</param>
+        /// <returns>The flag count of <paramref name="member"/>.</returns>
+        public static int GetFlagCount(this EnumMember member)
+        {
+            Preconditions.NotNull(member, nameof(member));
+            return member.GetFlagCount();
         }
         #endregion
     }

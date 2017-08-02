@@ -134,6 +134,8 @@ namespace EnumsNET
 
         public bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
 
+        public int GetFlagCount() => _enumCache.GetFlagCount(Value);
+
         public bool HasAnyFlags() => _enumCache.HasAnyFlags(Value);
 
         public bool HasAllFlags() => _enumCache.HasAllFlags(Value);

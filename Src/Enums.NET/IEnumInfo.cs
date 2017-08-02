@@ -38,6 +38,7 @@ namespace EnumsNET
         bool IsFlagEnum { get; }
 
         int GetMemberCount(EnumMemberSelection selection = EnumMemberSelection.All);
+        int GetFlagCount();
         IEnumerable<string> GetNames(EnumMemberSelection selection = EnumMemberSelection.All);
     }
 
@@ -63,6 +64,8 @@ namespace EnumsNET
         EnumMember GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
         IEnumerable<EnumMember> GetMembers(EnumMemberSelection selection = EnumMemberSelection.All);
         IEnumerable<object> GetFlags(object value);
+        int GetFlagCount(object value);
+        int GetFlagCount(object value, object otherFlags);
         IEnumerable<EnumMember> GetFlagMembers(object value);
         string GetName(object value);
         object GetUnderlyingValue(object value);
@@ -121,6 +124,8 @@ namespace EnumsNET
         EnumMember<TEnum> GetMember(string value, bool ignoreCase = false, EnumFormat[] formats = null);
         IEnumerable<EnumMember<TEnum>> GetMembers(EnumMemberSelection selection = EnumMemberSelection.All);
         IEnumerable<TEnum> GetFlags(TEnum value);
+        int GetFlagCount(TEnum value);
+        int GetFlagCount(TEnum value, TEnum otherFlags);
         IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value);
         int GetHashCode(TEnum value);
         string GetName(TEnum value);

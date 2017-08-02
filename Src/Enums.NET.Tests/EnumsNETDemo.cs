@@ -7,25 +7,31 @@ using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 [TestFixture]
 class EnumsNETDemo
 {
-    // Test enum definitions at the bottom
+    // Enum definitions at bottom
 
     [Test]
     public void Enumerate()
     {
+        var count = 0;
         // Retrieves all enum members in increasing value order
         foreach (var member in Enums.GetMembers<NumericOperator>())
         {
             NumericOperator value = member.Value;
             string name = member.Name;
             AttributeCollection attributes = member.Attributes;
-            // Do stuff
+            ++count;
         }
+        Assert.AreEqual(8, count);
 
+        count = 0;
         // Retrieves distinct values in increasing value order
         foreach (var value in Enums.GetValues<NumericOperator>(EnumMemberSelection.Distinct))
         {
-            // Do stuff
+            string name = value.GetName();
+            AttributeCollection attributes = value.GetAttributes();
+            ++count;
         }
+        Assert.AreEqual(6, count);
     }
 
     [Test]
@@ -177,6 +183,6 @@ class EnumsNETDemo
     [AttributeUsage(AttributeTargets.Enum)]
     class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => value.HasAnyFlags(DayType.Weekday | DayType.Weekend) && !value.HasAllFlags(DayType.Weekday | DayType.Weekend) && FlagEnums.IsValidFlagCombination(value);
+        public bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
     }
 }

@@ -11,6 +11,8 @@ namespace EnumsNET.Numerics
 
         public char And(char left, char right) => (char)(left & right);
 
+        public int BitCount(char value) => Number.BitCount(value);
+
         public char Create(ulong value) => (char)value;
 
         public char Create(long value) => (char)value;

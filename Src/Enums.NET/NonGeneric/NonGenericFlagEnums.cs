@@ -179,11 +179,11 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Retrieves the <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.
+        /// Retrieves the <see cref="EnumMember"/>s of the flags that compose <paramref name="value"/>.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
         /// <param name="value">The flags enum value.</param>
-        /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
+        /// <returns>The <see cref="EnumMember"/>s of the flags that compose <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
@@ -198,6 +198,73 @@ namespace EnumsNET.NonGeneric
             }
 
             return info.EnumInfo.GetFlagMembers(value);
+        }
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="enumType"/>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <returns>The flag count of <paramref name="enumType"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        public static int GetFlagCount(Type enumType) => NonGenericEnums.GetNonGenericEnumInfo(enumType).EnumInfo.GetFlagCount();
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="value"/>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>The flag count of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type.</exception>
+        public static int GetFlagCount(Type enumType, object value)
+        {
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return 0;
+            }
+
+            return info.EnumInfo.GetFlagCount(value);
+        }
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns>The flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="otherFlags"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> or <paramref name="otherFlags"/> is of an invalid type.</exception>
+        public static int GetFlagCount(Type enumType, object value, object otherFlags)
+        {
+            var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
+            var enumInfo = info.EnumInfo;
+
+            if (info.IsNullable)
+            {
+                if (value == null)
+                {
+                    if (otherFlags != null)
+                    {
+                        enumInfo.ToObject(otherFlags);
+                    }
+                    return 0;
+                }
+                if (otherFlags == null)
+                {
+                    enumInfo.ToObject(value);
+                    return 0;
+                }
+            }
+
+            return enumInfo.GetFlagCount(value, otherFlags);
         }
 
         /// <summary>

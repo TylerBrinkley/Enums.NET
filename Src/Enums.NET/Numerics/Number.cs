@@ -23,39 +23,22 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-
-namespace EnumsNET
+namespace EnumsNET.Numerics
 {
-    internal interface IEnumMember : IFormattable
-#if ICONVERTIBLE
-        , IConvertible
-#endif
+    internal static class Number
     {
-        string Name { get; }
-        AttributeCollection Attributes { get; }
+        public static int BitCount(int v)
+        {
+            v = v - ((v >> 1) & 0x55555555);
+            v = (v & 0x33333333) + ((v >> 2) & 0x33333333);
+            return ((v + (v >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+        }
 
-        object GetUnderlyingValue();
-        string AsString(string format);
-        string AsString(params EnumFormat[] formats);
-        string Format(string format);
-        string AsString(EnumFormat format);
-        string AsString(EnumFormat format0, EnumFormat format1);
-        string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string Format(params EnumFormat[] formats);
-        byte ToByte();
-        short ToInt16();
-        int ToInt32();
-        long ToInt64();
-        sbyte ToSByte();
-        ushort ToUInt16();
-        uint ToUInt32();
-        ulong ToUInt64();
-        int GetHashCode();
-
-        bool IsValidFlagCombination();
-        bool HasAnyFlags();
-        bool HasAllFlags();
-        int GetFlagCount();
+        public static int BitCount(long v)
+        {
+            v = v - ((v >> 1) & 0x5555555555555555);
+            v = (v & 0x3333333333333333) + ((v >> 2) & 0x3333333333333333);
+            return (int)(((v + (v >> 4) & 0xF0F0F0F0F0F0F0F) * 0x101010101010101) >> 56);
+        }
     }
 }

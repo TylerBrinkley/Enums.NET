@@ -40,6 +40,8 @@ namespace EnumsNET.Numerics
 
         public long And(long left, long right) => left & right;
 
+        public int BitCount(long value) => Number.BitCount(value);
+
         public long Create(ulong value) => (long)value;
 
         public long Create(long value) => value;

@@ -127,6 +127,22 @@ namespace EnumsNET.Tests
         }
 
         [Test]
+        public void GetFlagCount()
+        {
+            Assert.AreEqual(4, FlagEnums.GetFlagCount<ColorFlagEnum>());
+            Assert.AreEqual(6, FlagEnums.GetFlagCount<UInt64FlagEnum>());
+
+            Assert.AreEqual(0, ColorFlagEnum.Black.GetFlagCount());
+            Assert.AreEqual(2, (ColorFlagEnum.Red | ColorFlagEnum.Blue).GetFlagCount());
+            Assert.AreEqual(3, (UInt64FlagEnum.Hops | UInt64FlagEnum.Runs | UInt64FlagEnum.Walks).GetFlagCount());
+            Assert.AreEqual(0, ((UInt64FlagEnum)8).GetFlagCount());
+
+            Assert.AreEqual(1, ColorFlagEnum.All.GetFlagCount(ColorFlagEnum.Blue));
+            Assert.AreEqual(2, ColorFlagEnum.All.GetFlagCount(ColorFlagEnum.Blue | ColorFlagEnum.Red));
+            Assert.AreEqual(0, ColorFlagEnum.Green.GetFlagCount(ColorFlagEnum.Blue | ColorFlagEnum.Red));
+        }
+
+        [Test]
         public void HasAnyFlags()
         {
             Assert.IsFalse(ColorFlagEnum.Black.HasAnyFlags());

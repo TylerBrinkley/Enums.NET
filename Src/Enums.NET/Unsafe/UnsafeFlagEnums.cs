@@ -137,6 +137,33 @@ namespace EnumsNET.Unsafe
         public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().GetFlagMembers(value);
 
         /// <summary>
+        /// Retrieves the flag count of <typeparamref name="TEnum"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <returns>The flag count of <typeparamref name="TEnum"/>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static int GetFlagCount<TEnum>() => UnsafeEnums.GetInfo<TEnum>().GetFlagCount();
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="value"/>.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <returns>The flag count of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static int GetFlagCount<TEnum>(TEnum value) => UnsafeEnums.GetInfo<TEnum>().GetFlagCount(value);
+
+        /// <summary>
+        /// Retrieves the flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="otherFlags">The other flags enum value.</param>
+        /// <returns>The flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static int GetFlagCount<TEnum>(TEnum value, TEnum otherFlags) => UnsafeEnums.GetInfo<TEnum>().GetFlagCount(value, otherFlags);
+
+        /// <summary>
         /// Indicates if <paramref name="value"/> has any flags.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>

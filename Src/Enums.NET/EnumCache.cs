@@ -163,7 +163,7 @@ namespace EnumsNET
                 {
                     _valueMap.Add(value, member);
                     // Is Power of Two
-                    if (Provider.And(value, Provider.Subtract(value, Provider.One)).Equals(Provider.Zero))
+                    if (Provider.BitCount(value) == 1)
                     {
                         AllFlags = Provider.Or(AllFlags, value);
                     }
@@ -232,15 +232,15 @@ namespace EnumsNET
 #endif
                     return _valueMap.Count + (_duplicateValues?.Count ?? 0);
                 default:
+                    selection.Validate(nameof(selection));
                     if (selection.HasAnyFlags(EnumMemberSelection.Flags))
                     {
-                        return GetFlags(AllFlags).Count();
+                        return GetFlagCount();
                     }
                     if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
                     {
                         return _valueMap.Count;
                     }
-                    selection.Validate(nameof(selection));
                     return 0;
             }
         }
@@ -257,6 +257,7 @@ namespace EnumsNET
                     members = _duplicateValues == null ? _valueMap.Values : GetMembersInternal();
                     break;
                 default:
+                    selection.Validate(nameof(selection));
                     if (selection.HasAnyFlags(EnumMemberSelection.Flags))
                     {
                         members = GetFlagMembers(AllFlags);
@@ -267,7 +268,6 @@ namespace EnumsNET
                     }
                     else
                     {
-                        selection.Validate(nameof(selection));
                         return null;
                     }
                     break;
@@ -781,6 +781,12 @@ namespace EnumsNET
 
         public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers(TInt value) => GetFlags(value).Select(flag => GetMember(flag));
 
+        public int GetFlagCount() => Provider.BitCount(AllFlags);
+
+        public int GetFlagCount(TInt value) => Provider.BitCount(Provider.And(value, AllFlags));
+
+        public int GetFlagCount(TInt value, TInt otherFlags) => Provider.BitCount(Provider.And(Provider.And(value, otherFlags), AllFlags));
+
 #if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -814,19 +820,6 @@ namespace EnumsNET
         public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3) => Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3);
 
         public TInt CombineFlags(TInt flag0, TInt flag1, TInt flag2, TInt flag3, TInt flag4) => Provider.Or(Provider.Or(Provider.Or(Provider.Or(flag0, flag1), flag2), flag3), flag4);
-
-        public TInt CombineFlags(IEnumerable<TInt> flags)
-        {
-            var combinedFlags = Provider.Zero;
-            if (flags != null)
-            {
-                foreach (var flag in flags)
-                {
-                    combinedFlags = Provider.Or(combinedFlags, flag);
-                }
-            }
-            return combinedFlags;
-        }
 
         public TInt RemoveFlags(TInt value, TInt otherFlags) => Provider.And(value, Provider.Not(otherFlags));
         #endregion

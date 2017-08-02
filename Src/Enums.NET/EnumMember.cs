@@ -255,6 +255,8 @@ namespace EnumsNET
 
         internal bool IsValidFlagCombination() => Member.IsValidFlagCombination();
 
+        internal int GetFlagCount() => Member.GetFlagCount();
+
         internal bool HasAnyFlags() => Member.HasAnyFlags();
 
         internal bool HasAllFlags() => Member.HasAllFlags();

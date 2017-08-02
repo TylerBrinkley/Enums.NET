@@ -241,6 +241,12 @@ namespace EnumsNET
 
         public IEnumerable<TEnum> GetFlags(TEnum value) => SelectEnumValues(_cache.GetFlags(ToInt(value)));
 
+        public int GetFlagCount() => _cache.GetFlagCount();
+
+        public int GetFlagCount(TEnum value) => _cache.GetFlagCount(ToInt(value));
+
+        public int GetFlagCount(TEnum value, TEnum otherFlags) => _cache.GetFlagCount(ToInt(value), ToInt(otherFlags));
+
         public IEnumerable<EnumMember<TEnum>> GetFlagMembers(TEnum value) => SelectEnumMembers(_cache.GetFlagMembers(ToInt(value)));
 
         public bool HasAnyFlags(TEnum value) => _cache.HasAnyFlags(ToInt(value));
@@ -343,6 +349,10 @@ namespace EnumsNET
             .Select(flag => (EnumMember)flag)
 #endif
             ;
+
+        public int GetFlagCount(object value) => GetFlagCount(ToObject(value));
+
+        public int GetFlagCount(object value, object otherFlags) => GetFlagCount(ToObject(value), ToObject(otherFlags));
 
         public string GetName(object value) => GetName(ToObject(value));
 

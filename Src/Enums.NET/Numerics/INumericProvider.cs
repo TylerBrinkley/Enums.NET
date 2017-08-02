@@ -61,6 +61,8 @@ namespace EnumsNET.Numerics
 
         string ToDecimalString(TInt value);
 
+        int BitCount(TInt value);
+
         TInt Zero { get; }
 
         TInt One { get; }

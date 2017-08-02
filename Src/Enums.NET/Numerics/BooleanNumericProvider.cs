@@ -11,6 +11,8 @@ namespace EnumsNET.Numerics
 
         public bool And(bool left, bool right) => left & right;
 
+        public int BitCount(bool value) => Number.BitCount(Convert.ToByte(value));
+
         public bool Create(ulong value) => value != 0UL;
 
         public bool Create(long value) => value != 0L;
