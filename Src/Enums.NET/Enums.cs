@@ -1153,42 +1153,6 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.Format(value, format);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format">The first output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        public static string Format<[EnumConstraint] TEnum>(TEnum value, EnumFormat format)
-            where TEnum : struct => Enums<TEnum>.Info.Format(value, new ValueCollection<EnumFormat>(format));
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public static string Format<[EnumConstraint] TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct => Enums<TEnum>.Info.Format(value, new ValueCollection<EnumFormat>(format0, format1));
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <param name="format2">The third output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        public static string Format<[EnumConstraint] TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct => Enums<TEnum>.Info.Format(value, new ValueCollection<EnumFormat>(format0, format1, format2));
-
-        /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -1202,7 +1166,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(formats, nameof(formats));
 
-            return Enums<TEnum>.Info.Format(value, new ValueCollection<EnumFormat>(formats));
+            return AsString(value, formats);
         }
 
         /// <summary>

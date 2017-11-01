@@ -83,8 +83,6 @@ namespace EnumsNET
             return _enumCache.FormatInternal(Value, this, format);
         }
 
-        public string Format(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
-
 #if ICONVERTIBLE
         public sbyte ToSByte() => Value.ToSByte(null);
 

@@ -55,7 +55,6 @@ namespace EnumsNET
         int CompareTo(object value, object other);
         bool Equals(object value, object other);
         string Format(object value, string format);
-        string Format(object value, ValueCollection<EnumFormat> formats);
         string FormatFlags(object value, string delimiter, ValueCollection<EnumFormat> formats);
         AttributeCollection GetAttributes(object value);
         EnumMember GetMember(object value);
@@ -113,7 +112,6 @@ namespace EnumsNET
         int CompareTo(TEnum value, TEnum other);
         bool Equals(TEnum value, TEnum other);
         string Format(TEnum value, string format);
-        string Format(TEnum value, ValueCollection<EnumFormat> formats);
         string FormatFlags(TEnum value, string delimiter = null, ValueCollection<EnumFormat> formats = default);
         AttributeCollection GetAttributes(TEnum value);
         EnumMember<TEnum> GetMember(TEnum value);

@@ -1155,45 +1155,6 @@ namespace EnumsNET.Unsafe
         public static string Format<TEnum>(TEnum value, string format) => GetInfo<TEnum>().Format(value, format);
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format">The output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        public static string Format<TEnum>(TEnum value, EnumFormat format) => GetInfo<TEnum>().Format(value, new ValueCollection<EnumFormat>(format));
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1) => GetInfo<TEnum>().Format(value, new ValueCollection<EnumFormat>(format0, format1));
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <param name="format2">The third output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public static string Format<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetInfo<TEnum>().Format(value, new ValueCollection<EnumFormat>(format0, format1, format2));
-
-        /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -1208,7 +1169,7 @@ namespace EnumsNET.Unsafe
         {
             Preconditions.NotNull(formats, nameof(formats));
 
-            return GetInfo<TEnum>().Format(value, new ValueCollection<EnumFormat>(formats));
+            return AsString(value, formats);
         }
 
         /// <summary>

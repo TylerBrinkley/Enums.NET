@@ -1404,84 +1404,6 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format">The output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        public static string Format(Type enumType, object value, EnumFormat format)
-        {
-            var info = GetNonGenericEnumInfo(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(format));
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1)
-        {
-            var info = GetNonGenericEnumInfo(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(format0, format1));
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <param name="format2">The third output format to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-        {
-            var info = GetNonGenericEnumInfo(enumType);
-
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(format0, format1, format2));
-        }
-
-        /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -1497,14 +1419,8 @@ namespace EnumsNET.NonGeneric
         public static string Format(Type enumType, object value, params EnumFormat[] formats)
         {
             Preconditions.NotNull(formats, nameof(formats));
-            var info = GetNonGenericEnumInfo(enumType);
 
-            if (value == null && info.IsNullable)
-            {
-                return null;
-            }
-
-            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(formats));
+            return AsString(enumType, value, formats);
         }
 
         /// <summary>

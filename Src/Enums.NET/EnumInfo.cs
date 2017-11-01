@@ -156,8 +156,6 @@ namespace EnumsNET
 
         public string Format(TEnum value, string format) => _cache.Format(ToInt(value), format);
 
-        public string Format(TEnum value, ValueCollection<EnumFormat> formats) => _cache.Format(ToInt(value), formats);
-
         public object GetUnderlyingValue(TEnum value) => ToInt(value);
 
 #if ICONVERTIBLE
@@ -315,8 +313,6 @@ namespace EnumsNET
         public new bool Equals(object value, object other) => Equals(ToObject(value), ToObject(other));
 
         public string Format(object value, string format) => Format(ToObject(value), format);
-
-        public string Format(object value, ValueCollection<EnumFormat> formats) => Format(ToObject(value), formats);
 
         public string FormatFlags(object value, string delimiter, ValueCollection<EnumFormat> formats) => FormatFlags(ToObject(value), delimiter, formats);
 

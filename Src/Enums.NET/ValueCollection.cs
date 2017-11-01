@@ -34,14 +34,14 @@
             private ValueCollection<T> _valueCollection;
             private int _index;
 
+            public T Current { get; private set; }
+
             public Enumerator(ValueCollection<T> valueCollection)
             {
                 _valueCollection = valueCollection;
                 Current = default;
                 _index = valueCollection.Item1.HasValue ? -1 : 0;
             }
-
-            public T Current { get; private set; }
 
             public bool MoveNext()
             {
@@ -55,6 +55,10 @@
                         success = true;
                         ++_index;
                     }
+                    else
+                    {
+                        Current = default;
+                    }
                 }
                 else
                 {
@@ -64,6 +68,10 @@
                         Current = item.GetValueOrDefault();
                         success = true;
                         --_index;
+                    }
+                    else
+                    {
+                        Current = default;
                     }
                 }
                 return success;

@@ -40,7 +40,6 @@ namespace EnumsNET
         string AsString(EnumFormat format);
         string AsString(ValueCollection<EnumFormat> formats);
         string Format(string format);
-        string Format(ValueCollection<EnumFormat> formats);
         byte ToByte();
         short ToInt16();
         int ToInt32();

@@ -513,13 +513,6 @@ namespace EnumsNET
 
         internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? AsStringInternal(value, member) : FormatInternal(value, member, format);
 
-        public string Format(TInt value, ValueCollection<EnumFormat> formats)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return FormatInternal(value, null, formats);
-        }
-
         public string Format(TInt value, string format)
         {
             Preconditions.NotNull(format, nameof(format));
