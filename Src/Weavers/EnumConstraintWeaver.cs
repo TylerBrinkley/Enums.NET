@@ -19,10 +19,10 @@ public class EnumConstraintWeaver
 
     public void Execute()
     {
-        var corlib = ModuleDefinition.AssemblyReferences.FirstOrDefault(asmNameRef => asmNameRef.Name == "mscorlib");
-        if (corlib == null || ModuleDefinition.AssemblyResolver.Resolve(corlib).MainModule.Types.All(x => x.FullName != "System.Enum"))
+        var corlib = ModuleDefinition.AssemblyReferences.FirstOrDefault(a => a.Name == "mscorlib" || a.Name == "System.Runtime" || a.Name == "netstandard");
+        if (!ModuleDefinition.AssemblyResolver.Resolve(corlib).MainModule.Types.Any(x => x.FullName == "System.Enum"))
         {
-            corlib = ModuleDefinition.AssemblyReferences.FirstOrDefault(a => a.Name == "System.Runtime");
+            throw new Exception("Could not find System.Enum in referenced assemblies");
         }
         var allTypes = ModuleDefinition.GetTypes().Where(x => x.IsClass || x.IsInterface).ToList();
         foreach (var typeDefinition in allTypes)
