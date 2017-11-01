@@ -353,7 +353,7 @@ namespace EnumsNET
                 case TypeCode.UInt64:
                     return ToObject((ulong)value, validation);
                 case TypeCode.String:
-                    var result = Parse((string)value, false, null);
+                    var result = Parse((string)value, false, Enums.DefaultFormats);
                     Validate(result, nameof(value), validation);
                     return result;
                 case TypeCode.Boolean:
@@ -419,7 +419,7 @@ namespace EnumsNET
                     case TypeCode.UInt64:
                         return TryToObject((ulong)value, out result, validation);
                     case TypeCode.String:
-                        if (TryParse((string)value, false, out result, null))
+                        if (TryParse((string)value, false, out result, Enums.DefaultFormats))
                         {
                             return IsValid(result, validation);
                         }
@@ -496,7 +496,7 @@ namespace EnumsNET
 
         public string AsString(TInt value) => AsStringInternal(value, null);
 
-        internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member) => IsFlagEnum ? FormatFlagsInternal(value, member, null, null) : FormatInternal(value, member, EnumFormat.Name, EnumFormat.UnderlyingValue);
+        internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member) => IsFlagEnum ? FormatFlagsInternal(value, member, null, Enums.DefaultFormats) : FormatInternal(value, member, Enums.DefaultFormats);
 
         public string AsString(TInt value, EnumFormat format)
         {
@@ -505,19 +505,15 @@ namespace EnumsNET
             return FormatInternal(value, ref isInitialized, ref member, format);
         }
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1) => FormatInternal(value, null, format0, format1);
+        public string AsString(TInt value, ValueCollection<EnumFormat> formats) => AsStringInternal(value, null, formats);
 
-        public string AsString(TInt value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => FormatInternal(value, null, format0, format1, format2);
-
-        public string AsString(TInt value, EnumFormat[] formats) => AsStringInternal(value, null, formats);
-
-        internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, EnumFormat[] formats) => formats?.Length > 0 ? FormatInternal(value, member, formats) : AsStringInternal(value, member);
+        internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, ValueCollection<EnumFormat> formats) => formats.Any() ? FormatInternal(value, member, formats) : AsStringInternal(value, member);
 
         public string AsString(TInt value, string format) => AsStringInternal(value, null, format);
 
         internal string AsStringInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, string format) => string.IsNullOrEmpty(format) ? AsStringInternal(value, member) : FormatInternal(value, member, format);
 
-        public string Format(TInt value, EnumFormat[] formats)
+        public string Format(TInt value, ValueCollection<EnumFormat> formats)
         {
             Preconditions.NotNull(formats, nameof(formats));
 
@@ -540,13 +536,13 @@ namespace EnumsNET
                     return AsStringInternal(value, member);
                 case "F":
                 case "f":
-                    return FormatFlagsInternal(value, member, null, null);
+                    return FormatFlagsInternal(value, member, null, Enums.DefaultFormats);
                 case "D":
                 case "d":
                     return value.ToString();
                 case "X":
                 case "x":
-                    return Provider.ToHexidecimalString(value);
+                    return Provider.ToHexadecimalString(value);
             }
             throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
         }
@@ -563,7 +559,7 @@ namespace EnumsNET
             }
             if (format == EnumFormat.HexadecimalValue)
             {
-                return Provider.ToHexidecimalString(value);
+                return Provider.ToHexadecimalString(value);
             }
             if (!isInitialized)
             {
@@ -590,19 +586,7 @@ namespace EnumsNET
             }
         }
 
-        internal string FormatInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1)
-        {
-            var isInitialized = member != null;
-            return FormatInternal(value, ref isInitialized, ref member, format0) ?? FormatInternal(value, ref isInitialized, ref member, format1);
-        }
-
-        internal string FormatInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-        {
-            var isInitialized = member != null;
-            return FormatInternal(value, ref isInitialized, ref member, format0) ?? FormatInternal(value, ref isInitialized, ref member, format1) ?? FormatInternal(value, ref isInitialized, ref member, format2);
-        }
-
-        internal string FormatInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, EnumFormat[] formats)
+        internal string FormatInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, ValueCollection<EnumFormat> formats)
         {
             var isInitialized = member != null;
             foreach (var format in formats)
@@ -624,15 +608,15 @@ namespace EnumsNET
             return member;
         }
 
-        public EnumMemberInternal<TInt, TIntProvider> GetMember(string value, bool ignoreCase, EnumFormat[] formats)
+        public EnumMemberInternal<TInt, TIntProvider> GetMember(string value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
             Preconditions.NotNull(value, nameof(value));
 
             value = value.Trim();
 
-            if (!(formats?.Length > 0))
+            if (!formats.Any())
             {
-                formats = Enums.NameFormatArray;
+                formats = Enums.NameFormat;
             }
 
             TryParseInternal(value, ignoreCase, out _, out var member, formats, false);
@@ -641,7 +625,7 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public TInt Parse(string value, bool ignoreCase, EnumFormat[] formats)
+        public TInt Parse(string value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
             if (IsFlagEnum)
             {
@@ -652,7 +636,7 @@ namespace EnumsNET
 
             value = value.Trim();
             
-            if (!(formats?.Length > 0))
+            if (!formats.Any())
             {
                 formats = Enums.DefaultFormats;
             }
@@ -668,7 +652,7 @@ namespace EnumsNET
             throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
         }
 
-        public bool TryParse(string value, bool ignoreCase, out TInt result, EnumFormat[] formats)
+        public bool TryParse(string value, bool ignoreCase, out TInt result, ValueCollection<EnumFormat> formats)
         {
             if (IsFlagEnum)
             {
@@ -679,7 +663,7 @@ namespace EnumsNET
             {
                 value = value.Trim();
 
-                if (!(formats?.Length > 0))
+                if (!formats.Any())
                 {
                     formats = Enums.DefaultFormats;
                 }
@@ -690,7 +674,7 @@ namespace EnumsNET
             return false;
         }
 
-        private bool TryParseInternal(string value, bool ignoreCase, out TInt result, out EnumMemberInternal<TInt, TIntProvider> member, EnumFormat[] formats, bool getValueOnly)
+        private bool TryParseInternal(string value, bool ignoreCase, out TInt result, out EnumMemberInternal<TInt, TIntProvider> member, ValueCollection<EnumFormat> formats, bool getValueOnly)
         {
             foreach (var format in formats)
             {
@@ -720,7 +704,7 @@ namespace EnumsNET
                     }
                 }
             }
-            result = default(TInt);
+            result = default;
             member = null;
             return false;
         }
@@ -734,11 +718,11 @@ namespace EnumsNET
 #endif
         public bool IsValidFlagCombination(TInt value) => Provider.And(AllFlags, value).Equals(value);
 
-        public string FormatFlags(TInt value, string delimiter, EnumFormat[] formats) => FormatFlagsInternal(value, null, delimiter, formats);
+        public string FormatFlags(TInt value, string delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(value, null, delimiter, formats);
 
-        internal string FormatFlagsInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, string delimiter, EnumFormat[] formats)
+        internal string FormatFlagsInternal(TInt value, EnumMemberInternal<TInt, TIntProvider> member, string delimiter, ValueCollection<EnumFormat> formats)
         {
-            if (!(formats?.Length > 0))
+            if (!formats.Any())
             {
                 formats = Enums.DefaultFormats;
             }
@@ -825,7 +809,7 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public TInt ParseFlags(string value, bool ignoreCase, string delimiter, EnumFormat[] formats)
+        public TInt ParseFlags(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats)
         {
             Preconditions.NotNull(value, nameof(value));
 
@@ -840,7 +824,7 @@ namespace EnumsNET
                 effectiveDelimiter = delimiter;
             }
 
-            if (!(formats?.Length > 0))
+            if (!formats.Any())
             {
                 formats = Enums.DefaultFormats;
             }
@@ -882,7 +866,7 @@ namespace EnumsNET
             return result;
         }
 
-        public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TInt result, EnumFormat[] formats)
+        public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TInt result, ValueCollection<EnumFormat> formats)
         {
             if (value == null)
             {
@@ -901,7 +885,7 @@ namespace EnumsNET
                 effectiveDelimiter = delimiter;
             }
 
-            if (!(formats?.Length > 0))
+            if (!formats.Any())
             {
                 formats = Enums.DefaultFormats;
             }

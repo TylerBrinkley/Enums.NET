@@ -31,7 +31,7 @@ namespace EnumsNET.Numerics
 
         public bool Subtract(bool left, bool right) => left ^ right;
 
-        public string ToHexidecimalString(bool value) => Convert.ToByte(value).ToString("X2");
+        public string ToHexadecimalString(bool value) => Convert.ToByte(value).ToString("X2");
 
         public string ToDecimalString(bool value) => Convert.ToByte(value).ToString();
 

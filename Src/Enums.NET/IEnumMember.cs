@@ -37,12 +37,10 @@ namespace EnumsNET
 
         object GetUnderlyingValue();
         string AsString(string format);
-        string AsString(params EnumFormat[] formats);
-        string Format(string format);
         string AsString(EnumFormat format);
-        string AsString(EnumFormat format0, EnumFormat format1);
-        string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2);
-        string Format(params EnumFormat[] formats);
+        string AsString(ValueCollection<EnumFormat> formats);
+        string Format(string format);
+        string Format(ValueCollection<EnumFormat> formats);
         byte ToByte();
         short ToInt16();
         int ToInt32();

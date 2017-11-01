@@ -30,7 +30,7 @@ namespace EnumsNET.Numerics
 {
     internal struct Int32NumericProvider : INumericProvider<int>
     {
-        public string ToHexidecimalString(int value) => value.ToString("X8");
+        public string ToHexadecimalString(int value) => value.ToString("X8");
 
         public string ToDecimalString(int value) => value.ToString();
 

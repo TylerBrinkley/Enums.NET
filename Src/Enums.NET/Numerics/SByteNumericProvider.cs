@@ -30,7 +30,7 @@ namespace EnumsNET.Numerics
 {
     internal struct SByteNumericProvider : INumericProvider<sbyte>
     {
-        public string ToHexidecimalString(sbyte value) => value.ToString("X2");
+        public string ToHexadecimalString(sbyte value) => value.ToString("X2");
 
         public string ToDecimalString(sbyte value) => value.ToString();
 

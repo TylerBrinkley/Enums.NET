@@ -1328,7 +1328,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.AsString(value, format0, format1);
+            return info.EnumInfo.AsString(value, new ValueCollection<EnumFormat>(format0, format1));
         }
 
         /// <summary>
@@ -1353,7 +1353,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.AsString(value, format0, format1, format2);
+            return info.EnumInfo.AsString(value, new ValueCollection<EnumFormat>(format0, format1, format2));
         }
 
         /// <summary>
@@ -1376,7 +1376,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.AsString(value, formats);
+            return info.EnumInfo.AsString(value, new ValueCollection<EnumFormat>(formats));
         }
 
         /// <summary>
@@ -1404,6 +1404,84 @@ namespace EnumsNET.NonGeneric
         }
 
         /// <summary>
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        public static string Format(Type enumType, object value, EnumFormat format)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(format));
+        }
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(format0, format1));
+        }
+
+        /// <summary>
+        /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <param name="format2">The third output format to use.</param>
+        /// <returns>A string representation of <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static string Format(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (value == null && info.IsNullable)
+            {
+                return null;
+            }
+
+            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(format0, format1, format2));
+        }
+
+        /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -1418,6 +1496,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string Format(Type enumType, object value, params EnumFormat[] formats)
         {
+            Preconditions.NotNull(formats, nameof(formats));
             var info = GetNonGenericEnumInfo(enumType);
 
             if (value == null && info.IsNullable)
@@ -1425,7 +1504,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.Format(value, formats);
+            return info.EnumInfo.Format(value, new ValueCollection<EnumFormat>(formats));
         }
 
         /// <summary>
@@ -1726,6 +1805,48 @@ namespace EnumsNET.NonGeneric
         public static EnumMember GetMember(Type enumType, string name, bool ignoreCase) => GetInfo(enumType).GetMember(name, ignoreCase);
 
         /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        public static EnumMember GetMember(Type enumType, string value, EnumFormat format) => GetMember(enumType, value, false, format);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static EnumMember GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1) => GetMember(enumType, value, false, format0, format1);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static EnumMember GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetMember(enumType, value, false, format0, format1, format2);
+
+        /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -1736,7 +1857,55 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember GetMember(Type enumType, string value, params EnumFormat[] formats) => GetInfo(enumType).GetMember(value, false, formats);
+        public static EnumMember GetMember(Type enumType, string value, params EnumFormat[] formats) => GetMember(enumType, value, false, formats);
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format) => GetInfo(enumType).GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(format));
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => GetInfo(enumType).GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1));
+
+        /// <summary>
+        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
+        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum member's string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetInfo(enumType).GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1751,7 +1920,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo(enumType).GetMember(value, ignoreCase, formats);
+        public static EnumMember GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[] formats) => GetInfo(enumType).GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(formats));
 
         /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1843,6 +2012,60 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum format.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        public static object Parse(Type enumType, string value, EnumFormat format) => Parse(enumType, value, false, format);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        public static object Parse(Type enumType, string value, EnumFormat format0, EnumFormat format1) => Parse(enumType, value, false, format0, format1);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        public static object Parse(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Parse(enumType, value, false, format0, format1, format2);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
         /// using the specified parsing enum formats.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -1875,6 +2098,93 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        public static object Parse(Type enumType, string value, bool ignoreCase, EnumFormat format)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (info.IsNullable && string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return info.EnumInfo.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(format));
+        }
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        public static object Parse(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (info.IsNullable && string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return info.EnumInfo.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1));
+        }
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
+        public static object Parse(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (info.IsNullable && string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            return info.EnumInfo.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1, format2));
+        }
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
         /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -1898,7 +2208,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumInfo.Parse(value, ignoreCase, formats);
+            return info.EnumInfo.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(formats));
         }
 
         /// <summary>
@@ -1912,6 +2222,57 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParse(Type enumType, string value, out object result) => TryParse(enumType, value, false, out result, null);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum format.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        public static bool TryParse(Type enumType, string value, out object result, EnumFormat format) => TryParse(enumType, value, false, out result, format);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static bool TryParse(Type enumType, string value, out object result, EnumFormat format0, EnumFormat format1) => TryParse(enumType, value, false, out result, format0, format1);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static bool TryParse(Type enumType, string value, out object result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParse(enumType, value, false, out result, format0, format1, format2);
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
@@ -1943,6 +2304,93 @@ namespace EnumsNET.NonGeneric
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, EnumFormat format)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
+            {
+                result = null;
+                return true;
+            }
+
+            return info.EnumInfo.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format));
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, EnumFormat format0, EnumFormat format1)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
+            {
+                result = null;
+                return true;
+            }
+
+            return info.EnumInfo.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format0, format1));
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static bool TryParse(Type enumType, string value, bool ignoreCase, out object result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+
+            if (string.IsNullOrEmpty(value) && info.IsNullable)
+            {
+                result = null;
+                return true;
+            }
+
+            return info.EnumInfo.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format0, format1, format2));
+        }
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
         /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -1966,7 +2414,7 @@ namespace EnumsNET.NonGeneric
                 return true;
             }
 
-            return info.EnumInfo.TryParse(value, ignoreCase, out result, formats);
+            return info.EnumInfo.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(formats));
         }
         #endregion
     }

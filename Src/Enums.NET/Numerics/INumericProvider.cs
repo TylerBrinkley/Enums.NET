@@ -57,7 +57,7 @@ namespace EnumsNET.Numerics
 
         bool TryParseNative(string s, out TInt result);
 
-        string ToHexidecimalString(TInt value);
+        string ToHexadecimalString(TInt value);
 
         string ToDecimalString(TInt value);
 

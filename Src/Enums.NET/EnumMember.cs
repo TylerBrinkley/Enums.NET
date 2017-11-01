@@ -93,7 +93,7 @@ namespace EnumsNET
         /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public string AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(format0, format1);
+        public string AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified formats.
@@ -103,7 +103,7 @@ namespace EnumsNET
         /// <param name="format2">The third output format to use if using the first and second both resolve to <c>null</c>.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(format0, format1, format2);
+        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
@@ -111,7 +111,7 @@ namespace EnumsNET
         /// <param name="formats">The output formats to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public string AsString(params EnumFormat[] formats) => Member.AsString(formats);
+        public string AsString(params EnumFormat[] formats) => Member.AsString(new ValueCollection<EnumFormat>(formats));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
@@ -123,13 +123,45 @@ namespace EnumsNET
         public string Format(string format) => Member.Format(format);
 
         /// <summary>
+        /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">The output format to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public string Format(EnumFormat format) => Member.Format(new ValueCollection<EnumFormat>(format));
+
+        /// <summary>
+        /// Converts the enum member to its string representation using the specified formats.
+        /// </summary>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public string Format(EnumFormat format0, EnumFormat format1) => Member.Format(new ValueCollection<EnumFormat>(format0, format1));
+
+        /// <summary>
+        /// Converts the enum member to its string representation using the specified formats.
+        /// </summary>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <param name="format2">The third output format to use.</param>
+        /// <returns>A string representation of the enum member.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public string Format(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.Format(new ValueCollection<EnumFormat>(format0, format1, format2));
+
+        /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
         /// </summary>
         /// <param name="formats">The output formats to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public string Format(params EnumFormat[] formats) => Member.Format(formats);
+        public string Format(params EnumFormat[] formats)
+        {
+            Preconditions.NotNull(formats, nameof(formats));
+
+            return Member.Format(new ValueCollection<EnumFormat>(formats));
+        }
 
         /// <summary>
         /// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.

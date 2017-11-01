@@ -30,7 +30,7 @@ namespace EnumsNET.Numerics
 {
     internal struct UInt64NumericProvider : INumericProvider<ulong>
     {
-        public string ToHexidecimalString(ulong value) => value.ToString("X16");
+        public string ToHexadecimalString(ulong value) => value.ToString("X16");
 
         public string ToDecimalString(ulong value) => value.ToString();
 

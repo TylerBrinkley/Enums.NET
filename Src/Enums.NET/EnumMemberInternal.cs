@@ -74,11 +74,7 @@ namespace EnumsNET
             return _enumCache.FormatInternal(Value, ref isInitialized, ref member, format);
         }
 
-        public string AsString(EnumFormat format0, EnumFormat format1) => _enumCache.FormatInternal(Value, this, format0, format1);
-
-        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => _enumCache.FormatInternal(Value, this, format0, format1, format2);
-
-        public string AsString(params EnumFormat[] formats) => _enumCache.FormatInternal(Value, this, formats);
+        public string AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
 
         public string Format(string format)
         {
@@ -87,12 +83,7 @@ namespace EnumsNET
             return _enumCache.FormatInternal(Value, this, format);
         }
 
-        public string Format(params EnumFormat[] formats)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return _enumCache.FormatInternal(Value, this, formats);
-        }
+        public string Format(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
 
 #if ICONVERTIBLE
         public sbyte ToSByte() => Value.ToSByte(null);

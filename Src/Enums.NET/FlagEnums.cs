@@ -76,6 +76,54 @@ namespace EnumsNET
             where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value);
 
         /// <summary>
+        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
+        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
+        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, EnumFormat format)
+            where TEnum : struct => FormatFlags(value, null, format);
+
+        /// <summary>
+        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => FormatFlags(value, null, format0, format1);
+
+        /// <summary>
+        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <param name="format2">The third output format to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => FormatFlags(value, null, format0, format1, format2);
+
+        /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
         /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
@@ -88,7 +136,7 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, null, formats);
+            where TEnum : struct => FormatFlags(value, null, formats);
 
         /// <summary>
         /// Retrieves the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -101,6 +149,57 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter)
             where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter);
+
+        /// <summary>
+        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, EnumFormat format)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format));
+
+        /// <summary>
+        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format0, format1));
+
+        /// <summary>
+        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="format0">The first output format to use.</param>
+        /// <param name="format1">The second output format to use.</param>
+        /// <param name="format2">The third output format to use.</param>
+        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with <paramref name="delimiter"/>
+        /// or if empty returns the zero flag formatted with formats.
+        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
@@ -116,7 +215,7 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static string FormatFlags<[EnumConstraint] TEnum>(TEnum value, string delimiter, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, formats);
+            where TEnum : struct => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(formats));
 
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
@@ -320,6 +419,57 @@ namespace EnumsNET
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, EnumFormat format)
+            where TEnum : struct => ParseFlags<TEnum>(value, false, null, format);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => ParseFlags<TEnum>(value, false, null, format0, format1);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => ParseFlags<TEnum>(value, false, null, format0, format1, format2);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
         /// using the specified parsing enum formats.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -332,7 +482,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, false, null, formats);
+            where TEnum : struct => ParseFlags<TEnum>(value, false, null, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -350,6 +500,60 @@ namespace EnumsNET
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, EnumFormat format)
+            where TEnum : struct => ParseFlags<TEnum>(value, ignoreCase, null, format);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => ParseFlags<TEnum>(value, ignoreCase, null, format0, format1);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => ParseFlags<TEnum>(value, ignoreCase, null, format0, format1, format2);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
         /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -363,7 +567,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, null, formats);
+            where TEnum : struct => ParseFlags<TEnum>(value, ignoreCase, null, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -380,6 +584,60 @@ namespace EnumsNET
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, EnumFormat format)
+            where TEnum : struct => ParseFlags<TEnum>(value, false, delimiter, format);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => ParseFlags<TEnum>(value, false, delimiter, format0, format1);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => ParseFlags<TEnum>(value, false, delimiter, format0, format1, format2);
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
         /// using the specified parsing enum formats.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -393,7 +651,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, false, delimiter, formats);
+            where TEnum : struct => ParseFlags<TEnum>(value, false, delimiter, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -412,6 +670,63 @@ namespace EnumsNET
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, EnumFormat format)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format));
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format0, format1));
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
+        /// -or-
+        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
+        public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format0, format1, format2));
+
+        /// <summary>
+        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
         /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -426,7 +741,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, formats);
+            where TEnum : struct => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(formats));
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -437,7 +752,52 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, null, out result);
+            where TEnum : struct => TryParseFlags(value, false, null, out result);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result, EnumFormat format)
+            where TEnum : struct => TryParseFlags(value, false, null, out result, format);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The first parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => TryParseFlags(value, false, null, out result, format0, format1);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => TryParseFlags(value, false, null, out result, format0, format1, format2);
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -450,7 +810,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, out TEnum result, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, null, out result, formats);
+            where TEnum : struct => TryParseFlags(value, false, null, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -462,7 +822,55 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result);
+            where TEnum : struct => TryParseFlags(value, ignoreCase, null, out result);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, EnumFormat format)
+            where TEnum : struct => TryParseFlags(value, ignoreCase, null, out result, format);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The first parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => TryParseFlags(value, ignoreCase, null, out result, format0, format1);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => TryParseFlags(value, ignoreCase, null, out result, format0, format1, format2);
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -477,7 +885,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, null, out result, formats);
+            where TEnum : struct => TryParseFlags(value, ignoreCase, null, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -489,7 +897,55 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result);
+            where TEnum : struct => TryParseFlags(value, false, delimiter, out result);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, EnumFormat format)
+            where TEnum : struct => TryParseFlags(value, false, delimiter, out result, format);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The first parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => TryParseFlags(value, false, delimiter, out result, format0, format1);
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => TryParseFlags(value, false, delimiter, out result, format0, format1, format2);
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -503,7 +959,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, string delimiter, out TEnum result, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, false, delimiter, out result, formats);
+            where TEnum : struct => TryParseFlags(value, false, delimiter, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -520,6 +976,57 @@ namespace EnumsNET
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format">The parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat format)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format));
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The first parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat format0, EnumFormat format1)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format0, format1));
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
+        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
+        /// The return value indicates whether the conversion succeeded.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum members or values' string representation.</param>
+        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
+        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
+        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
+        /// <param name="format0">The first parsing enum format.</param>
+        /// <param name="format1">The second parsing enum format.</param>
+        /// <param name="format2">The third parsing enum format.</param>
+        /// <returns>Indication whether the conversion succeeded.</returns>
+        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
+        public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format0, format1, format2));
+
+        /// <summary>
+        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
         /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -532,7 +1039,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags<[EnumConstraint] TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] formats)
-            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, formats);
+            where TEnum : struct => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(formats));
         #endregion
 
         #region EnumMember Extensions

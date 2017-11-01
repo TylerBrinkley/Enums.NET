@@ -31,7 +31,7 @@ namespace EnumsNET.Numerics
 
         public char Subtract(char left, char right) => (char)(left - right);
 
-        public string ToHexidecimalString(char value) => ((ushort)value).ToString("X4");
+        public string ToHexadecimalString(char value) => ((ushort)value).ToString("X4");
 
         public string ToDecimalString(char value) => ((ushort)value).ToString();
 

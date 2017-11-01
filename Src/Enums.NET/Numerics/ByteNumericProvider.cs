@@ -30,7 +30,7 @@ namespace EnumsNET.Numerics
 {
     internal struct ByteNumericProvider : INumericProvider<byte>
     {
-        public string ToHexidecimalString(byte value) => value.ToString("X2");
+        public string ToHexadecimalString(byte value) => value.ToString("X2");
 
         public string ToDecimalString(byte value) => value.ToString();
 
