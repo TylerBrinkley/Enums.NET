@@ -1,37 +1,32 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET", "Enums.NET\Enums.NET.csproj", "{86547778-1DCF-43A6-B951-0D0A5207DF21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET", "Enums.NET\Enums.NET.csproj", "{86547778-1DCF-43A6-B951-0D0A5207DF21}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0F0B39FA-B1FE-4F38-92F4-F06618D1948A} = {0F0B39FA-B1FE-4F38-92F4-F06618D1948A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.Tests", "Enums.NET.Tests\Enums.NET.Tests.csproj", "{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET.Tests", "Enums.NET.Tests\Enums.NET.Tests.csproj", "{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0F202B3-6AF5-4E4F-8C42-2D70925D0E72}"
 	ProjectSection(SolutionItems) = preProject
-		..\Build\build.ps1 = ..\Build\build.ps1
 		..\README.md = ..\README.md
-		..\Build\runbuild.ps1 = ..\Build\runbuild.ps1
 		System.Enum-api-diff-tabled.md = System.Enum-api-diff-tabled.md
 		System.Enum-api-diff.md = System.Enum-api-diff.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.TestEnums", "Enums.NET.TestEnums\Enums.NET.TestEnums.csproj", "{D52F6046-879A-49C2-8E1D-810E8119FF80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET.TestEnums", "Enums.NET.TestEnums\Enums.NET.TestEnums.csproj", "{D52F6046-879A-49C2-8E1D-810E8119FF80}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0F0B39FA-B1FE-4F38-92F4-F06618D1948A} = {0F0B39FA-B1FE-4F38-92F4-F06618D1948A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.PerfTestConsole", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.csproj", "{7B289510-5B33-42E3-8E3C-684DEF350953}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET.PerfTestConsole", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.csproj", "{7B289510-5B33-42E3-8E3C-684DEF350953}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weavers", "Weavers\Weavers.csproj", "{0F0B39FA-B1FE-4F38-92F4-F06618D1948A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weavers", "Weavers\Weavers.csproj", "{0F0B39FA-B1FE-4F38-92F4-F06618D1948A}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -60,5 +55,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {288E4170-A638-4BF2-B6B5-EEE570D85459}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

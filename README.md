@@ -1,7 +1,7 @@
 # Enums.NET
 Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is available as a [NuGet Package](https://www.nuget.org/packages/Enums.NET/) and is compatible with .NET Framework 2.0+ and .NET Standard 1.0+.
 
-I'm trying to integrate some of my improvements into [corefx](https://github.com/dotnet/corefx) so if interested in its progress please check out the proposal [here](https://github.com/dotnet/corefx/issues/15453).
+I'm trying to integrate some of Enums.NET's improvements into [corefx](https://github.com/dotnet/corefx) so if interested in its progress please check out the proposal [here](https://github.com/dotnet/corefx/issues/15453).
 
 ## What's wrong with `System.Enum`
 1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
@@ -202,15 +202,15 @@ class EnumsNETDemo
     [AttributeUsage(AttributeTargets.Enum)]
     class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => value.HasAnyFlags(DayType.Weekday | DayType.Weekend) && !value.HasAllFlags(DayType.Weekday | DayType.Weekend) && FlagEnums.IsValidFlagCombination(value);
+        public bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
     }
 }
 ```
 
 ## Performance Comparison
-![Performance](Doc/performance.png)
+![Performance](performance.png)
 
-## How Is It Type-Safe
+## How Does It Work
 Currently, there is no direct way to constrain a generic type parameter in C# to an `Enum`. The C# compiler can understand when this constraint is applied, it just can't currently express it. Utilizing Simon Cropp's [Fody](https://github.com/Fody/Fody), on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety and allowing for generic extension methods that are constrained to `Enum`.
 
 ## Interface
