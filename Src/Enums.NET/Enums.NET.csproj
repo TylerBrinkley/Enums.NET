@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFrameworks>net45;net40;net35;net20;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.3.0</FileVersion>
-    <VersionPrefix>2.3.0</VersionPrefix>
+    <FileVersion>2.3.1</FileVersion>
+    <VersionPrefix>2.3.1</VersionPrefix>
     <VersionSufix></VersionSufix>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
@@ -20,7 +20,6 @@
     <RootNamespace>EnumsNET</RootNamespace>
     <AssemblyName>Enums.NET</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <SignAssembly>False</SignAssembly>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyFile>C:\Development\Releases\enumsnet.snk</AssemblyOriginatorKeyFile>
