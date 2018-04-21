@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -32,8 +33,8 @@ namespace EnumsNET
     /// An efficient type-safe enum comparer which doesn't box the values.
     /// </summary>
     /// <typeparam name="TEnum">The enum type.</typeparam>
-    public sealed class EnumComparer<[EnumConstraint] TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
-        where TEnum : struct
+    public sealed class EnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
+        where TEnum : struct, Enum
     {
         private static readonly IEnumInfo<TEnum> _info = Enums<TEnum>.Info;
 

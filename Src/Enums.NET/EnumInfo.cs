@@ -41,8 +41,8 @@ namespace EnumsNET
     // Putting the logic in EnumCache<TInt, TIntProvider> reduces memory usage
     // because having the enum type as a generic type parameter causes code explosion
     // due to how .NET generics are handled with enums.
-    internal sealed class EnumInfo<[EnumConstraint] TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
-        where TEnum : struct
+    internal sealed class EnumInfo<TEnum, TInt, TIntProvider> : IEnumInfo<TEnum>, IEnumInfo, IEnumInfoInternal<TInt, TIntProvider>
+        where TEnum : struct, Enum
         where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible
