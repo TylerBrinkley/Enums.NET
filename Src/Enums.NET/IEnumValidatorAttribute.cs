@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 
 namespace EnumsNET
 {
@@ -30,8 +31,8 @@ namespace EnumsNET
     /// Interface to be implemented on an enum validator attribute class to allow custom validation logic.
     /// </summary>
     /// <typeparam name="TEnum">The enum type.</typeparam>
-    public interface IEnumValidatorAttribute<[EnumConstraint] TEnum>
-        where TEnum : struct
+    public interface IEnumValidatorAttribute<TEnum>
+        where TEnum : struct, Enum
     {
         /// <summary>
         /// Indicates if <paramref name="value"/> is valid.

@@ -358,8 +358,8 @@ namespace EnumsNET
         #endregion
     }
 
-    internal sealed class EnumMember<[EnumConstraint] TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
-        where TEnum : struct
+    internal sealed class EnumMember<TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
+        where TEnum : struct, Enum
         where TInt : struct, IComparable<TInt>, IEquatable<TInt>
 #if ICONVERTIBLE
         , IConvertible

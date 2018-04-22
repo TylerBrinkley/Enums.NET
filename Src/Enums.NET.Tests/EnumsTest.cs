@@ -28,33 +28,6 @@ namespace EnumsNET.Tests
     [TestFixture]
     public class EnumsTest
     {
-        [Test]
-        public void TestEnumConstraints()
-        {
-            var enumTypeArgs = new[] { typeof(Enums), typeof(FlagEnums) }
-                .SelectMany(type => type.
-#if TYPE_REFLECTION
-                        GetMethods(BindingFlags.Static | BindingFlags.Public)
-#else
-                        GetTypeInfo().DeclaredMethods.Where(method => method.IsPublic)
-#endif
-                )
-                .Where(method => method.IsGenericMethod && ((method.Name != nameof(FlagEnums.GetFlags) && method.Name != nameof(FlagEnums.GetFlagMembers)) || method.GetParameters()[0].Name != "member"))
-                .Select(method => method.GetGenericArguments()[0])
-                .Where(genericArg => genericArg != null)
-                .Concat(new[] { typeof(EnumComparer<>).GetGenericArguments()[0], typeof(IEnumValidatorAttribute<>).GetGenericArguments()[0] });
-            foreach (var enumTypeArg in enumTypeArgs)
-            {
-                Assert.IsTrue(enumTypeArg.GetGenericParameterConstraints().Any(genericParamConstraint => genericParamConstraint == typeof(Enum)));
-            }
-        }
-
-        [Test]
-        public void TestEnumConstraintAttributeRemoval()
-        {
-            Assert.IsFalse(typeof(Enums).GetAssembly().GetTypes().Any(type => type.Name == "EnumConstraintAttribute"));
-        }
-
         #region Type Methods
         [Test]
         public void GetUnderlyingType()
