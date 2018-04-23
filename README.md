@@ -210,9 +210,6 @@ class EnumsNETDemo
 ## Performance Comparison
 ![Performance](performance.png)
 
-## How Does It Work
-Currently, there is no direct way to constrain a generic type parameter in C# to an `Enum`. The C# compiler can understand when this constraint is applied, it just can't currently express it. Utilizing Simon Cropp's [Fody](https://github.com/Fody/Fody), on build a post-processing step is applied to the compiled Enums.NET assembly to add these constraints to the assembly, thus achieving type safety and allowing for generic extension methods that are constrained to `Enum`.
-
 ## Interface
 [`EnumsNET.Enums`](Src/Enums.NET/Enums.cs) static class for type-safe enum operations, with many exposed as extension methods.
 
@@ -229,6 +226,6 @@ Currently, there is no direct way to constrain a generic type parameter in C# to
 ## Credits
 Inspired by Jon Skeet's [Unconstrained Melody](https://github.com/jskeet/unconstrained-melody).
 
-Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) & [Fody.ExtraConstraints](https://github.com/Fody/ExtraConstraints) which are built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil) for building the assembly.
+Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil) for building the assembly.
 
 Uses modified build scripts and repository structure from James Newton-King's [Json.NET](https://github.com/JamesNK/Newtonsoft.Json).
