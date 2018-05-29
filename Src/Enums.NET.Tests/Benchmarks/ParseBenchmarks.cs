@@ -25,16 +25,15 @@
 
 #if BENCHMARKS
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 using EnumsNET.NonGeneric;
-using EnumsNET.Unsafe;
 
 namespace EnumsNET.Tests.Benchmarks
 {
+    [ClrJob, CoreJob]
     public class ParseBenchmarks
     {
         private class EnumData
@@ -54,8 +53,9 @@ namespace EnumsNET.Tests.Benchmarks
         }
 
         public sealed class Parser<TEnum> : Parser
+            where TEnum : struct, Enum
         {
-            public override void Parse(string value) => UnsafeEnums.Parse<TEnum>(value);
+            public override void Parse(string value) => Enums.Parse<TEnum>(value);
         }
 
         private readonly EnumData[] _enumDatas;
@@ -115,7 +115,7 @@ namespace EnumsNET.Tests.Benchmarks
         }
 
         [Benchmark]
-        public int UnsafeEnums_Parse_Names()
+        public int Enums_Parse_Names()
         {
             var i = 0;
             foreach (var enumData in _enumDatas)
@@ -161,7 +161,7 @@ namespace EnumsNET.Tests.Benchmarks
         }
 
         [Benchmark]
-        public int UnsafeEnums_Parse_Decimals()
+        public int Enums_Parse_Decimals()
         {
             var i = 0;
             foreach (var enumData in _enumDatas)

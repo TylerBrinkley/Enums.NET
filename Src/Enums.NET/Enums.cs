@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Threading;
 using EnumsNET.Numerics;
 
@@ -1834,37 +1835,48 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static object GetEnumInfo(Type enumType)
+        internal static IEnumInfo GetInfo(Type enumType)
         {
-            var underlyingType = Enum.GetUnderlyingType(enumType);
-            var numericProviderType = GetNumericProviderType(underlyingType);
-            return Activator.CreateInstance(typeof(EnumInfo<,,>).MakeGenericType(enumType, underlyingType, numericProviderType));
+            if (!enumType.IsEnum())
+            {
+                return null;
+            }
+
+            return (IEnumInfo)typeof(Enums<>).MakeGenericType(enumType)
+#if TYPE_REFLECTION
+                .GetField(nameof(Enums<DayOfWeek>.Info), BindingFlags.Static | BindingFlags.Public)
+#else
+                .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Info))
+#endif
+                .GetValue(null);
         }
 
-        private static Type GetNumericProviderType(Type underlyingType)
+        internal static IEnumInfo<TEnum> CreateEnumInfo<TEnum>()
+            where TEnum : struct, Enum
         {
+            var underlyingType = Enum.GetUnderlyingType(typeof(TEnum));
             switch (underlyingType.GetTypeCode())
             {
                 case TypeCode.SByte:
-                    return typeof(SByteNumericProvider);
+                    return new EnumInfo<TEnum, sbyte, SByteNumericProvider>();
                 case TypeCode.Byte:
-                    return typeof(ByteNumericProvider);
+                    return new EnumInfo<TEnum, byte, ByteNumericProvider>();
                 case TypeCode.Int16:
-                    return typeof(Int16NumericProvider);
+                    return new EnumInfo<TEnum, short, Int16NumericProvider>();
                 case TypeCode.UInt16:
-                    return typeof(UInt16NumericProvider);
+                    return new EnumInfo<TEnum, ushort, UInt16NumericProvider>();
                 case TypeCode.Int32:
-                    return typeof(Int32NumericProvider);
+                    return new EnumInfo<TEnum, int, Int32NumericProvider>();
                 case TypeCode.UInt32:
-                    return typeof(UInt32NumericProvider);
+                    return new EnumInfo<TEnum, uint, UInt32NumericProvider>();
                 case TypeCode.Int64:
-                    return typeof(Int64NumericProvider);
+                    return new EnumInfo<TEnum, long, Int64NumericProvider>();
                 case TypeCode.UInt64:
-                    return typeof(UInt64NumericProvider);
+                    return new EnumInfo<TEnum, ulong, UInt64NumericProvider>();
                 case TypeCode.Boolean:
-                    return typeof(BooleanNumericProvider);
+                    return new EnumInfo<TEnum, bool, BooleanNumericProvider>();
                 case TypeCode.Char:
-                    return typeof(CharNumericProvider);
+                    return new EnumInfo<TEnum, char, CharNumericProvider>();
             }
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
         }
@@ -1888,7 +1900,8 @@ namespace EnumsNET
     }
 
     internal static class Enums<TEnum>
+        where TEnum : struct, Enum
     {
-        public static readonly IEnumInfo<TEnum> Info = (IEnumInfo<TEnum>)Enums.GetEnumInfo(typeof(TEnum));
+        public static readonly IEnumInfo<TEnum> Info = Enums.CreateEnumInfo<TEnum>();
     }
 }

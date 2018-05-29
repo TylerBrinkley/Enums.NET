@@ -51,14 +51,7 @@ namespace EnumsNET.NonGeneric
         {
             if (enumType.IsEnum())
             {
-                var closedEnumsType = typeof(Enums<>).MakeGenericType(enumType);
-                return new NonGenericEnumInfo((IEnumInfo)closedEnumsType.
-#if TYPE_REFLECTION
-                        GetField("Info", BindingFlags.Static | BindingFlags.Public)
-#else
-                        GetTypeInfo().GetDeclaredField("Info")
-#endif
-                    .GetValue(null), false);
+                return new NonGenericEnumInfo(Enums.GetInfo(enumType), false);
             }
             else
             {

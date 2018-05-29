@@ -26,10 +26,12 @@
 #if BENCHMARKS
 using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 using EnumsNET.NonGeneric;
 
 namespace EnumsNET.Tests.Benchmarks
 {
+    [ClrJob, CoreJob]
     public class HasFlagBenchmarks
     {
         private readonly AttributeTargets[] _attributeTargets;

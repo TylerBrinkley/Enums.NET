@@ -26,9 +26,11 @@
 #if BENCHMARKS
 using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 
 namespace EnumsNET.Tests.Benchmarks
 {
+    [ClrJob, CoreJob]
     public class GetHashCodeBenchmarks
     {
         private readonly DayOfWeek[] _values;

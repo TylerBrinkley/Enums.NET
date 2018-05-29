@@ -37,7 +37,7 @@ namespace EnumsNET.Unsafe
     /// <typeparam name="TEnum">The enum type.</typeparam>
     public sealed class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
     {
-        private static readonly IEnumInfo<TEnum> s_info = UnsafeEnums<TEnum>.IsEnum ? Enums<TEnum>.Info : null;
+        private static readonly IEnumInfo<TEnum> s_info = UnsafeEnums<TEnum>.Info;
         private static UnsafeEnumComparer<TEnum> s_instance;
 
         /// <summary>

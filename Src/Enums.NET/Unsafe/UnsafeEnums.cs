@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace EnumsNET.Unsafe
 {
@@ -37,11 +38,12 @@ namespace EnumsNET.Unsafe
     {
         internal static IEnumInfo<TEnum> GetInfo<TEnum>()
         {
-            if (!UnsafeEnums<TEnum>.IsEnum)
+            var info = UnsafeEnums<TEnum>.Info;
+            if (info == null)
             {
                 throw new ArgumentException("Type argument TEnum must be an enum");
             }
-            return Enums<TEnum>.Info;
+            return info;
         }
 
         #region Type Methods
@@ -1867,6 +1869,6 @@ namespace EnumsNET.Unsafe
 
     internal static class UnsafeEnums<TEnum>
     {
-        public static bool IsEnum { get; } = typeof(TEnum).IsEnum();
+        public static readonly IEnumInfo<TEnum> Info = (IEnumInfo<TEnum>)Enums.GetInfo(typeof(TEnum));
     }
 }
