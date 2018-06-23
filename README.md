@@ -227,5 +227,3 @@ class EnumsNETDemo
 Inspired by Jon Skeet's [Unconstrained Melody](https://github.com/jskeet/unconstrained-melody).
 
 Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil) for building the assembly.
-
-Uses modified build scripts and repository structure from James Newton-King's [Json.NET](https://github.com/JamesNK/Newtonsoft.Json).
