@@ -27,12 +27,12 @@ namespace EnumsNET.NonGeneric
 {
     internal struct NonGenericEnumInfo
     {
-        public readonly IEnumInfo EnumInfo;
+        public readonly EnumCache EnumCache;
         public readonly bool IsNullable;
 
-        public NonGenericEnumInfo(IEnumInfo enumInfo, bool isNullable)
+        public NonGenericEnumInfo(EnumCache enumCache, bool isNullable)
         {
-            EnumInfo = enumInfo;
+            EnumCache = enumCache;
             IsNullable = isNullable;
         }
     }

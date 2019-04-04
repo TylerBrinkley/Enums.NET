@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using EnumsNET.Numerics;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
@@ -39,7 +40,7 @@ namespace EnumsNET
         , IConvertible
 #endif
     {
-        internal readonly IEnumMember Member;
+        internal readonly EnumMemberInternal Member;
 
         /// <summary>
         /// The enum member's value.
@@ -56,7 +57,10 @@ namespace EnumsNET
         /// </summary>
         public AttributeCollection Attributes => Member.Attributes;
 
-        internal EnumMember(IEnumMember member) => Member = member;
+        internal EnumMember(EnumMemberInternal member)
+        {
+            Member = member;
+        }
 
         /// <summary>
         /// Retrieves the enum member's name.
@@ -324,7 +328,7 @@ namespace EnumsNET
         /// </summary>
         public new TEnum Value => GetGenericValue();
 
-        internal EnumMember(IEnumMember member)
+        internal EnumMember(EnumMemberInternal member)
             : base(member)
         {
         }
@@ -358,33 +362,37 @@ namespace EnumsNET
         #endregion
     }
 
-    internal sealed class EnumMember<TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
+    internal sealed class EnumMember<TEnum, TUnderlying, TUnderlyingOperations> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
         where TEnum : struct, Enum
-        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
 #if ICONVERTIBLE
         , IConvertible
 #endif
-        where TIntProvider : struct, INumericProvider<TInt>
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        internal new EnumMemberInternal<TInt, TIntProvider> Member => (EnumMemberInternal<TInt, TIntProvider>)base.Member;
+        internal new EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member => (EnumMemberInternal<TUnderlying, TUnderlyingOperations>)base.Member;
 
-        internal EnumMember(EnumMemberInternal<TInt, TIntProvider> member)
+        internal EnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
             : base(member)
         {
         }
 
-        internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Member.Value);
+        internal override TEnum GetGenericValue()
+        {
+            var underlying = Member.Value;
+            return UnsafeUtility.As<TUnderlying, TEnum>(ref underlying);
+        }
 
-        internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(flag));
+        internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => UnsafeUtility.As<TUnderlying, TEnum>(ref flag));
 
-        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(flag => (EnumMember<TEnum>)flag.EnumMember);
+        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(m => (EnumMember<TEnum>)m);
 
         #region Interface Implementation
         public int CompareTo(object other) => CompareTo(other as EnumMember<TEnum>);
 
         public int CompareTo(EnumMember other) => CompareTo(other as EnumMember<TEnum>);
 
-        public int CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(((EnumMember<TEnum, TInt, TIntProvider>)other).Member) : 1;
+        public int CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(((EnumMember<TEnum, TUnderlying, TUnderlyingOperations>)other).Member) : 1;
         #endregion
     }
 }

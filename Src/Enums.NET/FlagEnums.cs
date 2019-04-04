@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
@@ -43,7 +45,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns>Indication if <typeparamref name="TEnum"/> is marked with the <see cref="FlagsAttribute"/>.</returns>
         public static bool IsFlagEnum<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.IsFlagEnum;
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.IsFlagEnum;
 
         /// <summary>
         /// Retrieves all the flags defined by <typeparamref name="TEnum"/>.
@@ -51,7 +53,12 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns>All the flags defined by <typeparamref name="TEnum"/>.</returns>
         public static TEnum GetAllFlags<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AllFlags;
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.GetAllFlags(ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
         #endregion
 
         #region Main Methods
@@ -62,7 +69,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>Indication of whether <paramref name="value"/> is a valid flag combination of <typeparamref name="TEnum"/>'s defined flags.</returns>
         public static bool IsValidFlagCombination<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.IsValidFlagCombination(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.IsValidFlagCombination(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Retrieves the names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
@@ -73,7 +80,7 @@ namespace EnumsNET
         /// <returns>The names of <paramref name="value"/>'s flags delimited with commas or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         public static string FormatFlags<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.FormatFlags(value);
+            where TEnum : struct, Enum => FormatFlags(value, null, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
@@ -148,7 +155,7 @@ namespace EnumsNET
         /// <returns>The names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         public static string FormatFlags<TEnum>(TEnum value, string delimiter)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.FormatFlags(value, delimiter);
+            where TEnum : struct, Enum => FormatFlags(value, delimiter, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with <paramref name="delimiter"/>
@@ -164,7 +171,7 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public static string FormatFlags<TEnum>(TEnum value, string delimiter, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with <paramref name="delimiter"/>
@@ -181,7 +188,7 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static string FormatFlags<TEnum>(TEnum value, string delimiter, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with <paramref name="delimiter"/>
@@ -199,7 +206,7 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static string FormatFlags<TEnum>(TEnum value, string delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with <paramref name="delimiter"/>
@@ -215,7 +222,10 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static string FormatFlags<TEnum>(TEnum value, string delimiter, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => FormatFlags(value, delimiter, new ValueCollection<EnumFormat>(formats));
+
+        private static string FormatFlags<TEnum>(TEnum value, string delimiter, ValueCollection<EnumFormat> formats)
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats);
 
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
@@ -224,7 +234,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>The flags that compose <paramref name="value"/>.</returns>
         public static IEnumerable<TEnum> GetFlags<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetFlags(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Bridge.GetFlags(value);
 
         /// <summary>
         /// Retrieves the <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.
@@ -233,7 +243,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
         public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetFlagMembers(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => (EnumMember<TEnum>)m);
 
         /// <summary>
         /// Retrieves the flag count of <typeparamref name="TEnum"/>.
@@ -241,7 +251,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns>The flag count of <typeparamref name="TEnum"/>.</returns>
         public static int GetFlagCount<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetFlagCount();
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagCount();
 
         /// <summary>
         /// Retrieves the flag count of <paramref name="value"/>.
@@ -250,7 +260,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>The flag count of <paramref name="value"/>.</returns>
         public static int GetFlagCount<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetFlagCount(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagCount(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Retrieves the flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.
@@ -260,7 +270,7 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>The flag count of <paramref name="otherFlags"/> that <paramref name="value"/> has.</returns>
         public static int GetFlagCount<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetFlagCount(value, otherFlags);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagCount(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags));
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags.
@@ -269,7 +279,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has any flags.</returns>
         public static bool HasAnyFlags<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.HasAnyFlags(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.HasAnyFlags(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags that are in <paramref name="otherFlags"/>.
@@ -279,7 +289,7 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has any flags that are in <paramref name="otherFlags"/>.</returns>
         public static bool HasAnyFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.HasAnyFlags(value, otherFlags);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.HasAnyFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags));
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has all of the flags that are defined in <typeparamref name="TEnum"/>.
@@ -288,7 +298,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has all of the flags that are defined in <typeparamref name="TEnum"/>.</returns>
         public static bool HasAllFlags<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.HasAllFlags(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.HasAllFlags(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has all of the flags that are in <paramref name="otherFlags"/>.
@@ -298,7 +308,7 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has all of the flags that are in <paramref name="otherFlags"/>.</returns>
         public static bool HasAllFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.HasAllFlags(value, otherFlags);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.HasAllFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags));
 
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
@@ -307,7 +317,12 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns><paramref name="value"/> with all of it's flags toggled.</returns>
         public static TEnum ToggleFlags<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToggleFlags(value);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToggleFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Returns <paramref name="value"/> while toggling the flags that are in <paramref name="otherFlags"/>. Equivalent to the bitwise "xor" operator.
@@ -317,7 +332,12 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns><paramref name="value"/> while toggling the flags that are in <paramref name="otherFlags"/>.</returns>
         public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToggleFlags(value, otherFlags);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToggleFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Returns <paramref name="value"/> with only the flags that are also in <paramref name="otherFlags"/>. Equivalent to the bitwise "and" operation.
@@ -327,7 +347,12 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns><paramref name="value"/> with only the flags that are also in <paramref name="otherFlags"/>.</returns>
         public static TEnum CommonFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CommonFlags(value, otherFlags);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.CommonFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Combines the flags of <paramref name="value"/> and <paramref name="otherFlags"/>. Equivalent to the bitwise "or" operation.
@@ -337,7 +362,12 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>Combination of <paramref name="value"/> with the flags in <paramref name="otherFlags"/>.</returns>
         public static TEnum CombineFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CombineFlags(value, otherFlags);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Combines the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, and <paramref name="flag2"/>.
@@ -348,7 +378,12 @@ namespace EnumsNET
         /// <param name="flag2">The third flags enum value.</param>
         /// <returns>Combination of the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, and <paramref name="flag2"/>.</returns>
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref flag0), ref UnsafeUtility.As<TEnum, byte>(ref flag1), ref UnsafeUtility.As<TEnum, byte>(ref flag2), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Combines the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/>.
@@ -360,7 +395,12 @@ namespace EnumsNET
         /// <param name="flag3">The fourth flags enum value.</param>
         /// <returns>Combination of the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/>.</returns>
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref flag0), ref UnsafeUtility.As<TEnum, byte>(ref flag1), ref UnsafeUtility.As<TEnum, byte>(ref flag2), ref UnsafeUtility.As<TEnum, byte>(ref flag3), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Combines the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/>.
@@ -373,7 +413,12 @@ namespace EnumsNET
         /// <param name="flag4">The fifth flags enum value.</param>
         /// <returns>Combination of the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/>.</returns>
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CombineFlags(flag0, flag1, flag2, flag3, flag4);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref flag0), ref UnsafeUtility.As<TEnum, byte>(ref flag1), ref UnsafeUtility.As<TEnum, byte>(ref flag2), ref UnsafeUtility.As<TEnum, byte>(ref flag3), ref UnsafeUtility.As<TEnum, byte>(ref flag4), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Combines all of the flags of <paramref name="flags"/>.
@@ -382,7 +427,7 @@ namespace EnumsNET
         /// <param name="flags">The flags enum values.</param>
         /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
         public static TEnum CombineFlags<TEnum>(params TEnum[] flags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CombineFlags(flags);
+            where TEnum : struct, Enum => Enums<TEnum>.Bridge.CombineFlags(flags);
 
         /// <summary>
         /// Combines all of the flags of <paramref name="flags"/>.
@@ -391,7 +436,7 @@ namespace EnumsNET
         /// <param name="flags">The flags enum values.</param>
         /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
         public static TEnum CombineFlags<TEnum>(IEnumerable<TEnum> flags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CombineFlags(flags);
+            where TEnum : struct, Enum => Enums<TEnum>.Bridge.CombineFlags(flags);
 
         /// <summary>
         /// Returns <paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.
@@ -401,7 +446,12 @@ namespace EnumsNET
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns><paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.</returns>
         public static TEnum RemoveFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.RemoveFlags(value, otherFlags);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.RemoveFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
         #endregion
 
         #region Parsing
@@ -415,7 +465,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
         public static TEnum ParseFlags<TEnum>(string value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value);
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, null, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -496,7 +546,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, ignoreCase);
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, null, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -580,7 +630,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
         public static TEnum ParseFlags<TEnum>(string value, string delimiter)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, false, delimiter);
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, delimiter, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -666,7 +716,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter);
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, delimiter, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -684,7 +734,7 @@ namespace EnumsNET
         /// <paramref name="format"/> is an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -703,7 +753,7 @@ namespace EnumsNET
         /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -723,7 +773,7 @@ namespace EnumsNET
         /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -741,7 +791,15 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ParseFlags(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, delimiter, new ValueCollection<EnumFormat>(formats));
+
+        private static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats)
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ParseFlags(value, ignoreCase, delimiter, formats, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -972,7 +1030,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result);
+            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -988,7 +1046,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -1005,7 +1063,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -1023,7 +1081,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
@@ -1039,7 +1097,14 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, new ValueCollection<EnumFormat>(formats));
+
+        private static bool TryParseFlags<TEnum>(string value, bool ignoreCase, string delimiter, out TEnum result, ValueCollection<EnumFormat> formats)
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryParseFlags(value, ignoreCase, delimiter, ref UnsafeUtility.As<TEnum, byte>(ref result), formats);
+        }
         #endregion
 
         #region EnumMember Extensions

@@ -51,7 +51,10 @@ namespace EnumsNET
         /// </summary>
         public int Count => _attributes.Length;
 
-        internal AttributeCollection(Attribute[] attributes) => _attributes = attributes;
+        internal AttributeCollection(Attribute[] attributes)
+        {
+            _attributes = attributes;
+        }
 
         /// <summary>
         /// Indicates if the collection contains a <typeparamref name="TAttribute"/>.

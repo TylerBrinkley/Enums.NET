@@ -24,35 +24,22 @@
 #endregion
 
 using System;
+using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal interface IEnumMember : IFormattable
+    internal interface IEnumBridgeInternal<TUnderlying, TUnderlyingOperations>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
 #if ICONVERTIBLE
         , IConvertible
 #endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        string Name { get; }
-        AttributeCollection Attributes { get; }
+        bool HasCustomValidator { get; }
 
-        object GetUnderlyingValue();
-        string AsString(string format);
-        string AsString(EnumFormat format);
-        string AsString(ValueCollection<EnumFormat> formats);
-        string Format(string format);
-        byte ToByte();
-        short ToInt16();
-        int ToInt32();
-        long ToInt64();
-        sbyte ToSByte();
-        ushort ToUInt16();
-        uint ToUInt32();
-        ulong ToUInt64();
-        int GetHashCode();
-
-        bool IsValidFlagCombination();
-        bool HasAnyFlags();
-        bool HasAllFlags();
-        int GetFlagCount();
+        EnumMember CreateEnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member);
+        bool CustomValidate(TUnderlying value);
+        bool IsEnum(object value);
+        object ToObjectUnchecked(TUnderlying value);
     }
 }

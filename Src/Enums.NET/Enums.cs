@@ -26,9 +26,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using EnumsNET.Numerics;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
@@ -89,7 +91,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns>The underlying type of <typeparamref name="TEnum"/>.</returns>
         public static Type GetUnderlyingType<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.UnderlyingType;
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.UnderlyingType;
 
 #if ICONVERTIBLE
         /// <summary>
@@ -98,7 +100,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s underlying type's <see cref="TypeCode"/>.</returns>
         public static TypeCode GetTypeCode<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TypeCode;
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.TypeCode;
 #endif
 
         /// <summary>
@@ -107,7 +109,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         public static int GetMemberCount<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMemberCount();
+            where TEnum : struct, Enum => GetMemberCount<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
@@ -118,7 +120,7 @@ namespace EnumsNET
         /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
         /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
         public static int GetMemberCount<TEnum>(EnumMemberSelection selection)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMemberCount(selection);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetMemberCount(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s member count.
@@ -148,7 +150,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMembers();
+            where TEnum : struct, Enum => GetMembers<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -159,7 +161,7 @@ namespace EnumsNET
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
         public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMembers(selection);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetMembers(selection).Select(m => (EnumMember<TEnum>)m);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -189,7 +191,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
         public static IEnumerable<string> GetNames<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetNames();
+            where TEnum : struct, Enum => GetNames<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -200,7 +202,7 @@ namespace EnumsNET
         /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
         /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
         public static IEnumerable<string> GetNames<TEnum>(EnumMemberSelection selection)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetNames(selection);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetNames(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -220,7 +222,7 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
         public static IEnumerable<TEnum> GetValues<TEnum>()
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetValues();
+            where TEnum : struct, Enum => GetValues<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
@@ -231,7 +233,7 @@ namespace EnumsNET
         /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
         /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
         public static IEnumerable<TEnum> GetValues<TEnum>(EnumMemberSelection selection)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetValues(selection);
+            where TEnum : struct, Enum => Enums<TEnum>.Bridge.GetValues(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
@@ -259,7 +261,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> is not a valid type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(object value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -278,7 +280,12 @@ namespace EnumsNET
         /// the result is invalid with the specified <paramref name="validation"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(object value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -309,7 +316,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(sbyte value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -325,7 +332,12 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(sbyte value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -352,7 +364,7 @@ namespace EnumsNET
         /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(byte value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -367,7 +379,12 @@ namespace EnumsNET
         /// the result is invalid with the specified <paramref name="validation"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(byte value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -393,7 +410,7 @@ namespace EnumsNET
         /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(short value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -408,7 +425,12 @@ namespace EnumsNET
         /// the result is invalid with the specified <paramref name="validation"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(short value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -435,7 +457,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ushort value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -451,7 +473,12 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ushort value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -478,7 +505,7 @@ namespace EnumsNET
         /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(int value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -493,7 +520,12 @@ namespace EnumsNET
         /// the result is invalid with the specified <paramref name="validation"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(int value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -520,7 +552,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(uint value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -536,7 +568,12 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(uint value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -563,7 +600,7 @@ namespace EnumsNET
         /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(long value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -578,7 +615,12 @@ namespace EnumsNET
         /// the result is invalid with the specified <paramref name="validation"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         public static TEnum ToObject<TEnum>(long value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -593,7 +635,7 @@ namespace EnumsNET
         [Obsolete("Use EnumValidation overload instead")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static TEnum ToObject<TEnum>(long value, bool validate)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validate ? EnumValidation.Default : EnumValidation.None);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -605,7 +647,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ulong value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value);
+            where TEnum : struct, Enum => ToObject<TEnum>(value, EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -621,7 +663,12 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
         [CLSCompliant(false)]
         public static TEnum ToObject<TEnum>(ulong value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToObject(value, validation);
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -649,7 +696,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryToObject<TEnum>(object value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -664,7 +711,11 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         public static bool TryToObject<TEnum>(object value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -692,7 +743,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -707,7 +758,11 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -734,7 +789,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryToObject<TEnum>(byte value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -748,7 +803,11 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         public static bool TryToObject<TEnum>(byte value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -774,7 +833,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryToObject<TEnum>(short value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -788,7 +847,11 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         public static bool TryToObject<TEnum>(short value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -815,7 +878,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -830,7 +893,11 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -857,7 +924,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryToObject<TEnum>(int value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -871,7 +938,11 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         public static bool TryToObject<TEnum>(int value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -898,7 +969,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -913,7 +984,11 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -940,7 +1015,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryToObject<TEnum>(long value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -954,7 +1029,11 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         public static bool TryToObject<TEnum>(long value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -981,7 +1060,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result);
+            where TEnum : struct, Enum => TryToObject(value, EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -996,7 +1075,11 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, EnumValidation validation, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryToObject(value, out result, validation);
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
+        }
 
         /// <summary>
         /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -1026,7 +1109,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Indication if <paramref name="value"/> is valid.</returns>
         public static bool IsValid<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.IsValid(value);
+            where TEnum : struct, Enum => value.IsValid(EnumValidation.Default);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> is valid using the specified <paramref name="validation"/>.
@@ -1037,7 +1120,7 @@ namespace EnumsNET
         /// <returns>Indication if <paramref name="value"/> is valid.</returns>
         /// <exception cref="ArgumentException"><paramref name="validation"/> is an invalid value.</exception>
         public static bool IsValid<TEnum>(this TEnum value, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.IsValid(value, validation);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.IsValid(ref UnsafeUtility.As<TEnum, byte>(ref value), validation);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> is defined.
@@ -1046,7 +1129,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Indication if <paramref name="value"/> is defined.</returns>
         public static bool IsDefined<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.IsDefined(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.IsDefined(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Validates that <paramref name="value"/> is valid. If it's not it throws an <see cref="ArgumentException"/> with the specified <paramref name="paramName"/>.
@@ -1057,7 +1140,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> for use in fluent API's and base constructor method calls.</returns>
         /// <exception cref="ArgumentException"><paramref name="value"/> is invalid.</exception>
         public static TEnum Validate<TEnum>(this TEnum value, string paramName)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Validate(value, paramName);
+            where TEnum : struct, Enum => value.Validate(paramName, EnumValidation.Default);
 
         /// <summary>
         /// Validates that <paramref name="value"/> is valid using the specified <paramref name="validation"/>.
@@ -1072,7 +1155,11 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="value"/> is invalid.</exception>
         public static TEnum Validate<TEnum>(this TEnum value, string paramName, EnumValidation validation)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Validate(value, paramName, validation);
+            where TEnum : struct, Enum
+        {
+            Enums<TEnum>.Cache.Validate(ref UnsafeUtility.As<TEnum, byte>(ref value), paramName, validation);
+            return value;
+        }
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation.
@@ -1081,7 +1168,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>A string representation of <paramref name="value"/>.</returns>
         public static string AsString<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AsString(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.AsString(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
@@ -1092,7 +1179,7 @@ namespace EnumsNET
         /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static string AsString<TEnum>(this TEnum value, string format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AsString(value, format);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), format);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
@@ -1103,7 +1190,7 @@ namespace EnumsNET
         /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public static string AsString<TEnum>(this TEnum value, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AsString(value, format);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), format);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
@@ -1115,7 +1202,7 @@ namespace EnumsNET
         /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static string AsString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AsString(value, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => AsString(value, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified formats.
@@ -1128,7 +1215,7 @@ namespace EnumsNET
         /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static string AsString<TEnum>(this TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AsString(value, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => AsString(value, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
@@ -1139,7 +1226,10 @@ namespace EnumsNET
         /// <returns>A string representation of <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static string AsString<TEnum>(this TEnum value, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.AsString(value, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => AsString(value, new ValueCollection<EnumFormat>(formats));
+
+        private static string AsString<TEnum>(TEnum value, ValueCollection<EnumFormat> formats = default)
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), formats);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
@@ -1151,7 +1241,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static string Format<TEnum>(TEnum value, string format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Format(value, format);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.Format(ref UnsafeUtility.As<TEnum, byte>(ref value), format);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
@@ -1177,7 +1267,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s underlying integral value.</returns>
         public static object GetUnderlyingValue<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetUnderlyingValue(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetUnderlyingValue(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to an <see cref="sbyte"/>.
@@ -1188,7 +1278,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="sbyte"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static sbyte ToSByte<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToSByte(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToSByte(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to a <see cref="byte"/>.
@@ -1198,7 +1288,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> converted to a <see cref="byte"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="byte"/>'s value range without overflowing.</exception>
         public static byte ToByte<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToByte(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToByte(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to an <see cref="short"/>.
@@ -1208,7 +1298,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> converted to an <see cref="short"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="short"/>'s value range without overflowing.</exception>
         public static short ToInt16<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToInt16(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToInt16(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to a <see cref="ushort"/>.
@@ -1219,7 +1309,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ushort"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static ushort ToUInt16<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToUInt16(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToUInt16(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to an <see cref="int"/>.
@@ -1229,7 +1319,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> converted to an <see cref="int"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="int"/>'s value range without overflowing.</exception>
         public static int ToInt32<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToInt32(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToInt32(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to a <see cref="uint"/>.
@@ -1240,7 +1330,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="uint"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static uint ToUInt32<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToUInt32(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToUInt32(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to an <see cref="long"/>.
@@ -1250,7 +1340,7 @@ namespace EnumsNET
         /// <returns><paramref name="value"/> converted to an <see cref="long"/>.</returns>
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="long"/>'s value range without overflowing.</exception>
         public static long ToInt64<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToInt64(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToInt64(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Converts <paramref name="value"/> to a <see cref="ulong"/>.
@@ -1261,7 +1351,7 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> cannot fit within <see cref="ulong"/>'s value range without overflowing.</exception>
         [CLSCompliant(false)]
         public static ulong ToUInt64<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.ToUInt64(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.ToUInt64(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Retrieves the hash code of <paramref name="value"/>. It's more efficient as it doesn't require boxing and unboxing of <paramref name="value"/>.
@@ -1270,7 +1360,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Hash code of <paramref name="value"/>.</returns>
         public static int GetHashCode<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetHashCode(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetHashCode(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Indicates if <paramref name="value"/> equals <paramref name="other"/>.
@@ -1280,7 +1370,7 @@ namespace EnumsNET
         /// <param name="other">The other enum value.</param>
         /// <returns>Indication if <paramref name="value"/> equals <paramref name="other"/>.</returns>
         public static bool Equals<TEnum>(TEnum value, TEnum other)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Equals(value, other);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.Equals(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref other));
 
         /// <summary>
         /// Compares <paramref name="value"/> to <paramref name="other"/> for ordering.
@@ -1291,7 +1381,7 @@ namespace EnumsNET
         /// <returns>1 if <paramref name="value"/> is greater than <paramref name="other"/>, 0 if <paramref name="value"/> equals <paramref name="other"/>,
         /// and -1 if <paramref name="value"/> is less than <paramref name="other"/>.</returns>
         public static int CompareTo<TEnum>(TEnum value, TEnum other)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.CompareTo(value, other);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref other));
         #endregion
 
         #region Defined Values Main Methods
@@ -1302,7 +1392,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s enum member name if defined otherwise <c>null</c>.</returns>
         public static string GetName<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetName(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetName(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.
@@ -1311,7 +1401,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.</returns>
         public static AttributeCollection GetAttributes<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetAttributes(value);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetAttributes(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1320,7 +1410,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         public static EnumMember<TEnum> GetMember<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value);
+            where TEnum : struct, Enum => (EnumMember<TEnum>)Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value));
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -1331,7 +1421,7 @@ namespace EnumsNET
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string name)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(name);
+            where TEnum : struct, Enum => GetMember<TEnum>(name, false, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -1343,7 +1433,7 @@ namespace EnumsNET
         /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string name, bool ignoreCase)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(name, ignoreCase);
+            where TEnum : struct, Enum => GetMember<TEnum>(name, ignoreCase, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1355,7 +1445,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, false, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, false, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1368,7 +1458,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, false, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, false, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1382,7 +1472,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, false, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, false, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1394,7 +1484,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, false, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, false, new ValueCollection<EnumFormat>(formats));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1408,7 +1498,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1423,7 +1513,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1439,7 +1529,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1453,7 +1543,10 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.GetMember(value, ignoreCase, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => GetMember<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(formats));
+
+        private static EnumMember<TEnum> GetMember<TEnum>(string value, bool ignoreCase, ValueCollection<EnumFormat> formats)
+            where TEnum : struct, Enum => (EnumMember<TEnum>)Enums<TEnum>.Cache.GetMember(value, ignoreCase, formats);
 
         /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1535,7 +1628,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
         public static TEnum Parse<TEnum>(string value)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Parse(value);
+            where TEnum : struct, Enum => Parse<TEnum>(value, false);
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1616,7 +1709,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value, bool ignoreCase)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Parse(value, ignoreCase);
+            where TEnum : struct, Enum => Parse<TEnum>(value, ignoreCase, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1633,7 +1726,7 @@ namespace EnumsNET
         /// <paramref name="format"/> is an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => Parse<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1651,7 +1744,7 @@ namespace EnumsNET
         /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => Parse<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1670,7 +1763,7 @@ namespace EnumsNET
         /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => Parse<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1687,7 +1780,15 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value, bool ignoreCase, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.Parse(value, ignoreCase, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => Parse<TEnum>(value, ignoreCase, new ValueCollection<EnumFormat>(formats));
+
+        private static TEnum Parse<TEnum>(string value, bool ignoreCase, ValueCollection<EnumFormat> formats = default)
+            where TEnum : struct, Enum
+        {
+            TEnum result = default;
+            Enums<TEnum>.Cache.Parse(value, ignoreCase, formats, ref UnsafeUtility.As<TEnum, byte>(ref result));
+            return result;
+        }
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -1768,7 +1869,7 @@ namespace EnumsNET
         /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParse(value, ignoreCase, out result);
+            where TEnum : struct, Enum => TryParse(value, ignoreCase, out result);
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1783,7 +1884,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, EnumFormat format)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format));
+            where TEnum : struct, Enum => TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1799,7 +1900,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format0, format1));
+            where TEnum : struct, Enum => TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1816,7 +1917,7 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format0, format1, format2));
+            where TEnum : struct, Enum => TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
@@ -1831,52 +1932,75 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, params EnumFormat[] formats)
-            where TEnum : struct, Enum => Enums<TEnum>.Info.TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(formats));
+            where TEnum : struct, Enum => TryParse(value, ignoreCase, out result, new ValueCollection<EnumFormat>(formats));
+
+        private static bool TryParse<TEnum>(string value, bool ignoreCase, out TEnum result, ValueCollection<EnumFormat> formats = default)
+            where TEnum : struct, Enum
+        {
+            result = default;
+            return Enums<TEnum>.Cache.TryParse(value, ignoreCase, ref UnsafeUtility.As<TEnum, byte>(ref result), formats);
+        }
         #endregion
 
         #region Internal Methods
-        internal static IEnumInfo GetInfo(Type enumType)
+        internal static object GetBridge(Type enumType)
         {
             if (!enumType.IsEnum())
             {
                 return null;
             }
 
-            return (IEnumInfo)typeof(Enums<>).MakeGenericType(enumType)
+            return typeof(Enums<>).MakeGenericType(enumType)
 #if TYPE_REFLECTION
-                .GetField(nameof(Enums<DayOfWeek>.Info), BindingFlags.Static | BindingFlags.Public)
+                .GetField(nameof(Enums<DayOfWeek>.Bridge), BindingFlags.Static | BindingFlags.Public)
 #else
-                .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Info))
+                .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Bridge))
 #endif
                 .GetValue(null);
         }
 
-        internal static IEnumInfo<TEnum> CreateEnumInfo<TEnum>()
+        internal static EnumCache GetCache(Type enumType)
+        {
+            if (!enumType.IsEnum())
+            {
+                return null;
+            }
+
+            return (EnumCache)typeof(Enums<>).MakeGenericType(enumType)
+#if TYPE_REFLECTION
+                .GetField(nameof(Enums<DayOfWeek>.Cache), BindingFlags.Static | BindingFlags.Public)
+#else
+                .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Cache))
+#endif
+                .GetValue(null);
+        }
+
+        internal static EnumBridge<TEnum> CreateEnumBridge<TEnum>()
             where TEnum : struct, Enum
         {
             var underlyingType = Enum.GetUnderlyingType(typeof(TEnum));
             switch (underlyingType.GetTypeCode())
             {
                 case TypeCode.SByte:
-                    return new EnumInfo<TEnum, sbyte, SByteNumericProvider>();
+                    return new EnumBridge<TEnum, sbyte, UnderlyingOperations>();
                 case TypeCode.Byte:
-                    return new EnumInfo<TEnum, byte, ByteNumericProvider>();
+                    return new EnumBridge<TEnum, byte, UnderlyingOperations>();
                 case TypeCode.Int16:
-                    return new EnumInfo<TEnum, short, Int16NumericProvider>();
+                    return new EnumBridge<TEnum, short, UnderlyingOperations>();
                 case TypeCode.UInt16:
-                    return new EnumInfo<TEnum, ushort, UInt16NumericProvider>();
+                    return new EnumBridge<TEnum, ushort, UnderlyingOperations>();
                 case TypeCode.Int32:
-                    return new EnumInfo<TEnum, int, Int32NumericProvider>();
+                    return new EnumBridge<TEnum, int, UnderlyingOperations>();
                 case TypeCode.UInt32:
-                    return new EnumInfo<TEnum, uint, UInt32NumericProvider>();
+                    return new EnumBridge<TEnum, uint, UnderlyingOperations>();
                 case TypeCode.Int64:
-                    return new EnumInfo<TEnum, long, Int64NumericProvider>();
+                    return new EnumBridge<TEnum, long, UnderlyingOperations>();
                 case TypeCode.UInt64:
-                    return new EnumInfo<TEnum, ulong, UInt64NumericProvider>();
+                    return new EnumBridge<TEnum, ulong, UnderlyingOperations>();
                 case TypeCode.Boolean:
-                    return new EnumInfo<TEnum, bool, BooleanNumericProvider>();
+                    return new EnumBridge<TEnum, bool, UnderlyingOperations>();
                 case TypeCode.Char:
-                    return new EnumInfo<TEnum, char, CharNumericProvider>();
+                    return new EnumBridge<TEnum, char, UnderlyingOperations>();
             }
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
         }
@@ -1902,6 +2026,8 @@ namespace EnumsNET
     internal static class Enums<TEnum>
         where TEnum : struct, Enum
     {
-        public static readonly IEnumInfo<TEnum> Info = Enums.CreateEnumInfo<TEnum>();
+        public static readonly EnumBridge<TEnum> Bridge = Enums.CreateEnumBridge<TEnum>();
+
+        public static readonly EnumCache Cache = Bridge.GetCache();
     }
 }
