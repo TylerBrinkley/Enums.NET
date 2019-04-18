@@ -1624,7 +1624,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumCache.GetName(value);
+            return info.EnumCache.GetMember(value)?.Name;
         }
 
         /// <summary>
@@ -1646,7 +1646,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumCache.GetAttributes(value);
+            return info.EnumCache.GetMember(value)?.Attributes;
         }
 
         /// <summary>
@@ -1668,7 +1668,7 @@ namespace EnumsNET.NonGeneric
                 return null;
             }
 
-            return info.EnumCache.GetMember(value);
+            return info.EnumCache.GetMember(value)?.EnumMember;
         }
 
         /// <summary>

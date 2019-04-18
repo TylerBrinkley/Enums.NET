@@ -33,7 +33,7 @@ using EnumsNET.Utilities;
 namespace EnumsNET
 {
     /// <summary>
-    /// An enum member which composes its name, value, and attributes.
+    /// An enum member which is composed of its name, value, and attributes.
     /// </summary>
     public abstract class EnumMember : IComparable<EnumMember>, IEquatable<EnumMember>, IComparable, IFormattable
 #if ICONVERTIBLE
@@ -318,7 +318,7 @@ namespace EnumsNET
     }
 
     /// <summary>
-    /// An enum member which composes its name, value, and attributes.
+    /// An enum member which is composed of its name, value, and attributes.
     /// </summary>
     /// <typeparam name="TEnum">The enum type.</typeparam>
     public abstract class EnumMember<TEnum> : EnumMember, IComparable<EnumMember<TEnum>>, IEquatable<EnumMember<TEnum>>

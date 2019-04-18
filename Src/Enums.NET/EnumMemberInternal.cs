@@ -37,6 +37,18 @@ namespace EnumsNET
     {
         public readonly string Name;
         public readonly AttributeCollection Attributes;
+        private EnumMember _enumMember;
+
+        public EnumMember EnumMember
+        {
+            get
+            {
+                var enumMember = _enumMember;
+                return enumMember ?? Interlocked.CompareExchange(ref _enumMember, (enumMember = CreateEnumMember()), null) ?? enumMember;
+            }
+        }
+
+        internal abstract EnumMember CreateEnumMember();
 
         protected EnumMemberInternal(string name, AttributeCollection attributes)
         {
@@ -93,18 +105,10 @@ namespace EnumsNET
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
         private readonly EnumCache<TUnderlying, TUnderlyingOperations> _enumCache;
-        private EnumMember _enumMember;
 
         public readonly TUnderlying Value;
 
-        internal EnumMember EnumMember
-        {
-            get
-            {
-                EnumMember enumMember;
-                return _enumMember ?? Interlocked.CompareExchange(ref _enumMember, (enumMember = _enumCache.EnumBridge.CreateEnumMember(this)), null) ?? enumMember;
-            }
-        }
+        internal override EnumMember CreateEnumMember() => _enumCache.EnumBridge.CreateEnumMember(this);
 
         public EnumMemberInternal(TUnderlying value, string name, AttributeCollection attributes, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
             : base(name, attributes)
@@ -126,12 +130,7 @@ namespace EnumsNET
 
         public override string AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
 
-        public override string Format(string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return _enumCache.FormatInternal(Value, this, format);
-        }
+        public override string Format(string format) => _enumCache.FormatInternal(Value, this, format);
 
         public override int GetHashCode() => Value.GetHashCode();
 

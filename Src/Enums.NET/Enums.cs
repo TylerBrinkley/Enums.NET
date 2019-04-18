@@ -1392,7 +1392,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s enum member name if defined otherwise <c>null</c>.</returns>
         public static string GetName<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetName(ref UnsafeUtility.As<TEnum, byte>(ref value));
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.Name;
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.
@@ -1401,7 +1401,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.</returns>
         public static AttributeCollection GetAttributes<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetAttributes(ref UnsafeUtility.As<TEnum, byte>(ref value));
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.Attributes;
 
         /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1410,7 +1410,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         public static EnumMember<TEnum> GetMember<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => (EnumMember<TEnum>)Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value));
+            where TEnum : struct, Enum => (EnumMember<TEnum>)Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.EnumMember;
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.

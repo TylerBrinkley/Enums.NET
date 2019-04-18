@@ -1404,7 +1404,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s enum member name if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static string GetName<TEnum>(TEnum value) => GetCache<TEnum>().GetName(ref UnsafeUtility.As<TEnum, byte>(ref value));
+        public static string GetName<TEnum>(TEnum value) => GetCache<TEnum>().GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.Name;
 
         /// <summary>
         /// Retrieves <paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.
@@ -1413,7 +1413,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The enum value.</param>
         /// <returns><paramref name="value"/>'s enum member attributes if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static AttributeCollection GetAttributes<TEnum>(TEnum value) => GetCache<TEnum>().GetAttributes(ref UnsafeUtility.As<TEnum, byte>(ref value));
+        public static AttributeCollection GetAttributes<TEnum>(TEnum value) => GetCache<TEnum>().GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.Attributes;
 
         /// <summary>
         /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
@@ -1422,7 +1422,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static EnumMember<TEnum> GetMember<TEnum>(TEnum value) => (EnumMember<TEnum>)GetCache<TEnum>().GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value));
+        public static EnumMember<TEnum> GetMember<TEnum>(TEnum value) => (EnumMember<TEnum>)GetCache<TEnum>().GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.EnumMember;
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
