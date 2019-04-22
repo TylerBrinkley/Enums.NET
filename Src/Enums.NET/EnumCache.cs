@@ -181,31 +181,23 @@ namespace EnumsNET
         private readonly TUnderlying _minDefined;
         private readonly Dictionary<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _valueMap;
         private readonly List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _duplicateValues;
-        private Dictionary<StringKey, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>[] _enumMemberParsers;
+        private EnumMemberParser[] _enumMemberParsers;
 
-        private Dictionary<StringKey, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetEnumMemberParser(EnumFormat format)
+        private EnumMemberParser GetEnumMemberParser(EnumFormat format)
         {
             var index = format - EnumFormat.Name;
             var parsers = _enumMemberParsers;
-            Dictionary<StringKey, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> parser;
+            EnumMemberParser parser;
             if (index < 0 || parsers == null || index >= parsers.Length || (parser = parsers[index]) == null)
             {
                 format.Validate(nameof(format));
 
-                parser = new Dictionary<StringKey, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(GetMemberCount(EnumMemberSelection.All));
-                foreach (var member in GetMembersInternal(EnumMemberSelection.All))
-                {
-                    var formattedValue = member.AsString(format);
-                    if (formattedValue != null)
-                    {
-                        parser[new StringKey(formattedValue, false)] = member;
-                    }
-                }
-                Dictionary<StringKey, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>[] oldParsers;
+                parser = new EnumMemberParser(format, this);
+                EnumMemberParser[] oldParsers;
                 do
                 {
                     oldParsers = parsers;
-                    parsers = new Dictionary<StringKey, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>[Math.Max(oldParsers?.Length ?? 0, index + 1)];
+                    parsers = new EnumMemberParser[Math.Max(oldParsers?.Length ?? 0, index + 1)];
                     oldParsers?.CopyTo(parsers, 0);
                     parsers[index] = parser;
                 } while ((parsers = Interlocked.CompareExchange(ref _enumMemberParsers, parsers, oldParsers)) != oldParsers);
@@ -1121,7 +1113,7 @@ namespace EnumsNET
                 else
                 {
                     var parser = GetEnumMemberParser(format);
-                    if (parser.TryGetValue(new StringKey(value, ignoreCase), out member))
+                    if (parser.TryParse(value, ignoreCase, out member))
                     {
                         result = member.Value;
                         return true;
@@ -1509,23 +1501,45 @@ namespace EnumsNET
         }
         #endregion
         #endregion
-    }
 
-    internal struct StringKey : IEquatable<StringKey>
-    {
-        public string Key;
-        public bool IgnoreCase;
-
-        public StringKey(string key, bool ignoreCase)
+        internal sealed class EnumMemberParser
         {
-            Key = key;
-            IgnoreCase = ignoreCase;
+            private readonly Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _formatValueMap;
+            private Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _formatIgnoreCase;
+
+            private Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> FormatIgnoreCase
+            {
+                get
+                {
+                    var formatIgnoreCase = _formatIgnoreCase;
+                    if (formatIgnoreCase == null)
+                    {
+                        formatIgnoreCase = new Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
+                        foreach (var pair in _formatValueMap)
+                        {
+                            formatIgnoreCase[pair.Key] = pair.Value;
+                        }
+
+                        _formatIgnoreCase = formatIgnoreCase;
+                    }
+                    return formatIgnoreCase;
+                }
+            }
+
+            public EnumMemberParser(EnumFormat format, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
+            {
+                _formatValueMap = new Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(enumCache.GetMemberCount(EnumMemberSelection.All), StringComparer.Ordinal);
+                foreach (var member in enumCache.GetMembersInternal(EnumMemberSelection.All))
+                {
+                    var formattedValue = member.AsString(format);
+                    if (formattedValue != null)
+                    {
+                        _formatValueMap[formattedValue] = member;
+                    }
+                }
+            }
+
+            internal bool TryParse(string formattedValue, bool ignoreCase, out EnumMemberInternal<TUnderlying, TUnderlyingOperations> result) => _formatValueMap.TryGetValue(formattedValue, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(formattedValue, out result));
         }
-
-        public bool Equals(StringKey other) => string.Equals(Key, other.Key, IgnoreCase | other.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
-
-        public override bool Equals(object obj) => obj is StringKey stringKey && Equals(stringKey);
-
-        public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(Key);
     }
 }

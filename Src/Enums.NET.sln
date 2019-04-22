@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET", "Enums.NET\Enums.NET.csproj", "{86547778-1DCF-43A6-B951-0D0A5207DF21}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,8 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0F202B3-6AF5-4E4F-8C42-2D70925D0E72}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
-		System.Enum-api-diff-tabled.md = System.Enum-api-diff-tabled.md
-		System.Enum-api-diff.md = System.Enum-api-diff.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET.TestEnums", "Enums.NET.TestEnums\Enums.NET.TestEnums.csproj", "{D52F6046-879A-49C2-8E1D-810E8119FF80}"
@@ -25,6 +23,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET.PerfTestConsole", "Enums.NET.PerfTestConsole\Enums.NET.PerfTestConsole.csproj", "{7B289510-5B33-42E3-8E3C-684DEF350953}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Weavers", "Weavers\Weavers.csproj", "{0F0B39FA-B1FE-4F38-92F4-F06618D1948A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums.NET.PerfTestConsole.Old", "Enums.NET.PerfTestConsole.Old\Enums.NET.PerfTestConsole.Old.csproj", "{E110CC83-E9C3-4EFB-94DE-6B6A6E687FBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +52,10 @@ Global
 		{0F0B39FA-B1FE-4F38-92F4-F06618D1948A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F0B39FA-B1FE-4F38-92F4-F06618D1948A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F0B39FA-B1FE-4F38-92F4-F06618D1948A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E110CC83-E9C3-4EFB-94DE-6B6A6E687FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E110CC83-E9C3-4EFB-94DE-6B6A6E687FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E110CC83-E9C3-4EFB-94DE-6B6A6E687FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E110CC83-E9C3-4EFB-94DE-6B6A6E687FBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
