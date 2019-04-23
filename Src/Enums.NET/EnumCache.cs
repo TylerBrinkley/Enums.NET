@@ -40,11 +40,17 @@ using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
+#if SPAN
+using ParseType = System.ReadOnlySpan<char>;
+#else
+using ParseType = System.String;
+#endif
+
 namespace EnumsNET
 {
     internal abstract class EnumCache
     {
-        protected static bool IsNumeric(string value)
+        protected static bool IsNumeric(ParseType value)
         {
             char firstChar;
             return value.Length > 0 && (char.IsDigit((firstChar = value[0])) || firstChar == '-' || firstChar == '+');
@@ -98,7 +104,7 @@ namespace EnumsNET
         public abstract int GetHashCode(ref byte value);
         public abstract EnumMemberInternal GetMember(ref byte value);
         public abstract EnumMemberInternal GetMember(object value);
-        public abstract EnumMember GetMember(string value, bool ignoreCase, ValueCollection<EnumFormat> formats);
+        public abstract EnumMember GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats);
         public abstract IEnumerable<EnumMember> GetMembers(EnumMemberSelection selection);
         public abstract int GetMemberCount(EnumMemberSelection selection);
         public abstract IEnumerable<string> GetNames(EnumMemberSelection selection);
@@ -119,10 +125,10 @@ namespace EnumsNET
         public abstract bool IsValid(object value, EnumValidation validation);
         public abstract bool IsValidFlagCombination(ref byte value);
         public abstract bool IsValidFlagCombination(object value);
-        public abstract void Parse(string value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result);
-        public abstract object Parse(string value, bool ignoreCase, ValueCollection<EnumFormat> formats);
-        public abstract void ParseFlags(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats, ref byte result);
-        public abstract object ParseFlags(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats);
+        public abstract void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result);
+        public abstract object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats);
+        public abstract void ParseFlags(ParseType value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats, ref byte result);
+        public abstract object ParseFlags(ParseType value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats);
         public abstract void RemoveFlags(ref byte value, ref byte otherFlags, ref byte result);
         public abstract object RemoveFlags(object value, object otherFlags);
         public abstract byte ToByte(ref byte value);
@@ -151,10 +157,10 @@ namespace EnumsNET
         public abstract uint ToUInt32(object value);
         public abstract ulong ToUInt64(ref byte value);
         public abstract ulong ToUInt64(object value);
-        public abstract bool TryParse(string value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats);
-        public abstract bool TryParse(string value, bool ignoreCase, out object result, ValueCollection<EnumFormat> formats);
-        public abstract bool TryParseFlags(string value, bool ignoreCase, string delimiter, ref byte result, ValueCollection<EnumFormat> formats);
-        public abstract bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, ValueCollection<EnumFormat> formats);
+        public abstract bool TryParse(ParseType value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats);
+        public abstract bool TryParse(ParseType value, bool ignoreCase, out object result, ValueCollection<EnumFormat> formats);
+        public abstract bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, ref byte result, ValueCollection<EnumFormat> formats);
+        public abstract bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, out object result, ValueCollection<EnumFormat> formats);
         public abstract bool TryToObject(ulong value, ref byte result, EnumValidation validation);
         public abstract bool TryToObject(ulong value, out object result, EnumValidation validation);
         public abstract bool TryToObject(object value, ref byte result, EnumValidation validation);
@@ -993,10 +999,8 @@ namespace EnumsNET
             return member;
         }
 
-        public override EnumMember GetMember(string value, bool ignoreCase, ValueCollection<EnumFormat> formats)
+        public override EnumMember GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
-            Preconditions.NotNull(value, nameof(value));
-
             value = value.Trim();
 
             if (!formats.Any())
@@ -1010,22 +1014,20 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public override void Parse(string value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
+        public override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ParseInternal(value, ignoreCase, formats);
         }
 
-        public override object Parse(string value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
+        public override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
 
-        public TUnderlying ParseInternal(string value, bool ignoreCase, ValueCollection<EnumFormat> formats)
+        public TUnderlying ParseInternal(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
             if (IsFlagEnum)
             {
                 return ParseFlagsInternal(value, ignoreCase, null, formats);
             }
-
-            Preconditions.NotNull(value, nameof(value));
 
             value = value.Trim();
             
@@ -1045,7 +1047,7 @@ namespace EnumsNET
             throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
         }
 
-        public override bool TryParse(string value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
+        public override bool TryParse(ParseType value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
         {
             if (TryParse(value, ignoreCase, out TUnderlying r, formats))
             {
@@ -1056,7 +1058,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryParse(string value, bool ignoreCase, out object result, ValueCollection<EnumFormat> formats)
+        public override bool TryParse(ParseType value, bool ignoreCase, out object result, ValueCollection<EnumFormat> formats)
         {
             if (TryParse(value, ignoreCase, out TUnderlying r, formats))
             {
@@ -1067,7 +1069,7 @@ namespace EnumsNET
             return false;
         }
 
-        public bool TryParse(string value, bool ignoreCase, out TUnderlying result, ValueCollection<EnumFormat> formats)
+        public bool TryParse(ParseType value, bool ignoreCase, out TUnderlying result, ValueCollection<EnumFormat> formats)
         {
             if (IsFlagEnum)
             {
@@ -1089,7 +1091,7 @@ namespace EnumsNET
             return false;
         }
 
-        private bool TryParseInternal(string value, bool ignoreCase, out TUnderlying result, out EnumMemberInternal<TUnderlying, TUnderlyingOperations> member, ValueCollection<EnumFormat> formats, bool getValueOnly)
+        private bool TryParseInternal(ParseType value, bool ignoreCase, out TUnderlying result, out EnumMemberInternal<TUnderlying, TUnderlyingOperations> member, ValueCollection<EnumFormat> formats, bool getValueOnly)
         {
             TUnderlyingOperations operations = default;
             foreach (var format in formats)
@@ -1355,28 +1357,34 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public override void ParseFlags(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats, ref byte result)
+        public override void ParseFlags(ParseType value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ParseFlagsInternal(value, ignoreCase, delimiter, formats);
         }
 
-        public override object ParseFlags(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, delimiter, formats));
+        public override object ParseFlags(ParseType value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, delimiter, formats));
 
-        public TUnderlying ParseFlagsInternal(string value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats)
+        public TUnderlying ParseFlagsInternal(ParseType value, bool ignoreCase, string delimiter, ValueCollection<EnumFormat> formats)
         {
-            Preconditions.NotNull(value, nameof(value));
-
             if (string.IsNullOrEmpty(delimiter))
             {
                 delimiter = FlagEnums.DefaultDelimiter;
             }
 
+#if SPAN
+            var effectiveDelimiter = delimiter.AsSpan().Trim();
+            if (effectiveDelimiter.Length == 0)
+            {
+                effectiveDelimiter = delimiter;
+            }
+#else
             var effectiveDelimiter = delimiter.Trim();
             if (effectiveDelimiter.Length == 0)
             {
                 effectiveDelimiter = delimiter;
             }
+#endif
 
             if (!formats.Any())
             {
@@ -1393,7 +1401,11 @@ namespace EnumsNET
                 {
                     ++startIndex;
                 }
+#if SPAN
+                var delimiterIndex = value.Slice(startIndex).IndexOf(effectiveDelimiter, StringComparison.Ordinal);
+#else
                 var delimiterIndex = value.IndexOf(effectiveDelimiter, startIndex, StringComparison.Ordinal);
+#endif
                 if (delimiterIndex < 0)
                 {
                     delimiterIndex = valueLength;
@@ -1403,7 +1415,11 @@ namespace EnumsNET
                 {
                     --delimiterIndex;
                 }
+#if SPAN
+                var indValue = value.Slice(startIndex, delimiterIndex - startIndex);
+#else
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
+#endif
                 if (TryParseInternal(indValue, ignoreCase, out var underlying, out _, formats, true))
                 {
                     result = operations.Or(result, underlying);
@@ -1421,7 +1437,7 @@ namespace EnumsNET
             return result;
         }
 
-        public override bool TryParseFlags(string value, bool ignoreCase, string delimiter, ref byte result, ValueCollection<EnumFormat> formats)
+        public override bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, ref byte result, ValueCollection<EnumFormat> formats)
         {
             if (TryParseFlags(value, ignoreCase, delimiter, out TUnderlying r, formats))
             {
@@ -1432,7 +1448,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryParseFlags(string value, bool ignoreCase, string delimiter, out object result, ValueCollection<EnumFormat> formats)
+        public override bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, out object result, ValueCollection<EnumFormat> formats)
         {
             if (TryParseFlags(value, ignoreCase, delimiter, out TUnderlying r, formats))
             {
@@ -1443,7 +1459,7 @@ namespace EnumsNET
             return false;
         }
 
-        public bool TryParseFlags(string value, bool ignoreCase, string delimiter, out TUnderlying result, ValueCollection<EnumFormat> formats)
+        public bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, out TUnderlying result, ValueCollection<EnumFormat> formats)
         {
             if (value == null)
             {
@@ -1456,11 +1472,19 @@ namespace EnumsNET
                 delimiter = FlagEnums.DefaultDelimiter;
             }
 
+#if SPAN
+            var effectiveDelimiter = delimiter.AsSpan().Trim();
+            if (effectiveDelimiter.Length == 0)
+            {
+                effectiveDelimiter = delimiter;
+            }
+#else
             var effectiveDelimiter = delimiter.Trim();
             if (effectiveDelimiter.Length == 0)
             {
                 effectiveDelimiter = delimiter;
             }
+#endif
 
             if (!formats.Any())
             {
@@ -1477,7 +1501,11 @@ namespace EnumsNET
                 {
                     ++startIndex;
                 }
+#if SPAN
+                var delimiterIndex = value.Slice(startIndex).IndexOf(effectiveDelimiter, StringComparison.Ordinal);
+#else
                 var delimiterIndex = value.IndexOf(effectiveDelimiter, startIndex, StringComparison.Ordinal);
+#endif
                 if (delimiterIndex < 0)
                 {
                     delimiterIndex = valueLength;
@@ -1487,7 +1515,11 @@ namespace EnumsNET
                 {
                     --delimiterIndex;
                 }
+#if SPAN
+                var indValue = value.Slice(startIndex, delimiterIndex - startIndex);
+#else
                 var indValue = value.Substring(startIndex, delimiterIndex - startIndex);
+#endif
                 if (!TryParseInternal(indValue, ignoreCase, out var underlying, out _, formats, true))
                 {
                     result = default;
@@ -1504,42 +1536,101 @@ namespace EnumsNET
 
         internal sealed class EnumMemberParser
         {
-            private readonly Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _formatValueMap;
-            private Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _formatIgnoreCase;
-
-            private Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> FormatIgnoreCase
+            private struct Entry
             {
-                get
-                {
-                    var formatIgnoreCase = _formatIgnoreCase;
-                    if (formatIgnoreCase == null)
-                    {
-                        formatIgnoreCase = new Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(_formatValueMap.Count, StringComparer.OrdinalIgnoreCase);
-                        foreach (var pair in _formatValueMap)
-                        {
-                            formatIgnoreCase[pair.Key] = pair.Value;
-                        }
-
-                        _formatIgnoreCase = formatIgnoreCase;
-                    }
-                    return formatIgnoreCase;
-                }
+                public uint OrdinalHashCode;
+                public int OrdinalNext;
+                public uint OrdinalIgnoreCaseHashCode;
+                public int OrdinalIgnoreCaseNext;
+                public string FormattedValue;
+                public EnumMemberInternal<TUnderlying, TUnderlyingOperations> Value;
             }
+
+            private int[] _ordinalBuckets;
+            private int[] _ordinalIgnoreCaseBuckets;
+            private Entry[] _entries;
 
             public EnumMemberParser(EnumFormat format, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
             {
-                _formatValueMap = new Dictionary<string, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(enumCache.GetMemberCount(EnumMemberSelection.All), StringComparer.Ordinal);
+                var size = HashHelpers.GetPrime(enumCache.GetMemberCount(EnumMemberSelection.All));
+                var ordinalBuckets = new int[size];
+                var ordinalIgnoreCaseBuckets = new int[size];
+                var entries = new Entry[size];
+                var i = 0;
                 foreach (var member in enumCache.GetMembersInternal(EnumMemberSelection.All))
                 {
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)
                     {
-                        _formatValueMap[formattedValue] = member;
+                        var ordinalHashCode = (uint)formattedValue.GetHashCode();
+                        ref int ordinalBucket = ref ordinalBuckets[ordinalHashCode % size];
+                        var ordinalIgnoreCaseHashCode = (uint)StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
+                        ref int ordinalIgnoreCaseBucket = ref ordinalIgnoreCaseBuckets[ordinalIgnoreCaseHashCode % size];
+                        entries[i] = new Entry { OrdinalHashCode = ordinalHashCode, OrdinalNext = ordinalBucket - 1, OrdinalIgnoreCaseHashCode = ordinalIgnoreCaseHashCode, OrdinalIgnoreCaseNext = ordinalIgnoreCaseBucket - 1, Value = member, FormattedValue = formattedValue };
+                        ordinalBucket = i + 1;
+                        ordinalIgnoreCaseBucket = i + 1;
                     }
+                    ++i;
                 }
+                _ordinalBuckets = ordinalBuckets;
+                _ordinalIgnoreCaseBuckets = ordinalIgnoreCaseBuckets;
+                _entries = entries;
             }
 
-            internal bool TryParse(string formattedValue, bool ignoreCase, out EnumMemberInternal<TUnderlying, TUnderlyingOperations> result) => _formatValueMap.TryGetValue(formattedValue, out result) || (ignoreCase && FormatIgnoreCase.TryGetValue(formattedValue, out result));
+            internal bool TryParse(ParseType formattedValue, bool ignoreCase, out EnumMemberInternal<TUnderlying, TUnderlyingOperations> result)
+            {
+                var entries = _entries;
+                if (ignoreCase)
+                {
+#if SPAN
+                    var hashCode = (uint)string.GetHashCode(formattedValue, StringComparison.OrdinalIgnoreCase);
+#else
+                    var hashCode = (uint)StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
+#endif
+                    var i = _ordinalIgnoreCaseBuckets[hashCode % _ordinalIgnoreCaseBuckets.Length] - 1;
+                    while (i >= 0)
+                    {
+                        var entry = entries[i];
+                        if (entry.OrdinalIgnoreCaseHashCode == hashCode &&
+#if SPAN
+                            entry.FormattedValue.AsSpan().Equals(formattedValue, StringComparison.OrdinalIgnoreCase))
+#else
+                            string.Equals(entry.FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
+#endif
+                        {
+                            result = entry.Value;
+                            return true;
+                        }
+                        i = entry.OrdinalIgnoreCaseNext;
+                    }
+                }
+                else
+                {
+#if SPAN
+                    var hashCode = (uint)string.GetHashCode(formattedValue, StringComparison.Ordinal);
+#else
+                    var hashCode = (uint)formattedValue.GetHashCode();
+#endif
+                    var i = _ordinalBuckets[hashCode % _ordinalBuckets.Length] - 1;
+                    while (i >= 0)
+                    {
+                        var entry = entries[i];
+                        if (entry.OrdinalHashCode == hashCode &&
+#if SPAN
+                            entry.FormattedValue.AsSpan().Equals(formattedValue, StringComparison.Ordinal))
+#else
+                            string.Equals(entry.FormattedValue, formattedValue, StringComparison.Ordinal))
+#endif
+                        {
+                            result = entry.Value;
+                            return true;
+                        }
+                        i = entry.OrdinalNext;
+                    }
+                }
+                result = default;
+                return false;
+            }
         }
     }
 }

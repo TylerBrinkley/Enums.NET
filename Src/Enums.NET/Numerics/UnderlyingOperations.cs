@@ -26,6 +26,12 @@
 using System;
 using System.Globalization;
 
+#if SPAN
+using ParseType = System.ReadOnlySpan<char>;
+#else
+using ParseType = System.String;
+#endif
+
 namespace EnumsNET.Numerics
 {
     internal interface IUnderlyingOperations<T>
@@ -43,8 +49,8 @@ namespace EnumsNET.Numerics
         T Create(long value);
         bool IsInValueRange(long value);
         bool IsInValueRange(ulong value);
-        bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out T result);
-        bool TryParseNative(string s, out T result);
+        bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out T result);
+        bool TryParseNative(ParseType s, out T result);
         string ToHexadecimalString(T value);
         string ToDecimalString(T value);
         int BitCount(T value);
@@ -348,57 +354,70 @@ namespace EnumsNET.Numerics
         #endregion
 
         #region TryParseNumber
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out bool result)
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out bool result)
         {
             var success = byte.TryParse(s, style, provider, out var resultAsByte);
             result = Convert.ToBoolean(resultAsByte);
             return success;
         }
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out byte result) => byte.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out byte result) => byte.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out char result)
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out char result)
         {
             var success = ushort.TryParse(s, style, provider, out var resultAsUShort);
             result = (char)resultAsUShort;
             return success;
         }
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out short result) => short.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out short result) => short.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out int result) => int.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out int result) => int.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out long result) => long.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out long result) => long.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out sbyte result) => sbyte.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out sbyte result) => sbyte.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out ushort result) => ushort.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out ushort result) => ushort.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out uint result) => uint.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out uint result) => uint.TryParse(s, style, provider, out result);
 
-        public bool TryParseNumber(string s, NumberStyles style, IFormatProvider provider, out ulong result) => ulong.TryParse(s, style, provider, out result);
+        public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out ulong result) => ulong.TryParse(s, style, provider, out result);
         #endregion
 
         #region TryParseNative
-        public bool TryParseNative(string s, out bool result) => bool.TryParse(s, out result);
+        public bool TryParseNative(ParseType s, out bool result) => bool.TryParse(s, out result);
 
-        public bool TryParseNative(string s, out byte result) => byte.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out byte result) => byte.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out char result) => char.TryParse(s, out result);
+        public bool TryParseNative(ParseType s, out char result)
+        {
+#if SPAN
+            if (s.Length == 1)
+            {
+                result = s[0];
+                return true;
+            }
+            result = default;
+            return false;
+#else
+            return char.TryParse(s, out result);
+#endif
+        }
 
-        public bool TryParseNative(string s, out short result) => short.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out short result) => short.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out int result) => int.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out int result) => int.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out long result) => long.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out long result) => long.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out sbyte result) => sbyte.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out sbyte result) => sbyte.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out ushort result) => ushort.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out ushort result) => ushort.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out uint result) => uint.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out uint result) => uint.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
 
-        public bool TryParseNative(string s, out ulong result) => ulong.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
+        public bool TryParseNative(ParseType s, out ulong result) => ulong.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result);
         #endregion
 
         #region Xor

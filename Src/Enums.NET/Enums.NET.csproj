@@ -14,7 +14,7 @@
     <PackageId>Enums.NET</PackageId>
     <PackageTags>enum enums flag flags</PackageTags>
     <PackageProjectUrl>https://github.com/TylerBrinkley/Enums.NET</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/TylerBrinkley/Enums.NET/master/LICENSE.md</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>True</PublishRepositoryUrl>
     <RootNamespace>EnumsNET</RootNamespace>
     <AssemblyName>Enums.NET</AssemblyName>
@@ -61,6 +61,10 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>
+    <DefineConstants>NETCOREAPP;NETCOREAPP3_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;CONCURRENT_DICTIONARY;AGGRESSIVE_INLINING;FORWARD_REF;IREADONLYLIST;SPAN</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>Enums.NET .NET Standard 2.0</AssemblyTitle>
     <DefineConstants>NETSTANDARD;NETSTANDARD2_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;CONCURRENT_DICTIONARY;AGGRESSIVE_INLINING;FORWARD_REF;IREADONLYLIST</DefineConstants>
