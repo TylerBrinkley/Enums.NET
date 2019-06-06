@@ -77,11 +77,11 @@ namespace EnumsNET
         public int Compare(TEnum x, TEnum y) => s_cache.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
 
         #region Explicit Interface Implementation
-        bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && Equals((TEnum)x, (TEnum)y);
+        bool IEqualityComparer.Equals(object x, object y) => x is TEnum xEnum && y is TEnum yEnum && Equals(xEnum, yEnum);
 
-        int IEqualityComparer.GetHashCode(object obj) => obj is TEnum ? GetHashCode((TEnum)obj) : 0;
+        int IEqualityComparer.GetHashCode(object obj) => obj is TEnum objEnum ? GetHashCode(objEnum) : 0;
 
-        int IComparer.Compare(object x, object y) => (x is TEnum && y is TEnum) ? Compare((TEnum)x, (TEnum)y) : 0;
+        int IComparer.Compare(object x, object y) => x is TEnum xEnum && y is TEnum yEnum ? Compare(xEnum, yEnum) : 0;
         #endregion
     }
 }

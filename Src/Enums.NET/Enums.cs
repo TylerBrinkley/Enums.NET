@@ -167,7 +167,7 @@ namespace EnumsNET
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><paramref name="selection"/> is an invalid value.</exception>
         public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection)
-            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetMembers(selection).Select(m => (EnumMember<TEnum>)m);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetMembers(selection).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -1416,7 +1416,7 @@ namespace EnumsNET
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         public static EnumMember<TEnum> GetMember<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => (EnumMember<TEnum>)Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.EnumMember;
+            where TEnum : struct, Enum => UnsafeUtility.As<EnumMember<TEnum>>(Enums<TEnum>.Cache.GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.EnumMember);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -1691,7 +1691,7 @@ namespace EnumsNET
         {
             Preconditions.NotNull(strValue, nameof(value));
 
-            return (EnumMember<TEnum>)Enums<TEnum>.Cache.GetMember(value, ignoreCase, formats);
+            return UnsafeUtility.As<EnumMember<TEnum>>(Enums<TEnum>.Cache.GetMember(value, ignoreCase, formats));
         }
 
         /// <summary>
@@ -2465,14 +2465,13 @@ namespace EnumsNET
             throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
         }
 
-        internal static object GetCustomEnumValidator(Type enumType)
+        internal static object GetInterfaceAttribute(Type type, Type interfaceType)
         {
-            var validatorInterface = typeof(IEnumValidatorAttribute<>).MakeGenericType(enumType);
-            foreach (var attribute in enumType.GetCustomAttributes(false))
+            foreach (var attribute in type.GetCustomAttributes(false))
             {
                 foreach (var attributeInterface in attribute.GetType().GetInterfaces())
                 {
-                    if (attributeInterface == validatorInterface)
+                    if (attributeInterface == interfaceType)
                     {
                         return attribute;
                     }

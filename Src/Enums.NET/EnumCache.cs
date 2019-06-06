@@ -79,7 +79,7 @@ namespace EnumsNET
         public abstract void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte result);
         public abstract void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte flag3, ref byte result);
         public abstract void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte flag3, ref byte flag4, ref byte result);
-        public abstract object CombineFlags(IEnumerable<object> flags);
+        public abstract object CombineFlags(IEnumerable<object> flags, bool isNullable);
         public abstract object CombineFlags(object value, object otherFlags);
         public abstract void CommonFlags(ref byte value, ref byte otherFlags, ref byte result);
         public abstract object CommonFlags(object value, object otherFlags);
@@ -601,7 +601,7 @@ namespace EnumsNET
 
         public override bool TryToObject(object value, ref byte result, EnumValidation validation)
         {
-            if (TryToObject(value, out TUnderlying r, validation))
+            if (TryToObject(value, out var r, validation))
             {
                 ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
                 underlying = r;
@@ -612,7 +612,7 @@ namespace EnumsNET
 
         public override bool TryToObject(object value, out object result, EnumValidation validation)
         {
-            if (TryToObject(value, out TUnderlying r, validation))
+            if (TryToObject(value, out var r, validation))
             {
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
@@ -623,7 +623,7 @@ namespace EnumsNET
 
         public override bool TryToObject(long value, ref byte result, EnumValidation validation)
         {
-            if (TryToObject(value, out TUnderlying r, validation))
+            if (TryToObject(value, out var r, validation))
             {
                 ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
                 underlying = r;
@@ -634,7 +634,7 @@ namespace EnumsNET
 
         public override bool TryToObject(long value, out object result, EnumValidation validation)
         {
-            if (TryToObject(value, out TUnderlying r, validation))
+            if (TryToObject(value, out var r, validation))
             {
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
@@ -645,7 +645,7 @@ namespace EnumsNET
 
         public override bool TryToObject(ulong value, ref byte result, EnumValidation validation)
         {
-            if (TryToObject(value, out TUnderlying r, validation))
+            if (TryToObject(value, out var r, validation))
             {
                 ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
                 underlying = r;
@@ -656,7 +656,7 @@ namespace EnumsNET
 
         public override bool TryToObject(ulong value, out object result, EnumValidation validation)
         {
-            if (TryToObject(value, out TUnderlying r, validation))
+            if (TryToObject(value, out var r, validation))
             {
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
@@ -1049,7 +1049,7 @@ namespace EnumsNET
 
         public override bool TryParse(ParseType value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
         {
-            if (TryParse(value, ignoreCase, out TUnderlying r, formats))
+            if (TryParse(value, ignoreCase, out var r, formats))
             {
                 ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
                 underlying = r;
@@ -1060,7 +1060,7 @@ namespace EnumsNET
 
         public override bool TryParse(ParseType value, bool ignoreCase, out object result, ValueCollection<EnumFormat> formats)
         {
-            if (TryParse(value, ignoreCase, out TUnderlying r, formats))
+            if (TryParse(value, ignoreCase, out var r, formats))
             {
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
@@ -1325,7 +1325,7 @@ namespace EnumsNET
             underlying = operations.Or(operations.Or(operations.Or(operations.Or(UnsafeUtility.As<byte, TUnderlying>(ref flag0), UnsafeUtility.As<byte, TUnderlying>(ref flag1)), UnsafeUtility.As<byte, TUnderlying>(ref flag2)), UnsafeUtility.As<byte, TUnderlying>(ref flag3)), UnsafeUtility.As<byte, TUnderlying>(ref flag4));
         }
 
-        public override object CombineFlags(IEnumerable<object> flags)
+        public override object CombineFlags(IEnumerable<object> flags, bool isNullable)
         {
             if (flags == null)
             {
@@ -1336,7 +1336,10 @@ namespace EnumsNET
             TUnderlying result = default;
             foreach (var flag in flags)
             {
-                result = operations.Or(result, ToObject(flag));
+                if (!isNullable || flag != null)
+                {
+                    result = operations.Or(result, ToObject(flag));
+                }
             }
             return EnumBridge.ToObjectUnchecked(result);
         }
@@ -1439,7 +1442,7 @@ namespace EnumsNET
 
         public override bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, ref byte result, ValueCollection<EnumFormat> formats)
         {
-            if (TryParseFlags(value, ignoreCase, delimiter, out TUnderlying r, formats))
+            if (TryParseFlags(value, ignoreCase, delimiter, out var r, formats))
             {
                 ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
                 underlying = r;
@@ -1450,7 +1453,7 @@ namespace EnumsNET
 
         public override bool TryParseFlags(ParseType value, bool ignoreCase, string delimiter, out object result, ValueCollection<EnumFormat> formats)
         {
-            if (TryParseFlags(value, ignoreCase, delimiter, out TUnderlying r, formats))
+            if (TryParseFlags(value, ignoreCase, delimiter, out var r, formats))
             {
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
@@ -1546,9 +1549,9 @@ namespace EnumsNET
                 public EnumMemberInternal<TUnderlying, TUnderlyingOperations> Value;
             }
 
-            private int[] _ordinalBuckets;
-            private int[] _ordinalIgnoreCaseBuckets;
-            private Entry[] _entries;
+            private readonly int[] _ordinalBuckets;
+            private readonly int[] _ordinalIgnoreCaseBuckets;
+            private readonly Entry[] _entries;
 
             public EnumMemberParser(EnumFormat format, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
             {

@@ -49,24 +49,22 @@ namespace EnumsNET.NonGeneric
         {
             Preconditions.NotNull(enumType, nameof(enumType));
 
-            return s_nonGenericEnumInfos.GetOrAdd(enumType, GetEnumInfo);
-        }
-
-        private static NonGenericEnumInfo GetEnumInfo(Type enumType)
-        {
-            if (enumType.IsEnum())
+            return s_nonGenericEnumInfos.GetOrAdd(enumType, t =>
             {
-                return new NonGenericEnumInfo(Enums.GetCache(enumType), false);
-            }
-            else
-            {
-                var nonNullableEnumType = Nullable.GetUnderlyingType(enumType);
-                if (nonNullableEnumType?.IsEnum() != true)
+                if (t.IsEnum())
                 {
-                    throw new ArgumentException("must be an enum type", nameof(enumType));
+                    return new NonGenericEnumInfo(Enums.GetCache(t), false);
                 }
-                return new NonGenericEnumInfo(GetCache(nonNullableEnumType), true);
-            }
+                else
+                {
+                    var nonNullableEnumType = Nullable.GetUnderlyingType(t);
+                    if (nonNullableEnumType?.IsEnum() != true)
+                    {
+                        throw new ArgumentException("must be an enum type", nameof(t));
+                    }
+                    return new NonGenericEnumInfo(GetCache(nonNullableEnumType), true);
+                }
+            });
         }
 
 #if AGGRESSIVE_INLINING

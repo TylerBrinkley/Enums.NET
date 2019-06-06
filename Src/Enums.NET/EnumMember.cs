@@ -370,7 +370,7 @@ namespace EnumsNET
 #endif
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        internal new EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member => (EnumMemberInternal<TUnderlying, TUnderlyingOperations>)base.Member;
+        internal new EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member => UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(base.Member);
 
         internal EnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
             : base(member)
@@ -385,14 +385,14 @@ namespace EnumsNET
 
         internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => UnsafeUtility.As<TUnderlying, TEnum>(ref flag));
 
-        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(m => (EnumMember<TEnum>)m);
+        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         #region Interface Implementation
         public int CompareTo(object other) => CompareTo(other as EnumMember<TEnum>);
 
         public int CompareTo(EnumMember other) => CompareTo(other as EnumMember<TEnum>);
 
-        public int CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(((EnumMember<TEnum, TUnderlying, TUnderlyingOperations>)other).Member) : 1;
+        public int CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(UnsafeUtility.As<EnumMember<TEnum, TUnderlying, TUnderlyingOperations>>(other).Member) : 1;
         #endregion
     }
 }

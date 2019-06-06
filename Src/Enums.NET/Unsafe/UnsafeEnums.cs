@@ -142,7 +142,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="selection"/> is an invalid value.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) => GetCache<TEnum>().GetMembers(selection).Select(m => (EnumMember<TEnum>)m);
+        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) => GetCache<TEnum>().GetMembers(selection).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -1428,7 +1428,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The enum value.</param>
         /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static EnumMember<TEnum> GetMember<TEnum>(TEnum value) => (EnumMember<TEnum>)GetCache<TEnum>().GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.EnumMember;
+        public static EnumMember<TEnum> GetMember<TEnum>(TEnum value) => UnsafeUtility.As<EnumMember<TEnum>>(GetCache<TEnum>().GetMember(ref UnsafeUtility.As<TEnum, byte>(ref value))?.EnumMember);
 
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
@@ -1718,7 +1718,7 @@ namespace EnumsNET.Unsafe
         {
             Preconditions.NotNull(strValue, nameof(value));
 
-            return (EnumMember<TEnum>)GetCache<TEnum>().GetMember(value, ignoreCase, formats);
+            return UnsafeUtility.As<EnumMember<TEnum>>(GetCache<TEnum>().GetMember(value, ignoreCase, formats));
         }
 
         /// <summary>

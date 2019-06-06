@@ -55,7 +55,7 @@ namespace EnumsNET
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
         private readonly EnumCache<TUnderlying, TUnderlyingOperations> _cache;
-        private readonly IEnumValidatorAttribute<TEnum> _customEnumValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetCustomEnumValidator(typeof(TEnum));
+        private readonly IEnumValidatorAttribute<TEnum> _customEnumValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetInterfaceAttribute(typeof(TEnum), typeof(IEnumValidatorAttribute<TEnum>));
 
         public EnumBridge()
         {

@@ -254,7 +254,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The flags enum value.</param>
         /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) => UnsafeEnums.GetCache<TEnum>().GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => (EnumMember<TEnum>)m);
+        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) => UnsafeEnums.GetCache<TEnum>().GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         /// <summary>
         /// Retrieves the flag count of <typeparamref name="TEnum"/>.

@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 #if SPAN
 using ParseType = System.ReadOnlySpan<char>;
@@ -653,7 +652,7 @@ namespace EnumsNET.NonGeneric
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
-            return info.EnumCache.CombineFlags(info.IsNullable ? flags?.Where(flag => flag != null) : flags);
+            return info.EnumCache.CombineFlags(flags, info.IsNullable);
         }
 
         /// <summary>

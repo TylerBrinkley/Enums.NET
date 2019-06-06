@@ -249,7 +249,7 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
         public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => (EnumMember<TEnum>)m);
+            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         /// <summary>
         /// Retrieves the flag count of <typeparamref name="TEnum"/>.
@@ -722,7 +722,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, string delimiter)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, value, ignoreCase, delimiter, default(ValueCollection<EnumFormat>));
+            where TEnum : struct, Enum => ParseFlags<TEnum>(value, value, ignoreCase, delimiter, default);
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
