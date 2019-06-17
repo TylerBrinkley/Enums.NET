@@ -23,46 +23,89 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if BENCHMARKS
 using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
+using EnumsNET.NonGeneric;
 
 namespace EnumsNET.Tests.Benchmarks
 {
     [ClrJob, CoreJob]
-    public class GetHashCodeBenchmarks
+    public class ToStringBenchmarks
     {
         private readonly DayOfWeek[] _values;
         private readonly Type _enumType;
 
-        public GetHashCodeBenchmarks()
+        public ToStringBenchmarks()
         {
             _enumType = typeof(DayOfWeek);
             _values = (DayOfWeek[])Enum.GetValues(_enumType);
         }
 
         [Benchmark]
-        public int Enum_GetHashCode()
+        public string Enum_ToString_Name()
         {
-            var result = 0;
+            string result = null;
             foreach (var value in _values)
             {
-                result = value.GetHashCode();
+                result = value.ToString();
             }
             return result;
         }
 
         [Benchmark]
-        public int Enums_GetHashCode()
+        public string NonGenericEnums_AsString_Name()
         {
-            var result = 0;
+            string result = null;
             foreach (var value in _values)
             {
-                result = Enums.GetHashCode(value);
+                result = NonGenericEnums.AsString(_enumType, value);
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string Enums_AsString_Name()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = value.AsString();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string Enum_ToString_Decimal()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = value.ToString("D");
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string NonGenericEnums_AsString_Decimal()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = NonGenericEnums.AsString(_enumType, value, EnumFormat.DecimalValue);
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string Enums_AsString_Decimal()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = value.AsString(EnumFormat.DecimalValue);
             }
             return result;
         }
     }
 }
-#endif

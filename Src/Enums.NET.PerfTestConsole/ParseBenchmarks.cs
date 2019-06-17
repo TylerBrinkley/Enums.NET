@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if BENCHMARKS
 using System;
 using System.Linq;
 using System.Reflection;
@@ -62,7 +61,7 @@ namespace EnumsNET.Tests.Benchmarks
 
         public ParseBenchmarks()
         {
-            var enumTypes = typeof(string).GetAssembly().GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType).ToList();
+            var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType).ToList();
             _enumDatas = new EnumData[enumTypes.Count];
             for (var i = 0; i < _enumDatas.Length; ++i)
             {
@@ -177,4 +176,3 @@ namespace EnumsNET.Tests.Benchmarks
         }
     }
 }
-#endif

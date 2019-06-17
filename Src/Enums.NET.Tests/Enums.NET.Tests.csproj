@@ -13,15 +13,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' OR '$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'netcoreapp1.0' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' OR '$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'net46'">
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
     <AssemblyTitle>Enums.NET Tests .NET 4.6</AssemblyTitle>

@@ -23,19 +23,44 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if BENCHMARKS
-using System.Reflection;
-using BenchmarkDotNet.Running;
-using NUnit.Framework;
+using System;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 
 namespace EnumsNET.Tests.Benchmarks
 {
-    [TestFixture]
-    public class Runner
+    [ClrJob, CoreJob]
+    public class GetHashCodeBenchmarks
     {
-        [Test]
-        [Ignore("Don't run with other unit tests")]
-        public void RunBenchmarks() => new BenchmarkSwitcher(typeof(Runner).GetTypeInfo().Assembly).Run(new[] { "*" });
+        private readonly DayOfWeek[] _values;
+        private readonly Type _enumType;
+
+        public GetHashCodeBenchmarks()
+        {
+            _enumType = typeof(DayOfWeek);
+            _values = (DayOfWeek[])Enum.GetValues(_enumType);
+        }
+
+        [Benchmark]
+        public int Enum_GetHashCode()
+        {
+            var result = 0;
+            foreach (var value in _values)
+            {
+                result = value.GetHashCode();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public int Enums_GetHashCode()
+        {
+            var result = 0;
+            foreach (var value in _values)
+            {
+                result = Enums.GetHashCode(value);
+            }
+            return result;
+        }
     }
 }
-#endif
