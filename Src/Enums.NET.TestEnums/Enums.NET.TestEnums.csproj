@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="2.2.0" />
+    <PackageReference Include="Fody" Version="2.2.0" PrivateAssets="All" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
     <Folder Include="Properties\" />
     <EmbeddedResource Update="Properties\Resources.resx">
