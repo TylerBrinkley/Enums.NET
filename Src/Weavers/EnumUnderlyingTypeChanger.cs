@@ -1,21 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Fody;
 using Mono.Cecil;
 
-public class EnumUnderlyingTypeChanger
+public class EnumUnderlyingTypeChanger : BaseModuleWeaver
 {
-    // An instance of Mono.Cecil.ModuleDefinition for processing
-    public ModuleDefinition ModuleDefinition { get; set; }
-
-    // Will log an MessageImportance.High message to MSBuild. OPTIONAL
-    public Action<string> LogInfo { get; set; }
-
-    public EnumUnderlyingTypeChanger()
-    {
-        LogInfo = s => { };
-    }
-
-    public void Execute()
+    public override void Execute()
     {
         foreach (var enumType in ModuleDefinition.Types.Where(type => type.BaseType?.FullName == "System.Enum"))
         {
@@ -28,6 +19,8 @@ public class EnumUnderlyingTypeChanger
             }
         }
     }
+
+    public override IEnumerable<string> GetAssembliesForScanning() => Enumerable.Empty<string>();
 
     private TypeReference ChangeEnumUnderlyingType(TypeDefinition enumType, TypeReference underlyingType)
     {

@@ -1,21 +1,12 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-public class UnsafeUtilityWeaver
+public class UnsafeUtilityWeaver : BaseModuleWeaver
 {
-    // An instance of Mono.Cecil.ModuleDefinition for processing
-    public ModuleDefinition ModuleDefinition { get; set; }
-
-    // Will log an MessageImportance.High message to MSBuild. OPTIONAL
-    public Action<string> LogInfo { get; set; }
-
-    public UnsafeUtilityWeaver()
-    {
-        LogInfo = s => { };
-    }
-
-    public void Execute()
+    public override void Execute()
     {
         var enumInfoType = ModuleDefinition.GetType("EnumsNET.Utilities.UnsafeUtility");
         foreach (var method in enumInfoType.Methods)
@@ -29,4 +20,6 @@ public class UnsafeUtilityWeaver
             }
         }
     }
+
+    public override IEnumerable<string> GetAssembliesForScanning() => Enumerable.Empty<string>();
 }
