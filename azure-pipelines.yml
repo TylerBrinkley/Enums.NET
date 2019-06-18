@@ -34,6 +34,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '*bin*Enums.NET.Tests*'
+    testAssemblyVer2: '**\bin\*Enums.NET.Tests*'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     vsTestVersion: '16.0'
+
