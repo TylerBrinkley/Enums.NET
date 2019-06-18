@@ -33,8 +33,4 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\*tests.dll
-      !**\obj\**'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
     vsTestVersion: '16.0'
