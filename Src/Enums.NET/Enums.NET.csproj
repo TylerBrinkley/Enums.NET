@@ -5,7 +5,7 @@
     <FileVersion>2.3.2</FileVersion>
     <VersionPrefix>2.3.2</VersionPrefix>
     <VersionSufix></VersionSufix>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
     <Description>Enums.NET is a high-performance type-safe .NET enum utility library</Description>
     <Copyright>Copyright © Tyler Brinkley 2016</Copyright>
