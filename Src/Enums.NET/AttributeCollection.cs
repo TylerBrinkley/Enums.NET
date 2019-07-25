@@ -77,7 +77,7 @@ namespace EnumsNET
         /// </summary>
         /// <typeparam name="TAttribute">The attribute type.</typeparam>
         /// <returns>The first <typeparamref name="TAttribute"/> in the collection if defined otherwise <c>null</c>.</returns>
-        public TAttribute Get<TAttribute>()
+        public TAttribute? Get<TAttribute>()
             where TAttribute : Attribute
         {
             foreach (var attribute in _attributes)
@@ -96,7 +96,7 @@ namespace EnumsNET
         /// <param name="attributeType">The attribute type.</param>
         /// <returns>The first <see cref="Attribute"/> that is an instance of <paramref name="attributeType"/> in the collection if defined otherwise <c>null</c>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="attributeType"/> is <c>null</c>.</exception>
-        public Attribute Get(Type attributeType)
+        public Attribute? Get(Type attributeType)
         {
             Preconditions.NotNull(attributeType, nameof(attributeType));
 

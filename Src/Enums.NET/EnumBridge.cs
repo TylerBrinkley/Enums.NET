@@ -35,7 +35,7 @@ namespace EnumsNET
     {
         public abstract IEnumerable<TEnum> GetFlags(TEnum value);
         public abstract IEnumerable<TEnum> GetValues(EnumMemberSelection selection = EnumMemberSelection.All);
-        public abstract TEnum CombineFlags(IEnumerable<TEnum> flags);
+        public abstract TEnum CombineFlags(IEnumerable<TEnum>? flags);
         public abstract EnumCache GetCache();
     }
 
@@ -55,7 +55,7 @@ namespace EnumsNET
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
         private readonly EnumCache<TUnderlying, TUnderlyingOperations> _cache;
-        private readonly IEnumValidatorAttribute<TEnum> _customEnumValidator = (IEnumValidatorAttribute<TEnum>)Enums.GetInterfaceAttribute(typeof(TEnum), typeof(IEnumValidatorAttribute<TEnum>));
+        private readonly IEnumValidatorAttribute<TEnum>? _customEnumValidator = (IEnumValidatorAttribute<TEnum>?)Enums.GetInterfaceAttribute(typeof(TEnum), typeof(IEnumValidatorAttribute<TEnum>));
 
         public EnumBridge()
         {
@@ -70,7 +70,7 @@ namespace EnumsNET
 
         public override IEnumerable<TEnum> GetFlags(TEnum value) => SelectEnumValues(_cache.GetFlags(UnsafeUtility.As<TEnum, TUnderlying>(ref value)));
 
-        public override TEnum CombineFlags(IEnumerable<TEnum> flags)
+        public override TEnum CombineFlags(IEnumerable<TEnum>? flags)
         {
             TUnderlying result = default;
             TUnderlyingOperations operations = default;
@@ -90,7 +90,7 @@ namespace EnumsNET
 
         public bool HasCustomValidator => _customEnumValidator != null;
 
-        public bool CustomValidate(TUnderlying value) => _customEnumValidator.IsValid(UnsafeUtility.As<TUnderlying, TEnum>(ref value));
+        public bool CustomValidate(TUnderlying value) => _customEnumValidator!.IsValid(UnsafeUtility.As<TUnderlying, TEnum>(ref value));
 
         public EnumMember CreateEnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member) => new EnumMember<TEnum, TUnderlying, TUnderlyingOperations>(member);
 

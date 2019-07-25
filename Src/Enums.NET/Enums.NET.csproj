@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45;net40;net35;net20;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
+    <TargetFrameworks>net45;net40;net35;net20;netcoreapp3.0;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.3.2</FileVersion>
     <VersionPrefix>2.3.2</VersionPrefix>
@@ -22,13 +22,15 @@
     <SignAssembly>False</SignAssembly>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyFile>C:\Development\Releases\enumsnet.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Fody" Version="5.0.6" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.2.0-beta4-final" PrivateAssets="All" />
     <WeaverFiles Include="$(SolutionDir)Weavers\bin\$(Configuration)\netstandard2.0\Weavers.dll" WeaverClassNames="UnsafeUtilityWeaver" />
   </ItemGroup>
   

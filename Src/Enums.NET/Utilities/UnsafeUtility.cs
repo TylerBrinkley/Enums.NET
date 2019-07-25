@@ -27,7 +27,7 @@ namespace EnumsNET.Utilities
 #if SECURITY_SAFE_CRITICAL
         [SecuritySafeCritical]
 #endif
-        public static extern T As<T>(object value) where T : class;
+        public static extern T As<T>(object? value) where T : class;
 
         internal static ref byte GetRawData(this object obj) =>
             ref As<RawData>(obj).Data;

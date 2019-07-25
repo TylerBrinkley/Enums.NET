@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45;net40;net35;net20</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45;net40;net35;net20</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -38,6 +38,10 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net20'">
     <AssemblyTitle>Enums.NET Tests .NET 2.0</AssemblyTitle>
     <DefineConstants>NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <AssemblyTitle>Enums.NET Tests .NET Core App 3.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD2_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 2.0</AssemblyTitle>
