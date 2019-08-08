@@ -15,6 +15,12 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '3.0'
+    includePreviewVersions: true
+
 - task: NuGetToolInstaller@0
   inputs:
     versionSpec: '4.x'
@@ -37,4 +43,3 @@ steps:
     testAssemblyVer2: '**\bin\*Enums.NET.Tests*'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     vsTestVersion: '16.0'
-
