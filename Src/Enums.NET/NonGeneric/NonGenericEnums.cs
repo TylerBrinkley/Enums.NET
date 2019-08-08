@@ -27,6 +27,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 #if SPAN
@@ -270,6 +271,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is not a valid type.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [return: NotNullIfNotNull("value")]
         public static object? ToObject(Type enumType, object? value) => ToObject(enumType, value, EnumValidation.None);
 
         /// <summary>
@@ -290,6 +292,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// the result is invalid with the specified <paramref name="validation"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
+        [return: NotNullIfNotNull("value")]
         public static object? ToObject(Type enumType, object? value, EnumValidation validation)
         {
             var info = GetNonGenericEnumInfo(enumType);
@@ -1139,7 +1142,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
-        public static bool IsValid(Type enumType, object value) => IsValid(enumType, value, EnumValidation.Default);
+        public static bool IsValid(Type enumType, object? value) => IsValid(enumType, value, EnumValidation.Default);
 
         /// <summary>
         /// Indicates if <paramref name="value"/> is valid. If <paramref name="enumType"/> is a standard enum it returns whether the value is defined.
@@ -1204,6 +1207,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="value"/> is of an invalid type
         /// -or-
         /// <paramref name="value"/> is invalid.</exception>
+        [return: NotNullIfNotNull("value")]
         public static object? Validate(Type enumType, object? value, string paramName) => Validate(enumType, value, paramName, EnumValidation.Default);
 
         /// <summary>
@@ -1222,6 +1226,7 @@ namespace EnumsNET.NonGeneric
         /// <paramref name="validation"/> is an invalid value
         /// -or-
         /// <paramref name="value"/> is invalid.</exception>
+        [return: NotNullIfNotNull("value")]
         public static object? Validate(Type enumType, object? value, string paramName, EnumValidation validation)
         {
             var info = GetNonGenericEnumInfo(enumType);
@@ -1244,6 +1249,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
+        [return: NotNullIfNotNull("value")]
         public static string? AsString(Type enumType, object? value)
         {
             var info = GetNonGenericEnumInfo(enumType);
@@ -1268,6 +1274,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
+        [return: NotNullIfNotNull("value")]
         public static string? AsString(Type enumType, object? value, string? format)
         {
             var info = GetNonGenericEnumInfo(enumType);
@@ -1369,6 +1376,7 @@ namespace EnumsNET.NonGeneric
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
+        [return: NotNullIfNotNull("value")]
         public static string? Format(Type enumType, object? value, string format)
         {
             var info = GetNonGenericEnumInfo(enumType);
@@ -1411,6 +1419,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
+        [return: NotNullIfNotNull("value")]
         public static object? GetUnderlyingValue(Type enumType, object? value)
         {
             var info = GetNonGenericEnumInfo(enumType);

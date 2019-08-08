@@ -79,7 +79,7 @@ namespace EnumsNET
         #region Explicit Interface Implementation
         bool IEqualityComparer.Equals(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum && Equals(xEnum, yEnum);
 
-        int IEqualityComparer.GetHashCode(object obj) => obj is TEnum objEnum ? GetHashCode(objEnum) : 0;
+        int IEqualityComparer.GetHashCode(object? obj) => obj is TEnum objEnum ? GetHashCode(objEnum) : 0;
 
         int IComparer.Compare(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum ? Compare(xEnum, yEnum) : 0;
         #endregion

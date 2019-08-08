@@ -29,9 +29,7 @@ using System.ComponentModel;
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
 #endif
-#if DISPLAY_ATTRIBUTE || !NULLABLE_ATTRIBUTES
 using System.Diagnostics.CodeAnalysis;
-#endif
 using System.Globalization;
 using System.Linq;
 using System.Reflection;

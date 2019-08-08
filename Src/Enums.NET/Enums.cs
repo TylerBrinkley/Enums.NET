@@ -61,7 +61,7 @@ namespace EnumsNET
 #endif
             + 1;
 
-        private static Func<EnumMember, string>[] s_customEnumMemberFormatters = new Func<EnumMember, string>[0];
+        private static Func<EnumMember, string?>[] s_customEnumMemberFormatters = new Func<EnumMember, string?>[0];
 
         /// <summary>
         /// Registers a custom <see cref="EnumFormat"/> with the specified <see cref="EnumMember"/> formatter.
@@ -69,16 +69,16 @@ namespace EnumsNET
         /// <param name="enumMemberFormatter">The <see cref="EnumMember"/> formatter.</param>
         /// <returns>A custom <see cref="EnumFormat"/> that is registered with the specified <see cref="EnumMember"/> formatter.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="enumMemberFormatter"/> is <c>null</c>.</exception>
-        public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string> enumMemberFormatter)
+        public static EnumFormat RegisterCustomEnumFormat(Func<EnumMember, string?> enumMemberFormatter)
         {
             Preconditions.NotNull(enumMemberFormatter, nameof(enumMemberFormatter));
             
             var customEnumMemberFormatters = s_customEnumMemberFormatters;
-            Func<EnumMember, string>[] oldCustomEnumMemberFormatters;
+            Func<EnumMember, string?>[] oldCustomEnumMemberFormatters;
             do
             {
                 oldCustomEnumMemberFormatters = customEnumMemberFormatters;
-                customEnumMemberFormatters = new Func<EnumMember, string>[oldCustomEnumMemberFormatters.Length + 1];
+                customEnumMemberFormatters = new Func<EnumMember, string?>[oldCustomEnumMemberFormatters.Length + 1];
                 oldCustomEnumMemberFormatters.CopyTo(customEnumMemberFormatters, 0);
                 customEnumMemberFormatters[oldCustomEnumMemberFormatters.Length] = enumMemberFormatter;
             } while ((customEnumMemberFormatters = Interlocked.CompareExchange(ref s_customEnumMemberFormatters, customEnumMemberFormatters, oldCustomEnumMemberFormatters)) != oldCustomEnumMemberFormatters);
@@ -87,7 +87,7 @@ namespace EnumsNET
 
         internal static bool EnumFormatIsValid(EnumFormat format) => format >= EnumFormat.DecimalValue && format <= (EnumFormat)(s_customEnumMemberFormatters.Length - 1 + s_startingCustomEnumFormatValue);
 
-        internal static string CustomEnumMemberFormat(EnumMember member, EnumFormat format) => s_customEnumMemberFormatters[(int)format - s_startingCustomEnumFormatValue](member);
+        internal static string? CustomEnumMemberFormat(EnumMember member, EnumFormat format) => s_customEnumMemberFormatters[(int)format - s_startingCustomEnumFormatValue](member);
         #endregion
 
         #region Type Methods
@@ -2445,30 +2445,20 @@ namespace EnumsNET
             where TEnum : struct, Enum
         {
             var underlyingType = Enum.GetUnderlyingType(typeof(TEnum));
-            switch (underlyingType.GetTypeCode())
+            return underlyingType.GetTypeCode() switch
             {
-                case TypeCode.SByte:
-                    return new EnumBridge<TEnum, sbyte, UnderlyingOperations>();
-                case TypeCode.Byte:
-                    return new EnumBridge<TEnum, byte, UnderlyingOperations>();
-                case TypeCode.Int16:
-                    return new EnumBridge<TEnum, short, UnderlyingOperations>();
-                case TypeCode.UInt16:
-                    return new EnumBridge<TEnum, ushort, UnderlyingOperations>();
-                case TypeCode.Int32:
-                    return new EnumBridge<TEnum, int, UnderlyingOperations>();
-                case TypeCode.UInt32:
-                    return new EnumBridge<TEnum, uint, UnderlyingOperations>();
-                case TypeCode.Int64:
-                    return new EnumBridge<TEnum, long, UnderlyingOperations>();
-                case TypeCode.UInt64:
-                    return new EnumBridge<TEnum, ulong, UnderlyingOperations>();
-                case TypeCode.Boolean:
-                    return new EnumBridge<TEnum, bool, UnderlyingOperations>();
-                case TypeCode.Char:
-                    return new EnumBridge<TEnum, char, UnderlyingOperations>();
-            }
-            throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported");
+                TypeCode.SByte => (EnumBridge<TEnum>)new EnumBridge<TEnum, sbyte, UnderlyingOperations>(),
+                TypeCode.Byte => new EnumBridge<TEnum, byte, UnderlyingOperations>(),
+                TypeCode.Int16 => new EnumBridge<TEnum, short, UnderlyingOperations>(),
+                TypeCode.UInt16 => new EnumBridge<TEnum, ushort, UnderlyingOperations>(),
+                TypeCode.Int32 => new EnumBridge<TEnum, int, UnderlyingOperations>(),
+                TypeCode.UInt32 => new EnumBridge<TEnum, uint, UnderlyingOperations>(),
+                TypeCode.Int64 => new EnumBridge<TEnum, long, UnderlyingOperations>(),
+                TypeCode.UInt64 => new EnumBridge<TEnum, ulong, UnderlyingOperations>(),
+                TypeCode.Boolean => new EnumBridge<TEnum, bool, UnderlyingOperations>(),
+                TypeCode.Char => new EnumBridge<TEnum, char, UnderlyingOperations>(),
+                _ => throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported"),
+            };
         }
 
         internal static object? GetInterfaceAttribute(Type type, Type interfaceType)

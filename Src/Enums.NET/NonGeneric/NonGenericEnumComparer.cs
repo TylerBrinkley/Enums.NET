@@ -68,6 +68,6 @@ namespace EnumsNET.NonGeneric
         /// </summary>
         /// <param name="obj">The enum value.</param>
         /// <returns>Hash code for <paramref name="obj"/>.</returns>
-        public int GetHashCode(object obj) => obj?.GetHashCode() ?? 0;
+        public int GetHashCode(object? obj) => obj?.GetHashCode() ?? 0;
     }
 }

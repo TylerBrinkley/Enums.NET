@@ -25,12 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-
-#if SPAN
-using ParseType = System.ReadOnlySpan<char>;
-#else
-using ParseType = System.String;
-#endif
+using System.Diagnostics.CodeAnalysis;
 
 namespace EnumsNET.NonGeneric
 {
@@ -95,6 +90,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
+        [return: NotNullIfNotNull("value")]
         public static string? FormatFlags(Type enumType, object? value) => FormatFlags(enumType, value, null, null);
 
         /// <summary>
@@ -189,6 +185,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
+        [return: NotNullIfNotNull("value")]
         public static string? FormatFlags(Type enumType, object? value, string? delimiter) => FormatFlags(enumType, value, delimiter, null);
 
         /// <summary>
@@ -519,7 +516,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
-        public static object? ToggleFlags(Type enumType, object? value)
+        public static object ToggleFlags(Type enumType, object? value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
             var cache = info.EnumCache;
