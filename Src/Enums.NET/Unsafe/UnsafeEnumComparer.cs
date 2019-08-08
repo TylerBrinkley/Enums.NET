@@ -88,11 +88,11 @@ namespace EnumsNET.Unsafe
         public int Compare(TEnum x, TEnum y) => s_cache!.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
 
         #region Explicit Interface Implementation
-        bool IEqualityComparer.Equals(object x, object y) => x is TEnum xEnum && y is TEnum yEnum && Equals(xEnum, yEnum);
+        bool IEqualityComparer.Equals(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum && Equals(xEnum, yEnum);
 
         int IEqualityComparer.GetHashCode(object obj) => obj is TEnum objEnum ? GetHashCode(objEnum) : 0;
 
-        int IComparer.Compare(object x, object y) => x is TEnum xEnum && y is TEnum yEnum ? Compare(xEnum, yEnum) : 0;
+        int IComparer.Compare(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum ? Compare(xEnum, yEnum) : 0;
         #endregion
     }
 }

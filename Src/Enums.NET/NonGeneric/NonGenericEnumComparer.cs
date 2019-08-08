@@ -53,7 +53,7 @@ namespace EnumsNET.NonGeneric
         /// <param name="y">The second enum value.</param>
         /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
         /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
-        public int Compare(object x, object y) => NonGenericEnums.CompareToInternal(_info, x, y);
+        public int Compare(object? x, object? y) => NonGenericEnums.CompareToInternal(_info, x, y);
 
         /// <summary>
         /// Indicates if <paramref name="x"/> equals <paramref name="y"/>.
@@ -61,7 +61,7 @@ namespace EnumsNET.NonGeneric
         /// <param name="x">The first enum value.</param>
         /// <param name="y">The second enum value.</param>
         /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/>.</returns>
-        public new bool Equals(object x, object y) => NonGenericEnums.EqualsInternal(_info, x, y);
+        public new bool Equals(object? x, object? y) => NonGenericEnums.EqualsInternal(_info, x, y);
 
         /// <summary>
         /// Retrieves a hash code for <paramref name="obj"/>.

@@ -29,6 +29,9 @@ using System.ComponentModel;
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
 #endif
+#if DISPLAY_ATTRIBUTE || !NULLABLE_ATTRIBUTES
+using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -273,7 +276,7 @@ namespace EnumsNET
             foreach (var field in fields)
             {
                 var name = field.Name;
-                var value = isBoolean ? fieldDictionary![name] : (TUnderlying)field.GetValue(null);
+                var value = isBoolean ? fieldDictionary![name] : (TUnderlying)field.GetValue(null)!;
                 var attributes = new AttributeCollection(
 #if TYPE_REFLECTION
                     Attribute.GetCustomAttributes(field, false));
@@ -868,7 +871,7 @@ namespace EnumsNET
                         return FormatFlagsInternal(value, member, null, Enums.DefaultFormats)!;
                     case 'D':
                     case 'd':
-                        return value.ToString();
+                        return value.ToString()!;
                     case 'X':
                     case 'x':
                         return default(TUnderlyingOperations).ToHexadecimalString(value);
@@ -1159,7 +1162,7 @@ namespace EnumsNET
                     var parser = GetEnumMemberParser(format);
                     if (parser.TryParse(value, ignoreCase, out member))
                     {
-                        result = member!.Value;
+                        result = member.Value;
                         return true;
                     }
                 }
@@ -1638,7 +1641,7 @@ namespace EnumsNET
                 _entries = entries;
             }
 
-            internal bool TryParse(ParseType formattedValue, bool ignoreCase, out EnumMemberInternal<TUnderlying, TUnderlyingOperations>? result)
+            internal bool TryParse(ParseType formattedValue, bool ignoreCase, [NotNullWhen(true)] out EnumMemberInternal<TUnderlying, TUnderlyingOperations>? result)
             {
                 var entries = _entries;
                 if (ignoreCase)

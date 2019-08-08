@@ -271,7 +271,7 @@ namespace EnumsNET
         internal bool HasAllFlags() => Member.HasAllFlags();
 
         #region Explicit Interface Implementation
-        string IFormattable.ToString(string format, IFormatProvider? formatProvider) => Member.ToString(format, formatProvider);
+        string IFormattable.ToString(string? format, IFormatProvider? formatProvider) => Member.ToString(format, formatProvider);
 
 #if ICONVERTIBLE
         TypeCode IConvertible.GetTypeCode() => Member.GetTypeCode();

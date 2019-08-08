@@ -124,8 +124,8 @@ namespace EnumsNET
         public override string? AsString(EnumFormat format)
         {
             var isInitialized = true;
-            var member = this;
-            return _enumCache.FormatInternal(Value, ref isInitialized, ref member!, format); // the ! shouldn't be needed
+            EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member = this;
+            return _enumCache.FormatInternal(Value, ref isInitialized, ref member, format);
         }
 
         public override string? AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
@@ -197,7 +197,7 @@ namespace EnumsNET
 
         public override DateTime ToDateTime(IFormatProvider? provider) => Value.ToDateTime(provider);
 
-        public override string ToString(IFormatProvider? provider) => ToString();
+        public override string ToString(IFormatProvider? provider) => Name;
 
         public override object ToType(Type conversionType, IFormatProvider? provider) => Value.ToType(conversionType, provider);
 #else

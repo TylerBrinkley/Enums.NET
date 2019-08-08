@@ -2418,7 +2418,7 @@ namespace EnumsNET
 
             return typeof(Enums<>).MakeGenericType(enumType)
 #if TYPE_REFLECTION
-                .GetField(nameof(Enums<DayOfWeek>.Bridge), BindingFlags.Static | BindingFlags.Public)
+                .GetField(nameof(Enums<DayOfWeek>.Bridge), BindingFlags.Static | BindingFlags.Public)!
 #else
                 .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Bridge))
 #endif
@@ -2434,11 +2434,11 @@ namespace EnumsNET
 
             return (EnumCache)typeof(Enums<>).MakeGenericType(enumType)
 #if TYPE_REFLECTION
-                .GetField(nameof(Enums<DayOfWeek>.Cache), BindingFlags.Static | BindingFlags.Public)
+                .GetField(nameof(Enums<DayOfWeek>.Cache), BindingFlags.Static | BindingFlags.Public)!
 #else
                 .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Cache))
 #endif
-                .GetValue(null);
+                .GetValue(null)!;
         }
 
         internal static EnumBridge<TEnum> CreateEnumBridge<TEnum>()
