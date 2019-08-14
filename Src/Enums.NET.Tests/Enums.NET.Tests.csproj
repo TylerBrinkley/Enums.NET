@@ -1,27 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45;net40;net35;net20</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45;net40;net35;net20</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.8.1" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.11.2" />
     <ProjectReference Include="..\Enums.NET.TestEnums\Enums.NET.TestEnums.csproj" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' OR '$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'netcoreapp1.0' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' OR '$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'net46'">
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
     <AssemblyTitle>Enums.NET Tests .NET 4.6</AssemblyTitle>
@@ -42,6 +38,10 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net20'">
     <AssemblyTitle>Enums.NET Tests .NET 2.0</AssemblyTitle>
     <DefineConstants>NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <AssemblyTitle>Enums.NET Tests .NET Core App 3.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;NETSTANDARD2_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 2.0</AssemblyTitle>

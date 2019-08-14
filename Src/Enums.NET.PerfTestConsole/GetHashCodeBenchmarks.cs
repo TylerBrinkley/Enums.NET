@@ -24,35 +24,43 @@
 #endregion
 
 using System;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
 
-namespace EnumsNET
+namespace EnumsNET.Tests.Benchmarks
 {
-    internal interface IEnumMember : IFormattable
-#if ICONVERTIBLE
-        , IConvertible
-#endif
+    [ClrJob, CoreJob]
+    public class GetHashCodeBenchmarks
     {
-        string Name { get; }
-        AttributeCollection Attributes { get; }
+        private readonly DayOfWeek[] _values;
+        private readonly Type _enumType;
 
-        object GetUnderlyingValue();
-        string AsString(string format);
-        string AsString(EnumFormat format);
-        string AsString(ValueCollection<EnumFormat> formats);
-        string Format(string format);
-        byte ToByte();
-        short ToInt16();
-        int ToInt32();
-        long ToInt64();
-        sbyte ToSByte();
-        ushort ToUInt16();
-        uint ToUInt32();
-        ulong ToUInt64();
-        int GetHashCode();
+        public GetHashCodeBenchmarks()
+        {
+            _enumType = typeof(DayOfWeek);
+            _values = (DayOfWeek[])Enum.GetValues(_enumType);
+        }
 
-        bool IsValidFlagCombination();
-        bool HasAnyFlags();
-        bool HasAllFlags();
-        int GetFlagCount();
+        [Benchmark]
+        public int Enum_GetHashCode()
+        {
+            var result = 0;
+            foreach (var value in _values)
+            {
+                result = value.GetHashCode();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public int Enums_GetHashCode()
+        {
+            var result = 0;
+            foreach (var value in _values)
+            {
+                result = Enums.GetHashCode(value);
+            }
+            return result;
+        }
     }
 }

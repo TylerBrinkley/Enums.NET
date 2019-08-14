@@ -28,18 +28,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using EnumsNET.Numerics;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
     /// <summary>
-    /// An enum member which composes its name, value, and attributes.
+    /// An enum member which is composed of its name, value, and attributes.
     /// </summary>
     public abstract class EnumMember : IComparable<EnumMember>, IEquatable<EnumMember>, IComparable, IFormattable
 #if ICONVERTIBLE
         , IConvertible
 #endif
     {
-        internal readonly IEnumMember Member;
+        internal readonly EnumMemberInternal Member;
 
         /// <summary>
         /// The enum member's value.
@@ -56,7 +57,10 @@ namespace EnumsNET
         /// </summary>
         public AttributeCollection Attributes => Member.Attributes;
 
-        internal EnumMember(IEnumMember member) => Member = member;
+        internal EnumMember(EnumMemberInternal member)
+        {
+            Member = member;
+        }
 
         /// <summary>
         /// Retrieves the enum member's name.
@@ -76,7 +80,7 @@ namespace EnumsNET
         /// <param name="format">The output format to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        public string AsString(string format) => Member.AsString(format);
+        public string AsString(string? format) => Member.AsString(format);
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
@@ -84,7 +88,7 @@ namespace EnumsNET
         /// <param name="format">The output format to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        public string AsString(EnumFormat format) => Member.AsString(format);
+        public string? AsString(EnumFormat format) => Member.AsString(format);
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified formats.
@@ -93,7 +97,7 @@ namespace EnumsNET
         /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public string AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1));
+        public string? AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified formats.
@@ -103,7 +107,7 @@ namespace EnumsNET
         /// <param name="format2">The third output format to use if using the first and second both resolve to <c>null</c>.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        public string AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1, format2));
+        public string? AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1, format2));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
@@ -111,7 +115,7 @@ namespace EnumsNET
         /// <param name="formats">The output formats to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public string AsString(params EnumFormat[] formats) => Member.AsString(new ValueCollection<EnumFormat>(formats));
+        public string? AsString(params EnumFormat[]? formats) => Member.AsString(new ValueCollection<EnumFormat>(formats));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
@@ -129,7 +133,7 @@ namespace EnumsNET
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public string Format(params EnumFormat[] formats)
+        public string? Format(params EnumFormat[] formats)
         {
             Preconditions.NotNull(formats, nameof(formats));
 
@@ -153,7 +157,7 @@ namespace EnumsNET
         /// <returns>The first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.</returns>
         [Obsolete("Use Attributes.Get instead")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TAttribute GetAttribute<TAttribute>()
+        public TAttribute? GetAttribute<TAttribute>()
             where TAttribute : Attribute => Attributes.Get<TAttribute>();
 
         /// <summary>
@@ -243,14 +247,14 @@ namespace EnumsNET
         /// </summary>
         /// <param name="other">The other <see cref="EnumMember"/>.</param>
         /// <returns>Indication whether the specified <see cref="EnumMember"/> is equal to the current <see cref="EnumMember"/>.</returns>
-        public bool Equals(EnumMember other) => ReferenceEquals(this, other);
+        public bool Equals(EnumMember? other) => ReferenceEquals(this, other);
 
         /// <summary>
         /// Indicates whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
         /// </summary>
         /// <param name="other">The other <see cref="object"/>.</param>
         /// <returns>Indication whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.</returns>
-        public sealed override bool Equals(object other) => ReferenceEquals(this, other);
+        public sealed override bool Equals(object? other) => ReferenceEquals(this, other);
 
         internal abstract object GetValue();
 
@@ -267,54 +271,54 @@ namespace EnumsNET
         internal bool HasAllFlags() => Member.HasAllFlags();
 
         #region Explicit Interface Implementation
-        string IFormattable.ToString(string format, IFormatProvider formatProvider) => Member.ToString(format, formatProvider);
+        string IFormattable.ToString(string? format, IFormatProvider? formatProvider) => Member.ToString(format, formatProvider);
 
 #if ICONVERTIBLE
         TypeCode IConvertible.GetTypeCode() => Member.GetTypeCode();
 
-        bool IConvertible.ToBoolean(IFormatProvider provider) => Member.ToBoolean(provider);
+        bool IConvertible.ToBoolean(IFormatProvider? provider) => Member.ToBoolean(provider);
 
-        char IConvertible.ToChar(IFormatProvider provider) => Member.ToChar(provider);
+        char IConvertible.ToChar(IFormatProvider? provider) => Member.ToChar(provider);
 
-        sbyte IConvertible.ToSByte(IFormatProvider provider) => Member.ToSByte(provider);
+        sbyte IConvertible.ToSByte(IFormatProvider? provider) => Member.ToSByte(provider);
 
-        byte IConvertible.ToByte(IFormatProvider provider) => Member.ToByte(provider);
+        byte IConvertible.ToByte(IFormatProvider? provider) => Member.ToByte(provider);
 
-        short IConvertible.ToInt16(IFormatProvider provider) => Member.ToInt16(provider);
+        short IConvertible.ToInt16(IFormatProvider? provider) => Member.ToInt16(provider);
 
-        ushort IConvertible.ToUInt16(IFormatProvider provider) => Member.ToUInt16(provider);
+        ushort IConvertible.ToUInt16(IFormatProvider? provider) => Member.ToUInt16(provider);
 
-        int IConvertible.ToInt32(IFormatProvider provider) => Member.ToInt32(provider);
+        int IConvertible.ToInt32(IFormatProvider? provider) => Member.ToInt32(provider);
 
-        uint IConvertible.ToUInt32(IFormatProvider provider) => Member.ToUInt32(provider);
+        uint IConvertible.ToUInt32(IFormatProvider? provider) => Member.ToUInt32(provider);
 
-        long IConvertible.ToInt64(IFormatProvider provider) => Member.ToInt64(provider);
+        long IConvertible.ToInt64(IFormatProvider? provider) => Member.ToInt64(provider);
 
-        ulong IConvertible.ToUInt64(IFormatProvider provider) => Member.ToUInt64(provider);
+        ulong IConvertible.ToUInt64(IFormatProvider? provider) => Member.ToUInt64(provider);
 
-        float IConvertible.ToSingle(IFormatProvider provider) => Member.ToSingle(provider);
+        float IConvertible.ToSingle(IFormatProvider? provider) => Member.ToSingle(provider);
 
-        double IConvertible.ToDouble(IFormatProvider provider) => Member.ToDouble(provider);
+        double IConvertible.ToDouble(IFormatProvider? provider) => Member.ToDouble(provider);
 
-        decimal IConvertible.ToDecimal(IFormatProvider provider) => Member.ToDecimal(provider);
+        decimal IConvertible.ToDecimal(IFormatProvider? provider) => Member.ToDecimal(provider);
 
-        DateTime IConvertible.ToDateTime(IFormatProvider provider) => Member.ToDateTime(provider);
+        DateTime IConvertible.ToDateTime(IFormatProvider? provider) => Member.ToDateTime(provider);
 
-        string IConvertible.ToString(IFormatProvider provider) => Member.ToString(provider);
+        string IConvertible.ToString(IFormatProvider? provider) => Member.ToString(provider);
 
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Member.ToType(conversionType, provider);
+        object IConvertible.ToType(Type conversionType, IFormatProvider? provider) => Member.ToType(conversionType, provider);
 #endif
 
         // implemented in derived class
-        int IComparable.CompareTo(object obj) => 0;
+        int IComparable.CompareTo(object? obj) => 0;
 
         // implemented in derived class
-        int IComparable<EnumMember>.CompareTo(EnumMember other) => 0;
+        int IComparable<EnumMember>.CompareTo(EnumMember? other) => 0;
         #endregion
     }
 
     /// <summary>
-    /// An enum member which composes its name, value, and attributes.
+    /// An enum member which is composed of its name, value, and attributes.
     /// </summary>
     /// <typeparam name="TEnum">The enum type.</typeparam>
     public abstract class EnumMember<TEnum> : EnumMember, IComparable<EnumMember<TEnum>>, IEquatable<EnumMember<TEnum>>
@@ -324,7 +328,7 @@ namespace EnumsNET
         /// </summary>
         public new TEnum Value => GetGenericValue();
 
-        internal EnumMember(IEnumMember member)
+        internal EnumMember(EnumMemberInternal member)
             : base(member)
         {
         }
@@ -342,9 +346,9 @@ namespace EnumsNET
 
         internal abstract IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers();
 
-        internal sealed override object GetValue() => GetGenericValue();
+        internal sealed override object GetValue() => GetGenericValue()!;
 
-        internal sealed override IEnumerable<object> GetFlags() => GetGenericFlags().Select(flag => (object)flag);
+        internal sealed override IEnumerable<object> GetFlags() => GetGenericFlags().Select(flag => (object)flag!);
 
         internal sealed override IEnumerable<EnumMember> GetFlagMembers() => GetGenericFlagMembers()
 #if !COVARIANCE
@@ -354,37 +358,41 @@ namespace EnumsNET
 
         #region Explicit Interface Implementation
         // Implemented in derived class
-        int IComparable<EnumMember<TEnum>>.CompareTo(EnumMember<TEnum> other) => 0;
+        int IComparable<EnumMember<TEnum>>.CompareTo(EnumMember<TEnum>? other) => 0;
         #endregion
     }
 
-    internal sealed class EnumMember<TEnum, TInt, TIntProvider> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
+    internal sealed class EnumMember<TEnum, TUnderlying, TUnderlyingOperations> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
         where TEnum : struct, Enum
-        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
 #if ICONVERTIBLE
         , IConvertible
 #endif
-        where TIntProvider : struct, INumericProvider<TInt>
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        internal new EnumMemberInternal<TInt, TIntProvider> Member => (EnumMemberInternal<TInt, TIntProvider>)base.Member;
+        internal new EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member => UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(base.Member);
 
-        internal EnumMember(EnumMemberInternal<TInt, TIntProvider> member)
+        internal EnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
             : base(member)
         {
         }
 
-        internal override TEnum GetGenericValue() => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(Member.Value);
+        internal override TEnum GetGenericValue()
+        {
+            var underlying = Member.Value;
+            return UnsafeUtility.As<TUnderlying, TEnum>(ref underlying);
+        }
 
-        internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => EnumInfo<TEnum, TInt, TIntProvider>.ToEnum(flag));
+        internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => UnsafeUtility.As<TUnderlying, TEnum>(ref flag));
 
-        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(flag => (EnumMember<TEnum>)flag.EnumMember);
+        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         #region Interface Implementation
-        public int CompareTo(object other) => CompareTo(other as EnumMember<TEnum>);
+        public int CompareTo(object? other) => CompareTo(other as EnumMember<TEnum>);
 
-        public int CompareTo(EnumMember other) => CompareTo(other as EnumMember<TEnum>);
+        public int CompareTo(EnumMember? other) => CompareTo(other as EnumMember<TEnum>);
 
-        public int CompareTo(EnumMember<TEnum> other) => other != null ? Member.CompareTo(((EnumMember<TEnum, TInt, TIntProvider>)other).Member) : 1;
+        public int CompareTo(EnumMember<TEnum>? other) => other != null ? Member.CompareTo(UnsafeUtility.As<EnumMember<TEnum, TUnderlying, TUnderlyingOperations>>(other).Member) : 1;
         #endregion
     }
 }

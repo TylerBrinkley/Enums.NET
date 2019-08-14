@@ -27,6 +27,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using EnumsNET.Utilities;
 
 namespace EnumsNET.Unsafe
 {
@@ -37,8 +38,8 @@ namespace EnumsNET.Unsafe
     /// <typeparam name="TEnum">The enum type.</typeparam>
     public sealed class UnsafeEnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
     {
-        private static readonly IEnumInfo<TEnum> s_info = UnsafeEnums<TEnum>.Info;
-        private static UnsafeEnumComparer<TEnum> s_instance;
+        private static readonly EnumCache? s_cache = UnsafeEnums<TEnum>.Cache;
+        private static UnsafeEnumComparer<TEnum>? s_instance;
 
         /// <summary>
         /// The singleton instance of <see cref="UnsafeEnumComparer{TEnum}"/>.
@@ -48,8 +49,8 @@ namespace EnumsNET.Unsafe
         {
             get
             {
-                UnsafeEnumComparer<TEnum> instance;
-                return s_instance ?? (Interlocked.CompareExchange(ref s_instance, (instance = new UnsafeEnumComparer<TEnum>()), null) ?? instance);
+                var instance = s_instance;
+                return instance ?? Interlocked.CompareExchange(ref s_instance, (instance = new UnsafeEnumComparer<TEnum>()), null) ?? instance;
             }
         }
 
@@ -57,7 +58,10 @@ namespace EnumsNET.Unsafe
         /// <see cref="UnsafeEnumComparer{TEnum}"/> constructor, should use singleton property <see cref="Instance"/> instead.
         /// This constructor's public for visibility and serialization.
         /// </summary>
-        public UnsafeEnumComparer() => UnsafeEnums.GetInfo<TEnum>(); // Validates TEnum is an enum
+        public UnsafeEnumComparer()
+        {
+            UnsafeEnums.GetCache<TEnum>(); // Validates TEnum is an enum
+        }
 
         /// <summary>
         /// Indicates if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.
@@ -65,14 +69,14 @@ namespace EnumsNET.Unsafe
         /// <param name="x">The first enum value.</param>
         /// <param name="y">The second enum value.</param>
         /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
-        public bool Equals(TEnum x, TEnum y) => s_info.Equals(x, y);
+        public bool Equals(TEnum x, TEnum y) => s_cache!.Equals(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
 
         /// <summary>
         /// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
         /// </summary>
         /// <param name="obj">The enum value.</param>
         /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-        public int GetHashCode(TEnum obj) => s_info.GetHashCode(obj);
+        public int GetHashCode(TEnum obj) => s_cache!.GetHashCode(ref UnsafeUtility.As<TEnum, byte>(ref obj));
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
@@ -81,14 +85,14 @@ namespace EnumsNET.Unsafe
         /// <param name="y">The second enum value.</param>
         /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
         /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
-        public int Compare(TEnum x, TEnum y) => s_info.CompareTo(x, y);
+        public int Compare(TEnum x, TEnum y) => s_cache!.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
 
         #region Explicit Interface Implementation
-        bool IEqualityComparer.Equals(object x, object y) => x is TEnum && y is TEnum && Equals((TEnum)x, (TEnum)y);
+        bool IEqualityComparer.Equals(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum && Equals(xEnum, yEnum);
 
-        int IEqualityComparer.GetHashCode(object obj) => obj is TEnum ? GetHashCode((TEnum)obj) : 0;
+        int IEqualityComparer.GetHashCode(object? obj) => obj is TEnum objEnum ? GetHashCode(objEnum) : 0;
 
-        int IComparer.Compare(object x, object y) => (x is TEnum && y is TEnum) ? Compare((TEnum)x, (TEnum)y) : 0;
+        int IComparer.Compare(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum ? Compare(xEnum, yEnum) : 0;
         #endregion
     }
 }

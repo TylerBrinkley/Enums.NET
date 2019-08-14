@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if BENCHMARKS
 using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
@@ -138,4 +137,3 @@ namespace EnumsNET.Tests.Benchmarks
         }
     }
 }
-#endif

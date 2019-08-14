@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.14" />
     <PackageReference Include="System.Diagnostics.FileVersionInfo" Version="4.3.0" />
-    <ProjectReference Include="..\Enums.NET.Tests\Enums.NET.Tests.csproj" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
   </ItemGroup>
 

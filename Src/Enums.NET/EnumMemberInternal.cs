@@ -30,149 +30,192 @@ using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    // Putting the logic here as opposed to directly in EnumMember<TEnum, TInt, TIntProvider>
-    // reduces memory usage because it doesn't have the enum type as a generic type parameter.
-    internal sealed class EnumMemberInternal<TInt, TIntProvider> : IEnumMember
-        where TInt : struct, IComparable<TInt>, IEquatable<TInt>
+    internal abstract class EnumMemberInternal : IFormattable
 #if ICONVERTIBLE
         , IConvertible
 #endif
-        where TIntProvider : struct, INumericProvider<TInt>
     {
-        private readonly EnumCache<TInt, TIntProvider> _enumCache;
-        private EnumMember _enumMember;
+        public readonly string Name;
+        public readonly AttributeCollection Attributes;
+        private EnumMember? _enumMember;
 
-        public TInt Value { get; }
-
-        public string Name { get; }
-
-        public AttributeCollection Attributes { get; }
-
-        internal EnumMember EnumMember
+        public EnumMember EnumMember
         {
             get
             {
-                EnumMember enumMember;
-                return _enumMember ?? Interlocked.CompareExchange(ref _enumMember, (enumMember = _enumCache.EnumInfo.CreateEnumMember(this)), null) ?? enumMember;
+                var enumMember = _enumMember;
+                return enumMember ?? Interlocked.CompareExchange(ref _enumMember, (enumMember = CreateEnumMember()), null) ?? enumMember;
             }
         }
 
-        public EnumMemberInternal(TInt value, string name, AttributeCollection attributes, EnumCache<TInt, TIntProvider> enumCache)
+        internal abstract EnumMember CreateEnumMember();
+
+        protected EnumMemberInternal(string name, AttributeCollection attributes)
         {
-            Value = value;
             Name = name;
             Attributes = attributes;
+        }
+
+        public abstract object GetUnderlyingValue();
+        public abstract string AsString(string? format);
+        public abstract string? AsString(EnumFormat format);
+        public abstract string? AsString(ValueCollection<EnumFormat> formats);
+        public abstract string Format(string format);
+        public abstract byte ToByte();
+        public abstract short ToInt16();
+        public abstract int ToInt32();
+        public abstract long ToInt64();
+        public abstract sbyte ToSByte();
+        public abstract ushort ToUInt16();
+        public abstract uint ToUInt32();
+        public abstract ulong ToUInt64();
+        public abstract bool IsValidFlagCombination();
+        public abstract bool HasAnyFlags();
+        public abstract bool HasAllFlags();
+        public abstract int GetFlagCount();
+        public abstract string ToString(string? format, IFormatProvider? formatProvider);
+#if ICONVERTIBLE
+        public abstract TypeCode GetTypeCode();
+        public abstract bool ToBoolean(IFormatProvider? provider);
+        public abstract char ToChar(IFormatProvider? provider);
+        public abstract sbyte ToSByte(IFormatProvider? provider);
+        public abstract byte ToByte(IFormatProvider? provider);
+        public abstract short ToInt16(IFormatProvider? provider);
+        public abstract ushort ToUInt16(IFormatProvider? provider);
+        public abstract int ToInt32(IFormatProvider? provider);
+        public abstract uint ToUInt32(IFormatProvider? provider);
+        public abstract long ToInt64(IFormatProvider? provider);
+        public abstract ulong ToUInt64(IFormatProvider? provider);
+        public abstract float ToSingle(IFormatProvider? provider);
+        public abstract double ToDouble(IFormatProvider? provider);
+        public abstract decimal ToDecimal(IFormatProvider? provider);
+        public abstract DateTime ToDateTime(IFormatProvider? provider);
+        public abstract string ToString(IFormatProvider? provider);
+        public abstract object ToType(Type conversionType, IFormatProvider? provider);
+#endif
+    }
+
+    // Putting the logic here as opposed to directly in EnumMember<TEnum, TUnderlying, TUnderlyingOperations>
+    // reduces memory usage because it doesn't have the enum type as a generic type parameter.
+    internal sealed class EnumMemberInternal<TUnderlying, TUnderlyingOperations> : EnumMemberInternal
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+    {
+        private readonly EnumCache<TUnderlying, TUnderlyingOperations> _enumCache;
+
+        public readonly TUnderlying Value;
+
+        internal override EnumMember CreateEnumMember() => _enumCache.EnumBridge.CreateEnumMember(this);
+
+        public EnumMemberInternal(TUnderlying value, string name, AttributeCollection attributes, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
+            : base(name, attributes)
+        {
+            Value = value;
             _enumCache = enumCache;
         }
 
-        public string AsString(string format) => _enumCache.AsStringInternal(Value, this, format);
+        public override object GetUnderlyingValue() => Value;
 
-        public string AsString(EnumFormat format)
+        public override string AsString(string? format) => _enumCache.AsStringInternal(Value, this, format);
+
+        public override string? AsString(EnumFormat format)
         {
             var isInitialized = true;
-            var member = this;
+            EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member = this;
             return _enumCache.FormatInternal(Value, ref isInitialized, ref member, format);
         }
 
-        public string AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
+        public override string? AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
 
-        public string Format(string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return _enumCache.FormatInternal(Value, this, format);
-        }
-
-#if ICONVERTIBLE
-        public sbyte ToSByte() => Value.ToSByte(null);
-
-        public byte ToByte() => Value.ToByte(null);
-
-        public short ToInt16() => Value.ToInt16(null);
-
-        public ushort ToUInt16() => Value.ToUInt16(null);
-
-        public int ToInt32() => Value.ToInt32(null);
-
-        public uint ToUInt32() => Value.ToUInt32(null);
-
-        public long ToInt64() => Value.ToInt64(null);
-
-        public ulong ToUInt64() => Value.ToUInt64(null);
-#else
-        public sbyte ToSByte() => EnumCache<TInt, TIntProvider>.Provider.ToSByte(Value);
-
-        public byte ToByte() => EnumCache<TInt, TIntProvider>.Provider.ToByte(Value);
-
-        public short ToInt16() => EnumCache<TInt, TIntProvider>.Provider.ToInt16(Value);
-
-        public ushort ToUInt16() => EnumCache<TInt, TIntProvider>.Provider.ToUInt16(Value);
-
-        public int ToInt32() => EnumCache<TInt, TIntProvider>.Provider.ToInt32(Value);
-
-        public uint ToUInt32() => EnumCache<TInt, TIntProvider>.Provider.ToUInt32(Value);
-
-        public long ToInt64() => EnumCache<TInt, TIntProvider>.Provider.ToInt64(Value);
-
-        public ulong ToUInt64() => EnumCache<TInt, TIntProvider>.Provider.ToUInt64(Value);
-#endif
+        public override string Format(string format) => _enumCache.FormatInternal(Value, this, format);
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        internal int CompareTo(EnumMemberInternal<TInt, TIntProvider> other) => Value.CompareTo(other.Value);
+        internal int CompareTo(EnumMemberInternal<TUnderlying, TUnderlyingOperations> other) => Value.CompareTo(other.Value);
 
-        public bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
+        public override bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
 
-        public int GetFlagCount() => _enumCache.GetFlagCount(Value);
+        public override int GetFlagCount() => _enumCache.GetFlagCount(Value);
 
-        public bool HasAnyFlags() => _enumCache.HasAnyFlags(Value);
+        public override bool HasAnyFlags() => _enumCache.HasAnyFlags(Value);
 
-        public bool HasAllFlags() => _enumCache.HasAllFlags(Value);
+        public override bool HasAllFlags() => _enumCache.HasAllFlags(Value);
 
-        public IEnumerable<TInt> GetFlags() => _enumCache.GetFlags(Value);
+        public IEnumerable<TUnderlying> GetFlags() => _enumCache.GetFlags(Value);
 
-        public IEnumerable<EnumMemberInternal<TInt, TIntProvider>> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
+        public IEnumerable<EnumMember> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
 
-        #region Explicit Interface Implementation
-        string IFormattable.ToString(string format, IFormatProvider formatProvider) => AsString(format);
+        public override string ToString(string? format, IFormatProvider? formatProvider) => AsString(format);
 
 #if ICONVERTIBLE
-        TypeCode IConvertible.GetTypeCode() => Value.GetTypeCode();
+        public override sbyte ToSByte() => Value.ToSByte(null);
 
-        bool IConvertible.ToBoolean(IFormatProvider provider) => Value.ToBoolean(provider);
+        public override byte ToByte() => Value.ToByte(null);
 
-        char IConvertible.ToChar(IFormatProvider provider) => Value.ToChar(provider);
+        public override short ToInt16() => Value.ToInt16(null);
 
-        sbyte IConvertible.ToSByte(IFormatProvider provider) => Value.ToSByte(provider);
+        public override ushort ToUInt16() => Value.ToUInt16(null);
 
-        byte IConvertible.ToByte(IFormatProvider provider) => Value.ToByte(provider);
+        public override int ToInt32() => Value.ToInt32(null);
 
-        short IConvertible.ToInt16(IFormatProvider provider) => Value.ToInt16(provider);
+        public override uint ToUInt32() => Value.ToUInt32(null);
 
-        ushort IConvertible.ToUInt16(IFormatProvider provider) => Value.ToUInt16(provider);
+        public override long ToInt64() => Value.ToInt64(null);
 
-        int IConvertible.ToInt32(IFormatProvider provider) => Value.ToInt32(provider);
+        public override ulong ToUInt64() => Value.ToUInt64(null);
 
-        uint IConvertible.ToUInt32(IFormatProvider provider) => Value.ToUInt32(provider);
+        public override TypeCode GetTypeCode() => Value.GetTypeCode();
 
-        long IConvertible.ToInt64(IFormatProvider provider) => Value.ToInt64(provider);
+        public override bool ToBoolean(IFormatProvider? provider) => Value.ToBoolean(provider);
 
-        ulong IConvertible.ToUInt64(IFormatProvider provider) => Value.ToUInt64(provider);
+        public override char ToChar(IFormatProvider? provider) => Value.ToChar(provider);
 
-        float IConvertible.ToSingle(IFormatProvider provider) => Value.ToSingle(provider);
+        public override sbyte ToSByte(IFormatProvider? provider) => Value.ToSByte(provider);
 
-        double IConvertible.ToDouble(IFormatProvider provider) => Value.ToDouble(provider);
+        public override byte ToByte(IFormatProvider? provider) => Value.ToByte(provider);
 
-        decimal IConvertible.ToDecimal(IFormatProvider provider) => Value.ToDecimal(provider);
+        public override short ToInt16(IFormatProvider? provider) => Value.ToInt16(provider);
 
-        DateTime IConvertible.ToDateTime(IFormatProvider provider) => Value.ToDateTime(provider);
+        public override ushort ToUInt16(IFormatProvider? provider) => Value.ToUInt16(provider);
 
-        string IConvertible.ToString(IFormatProvider provider) => ToString();
+        public override int ToInt32(IFormatProvider? provider) => Value.ToInt32(provider);
 
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider) => Value.ToType(conversionType, provider);
+        public override uint ToUInt32(IFormatProvider? provider) => Value.ToUInt32(provider);
+
+        public override long ToInt64(IFormatProvider? provider) => Value.ToInt64(provider);
+
+        public override ulong ToUInt64(IFormatProvider? provider) => Value.ToUInt64(provider);
+
+        public override float ToSingle(IFormatProvider? provider) => Value.ToSingle(provider);
+
+        public override double ToDouble(IFormatProvider? provider) => Value.ToDouble(provider);
+
+        public override decimal ToDecimal(IFormatProvider? provider) => Value.ToDecimal(provider);
+
+        public override DateTime ToDateTime(IFormatProvider? provider) => Value.ToDateTime(provider);
+
+        public override string ToString(IFormatProvider? provider) => Name;
+
+        public override object ToType(Type conversionType, IFormatProvider? provider) => Value.ToType(conversionType, provider);
+#else
+        public override sbyte ToSByte() => default(TUnderlyingOperations).ToSByte(Value);
+
+        public override byte ToByte() => default(TUnderlyingOperations).ToByte(Value);
+
+        public override short ToInt16() => default(TUnderlyingOperations).ToInt16(Value);
+
+        public override ushort ToUInt16() => default(TUnderlyingOperations).ToUInt16(Value);
+
+        public override int ToInt32() => default(TUnderlyingOperations).ToInt32(Value);
+
+        public override uint ToUInt32() => default(TUnderlyingOperations).ToUInt32(Value);
+
+        public override long ToInt64() => default(TUnderlyingOperations).ToInt64(Value);
+
+        public override ulong ToUInt64() => default(TUnderlyingOperations).ToUInt64(Value);
 #endif
-
-        object IEnumMember.GetUnderlyingValue() => Value;
-        #endregion
     }
 }

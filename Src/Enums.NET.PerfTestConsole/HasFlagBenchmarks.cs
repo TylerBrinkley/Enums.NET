@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if BENCHMARKS
 using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Jobs;
@@ -110,4 +109,3 @@ namespace EnumsNET.Tests.Benchmarks
         public static bool ManualHasAllFlags(AttributeTargets flags, AttributeTargets otherFlags) => (flags & otherFlags) == otherFlags;
     }
 }
-#endif

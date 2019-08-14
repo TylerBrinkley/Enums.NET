@@ -23,19 +23,23 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if BENCHMARKS
-using System.Reflection;
-using BenchmarkDotNet.Running;
-using NUnit.Framework;
+using System;
+using EnumsNET.Numerics;
 
-namespace EnumsNET.Tests.Benchmarks
+namespace EnumsNET
 {
-    [TestFixture]
-    public class Runner
+    internal interface IEnumBridgeInternal<TUnderlying, TUnderlyingOperations>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        [Test]
-        [Ignore("Don't run with other unit tests")]
-        public void RunBenchmarks() => new BenchmarkSwitcher(typeof(Runner).GetTypeInfo().Assembly).Run(new[] { "*" });
+        bool HasCustomValidator { get; }
+
+        EnumMember CreateEnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member);
+        bool CustomValidate(TUnderlying value);
+        bool IsEnum(object value);
+        object ToObjectUnchecked(TUnderlying value);
     }
 }
-#endif

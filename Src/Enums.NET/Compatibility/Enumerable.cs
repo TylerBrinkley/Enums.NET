@@ -43,25 +43,10 @@ namespace System.Linq
             }
         }
 
-        public static IEnumerable<T> Where<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-        {
-            Preconditions.NotNull(source, nameof(source));
-            Preconditions.NotNull(predicate, nameof(predicate));
-
-            foreach (var item in source)
-            {
-                if (predicate(item))
-                {
-                    yield return item;
-                }
-            }
-        }
-
         public static T[] ToArray<T>(this IEnumerable<T> source)
         {
             Preconditions.NotNull(source, nameof(source));
 
-            var collection = source as ICollection<T>;
             var length = (source as ICollection<T>)?.Count ?? (source as ICollection)?.Count;
             if (length.HasValue)
             {
@@ -79,29 +64,6 @@ namespace System.Linq
                 list.Add(item);
             }
             return list.ToArray();
-        }
-
-        public static int Count<T>(this IEnumerable<T> source)
-        {
-            Preconditions.NotNull(source, nameof(source));
-
-            if (source is ICollection<T> collection)
-            {
-                return collection.Count;
-            }
-            if (source is ICollection collection2)
-            {
-                return collection2.Count;
-            }
-            var count = 0;
-            using (var enumerator = source.GetEnumerator())
-            {
-                while (enumerator.MoveNext())
-                {
-                    ++count;
-                }
-            }
-            return count;
         }
     }
 }
