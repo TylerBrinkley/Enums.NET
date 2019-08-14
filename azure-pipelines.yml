@@ -15,11 +15,10 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: UseDotNet@2
+- task: DotNetCoreInstaller@0
+  displayName: 'Install .net core 3.0 (preview)'
   inputs:
-    packageType: 'sdk'
-    version: '3.0.100-preview7-012821'
-    includePreviewVersions: true
+    version: '3.0.100-preview8-013656'
 
 - task: NuGetToolInstaller@0
   inputs:
@@ -35,11 +34,13 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: VisualStudioTestPlatformInstaller@1
+  inputs:
+    packageFeedSelector: 'nugetOrg'
+    versionSelector: 'latestStable'
+
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\bin\*Enums.NET.Tests*'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
     vsTestVersion: '16.0'
