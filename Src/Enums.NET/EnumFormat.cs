@@ -28,9 +28,7 @@ using System.ComponentModel;
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
 #endif
-#if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
-#endif
 
 namespace EnumsNET
 {
@@ -60,12 +58,10 @@ namespace EnumsNET
         /// Enum is represented by its <see cref="DescriptionAttribute.Description"/>.
         /// </summary>
         Description = 4,
-#if ENUM_MEMBER_ATTRIBUTE
         /// <summary>
         /// Enum is represented by its <see cref="EnumMemberAttribute.Value"/>.
         /// </summary>
         EnumMemberValue = 5,
-#endif
 #if DISPLAY_ATTRIBUTE
         /// <summary>
         /// Enum is represented by its <see cref="DisplayAttribute.Name"/>.

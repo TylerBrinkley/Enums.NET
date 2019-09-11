@@ -25,8 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
@@ -141,36 +139,6 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// Indicates if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.
-        /// </summary>
-        /// <typeparam name="TAttribute">The attribute type.</typeparam>
-        /// <returns>Indication if <see cref="Attributes"/> contains a <typeparamref name="TAttribute"/>.</returns>
-        [Obsolete("Use Attributes.Has instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool HasAttribute<TAttribute>()
-            where TAttribute : Attribute => Attributes.Has<TAttribute>();
-
-        /// <summary>
-        /// Retrieves the first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TAttribute">The attribute type.</typeparam>
-        /// <returns>The first <typeparamref name="TAttribute"/> in <see cref="Attributes"/> if defined otherwise <c>null</c>.</returns>
-        [Obsolete("Use Attributes.Get instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public TAttribute? GetAttribute<TAttribute>()
-            where TAttribute : Attribute => Attributes.Get<TAttribute>();
-
-        /// <summary>
-        /// Retrieves all <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.
-        /// </summary>
-        /// <typeparam name="TAttribute">The attribute type.</typeparam>
-        /// <returns>All <typeparamref name="TAttribute"/>'s in <see cref="Attributes"/>.</returns>
-        [Obsolete("Use Attributes.GetAll instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public IEnumerable<TAttribute> GetAttributes<TAttribute>()
-            where TAttribute : Attribute => Attributes.GetAll<TAttribute>();
-
-        /// <summary>
         /// Retrieves the enum member's underlying integral value.
         /// </summary>
         /// <returns>The enum member's underlying integral value.</returns>
@@ -258,9 +226,9 @@ namespace EnumsNET
 
         internal abstract object GetValue();
 
-        internal abstract IEnumerable<object> GetFlags();
+        internal object GetFlags() => Member.GetFlags();
 
-        internal abstract IEnumerable<EnumMember> GetFlagMembers();
+        internal IReadOnlyList<EnumMember> GetFlagMembers() => Member.GetFlagMembers();
 
         internal bool IsValidFlagCombination() => Member.IsValidFlagCombination();
 
@@ -342,19 +310,7 @@ namespace EnumsNET
 
         internal abstract TEnum GetGenericValue();
 
-        internal abstract IEnumerable<TEnum> GetGenericFlags();
-
-        internal abstract IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers();
-
         internal sealed override object GetValue() => GetGenericValue()!;
-
-        internal sealed override IEnumerable<object> GetFlags() => GetGenericFlags().Select(flag => (object)flag!);
-
-        internal sealed override IEnumerable<EnumMember> GetFlagMembers() => GetGenericFlagMembers()
-#if !COVARIANCE
-            .Select(flag => (EnumMember)flag)
-#endif
-            ;
 
         #region Explicit Interface Implementation
         // Implemented in derived class
@@ -382,10 +338,6 @@ namespace EnumsNET
             var underlying = Member.Value;
             return UnsafeUtility.As<TUnderlying, TEnum>(ref underlying);
         }
-
-        internal override IEnumerable<TEnum> GetGenericFlags() => Member.GetFlags().Select(flag => UnsafeUtility.As<TUnderlying, TEnum>(ref flag));
-
-        internal override IEnumerable<EnumMember<TEnum>> GetGenericFlagMembers() => Member.GetFlagMembers().Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
 
         #region Interface Implementation
         public int CompareTo(object? other) => CompareTo(other as EnumMember<TEnum>);

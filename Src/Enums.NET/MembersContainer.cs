@@ -23,48 +23,40 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if NET20
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using EnumsNET;
+using System.Linq;
+using EnumsNET.Utilities;
 
-namespace System.Linq
+namespace EnumsNET
 {
-    internal static class Enumerable
+    internal sealed class MembersContainer<TEnum> : IReadOnlyList<EnumMember<TEnum>>
+        where TEnum : struct, Enum
     {
-        public static IEnumerable<TResult> Select<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector)
-        {
-            Preconditions.NotNull(source, nameof(source));
-            Preconditions.NotNull(selector, nameof(selector));
+        private readonly IEnumerable<EnumMember> _members;
+        private EnumMember<TEnum>[]? _membersArray;
 
-            foreach (var item in source)
+        public int Count { get; }
+
+        public EnumMember<TEnum> this[int index] => (_membersArray ??= this.ToArray())[index];
+
+        public MembersContainer(IEnumerable<EnumMember> members, int count)
+        {
+            _members = members;
+            Count = count;
+        }
+
+        public IEnumerator<EnumMember<TEnum>> GetEnumerator() => _membersArray != null ? ((IEnumerable<EnumMember<TEnum>>)_membersArray).GetEnumerator() : Enumerate();
+
+        private IEnumerator<EnumMember<TEnum>> Enumerate()
+        {
+            foreach (var member in _members)
             {
-                yield return selector(item);
+                yield return UnsafeUtility.As<EnumMember<TEnum>>(member);
             }
         }
 
-        public static T[] ToArray<T>(this IEnumerable<T> source)
-        {
-            Preconditions.NotNull(source, nameof(source));
-
-            var length = (source as ICollection<T>)?.Count ?? (source as ICollection)?.Count;
-            if (length.HasValue)
-            {
-                var array = new T[length.GetValueOrDefault()];
-                var i = 0;
-                foreach (var item in source)
-                {
-                    array[i++] = item;
-                }
-                return array;
-            }
-            var list = new List<T>();
-            foreach (var item in source)
-            {
-                list.Add(item);
-            }
-            return list.ToArray();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
-#endif

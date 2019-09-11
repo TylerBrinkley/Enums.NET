@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
@@ -41,5 +42,7 @@ namespace EnumsNET
         bool CustomValidate(TUnderlying value);
         bool IsEnum(object value);
         object ToObjectUnchecked(TUnderlying value);
+        object CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool store = false);
+        IReadOnlyList<EnumMember> CreateMembersContainer(IEnumerable<EnumMember> members, int count, bool store = false);
     }
 }

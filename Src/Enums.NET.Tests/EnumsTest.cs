@@ -883,9 +883,7 @@ namespace EnumsNET.Tests
             Assert.IsFalse((descriptionOrNameFormat + 2).IsValid());
             Assert.AreEqual("Ultra-Violet", Format(ColorFlagEnum.UltraViolet, descriptionOrNameFormat));
             Assert.AreEqual(nameof(ColorFlagEnum.Red), Format(ColorFlagEnum.Red, descriptionOrNameFormat));
-#if ENUM_MEMBER_ATTRIBUTE
             Assert.AreEqual(nameof(EnumMemberAttributeEnum.B), Format(EnumMemberAttributeEnum.B, descriptionOrNameFormat));
-#endif
         }
 
         [Test]
@@ -939,9 +937,7 @@ namespace EnumsNET.Tests
         [Test]
         public void HasAttribute()
         {
-#if ENUM_MEMBER_ATTRIBUTE
             Assert.IsTrue(EnumMemberAttributeEnum.A.GetMember().Attributes.Has<EnumMemberAttribute>());
-#endif
             Assert.IsFalse(ColorFlagEnum.Blue.GetMember().Attributes.Has<DescriptionAttribute>());
             Assert.IsTrue(ColorFlagEnum.UltraViolet.GetMember().Attributes.Has<DescriptionAttribute>());
         }
@@ -949,9 +945,7 @@ namespace EnumsNET.Tests
         [Test]
         public void GetAttribute()
         {
-#if ENUM_MEMBER_ATTRIBUTE
             Assert.AreEqual("aye", EnumMemberAttributeEnum.A.GetMember().Attributes.Get<EnumMemberAttribute>().Value);
-#endif
             Assert.IsNull(ColorFlagEnum.Blue.GetMember().Attributes.Get<DescriptionAttribute>());
             Assert.AreEqual("Ultra-Violet", ColorFlagEnum.UltraViolet.GetMember().Attributes.Get<DescriptionAttribute>().Description);
         }

@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using EnumsNET.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -293,7 +294,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
-        public static IEnumerable<object> GetFlags(Type enumType, object? value)
+        public static IReadOnlyList<object> GetFlags(Type enumType, object? value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
@@ -315,7 +316,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
-        public static IEnumerable<EnumMember> GetFlagMembers(Type enumType, object? value)
+        public static IReadOnlyList<EnumMember> GetFlagMembers(Type enumType, object? value)
         {
             var info = NonGenericEnums.GetNonGenericEnumInfo(enumType);
 
@@ -2147,10 +2148,10 @@ namespace EnumsNET.NonGeneric
         /// <param name="member">The enum member.</param>
         /// <returns>The flags that compose <paramref name="member"/>'s value.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
-        public static IEnumerable<object> GetFlags(this EnumMember member)
+        public static IReadOnlyList<object> GetFlags(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return member.GetFlags();
+            return UnsafeUtility.As<IValuesContainer>(member.GetFlags()).GetNonGenericContainer();
         }
 
         /// <summary>
@@ -2159,7 +2160,7 @@ namespace EnumsNET.NonGeneric
         /// <param name="member">The enum member.</param>
         /// <returns>The <see cref="EnumMember"/>s of the flags that compose <paramref name="member"/>'s value.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
-        public static IEnumerable<EnumMember> GetFlagMembers(this EnumMember member)
+        public static IReadOnlyList<EnumMember> GetFlagMembers(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
             return member.GetFlagMembers();

@@ -23,19 +23,29 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if NET20
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace EnumsNET
 {
-#pragma warning disable 1591
-    //public delegate void Action();
-    //public delegate void Action<T1, T2>(T1 arg1, T2 arg2);
-    //public delegate void Action<T1, T2, T3>(T1 arg1, T2 arg2, T3 arg3);
-    //public delegate void Action<T1, T2, T3, T4>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
-    //public delegate TResult Func<TResult>();
-    public delegate TResult Func<T, TResult>(T arg);
-    //public delegate TResult Func<T1, T2, TResult>(T1 arg1, T2 arg2);
-    //public delegate TResult Func<T1, T2, T3, TResult>(T1 arg1, T2 arg2, T3 arg3);
-    //public delegate TResult Func<T1, T2, T3, T4, TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
-#pragma warning restore 1591
+    internal sealed class NamesContainer : IReadOnlyList<string>
+    {
+        private readonly IEnumerable<string> _names;
+        private string[]? _namesArray;
+
+        public int Count { get; }
+
+        public string this[int index] => (_namesArray ??= this.ToArray())[index];
+
+        public NamesContainer(IEnumerable<string> names, int count)
+        {
+            _names = names;
+            Count = count;
+        }
+
+        public IEnumerator<string> GetEnumerator() => _names.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
 }
-#endif

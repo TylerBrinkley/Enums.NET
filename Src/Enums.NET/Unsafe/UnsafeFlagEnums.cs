@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using EnumsNET.Utilities;
 
 #if SPAN
@@ -245,7 +244,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The flags enum value.</param>
         /// <returns>The flags that compose <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<TEnum> GetFlags<TEnum>(TEnum value) => UnsafeEnums.GetBridge<TEnum>().GetFlags(value);
+        public static IReadOnlyList<TEnum> GetFlags<TEnum>(TEnum value) => UnsafeUtility.As<IReadOnlyList<TEnum>>(UnsafeEnums.GetCache<TEnum>().GetFlags(ref UnsafeUtility.As<TEnum, byte>(ref value)));
 
         /// <summary>
         /// Retrieves the <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.
@@ -254,7 +253,7 @@ namespace EnumsNET.Unsafe
         /// <param name="value">The flags enum value.</param>
         /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) => UnsafeEnums.GetCache<TEnum>().GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
+        public static IReadOnlyList<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value) => UnsafeUtility.As<IReadOnlyList<EnumMember<TEnum>>>(UnsafeEnums.GetCache<TEnum>().GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)));
 
         /// <summary>
         /// Retrieves the flag count of <typeparamref name="TEnum"/>.

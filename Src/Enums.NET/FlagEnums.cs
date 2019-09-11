@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using EnumsNET.Utilities;
 
 #if SPAN
@@ -239,8 +238,8 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The flags enum value.</param>
         /// <returns>The flags that compose <paramref name="value"/>.</returns>
-        public static IEnumerable<TEnum> GetFlags<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Bridge.GetFlags(value);
+        public static IReadOnlyList<TEnum> GetFlags<TEnum>(this TEnum value)
+            where TEnum : struct, Enum => UnsafeUtility.As<IReadOnlyList<TEnum>>(Enums<TEnum>.Cache.GetFlags(ref UnsafeUtility.As<TEnum, byte>(ref value)));
 
         /// <summary>
         /// Retrieves the <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.
@@ -248,8 +247,8 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The flags enum value.</param>
         /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="value"/>.</returns>
-        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value)
-            where TEnum : struct, Enum => Enums<TEnum>.Cache.GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
+        public static IReadOnlyList<EnumMember<TEnum>> GetFlagMembers<TEnum>(TEnum value)
+            where TEnum : struct, Enum => UnsafeUtility.As<IReadOnlyList<EnumMember<TEnum>>>(Enums<TEnum>.Cache.GetFlagMembers(ref UnsafeUtility.As<TEnum, byte>(ref value)));
 
         /// <summary>
         /// Retrieves the flag count of <typeparamref name="TEnum"/>.
@@ -1781,10 +1780,10 @@ namespace EnumsNET
         /// <param name="member">The enum member.</param>
         /// <returns>The flags that compose <paramref name="member"/>'s value.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
-        public static IEnumerable<TEnum> GetFlags<TEnum>(this EnumMember<TEnum> member)
+        public static IReadOnlyList<TEnum> GetFlags<TEnum>(this EnumMember<TEnum> member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return member.GetGenericFlags();
+            return UnsafeUtility.As<IReadOnlyList<TEnum>>(member.GetFlags());
         }
 
         /// <summary>
@@ -1794,10 +1793,10 @@ namespace EnumsNET
         /// <param name="member">The enum member.</param>
         /// <returns>The <see cref="EnumMember{TEnum}"/>s of the flags that compose <paramref name="member"/>'s value.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="member"/> is <c>null</c>.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetFlagMembers<TEnum>(this EnumMember<TEnum> member)
+        public static IReadOnlyList<EnumMember<TEnum>> GetFlagMembers<TEnum>(this EnumMember<TEnum> member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return member.GetGenericFlagMembers();
+            return UnsafeUtility.As<IReadOnlyList<EnumMember<TEnum>>>(member.GetFlagMembers());
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45;net40;net35;net20</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -16,43 +16,31 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
     <AssemblyTitle>Enums.NET Tests .NET 4.6</AssemblyTitle>
-    <DefineConstants>NET46;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <AssemblyTitle>Enums.NET Tests .NET 4.5</AssemblyTitle>
-    <DefineConstants>NET45;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
-    <AssemblyTitle>Enums.NET Tests .NET 4.0</AssemblyTitle>
-    <DefineConstants>NET40;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net35'">
-    <AssemblyTitle>Enums.NET Tests .NET 3.5</AssemblyTitle>
-    <DefineConstants>NET35;ENUM_MEMBER_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net20'">
-    <AssemblyTitle>Enums.NET Tests .NET 2.0</AssemblyTitle>
-    <DefineConstants>NET20;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 3.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD2_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 2.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD2_0;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 1.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;BENCHMARKS</DefineConstants>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
     <AssemblyTitle>Enums.NET Tests .NET Core App 1.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;NETSTANDARD1_3;ENUM_MEMBER_ATTRIBUTE;SECURITY_SAFE_CRITICAL;COVARIANCE;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
   </PropertyGroup>
 </Project>

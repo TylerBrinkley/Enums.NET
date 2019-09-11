@@ -5,28 +5,20 @@ namespace EnumsNET.Utilities
 {
     internal static class UnsafeUtility
     {
-#if FORWARD_REF && AGGRESSIVE_INLINING
+#if FORWARD_REF
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#elif AGGRESSIVE_INLINING
+#else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#elif FORWARD_REF
-        [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
-#if SECURITY_SAFE_CRITICAL
         [SecuritySafeCritical]
-#endif
         public static extern ref TTo As<TFrom, TTo>(ref TFrom source);
 
-#if FORWARD_REF && AGGRESSIVE_INLINING
+#if FORWARD_REF
         [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#elif AGGRESSIVE_INLINING
+#else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#elif FORWARD_REF
-        [MethodImpl(MethodImplOptions.ForwardRef)]
 #endif
-#if SECURITY_SAFE_CRITICAL
         [SecuritySafeCritical]
-#endif
         public static extern T As<T>(object? value) where T : class;
 
         internal static ref byte GetRawData(this object obj) =>

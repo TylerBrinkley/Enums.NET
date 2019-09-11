@@ -73,6 +73,8 @@ namespace EnumsNET
         public abstract bool HasAnyFlags();
         public abstract bool HasAllFlags();
         public abstract int GetFlagCount();
+        public abstract object GetFlags();
+        public abstract IReadOnlyList<EnumMember> GetFlagMembers();
         public abstract string ToString(string? format, IFormatProvider? formatProvider);
 #if ICONVERTIBLE
         public abstract TypeCode GetTypeCode();
@@ -144,9 +146,9 @@ namespace EnumsNET
 
         public override bool HasAllFlags() => _enumCache.HasAllFlags(Value);
 
-        public IEnumerable<TUnderlying> GetFlags() => _enumCache.GetFlags(Value);
+        public override object GetFlags() => _enumCache.GetFlags(Value);
 
-        public IEnumerable<EnumMember> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
+        public override IReadOnlyList<EnumMember> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
 
         public override string ToString(string? format, IFormatProvider? formatProvider) => AsString(format);
 

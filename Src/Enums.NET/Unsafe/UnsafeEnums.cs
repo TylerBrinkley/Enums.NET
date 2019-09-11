@@ -25,8 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using EnumsNET.Utilities;
 
 #if SPAN
@@ -103,34 +101,12 @@ namespace EnumsNET.Unsafe
         public static int GetMemberCount<TEnum>(EnumMemberSelection selection) => GetCache<TEnum>().GetMemberCount(selection);
 
         /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s member count.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMemberCount. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static int GetEnumMemberCount<TEnum>() => GetMemberCount<TEnum>();
-
-        /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s member count.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
-        /// <returns><typeparamref name="TEnum"/>'s member count.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMemberCount and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static int GetEnumMemberCount<TEnum>(bool excludeDuplicates) => GetMemberCount<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
-
-        /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>() => GetMembers<TEnum>(EnumMemberSelection.All);
+        public static IReadOnlyList<EnumMember<TEnum>> GetMembers<TEnum>() => GetMembers<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
@@ -142,29 +118,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="selection"/> is an invalid value.</exception>
-        public static IEnumerable<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) => GetCache<TEnum>().GetMembers(selection).Select(m => UnsafeUtility.As<EnumMember<TEnum>>(m));
-
-        /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMembers. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>() => GetMembers<TEnum>();
-
-        /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s members in increasing value order.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
-        /// <returns><typeparamref name="TEnum"/>'s members in increasing value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMembers and switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static IEnumerable<EnumMember<TEnum>> GetEnumMembers<TEnum>(bool excludeDuplicates) => GetMembers<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
+        public static IReadOnlyList<EnumMember<TEnum>> GetMembers<TEnum>(EnumMemberSelection selection) => UnsafeUtility.As<IReadOnlyList<EnumMember<TEnum>>>(GetCache<TEnum>().GetMembers(selection));
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -172,7 +126,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<string> GetNames<TEnum>() => GetNames<TEnum>(EnumMemberSelection.All);
+        public static IReadOnlyList<string> GetNames<TEnum>() => GetNames<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
@@ -184,19 +138,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="selection"/> is an invalid value.</exception>
-        public static IEnumerable<string> GetNames<TEnum>(EnumMemberSelection selection) => GetCache<TEnum>().GetNames(selection);
-
-        /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s members' names in increasing value order.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
-        /// <returns><typeparamref name="TEnum"/>'s members' names in increasing value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static IEnumerable<string> GetNames<TEnum>(bool excludeDuplicates) => GetNames<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
+        public static IReadOnlyList<string> GetNames<TEnum>(EnumMemberSelection selection) => GetCache<TEnum>().GetNames(selection);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
@@ -204,7 +146,7 @@ namespace EnumsNET.Unsafe
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static IEnumerable<TEnum> GetValues<TEnum>() => GetBridge<TEnum>().GetValues();
+        public static IReadOnlyList<TEnum> GetValues<TEnum>() => GetValues<TEnum>(EnumMemberSelection.All);
 
         /// <summary>
         /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
@@ -216,19 +158,7 @@ namespace EnumsNET.Unsafe
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="selection"/> is an invalid value.</exception>
-        public static IEnumerable<TEnum> GetValues<TEnum>(EnumMemberSelection selection) => GetBridge<TEnum>().GetValues(selection);
-
-        /// <summary>
-        /// Retrieves <typeparamref name="TEnum"/>'s members' values in increasing value order.
-        /// The parameter <paramref name="excludeDuplicates"/> indicates whether to exclude duplicate value enum members.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="excludeDuplicates">Exclude duplicate value enum members.</param>
-        /// <returns><typeparamref name="TEnum"/>'s members' values in increasing value order.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Switched to using EnumMemberSelection parameter. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static IEnumerable<TEnum> GetValues<TEnum>(bool excludeDuplicates) => GetValues<TEnum>(excludeDuplicates ? EnumMemberSelection.Distinct : EnumMemberSelection.All);
+        public static IReadOnlyList<TEnum> GetValues<TEnum>(EnumMemberSelection selection) => UnsafeUtility.As<IReadOnlyList<TEnum>>(GetCache<TEnum>().GetValues(selection));
         #endregion
 
         #region ToObject
@@ -274,26 +204,6 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
-        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <typeparamref name="TEnum"/>, <see cref="string"/>, or Nullable of one of these.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is not a valid type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(object value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -325,23 +235,6 @@ namespace EnumsNET.Unsafe
             GetCache<TEnum>().ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
             return result;
         }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(sbyte value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -377,22 +270,6 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(byte value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -422,22 +299,6 @@ namespace EnumsNET.Unsafe
             GetCache<TEnum>().ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
             return result;
         }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(short value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -475,23 +336,6 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(ushort value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -521,22 +365,6 @@ namespace EnumsNET.Unsafe
             GetCache<TEnum>().ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
             return result;
         }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(int value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -574,23 +402,6 @@ namespace EnumsNET.Unsafe
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(uint value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -620,22 +431,6 @@ namespace EnumsNET.Unsafe
             GetCache<TEnum>().ToObject(value, validation, ref UnsafeUtility.As<TEnum, byte>(ref result));
             return result;
         }
-
-        /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(long value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -672,23 +467,6 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <returns>The specified <paramref name="value"/> converted to a <typeparamref name="TEnum"/>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="validate"/> is <c>true</c> and the result is not a valid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the underlying type's value range.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static TEnum ToObject<TEnum>(ulong value, bool validate) => ToObject<TEnum>(value, validate ? EnumValidation.Default : EnumValidation.None);
-
-        /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -719,22 +497,6 @@ namespace EnumsNET.Unsafe
             result = default!;
             return GetCache<TEnum>().TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
         }
-
-        /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert. Must be an <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>,
-        /// <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <typeparamref name="TEnum"/>, <see cref="string"/>, or Nullable of one of these.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(object? value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -769,22 +531,6 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(sbyte value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
-
-        /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -815,21 +561,6 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(byte value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
-
-        /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -858,21 +589,6 @@ namespace EnumsNET.Unsafe
             result = default!;
             return GetCache<TEnum>().TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
         }
-
-        /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(short value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -907,22 +623,6 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(ushort value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
-
-        /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -951,21 +651,6 @@ namespace EnumsNET.Unsafe
             result = default!;
             return GetCache<TEnum>().TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
         }
-
-        /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(int value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -1000,22 +685,6 @@ namespace EnumsNET.Unsafe
         }
 
         /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(uint value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
-
-        /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
         /// underlying type. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -1044,21 +713,6 @@ namespace EnumsNET.Unsafe
             result = default!;
             return GetCache<TEnum>().TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
         }
-
-        /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(long value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
 
         /// <summary>
         /// Tries to convert the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
@@ -1091,22 +745,6 @@ namespace EnumsNET.Unsafe
             result = default!;
             return GetCache<TEnum>().TryToObject(value, ref UnsafeUtility.As<TEnum, byte>(ref result), validation);
         }
-
-        /// <summary>
-        /// Tries to converts the specified <paramref name="value"/> to a <typeparamref name="TEnum"/> while checking that it doesn't overflow the
-        /// underlying type. The parameter <paramref name="validate"/> specifies whether to check that the result is valid.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">Value to try to convert.</param>
-        /// <param name="validate">Indicates whether to check that the result is valid.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> whose value is <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [CLSCompliant(false)]
-        [Obsolete("Use EnumValidation overload instead")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static bool TryToObject<TEnum>(ulong value, bool validate, out TEnum result) => TryToObject(value, validate ? EnumValidation.Default : EnumValidation.None, out result);
         #endregion
 
         #region All Values Main Methods
@@ -1720,76 +1358,6 @@ namespace EnumsNET.Unsafe
 
             return UnsafeUtility.As<EnumMember<TEnum>>(GetCache<TEnum>().GetMember(value, ignoreCase, formats));
         }
-
-        /// <summary>
-        /// Retrieves an enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <returns>Enum member with the specified <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static EnumMember<TEnum>? GetEnumMember<TEnum>(TEnum value) => GetMember(value);
-
-        /// <summary>
-        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
-        /// Is case-sensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="name">The enum member name.</param>
-        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static EnumMember<TEnum>? GetEnumMember<TEnum>(string name) => GetMember<TEnum>(name);
-
-        /// <summary>
-        /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
-        /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="name">The enum member name.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <returns>Enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static EnumMember<TEnum>? GetEnumMember<TEnum>(string name, bool ignoreCase) => GetMember<TEnum>(name, ignoreCase);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static EnumMember<TEnum>? GetEnumMember<TEnum>(string value, params EnumFormat[]? formats) => GetMember<TEnum>(value, formats);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Renamed to GetMember. This method will be removed in a future version.")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static EnumMember<TEnum>? GetEnumMember<TEnum>(string value, bool ignoreCase, params EnumFormat[]? formats) => GetMember<TEnum>(value, ignoreCase, formats);
         #endregion
 
         #region Parsing

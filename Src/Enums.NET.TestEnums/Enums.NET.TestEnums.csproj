@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net46;net45;net40;net35;net20;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>net46;net45;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests.TestEnums</RootNamespace>
   </PropertyGroup>
 
@@ -14,32 +14,23 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net40'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net35'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net20'">
-    <DefineConstants>TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;DISPLAY_ATTRIBUTE</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
-    <DefineConstants>ENUM_MEMBER_ATTRIBUTE;DISPLAY_ATTRIBUTE</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
   </PropertyGroup>
 </Project>

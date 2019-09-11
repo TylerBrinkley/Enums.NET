@@ -25,7 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
@@ -33,8 +33,6 @@ namespace EnumsNET
 {
     internal abstract class EnumBridge<TEnum>
     {
-        public abstract IEnumerable<TEnum> GetFlags(TEnum value);
-        public abstract IEnumerable<TEnum> GetValues(EnumMemberSelection selection = EnumMemberSelection.All);
         public abstract TEnum CombineFlags(IEnumerable<TEnum>? flags);
         public abstract EnumCache GetCache();
     }
@@ -62,14 +60,6 @@ namespace EnumsNET
             _cache = new EnumCache<TUnderlying, TUnderlyingOperations>(typeof(TEnum), this);
         }
 
-        public override IEnumerable<TEnum> GetValues(EnumMemberSelection selection) => SelectEnumValues(_cache.GetValuesInternal(selection));
-
-        private IEnumerable<TEnum> SelectEnumValues(IEnumerable<TUnderlying> values) => values.Select(value => UnsafeUtility.As<TUnderlying, TEnum>(ref value));
-
-        public object ToObjectUnchecked(TUnderlying value) => UnsafeUtility.As<TUnderlying, TEnum>(ref value);
-
-        public override IEnumerable<TEnum> GetFlags(TEnum value) => SelectEnumValues(_cache.GetFlags(UnsafeUtility.As<TEnum, TUnderlying>(ref value)));
-
         public override TEnum CombineFlags(IEnumerable<TEnum>? flags)
         {
             TUnderlying result = default;
@@ -88,6 +78,8 @@ namespace EnumsNET
 
         public override EnumCache GetCache() => _cache;
 
+        public object ToObjectUnchecked(TUnderlying value) => UnsafeUtility.As<TUnderlying, TEnum>(ref value);
+
         public bool HasCustomValidator => _customEnumValidator != null;
 
         public bool CustomValidate(TUnderlying value) => _customEnumValidator!.IsValid(UnsafeUtility.As<TUnderlying, TEnum>(ref value));
@@ -95,5 +87,40 @@ namespace EnumsNET
         public EnumMember CreateEnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member) => new EnumMember<TEnum, TUnderlying, TUnderlyingOperations>(member);
 
         public bool IsEnum(object value) => value is TEnum || value is TEnum?;
+
+        public object CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool store = false)
+        {
+            if (store)
+            {
+                var a = new TEnum[count];
+                var i = 0;
+                foreach (var value in values)
+                {
+                    var v = value;
+                    a[i++] = UnsafeUtility.As<TUnderlying, TEnum>(ref v);
+                }
+                return new ReadOnlyCollection<TEnum>(a);
+            }
+            return new ValuesContainer<TEnum, TUnderlying>(values, count);
+        }
+
+        public IReadOnlyList<EnumMember> CreateMembersContainer(IEnumerable<EnumMember> members, int count, bool store = false)
+        {
+            if (count == 0)
+            {
+                return ArrayHelper.Empty<EnumMember<TEnum>>();
+            }
+            if (store)
+            {
+                var a = new EnumMember<TEnum>[count];
+                var i = 0;
+                foreach (var member in members)
+                {
+                    a[i++] = UnsafeUtility.As<EnumMember<TEnum>>(member);
+                }
+                return new ReadOnlyCollection<EnumMember<TEnum>>(a);
+            }
+            return new MembersContainer<TEnum>(members, count);
+        }
     }
 }

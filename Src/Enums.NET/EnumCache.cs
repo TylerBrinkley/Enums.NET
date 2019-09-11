@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
@@ -34,9 +35,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-#if ENUM_MEMBER_ATTRIBUTE
 using System.Runtime.Serialization;
-#endif
 using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
@@ -99,19 +98,20 @@ namespace EnumsNET
         public abstract int GetFlagCount(object value);
         public abstract int GetFlagCount(ref byte value, ref byte otherFlags);
         public abstract int GetFlagCount(object value, object otherFlags);
-        public abstract IEnumerable<EnumMember> GetFlagMembers(ref byte value);
-        public abstract IEnumerable<EnumMember> GetFlagMembers(object value);
-        public abstract IEnumerable<object> GetFlags(object value);
+        public abstract IReadOnlyList<EnumMember> GetFlagMembers(ref byte value);
+        public abstract IReadOnlyList<EnumMember> GetFlagMembers(object value);
+        public abstract object GetFlags(ref byte value);
+        public abstract IReadOnlyList<object> GetFlags(object value);
         public abstract int GetHashCode(ref byte value);
         public abstract EnumMemberInternal? GetMember(ref byte value);
         public abstract EnumMemberInternal? GetMember(object value);
         public abstract EnumMember? GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats);
-        public abstract IEnumerable<EnumMember> GetMembers(EnumMemberSelection selection);
+        public abstract IReadOnlyList<EnumMember> GetMembers(EnumMemberSelection selection);
         public abstract int GetMemberCount(EnumMemberSelection selection);
-        public abstract IEnumerable<string> GetNames(EnumMemberSelection selection);
+        public abstract IReadOnlyList<string> GetNames(EnumMemberSelection selection);
         public abstract object GetUnderlyingValue(ref byte value);
         public abstract object GetUnderlyingValue(object value);
-        public abstract IEnumerable<object> GetValues(EnumMemberSelection selection);
+        public abstract object GetValues(EnumMemberSelection selection);
         public abstract bool HasAllFlags(ref byte value);
         public abstract bool HasAllFlags(object value);
         public abstract bool HasAllFlags(ref byte value, ref byte otherFlags);
@@ -210,8 +210,11 @@ namespace EnumsNET
         private readonly TUnderlying _allFlags;
         private readonly TUnderlying _maxDefined;
         private readonly TUnderlying _minDefined;
-        private readonly Dictionary<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _valueMap;
+        private readonly DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _valueMap;
         private readonly List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>? _duplicateValues;
+        private IReadOnlyList<string>? _names;
+        private object? _values;
+        private IReadOnlyList<EnumMember>? _members;
         private EnumMemberParser[]? _enumMemberParsers;
 
         private EnumMemberParser GetEnumMemberParser(EnumFormat format)
@@ -249,9 +252,10 @@ namespace EnumsNET
 #else
                 enumType.GetTypeInfo().DeclaredFields.Where(fieldInfo => (fieldInfo.Attributes & (FieldAttributes.Static | FieldAttributes.Public)) == (FieldAttributes.Static | FieldAttributes.Public)).ToArray();
 #endif
-            _valueMap = new Dictionary<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(fields.Length);
+            var valueMap = new Dictionary<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(fields.Length);
             if (fields.Length == 0)
             {
+                _valueMap = new DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(valueMap, 0);
                 return;
             }
             List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>? duplicateValues = null;
@@ -282,18 +286,18 @@ namespace EnumsNET
                     field.GetCustomAttributes(false).ToArray());
 #endif
                 var member = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>(value, name, attributes, this);
-                if (_valueMap.TryGetValue(value, out var existing))
+                if (valueMap.TryGetValue(value, out var existing))
                 {
                     if (attributes.Has<PrimaryEnumMemberAttribute>())
                     {
-                        _valueMap[value] = member;
+                        valueMap[value] = member;
                         member = existing;
                     }
-                    (duplicateValues ?? (duplicateValues = new List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>())).Add(member);
+                    (duplicateValues ??= new List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>()).Add(member);
                 }
                 else
                 {
-                    _valueMap.Add(value, member);
+                    valueMap.Add(value, member);
                     // Is Power of Two
                     if (operations.BitCount(value) == 1)
                     {
@@ -302,43 +306,11 @@ namespace EnumsNET
                 }
             }
             
-            var isInOrder = true;
-            var previous = default(TUnderlying);
-            var isFirst = true;
-            foreach (var pair in _valueMap)
-            {
-                var key = pair.Key;
-                if (isFirst)
-                {
-                    _minDefined = key;
-                    isFirst = false;
-                }
-                else if (previous.CompareTo(key) > 0)
-                {
-                    isInOrder = false;
-                    break;
-                }
-                previous = key;
-            }
-            if (isInOrder)
-            {
-                _maxDefined = previous;
-            }
-            else
-            {
-                // Makes sure is in increasing value order, due to no removals
-                var values = _valueMap.ToArray();
-                Array.Sort(values, (first, second) => first.Key.CompareTo(second.Key));
-                _valueMap = new Dictionary<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(_valueMap.Count);
+            // Makes sure is in increasing value order, due to no removals
+            _valueMap = new DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(valueMap.OrderBy(p => p.Key), valueMap.Count);
 
-                foreach (var pair in values)
-                {
-                    _valueMap.Add(pair.Key, pair.Value);
-                }
-
-                _maxDefined = values[values.Length - 1].Key;
-                _minDefined = values[0].Key;
-            }
+            _maxDefined = _valueMap._entries[_valueMap.Count - 1].Key;
+            _minDefined = _valueMap._entries[0].Key;
             
             _isContiguous = operations.Subtract(_maxDefined, operations.Create(_valueMap.Count - 1)).Equals(_minDefined);
 
@@ -377,9 +349,49 @@ namespace EnumsNET
             }
         }
 
-        public override IEnumerable<EnumMember> GetMembers(EnumMemberSelection selection) => GetMembersInternal(selection).Select(member => member.EnumMember);
+        public override IReadOnlyList<EnumMember> GetMembers(EnumMemberSelection selection)
+        {
+            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && _duplicateValues == null);
+            IReadOnlyList<EnumMember>? members;
+            if (!cached || (members = _members) == null)
+            {
+                members = EnumBridge.CreateMembersContainer(GetMembersInternal(selection).Select(m => m.EnumMember), GetMemberCount(selection), cached);
+                if (cached)
+                {
+                    _members = members;
+                }
+            }
+            return members;
+        }
 
-        public IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal(EnumMemberSelection selection)
+        public override IReadOnlyList<string> GetNames(EnumMemberSelection selection)
+        {
+            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && _duplicateValues == null);
+            IReadOnlyList<string>? names;
+            if (!cached || (names = _names) == null)
+            {
+                var enumerable = GetMembersInternal(selection).Select(m => m.Name);
+                names = cached ? (_names = new ReadOnlyCollection<string>(enumerable.ToArray())) : new NamesContainer(enumerable, GetMemberCount(selection));
+            }
+            return names;
+        }
+
+        public override object GetValues(EnumMemberSelection selection)
+        {
+            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && _duplicateValues == null);
+            object? values;
+            if (!cached || (values = _values) == null)
+            {
+                values = EnumBridge.CreateValuesContainer(GetMembersInternal(selection).Select(m => m.Value), GetMemberCount(selection), cached);
+                if (cached)
+                {
+                    _values = values;
+                }
+            }
+            return values;
+        }
+
+        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal(EnumMemberSelection selection)
         {
             IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members;
             switch (selection)
@@ -394,7 +406,7 @@ namespace EnumsNET
                     selection.Validate(nameof(selection));
                     if (selection.HasAnyFlags(EnumMemberSelection.Flags))
                     {
-                        members = GetFlags(_allFlags).Select(flag => GetMember(flag)!);
+                        members = EnumerateFlags(_allFlags).Select(flag => GetMember(flag)!);
                     }
                     else if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
                     {
@@ -409,48 +421,38 @@ namespace EnumsNET
 
 #if DISPLAY_ATTRIBUTE
             return selection.HasAnyFlags(EnumMemberSelection.DisplayOrder)
-                ? members.OrderBy(member => member.Attributes.Get<DisplayAttribute>()?.GetOrder() ?? int.MaxValue)
+                ? members.OrderBy(m => m.Attributes.Get<DisplayAttribute>()?.GetOrder() ?? int.MaxValue)
                 : members;
 #else
             return members;
 #endif
         }
 
-        public override IEnumerable<string> GetNames(EnumMemberSelection selection) => GetMembersInternal(selection).Select(member => member.Name);
-
-        public override IEnumerable<object> GetValues(EnumMemberSelection selection) => GetValuesInternal(selection).Select(v => EnumBridge.ToObjectUnchecked(v));
-
-        public IEnumerable<TUnderlying> GetValuesInternal(EnumMemberSelection selection) => GetMembersInternal(selection).Select(member => member.Value);
-
         private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal()
         {
-            using (var primaryEnumerator = _valueMap.GetEnumerator())
+            var primaryEnumerator = _valueMap.GetEnumerator();
+            var primaryIsActive = primaryEnumerator.MoveNext();
+            var primaryMember = primaryEnumerator.Current;
+            var duplicateEnumerator = _duplicateValues!.GetEnumerator();
+            TUnderlyingOperations operations = default;
+            var duplicateIsActive = duplicateEnumerator.MoveNext();
+            var duplicateMember = duplicateEnumerator.Current;
+            while (primaryIsActive || duplicateIsActive)
             {
-                var primaryIsActive = primaryEnumerator.MoveNext();
-                var primaryMember = primaryEnumerator.Current.Value;
-                using (var duplicateEnumerator = _duplicateValues!.GetEnumerator())
+                if (duplicateIsActive && (!primaryIsActive || operations.LessThan(duplicateMember.Value, primaryMember.Key)))
                 {
-                    TUnderlyingOperations operations = default;
-                    var duplicateIsActive = duplicateEnumerator.MoveNext();
-                    var duplicateMember = duplicateEnumerator.Current;
-                    while (primaryIsActive || duplicateIsActive)
+                    yield return duplicateMember;
+                    if (duplicateIsActive = duplicateEnumerator.MoveNext())
                     {
-                        if (duplicateIsActive && (!primaryIsActive || operations.LessThan(duplicateMember.Value, primaryMember.Value)))
-                        {
-                            yield return duplicateMember;
-                            if (duplicateIsActive = duplicateEnumerator.MoveNext())
-                            {
-                                duplicateMember = duplicateEnumerator.Current;
-                            }
-                        }
-                        else
-                        {
-                            yield return primaryMember;
-                            if (primaryIsActive = primaryEnumerator.MoveNext())
-                            {
-                                primaryMember = primaryEnumerator.Current.Value;
-                            }
-                        }
+                        duplicateMember = duplicateEnumerator.Current;
+                    }
+                }
+                else
+                {
+                    yield return primaryMember.Value;
+                    if (primaryIsActive = primaryEnumerator.MoveNext())
+                    {
+                        primaryMember = primaryEnumerator.Current;
                     }
                 }
             }
@@ -498,32 +500,21 @@ namespace EnumsNET
 
             var type = value.GetType();
 
-            switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
+            return ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode()) switch
             {
-                case TypeCode.SByte:
-                    return ToObject((sbyte)value);
-                case TypeCode.Byte:
-                    return ToObject((byte)value);
-                case TypeCode.Int16:
-                    return ToObject((short)value);
-                case TypeCode.UInt16:
-                    return ToObject((ushort)value);
-                case TypeCode.Int32:
-                    return ToObject((int)value);
-                case TypeCode.UInt32:
-                    return ToObject((uint)value);
-                case TypeCode.Int64:
-                    return ToObject((long)value);
-                case TypeCode.UInt64:
-                    return ToObject((ulong)value);
-                case TypeCode.String:
-                    return ParseInternal((string)value, false, Enums.DefaultFormats);
-                case TypeCode.Boolean:
-                    return ToObject(Convert.ToByte((bool)value));
-                case TypeCode.Char:
-                    return ToObject((char)value);
-            }
-            throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, or String.");
+                TypeCode.SByte => ToObject((sbyte)value),
+                TypeCode.Byte => ToObject((byte)value),
+                TypeCode.Int16 => ToObject((short)value),
+                TypeCode.UInt16 => ToObject((ushort)value),
+                TypeCode.Int32 => ToObject((int)value),
+                TypeCode.UInt32 => ToObject((uint)value),
+                TypeCode.Int64 => ToObject((long)value),
+                TypeCode.UInt64 => ToObject((ulong)value),
+                TypeCode.String => ParseInternal((string)value, false, Enums.DefaultFormats),
+                TypeCode.Boolean => ToObject(Convert.ToByte((bool)value)),
+                TypeCode.Char => ToObject((char)value),
+                _ => throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, or String."),
+            };
         }
 
         public TUnderlying ToObjectInternal(object value, EnumValidation validation)
@@ -794,13 +785,11 @@ namespace EnumsNET
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
 
-#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public bool IsDefined(TUnderlying value)
         {
             TUnderlyingOperations operations = default;
-            return _isContiguous ? !(operations.LessThan(value, _minDefined) || operations.LessThan(_maxDefined, value)) : _valueMap.ContainsKey(value);
+            return _isContiguous ? !(operations.LessThan(value, _minDefined) || operations.LessThan(_maxDefined, value)) : _valueMap.TryGetValue(value, out _);
         }
 
         public override void Validate(ref byte value, string paramName, EnumValidation validation) => Validate(UnsafeUtility.As<byte, TUnderlying>(ref value), paramName, validation);
@@ -836,8 +825,10 @@ namespace EnumsNET
 
         public override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), null, formats);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member) => IsFlagEnum ? FormatFlagsInternal(value, member, null, Enums.DefaultFormats)! : FormatInternal(value, member, Enums.DefaultFormats)!;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string? AsString(TUnderlying value, EnumFormat format)
         {
             var isInitialized = false;
@@ -845,9 +836,11 @@ namespace EnumsNET
             return FormatInternal(value, ref isInitialized, ref member, format);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal string? AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats) => formats.Any() ? FormatInternal(value, member, formats) : AsStringInternal(value, member);
 
-        internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string? format) => string.IsNullOrEmpty(format) ? AsStringInternal(value, member) : FormatInternal(value, member, format);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string? format) => string.IsNullOrEmpty(format) ? AsStringInternal(value, member) : FormatInternal(value, member, format!);
 
         public override string Format(ref byte value, string format) => FormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
 
@@ -904,10 +897,8 @@ namespace EnumsNET
                     return member?.Name;
                 case EnumFormat.Description:
                     return member?.Attributes.Get<DescriptionAttribute>()?.Description;
-#if ENUM_MEMBER_ATTRIBUTE
                 case EnumFormat.EnumMemberValue:
                     return member?.Attributes.Get<EnumMemberAttribute>()?.Value;
-#endif
 #if DISPLAY_ATTRIBUTE
                 case EnumFormat.DisplayName:
                     return member?.Attributes.Get<DisplayAttribute>()?.GetName();
@@ -1018,6 +1009,7 @@ namespace EnumsNET
 
         public override EnumMemberInternal? GetMember(object value) => GetMember(ToObject(value));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EnumMemberInternal<TUnderlying, TUnderlyingOperations>? GetMember(TUnderlying value)
         {
             _valueMap.TryGetValue(value, out var member);
@@ -1186,9 +1178,7 @@ namespace EnumsNET
 
         public override bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
 
-#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public bool IsValidFlagCombination(TUnderlying value) => default(TUnderlyingOperations).And(_allFlags, value).Equals(value);
 
         public override string? FormatFlags(ref byte value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, delimiter, formats);
@@ -1218,16 +1208,21 @@ namespace EnumsNET
             }
 
             return string.Join(delimiter,
-                GetFlags(value).Select(flag => FormatInternal(flag, null, formats))
+                EnumerateFlags(value).Select(flag => FormatInternal(flag, null, formats))
 #if NET20 || NET35
                 .ToArray()
 #endif
                 );
         }
 
-        public override IEnumerable<object> GetFlags(object value) => GetFlags(ToObject(value)).Select(f => EnumBridge.ToObjectUnchecked(f));
+        public override IReadOnlyList<object> GetFlags(object value) => UnsafeUtility.As<IValuesContainer>(GetFlags(ToObject(value))).GetNonGenericContainer();
 
-        public IEnumerable<TUnderlying> GetFlags(TUnderlying value)
+        public override object GetFlags(ref byte value) => GetFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object GetFlags(TUnderlying value) => EnumBridge.CreateValuesContainer(EnumerateFlags(value), GetFlagCount(value));
+
+        private IEnumerable<TUnderlying> EnumerateFlags(TUnderlying value)
         {
             TUnderlyingOperations operations = default;
             var validValue = operations.And(value, _allFlags);
@@ -1241,11 +1236,12 @@ namespace EnumsNET
             }
         }
 
-        public override IEnumerable<EnumMember> GetFlagMembers(ref byte value) => GetFlagMembers(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public override IReadOnlyList<EnumMember> GetFlagMembers(ref byte value) => GetFlagMembers(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override IEnumerable<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
+        public override IReadOnlyList<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
 
-        public IEnumerable<EnumMember> GetFlagMembers(TUnderlying value) => GetFlags(value).Select(flag => GetMember(flag)!.EnumMember);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IReadOnlyList<EnumMember> GetFlagMembers(TUnderlying value) => EnumBridge.CreateMembersContainer(EnumerateFlags(value).Select(flag => GetMember(flag)!.EnumMember), GetFlagCount(value));
 
         public override int GetFlagCount() => default(TUnderlyingOperations).BitCount(_allFlags);
 
@@ -1253,6 +1249,7 @@ namespace EnumsNET
 
         public override int GetFlagCount(object value) => GetFlagCount(ToObject(value));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetFlagCount(TUnderlying value)
         {
             TUnderlyingOperations operations = default;
@@ -1263,6 +1260,7 @@ namespace EnumsNET
 
         public override int GetFlagCount(object value, object otherFlags) => GetFlagCount(ToObject(value), ToObject(otherFlags));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetFlagCount(TUnderlying value, TUnderlying otherFlags)
         {
             TUnderlyingOperations operations = default;
@@ -1273,38 +1271,28 @@ namespace EnumsNET
 
         public override bool HasAnyFlags(object value) => HasAnyFlags(ToObject(value));
 
-#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public bool HasAnyFlags(TUnderlying value) => !value.Equals(default);
-
 
         public override bool HasAnyFlags(ref byte value, ref byte otherFlags) => HasAnyFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
 
         public override bool HasAnyFlags(object value, object otherFlags) => HasAnyFlags(ToObject(value), ToObject(otherFlags));
 
-#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public bool HasAnyFlags(TUnderlying value, TUnderlying otherFlags) => !default(TUnderlyingOperations).And(value, otherFlags).Equals(default);
 
         public override bool HasAllFlags(ref byte value) => HasAllFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool HasAllFlags(object value) => HasAllFlags(ToObject(value));
 
-#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public bool HasAllFlags(TUnderlying value) => HasAllFlags(value, _allFlags);
-
 
         public override bool HasAllFlags(ref byte value, ref byte otherFlags) => HasAllFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
 
         public override bool HasAllFlags(object value, object otherFlags) => HasAllFlags(ToObject(value), ToObject(otherFlags));
 
-#if AGGRESSIVE_INLINING
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public bool HasAllFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).And(value, otherFlags).Equals(otherFlags);
 
         public override void ToggleFlags(ref byte value, ref byte result)
@@ -1315,6 +1303,7 @@ namespace EnumsNET
 
         public override object ToggleFlags(object value) => EnumBridge.ToObjectUnchecked(ToggleFlags(ToObject(value)));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying ToggleFlags(TUnderlying value) => default(TUnderlyingOperations).Xor(value, _allFlags);
 
         public override void ToggleFlags(ref byte value, ref byte otherFlags, ref byte result)
@@ -1325,6 +1314,7 @@ namespace EnumsNET
 
         public override object ToggleFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(ToggleFlags(ToObject(value), ToObject(otherFlags)));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying ToggleFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).Xor(value, otherFlags);
 
         public override void CommonFlags(ref byte value, ref byte otherFlags, ref byte result)
@@ -1335,6 +1325,7 @@ namespace EnumsNET
 
         public override object CommonFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(CommonFlags(ToObject(value), ToObject(otherFlags)));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying CommonFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).And(value, otherFlags);
 
         public override void CombineFlags(ref byte value, ref byte otherFlags, ref byte result)
@@ -1344,8 +1335,6 @@ namespace EnumsNET
         }
 
         public override object CombineFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(default(TUnderlyingOperations).Or(ToObject(value), ToObject(otherFlags)));
-
-        public TUnderlying CombineFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).Or(value, otherFlags);
 
         public override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte result)
         {
@@ -1393,6 +1382,7 @@ namespace EnumsNET
 
         public override object RemoveFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(RemoveFlags(ToObject(value), ToObject(otherFlags)));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying RemoveFlags(TUnderlying value, TUnderlying otherFlags)
         {
             TUnderlyingOperations operations = default;
@@ -1423,7 +1413,7 @@ namespace EnumsNET
                 effectiveDelimiter = delimiter;
             }
 #else
-            var effectiveDelimiter = delimiter.Trim();
+            var effectiveDelimiter = delimiter!.Trim();
             if (effectiveDelimiter.Length == 0)
             {
                 effectiveDelimiter = delimiter;
@@ -1541,7 +1531,7 @@ namespace EnumsNET
                 effectiveDelimiter = delimiter;
             }
 #else
-            var effectiveDelimiter = delimiter.Trim();
+            var effectiveDelimiter = delimiter!.Trim();
             if (effectiveDelimiter.Length == 0)
             {
                 effectiveDelimiter = delimiter;
@@ -1598,14 +1588,24 @@ namespace EnumsNET
 
         internal sealed class EnumMemberParser
         {
-            private struct Entry
+            private readonly struct Entry
             {
-                public uint OrdinalHashCode;
-                public int OrdinalNext;
-                public uint OrdinalIgnoreCaseHashCode;
-                public int OrdinalIgnoreCaseNext;
-                public string FormattedValue;
-                public EnumMemberInternal<TUnderlying, TUnderlyingOperations> Value;
+                public readonly int OrdinalHashCode;
+                public readonly int OrdinalNext;
+                public readonly int OrdinalIgnoreCaseHashCode;
+                public readonly int OrdinalIgnoreCaseNext;
+                public readonly string FormattedValue;
+                public readonly EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member;
+
+                public Entry(int ordinalHashCode, int ordinalNext, int ordinalIgnoreCaseHashCode, int ordinalIgnoreCaseNext, string formattedValue, EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
+                {
+                    OrdinalHashCode = ordinalHashCode;
+                    OrdinalNext = ordinalNext;
+                    OrdinalIgnoreCaseHashCode = ordinalIgnoreCaseHashCode;
+                    OrdinalIgnoreCaseNext = ordinalIgnoreCaseNext;
+                    FormattedValue = formattedValue;
+                    Member = member;
+                }
             }
 
             private readonly int[] _ordinalBuckets;
@@ -1614,7 +1614,7 @@ namespace EnumsNET
 
             public EnumMemberParser(EnumFormat format, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
             {
-                var size = HashHelpers.GetPrime(enumCache.GetMemberCount(EnumMemberSelection.All));
+                var size = HashHelpers.PowerOf2(enumCache.GetMemberCount(EnumMemberSelection.All));
                 var ordinalBuckets = new int[size];
                 var ordinalIgnoreCaseBuckets = new int[size];
                 var entries = new Entry[size];
@@ -1624,11 +1624,11 @@ namespace EnumsNET
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)
                     {
-                        var ordinalHashCode = (uint)formattedValue.GetHashCode();
-                        ref int ordinalBucket = ref ordinalBuckets[ordinalHashCode % size];
-                        var ordinalIgnoreCaseHashCode = (uint)StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
-                        ref int ordinalIgnoreCaseBucket = ref ordinalIgnoreCaseBuckets[ordinalIgnoreCaseHashCode % size];
-                        entries[i] = new Entry { OrdinalHashCode = ordinalHashCode, OrdinalNext = ordinalBucket - 1, OrdinalIgnoreCaseHashCode = ordinalIgnoreCaseHashCode, OrdinalIgnoreCaseNext = ordinalIgnoreCaseBucket - 1, Value = member, FormattedValue = formattedValue };
+                        var ordinalHashCode = formattedValue.GetHashCode();
+                        ref int ordinalBucket = ref ordinalBuckets[ordinalHashCode & (size - 1)];
+                        var ordinalIgnoreCaseHashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
+                        ref int ordinalIgnoreCaseBucket = ref ordinalIgnoreCaseBuckets[ordinalIgnoreCaseHashCode & (size - 1)];
+                        entries[i] = new Entry(ordinalHashCode, ordinalBucket - 1, ordinalIgnoreCaseHashCode, ordinalIgnoreCaseBucket - 1, formattedValue, member);
                         ordinalBucket = i + 1;
                         ordinalIgnoreCaseBucket = i + 1;
                     }
@@ -1645,54 +1645,49 @@ namespace EnumsNET
                 if (ignoreCase)
                 {
 #if SPAN
-                    var hashCode = (uint)string.GetHashCode(formattedValue, StringComparison.OrdinalIgnoreCase);
+                    var hashCode = string.GetHashCode(formattedValue, StringComparison.OrdinalIgnoreCase);
 #else
-                    var hashCode = (uint)StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
+                    var hashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
 #endif
-                    var i = _ordinalIgnoreCaseBuckets[hashCode % _ordinalIgnoreCaseBuckets.Length] - 1;
-                    while (i >= 0)
+                    for (var i = _ordinalIgnoreCaseBuckets[hashCode & (_ordinalIgnoreCaseBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalIgnoreCaseNext)
                     {
-                        var entry = entries[i];
-                        if (entry.OrdinalIgnoreCaseHashCode == hashCode &&
+                        if (entries[i].OrdinalIgnoreCaseHashCode == hashCode &&
 #if SPAN
-                            entry.FormattedValue.AsSpan().Equals(formattedValue, StringComparison.OrdinalIgnoreCase))
+                            entries[i].FormattedValue.AsSpan().Equals(formattedValue, StringComparison.OrdinalIgnoreCase))
 #else
-                            string.Equals(entry.FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
+                            string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
 #endif
                         {
-                            result = entry.Value;
+                            result = entries[i].Member;
                             return true;
                         }
-                        i = entry.OrdinalIgnoreCaseNext;
                     }
                 }
                 else
                 {
 #if SPAN
-                    var hashCode = (uint)string.GetHashCode(formattedValue, StringComparison.Ordinal);
+                    var hashCode = string.GetHashCode(formattedValue, StringComparison.Ordinal);
 #else
-                    var hashCode = (uint)formattedValue.GetHashCode();
+                    var hashCode = formattedValue.GetHashCode();
 #endif
-                    var i = _ordinalBuckets[hashCode % _ordinalBuckets.Length] - 1;
-                    while (i >= 0)
+                    for (var i = _ordinalBuckets[hashCode & (_ordinalBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalNext)
                     {
-                        var entry = entries[i];
-                        if (entry.OrdinalHashCode == hashCode &&
+                        if (entries[i].OrdinalHashCode == hashCode &&
 #if SPAN
-                            entry.FormattedValue.AsSpan().Equals(formattedValue, StringComparison.Ordinal))
+                            entries[i].FormattedValue.AsSpan().Equals(formattedValue, StringComparison.Ordinal))
 #else
-                            string.Equals(entry.FormattedValue, formattedValue, StringComparison.Ordinal))
+                            string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.Ordinal))
 #endif
                         {
-                            result = entry.Value;
+                            result = entries[i].Member;
                             return true;
                         }
-                        i = entry.OrdinalNext;
                     }
                 }
                 result = default;
                 return false;
             }
         }
+
     }
 }

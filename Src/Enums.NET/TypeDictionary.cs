@@ -23,12 +23,36 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if NET20
-namespace System.Runtime.CompilerServices
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+
+namespace EnumsNET
 {
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
-    internal class ExtensionAttribute : Attribute
+    internal sealed class TypeDictionary<T>
     {
+        private DictionarySlim<Type, T> _dictionary = new DictionarySlim<Type, T>(null, 0);
+
+        public T GetOrAdd(Type key, Func<Type, T> valueFactory)
+        {
+            var dictionary = _dictionary;
+            if (!dictionary.TryGetValue(key, out var value))
+            {
+                value = valueFactory(key);
+                DictionarySlim<Type, T> oldDictionary;
+                do
+                {
+                    if (dictionary.TryGetValue(key, out var foundValue))
+                    {
+                        value = foundValue;
+                        break;
+                    }
+                    oldDictionary = dictionary;
+                    dictionary = new DictionarySlim<Type, T>(dictionary.Concat(new[] { new KeyValuePair<Type, T>(key, value) }), dictionary.Count + 1);
+                } while ((dictionary = Interlocked.CompareExchange(ref _dictionary, dictionary, oldDictionary)) != oldDictionary);
+            }
+            return value;
+        }
     }
 }
-#endif
