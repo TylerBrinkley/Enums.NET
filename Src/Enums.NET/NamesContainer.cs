@@ -25,7 +25,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
@@ -36,15 +36,19 @@ namespace EnumsNET
 
         public int Count { get; }
 
-        public string this[int index] => (_namesArray ??= this.ToArray())[index];
+        public string this[int index] => (_namesArray ??= ArrayHelper.ToArray(_names, Count))[index];
 
-        public NamesContainer(IEnumerable<string> names, int count)
+        public NamesContainer(IEnumerable<string> names, int count, bool cached)
         {
             _names = names;
             Count = count;
+            if (cached)
+            {
+                _namesArray = ArrayHelper.ToArray(_names, count);
+            }
         }
 
-        public IEnumerator<string> GetEnumerator() => _names.GetEnumerator();
+        public IEnumerator<string> GetEnumerator() => _namesArray != null ? ((IEnumerable<string>)_namesArray).GetEnumerator() : _names.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

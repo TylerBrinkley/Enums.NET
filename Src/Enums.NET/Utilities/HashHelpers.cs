@@ -13,7 +13,7 @@ namespace EnumsNET.Utilities
                 return v;
             }
 
-            int i = 2;
+            var i = 2;
             while (i < v)
             {
                 i <<= 1;

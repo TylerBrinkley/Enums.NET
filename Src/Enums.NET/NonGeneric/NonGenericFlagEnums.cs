@@ -300,7 +300,7 @@ namespace EnumsNET.NonGeneric
 
             if (value == null && info.IsNullable)
             {
-                return new object[0];
+                return ArrayHelper.Empty<object>();
             }
 
             return info.EnumCache.GetFlags(value!);
@@ -322,7 +322,7 @@ namespace EnumsNET.NonGeneric
 
             if (value == null && info.IsNullable)
             {
-                return new EnumMember[0];
+                return ArrayHelper.Empty<EnumMember>();
             }
 
             return info.EnumCache.GetFlagMembers(value!);

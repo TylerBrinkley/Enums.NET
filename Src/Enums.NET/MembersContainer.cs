@@ -26,7 +26,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using EnumsNET.Utilities;
 
 namespace EnumsNET
@@ -34,17 +33,21 @@ namespace EnumsNET
     internal sealed class MembersContainer<TEnum> : IReadOnlyList<EnumMember<TEnum>>
         where TEnum : struct, Enum
     {
-        private readonly IEnumerable<EnumMember> _members;
+        private readonly IEnumerable<EnumMemberInternal> _members;
         private EnumMember<TEnum>[]? _membersArray;
 
         public int Count { get; }
 
-        public EnumMember<TEnum> this[int index] => (_membersArray ??= this.ToArray())[index];
+        public EnumMember<TEnum> this[int index] => (_membersArray ??= ArrayHelper.ToArray(this, Count))[index];
 
-        public MembersContainer(IEnumerable<EnumMember> members, int count)
+        public MembersContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached)
         {
             _members = members;
             Count = count;
+            if (cached)
+            {
+                _membersArray = ArrayHelper.ToArray(this, count);
+            }
         }
 
         public IEnumerator<EnumMember<TEnum>> GetEnumerator() => _membersArray != null ? ((IEnumerable<EnumMember<TEnum>>)_membersArray).GetEnumerator() : Enumerate();
@@ -53,7 +56,7 @@ namespace EnumsNET
         {
             foreach (var member in _members)
             {
-                yield return UnsafeUtility.As<EnumMember<TEnum>>(member);
+                yield return UnsafeUtility.As<EnumMember<TEnum>>(member.EnumMember);
             }
         }
 

@@ -432,7 +432,7 @@ namespace EnumsNET
         /// <param name="flags">The flags enum values.</param>
         /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
         public static TEnum CombineFlags<TEnum>(params TEnum[]? flags)
-            where TEnum : struct, Enum => Enums<TEnum>.Bridge.CombineFlags(flags);
+            where TEnum : struct, Enum => CombineFlags((IEnumerable<TEnum>?)flags);
 
         /// <summary>
         /// Combines all of the flags of <paramref name="flags"/>.
@@ -441,7 +441,21 @@ namespace EnumsNET
         /// <param name="flags">The flags enum values.</param>
         /// <returns>Combination of all of the flags of <paramref name="flags"/>.</returns>
         public static TEnum CombineFlags<TEnum>(IEnumerable<TEnum>? flags)
-            where TEnum : struct, Enum => Enums<TEnum>.Bridge.CombineFlags(flags);
+            where TEnum : struct, Enum
+        {
+            TEnum enumResult = default;
+            if (flags != null)
+            {
+                ref byte result = ref UnsafeUtility.As<TEnum, byte>(ref enumResult);
+                var cache = Enums<TEnum>.Cache;
+                foreach (var flag in flags)
+                {
+                    var f = flag;
+                    cache.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref f), ref result, ref result);
+                }
+            }
+            return enumResult;
+        }
 
         /// <summary>
         /// Returns <paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.

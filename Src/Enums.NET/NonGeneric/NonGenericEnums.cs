@@ -177,7 +177,7 @@ namespace EnumsNET.NonGeneric
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
         /// -or-
         /// <paramref name="selection"/> is an invalid value.</exception>
-        public static IReadOnlyList<object> GetValues(Type enumType, EnumMemberSelection selection) => UnsafeUtility.As<IValuesContainer>(GetCache(enumType).GetValues(selection)).GetNonGenericContainer();
+        public static IReadOnlyList<object> GetValues(Type enumType, EnumMemberSelection selection) => GetCache(enumType).GetValues(selection).GetNonGenericContainer();
         #endregion
 
         #region ToObject

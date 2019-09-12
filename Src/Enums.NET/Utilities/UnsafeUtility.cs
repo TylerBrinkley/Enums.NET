@@ -21,14 +21,13 @@ namespace EnumsNET.Utilities
         [SecuritySafeCritical]
         public static extern T As<T>(object? value) where T : class;
 
-        internal static ref byte GetRawData(this object obj) =>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref byte GetRawData(this object obj) =>
             ref As<RawData>(obj).Data;
-    }
 
-    // Helper class to assist with unsafe pinning of arbitrary objects.
-    // It's used by VM code.
-    internal class RawData
-    {
-        public byte Data;
+        private sealed class RawData
+        {
+            public byte Data;
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using EnumsNET.NonGeneric;
-using EnumsNET.Unsafe;
 
 namespace EnumsNET.PerfTestConsole
 {
@@ -127,7 +126,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("UnsafeEnums.Parse (Names)"))
+            using (new OperationTimer("Enums.Parse (Names)"))
             {
                 foreach (var tuple in list)
                 {
@@ -172,7 +171,7 @@ namespace EnumsNET.PerfTestConsole
                 }
             }
 
-            using (new OperationTimer("UnsafeEnums.Parse (Decimal)"))
+            using (new OperationTimer("Enums.Parse (Decimal)"))
             {
                 foreach (var tuple in list)
                 {
@@ -194,11 +193,9 @@ namespace EnumsNET.PerfTestConsole
         }
 
         public sealed class Parser<TEnum> : Parser
+            where TEnum : struct, Enum
         {
-            public override void Parse(string value)
-            {
-                UnsafeEnums.Parse<TEnum>(value);
-            }
+            public override void Parse(string value) => Enums.Parse<TEnum>(value);
         }
 
         public static void ToString(DayOfWeek[] dayOfWeekArray)
@@ -356,7 +353,6 @@ namespace EnumsNET.PerfTestConsole
         {
             const int iterations = 160000;
 
-#if !NET20 && !NET35
             using (new OperationTimer("Enum.HasFlag"))
             {
                 for (var i = 0; i < iterations; ++i)
@@ -370,7 +366,6 @@ namespace EnumsNET.PerfTestConsole
                     }
                 }
             }
-#endif
 
             var attributeTargetsType = typeof(AttributeTargets);
 
@@ -466,56 +461,3 @@ namespace EnumsNET.PerfTestConsole
         }
     }
 }
-
-#if NET20
-namespace System.Linq
-{
-    internal static class Enumerable
-    {
-        public static IEnumerable<TResult> SelectMany<T, TResult>(this IEnumerable<T> source, Func<T, IEnumerable<TResult>> selector)
-        {
-            foreach (var item in source)
-            {
-                foreach (var selectedItem in selector(item))
-                {
-                    yield return selectedItem;
-                }
-            }
-        }
-
-        public static IEnumerable<T> Where<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-        {
-            foreach (var item in source)
-            {
-                if (predicate(item))
-                {
-                    yield return item;
-                }
-            }
-        }
-
-        public static List<T> ToList<T>(this IEnumerable<T> source) => new List<T>(source);
-    }
-}
-
-namespace System.Runtime.CompilerServices
-{
-    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
-    internal class ExtensionAttribute : Attribute
-    {
-    }
-}
-
-namespace System
-{
-    //public delegate void Action();
-    //public delegate void Action<in T1, in T2>(T1 arg1, T2 arg2);
-    //public delegate void Action<in T1, in T2, in T3>(T1 arg1, T2 arg2, T3 arg3);
-    //public delegate void Action<in T1, in T2, in T3, in T4>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
-    //public delegate TResult Func<out TResult>();
-    public delegate TResult Func<in T, out TResult>(T arg);
-    //public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
-    //public delegate TResult Func<in T1, in T2, in T3, out TResult>(T1 arg1, T2 arg2, T3 arg3);
-    //public delegate TResult Func<in T1, in T2, in T3, in T4, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
-}
-#endif

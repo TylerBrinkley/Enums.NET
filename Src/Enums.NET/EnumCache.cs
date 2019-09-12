@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
@@ -59,12 +58,61 @@ namespace EnumsNET
         public readonly Type UnderlyingType;
         public readonly TypeCode TypeCode;
         public readonly bool IsFlagEnum;
+        private protected bool _hasDuplicateValues;
+        private protected IReadOnlyList<string>? _names;
+        private protected IValuesContainer? _values;
+        private protected IReadOnlyList<EnumMember>? _members;
 
         private protected EnumCache(Type enumType, Type underlyingType)
         {
             UnderlyingType = underlyingType;
             TypeCode = underlyingType.GetTypeCode();
             IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
+        }
+
+        public IReadOnlyList<EnumMember> GetMembers(EnumMemberSelection selection)
+        {
+            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && !_hasDuplicateValues);
+            IReadOnlyList<EnumMember>? members;
+            if (!cached || (members = _members) == null)
+            {
+                members = GetMembersInternal(selection, cached);
+                if (cached)
+                {
+                    members = Interlocked.CompareExchange(ref _members, members, null) ?? members;
+                }
+            }
+            return members;
+        }
+
+        public IReadOnlyList<string> GetNames(EnumMemberSelection selection)
+        {
+            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && !_hasDuplicateValues);
+            IReadOnlyList<string>? names;
+            if (!cached || (names = _names) == null)
+            {
+                names = GetNamesInternal(selection, cached);
+                if (cached)
+                {
+                    names = Interlocked.CompareExchange(ref _names, names, null) ?? names;
+                }
+            }
+            return names;
+        }
+
+        public IValuesContainer GetValues(EnumMemberSelection selection)
+        {
+            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && !_hasDuplicateValues);
+            IValuesContainer? values;
+            if (!cached || (values = _values) == null)
+            {
+                values = GetValuesInternal(selection, cached);
+                if (cached)
+                {
+                    values = Interlocked.CompareExchange(ref _values, values, null) ?? values;
+                }
+            }
+            return values;
         }
 
         public abstract string AsString(ref byte value);
@@ -100,18 +148,18 @@ namespace EnumsNET
         public abstract int GetFlagCount(object value, object otherFlags);
         public abstract IReadOnlyList<EnumMember> GetFlagMembers(ref byte value);
         public abstract IReadOnlyList<EnumMember> GetFlagMembers(object value);
-        public abstract object GetFlags(ref byte value);
+        public abstract IValuesContainer GetFlags(ref byte value);
         public abstract IReadOnlyList<object> GetFlags(object value);
         public abstract int GetHashCode(ref byte value);
         public abstract EnumMemberInternal? GetMember(ref byte value);
         public abstract EnumMemberInternal? GetMember(object value);
         public abstract EnumMember? GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats);
-        public abstract IReadOnlyList<EnumMember> GetMembers(EnumMemberSelection selection);
+        protected abstract IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached);
         public abstract int GetMemberCount(EnumMemberSelection selection);
-        public abstract IReadOnlyList<string> GetNames(EnumMemberSelection selection);
+        protected abstract IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached);
         public abstract object GetUnderlyingValue(ref byte value);
         public abstract object GetUnderlyingValue(object value);
-        public abstract object GetValues(EnumMemberSelection selection);
+        protected abstract IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached);
         public abstract bool HasAllFlags(ref byte value);
         public abstract bool HasAllFlags(object value);
         public abstract bool HasAllFlags(ref byte value, ref byte otherFlags);
@@ -203,7 +251,7 @@ namespace EnumsNET
 #endif
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        internal readonly IEnumBridgeInternal<TUnderlying, TUnderlyingOperations> EnumBridge;
+        internal readonly IEnumBridge<TUnderlying, TUnderlyingOperations> EnumBridge;
         private readonly bool _isContiguous;
         private readonly bool _hasCustomValidator;
         private readonly string _enumTypeName;
@@ -212,9 +260,6 @@ namespace EnumsNET
         private readonly TUnderlying _minDefined;
         private readonly DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _valueMap;
         private readonly List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>? _duplicateValues;
-        private IReadOnlyList<string>? _names;
-        private object? _values;
-        private IReadOnlyList<EnumMember>? _members;
         private EnumMemberParser[]? _enumMemberParsers;
 
         private EnumMemberParser GetEnumMemberParser(EnumFormat format)
@@ -239,7 +284,7 @@ namespace EnumsNET
             return parser;
         }
 
-        public EnumCache(Type enumType, IEnumBridgeInternal<TUnderlying, TUnderlyingOperations> enumBridge)
+        public EnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge)
             : base(enumType, typeof(TUnderlying))
         {
             _enumTypeName = enumType.Name;
@@ -321,6 +366,7 @@ namespace EnumsNET
                 duplicateValues.Sort((first, second) => first.Value.CompareTo(second.Value));
                 _duplicateValues = duplicateValues;
                 _duplicateValues.Capacity = _duplicateValues.Count;
+                _hasDuplicateValues = true;
             }
         }
 
@@ -349,49 +395,13 @@ namespace EnumsNET
             }
         }
 
-        public override IReadOnlyList<EnumMember> GetMembers(EnumMemberSelection selection)
-        {
-            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && _duplicateValues == null);
-            IReadOnlyList<EnumMember>? members;
-            if (!cached || (members = _members) == null)
-            {
-                members = EnumBridge.CreateMembersContainer(GetMembersInternal(selection).Select(m => m.EnumMember), GetMemberCount(selection), cached);
-                if (cached)
-                {
-                    _members = members;
-                }
-            }
-            return members;
-        }
+        protected override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
 
-        public override IReadOnlyList<string> GetNames(EnumMemberSelection selection)
-        {
-            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && _duplicateValues == null);
-            IReadOnlyList<string>? names;
-            if (!cached || (names = _names) == null)
-            {
-                var enumerable = GetMembersInternal(selection).Select(m => m.Name);
-                names = cached ? (_names = new ReadOnlyCollection<string>(enumerable.ToArray())) : new NamesContainer(enumerable, GetMemberCount(selection));
-            }
-            return names;
-        }
+        protected override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetInternalMembers(selection).Select(m => m.Name), GetMemberCount(selection), cached);
 
-        public override object GetValues(EnumMemberSelection selection)
-        {
-            var cached = selection == EnumMemberSelection.All || (selection == EnumMemberSelection.Distinct && _duplicateValues == null);
-            object? values;
-            if (!cached || (values = _values) == null)
-            {
-                values = EnumBridge.CreateValuesContainer(GetMembersInternal(selection).Select(m => m.Value), GetMemberCount(selection), cached);
-                if (cached)
-                {
-                    _values = values;
-                }
-            }
-            return values;
-        }
+        protected override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetInternalMembers(selection).Select(m => m.Value), GetMemberCount(selection), cached);
 
-        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal(EnumMemberSelection selection)
+        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetInternalMembers(EnumMemberSelection selection)
         {
             IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members;
             switch (selection)
@@ -1207,20 +1217,15 @@ namespace EnumsNET
                 delimiter = FlagEnums.DefaultDelimiter;
             }
 
-            return string.Join(delimiter,
-                EnumerateFlags(value).Select(flag => FormatInternal(flag, null, formats))
-#if NET20 || NET35
-                .ToArray()
-#endif
-                );
+            return string.Join(delimiter, EnumerateFlags(value).Select(flag => FormatInternal(flag, null, formats)));
         }
 
-        public override IReadOnlyList<object> GetFlags(object value) => UnsafeUtility.As<IValuesContainer>(GetFlags(ToObject(value))).GetNonGenericContainer();
+        public override IReadOnlyList<object> GetFlags(object value) => GetFlags(ToObject(value)).GetNonGenericContainer();
 
-        public override object GetFlags(ref byte value) => GetFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public override IValuesContainer GetFlags(ref byte value) => GetFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetFlags(TUnderlying value) => EnumBridge.CreateValuesContainer(EnumerateFlags(value), GetFlagCount(value));
+        public IValuesContainer GetFlags(TUnderlying value) => EnumBridge.CreateValuesContainer(EnumerateFlags(value), GetFlagCount(value), false);
 
         private IEnumerable<TUnderlying> EnumerateFlags(TUnderlying value)
         {
@@ -1241,7 +1246,7 @@ namespace EnumsNET
         public override IReadOnlyList<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IReadOnlyList<EnumMember> GetFlagMembers(TUnderlying value) => EnumBridge.CreateMembersContainer(EnumerateFlags(value).Select(flag => GetMember(flag)!.EnumMember), GetFlagCount(value));
+        public IReadOnlyList<EnumMember> GetFlagMembers(TUnderlying value) => EnumBridge.CreateMembersContainer(EnumerateFlags(value).Select(flag => GetMember(flag)!), GetFlagCount(value), false);
 
         public override int GetFlagCount() => default(TUnderlyingOperations).BitCount(_allFlags);
 
@@ -1619,7 +1624,7 @@ namespace EnumsNET
                 var ordinalIgnoreCaseBuckets = new int[size];
                 var entries = new Entry[size];
                 var i = 0;
-                foreach (var member in enumCache.GetMembersInternal(EnumMemberSelection.All))
+                foreach (var member in enumCache.GetInternalMembers(EnumMemberSelection.All))
                 {
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)

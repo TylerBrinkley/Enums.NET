@@ -41,16 +41,6 @@ namespace EnumsNET.Unsafe
     /// </summary>
     public static class UnsafeEnums
     {
-        internal static EnumBridge<TEnum> GetBridge<TEnum>()
-        {
-            var bridge = UnsafeEnums<TEnum>.Bridge;
-            if (bridge == null)
-            {
-                throw new ArgumentException("Type argument TEnum must be an enum");
-            }
-            return bridge;
-        }
-
         internal static EnumCache GetCache<TEnum>()
         {
             var cache = UnsafeEnums<TEnum>.Cache;
@@ -2042,8 +2032,6 @@ namespace EnumsNET.Unsafe
 
     internal static class UnsafeEnums<TEnum>
     {
-        public static readonly EnumBridge<TEnum>? Bridge = (EnumBridge<TEnum>?)Enums.GetBridge(typeof(TEnum));
-
         public static readonly EnumCache? Cache = Enums.GetCache(typeof(TEnum));
     }
 }

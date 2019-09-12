@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
 namespace EnumsNET
@@ -277,8 +276,7 @@ namespace EnumsNET
         object IConvertible.ToType(Type conversionType, IFormatProvider? provider) => Member.ToType(conversionType, provider);
 #endif
 
-        // implemented in derived class
-        int IComparable.CompareTo(object? obj) => 0;
+        int IComparable.CompareTo(object? obj) => ((IComparable<EnumMember>)this).CompareTo((obj as EnumMember)!);
 
         // implemented in derived class
         int IComparable<EnumMember>.CompareTo(EnumMember? other) => 0;
@@ -289,12 +287,20 @@ namespace EnumsNET
     /// An enum member which is composed of its name, value, and attributes.
     /// </summary>
     /// <typeparam name="TEnum">The enum type.</typeparam>
-    public abstract class EnumMember<TEnum> : EnumMember, IComparable<EnumMember<TEnum>>, IEquatable<EnumMember<TEnum>>
+    public sealed class EnumMember<TEnum> : EnumMember, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IEquatable<EnumMember<TEnum>>
     {
         /// <summary>
         /// The enum member's value.
         /// </summary>
-        public new TEnum Value => GetGenericValue();
+        public new TEnum Value
+        {
+            get
+            {
+                TEnum v = default!;
+                Member.GetValue(ref UnsafeUtility.As<TEnum, byte>(ref v));
+                return v;
+            }
+        }
 
         internal EnumMember(EnumMemberInternal member)
             : base(member)
@@ -308,43 +314,12 @@ namespace EnumsNET
         /// <returns>Indication whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>.</returns>
         public bool Equals(EnumMember<TEnum> other) => ReferenceEquals(this, other);
 
-        internal abstract TEnum GetGenericValue();
-
-        internal sealed override object GetValue() => GetGenericValue()!;
+        internal override object GetValue() => Value!;
 
         #region Explicit Interface Implementation
-        // Implemented in derived class
-        int IComparable<EnumMember<TEnum>>.CompareTo(EnumMember<TEnum>? other) => 0;
-        #endregion
-    }
+        int IComparable<EnumMember>.CompareTo(EnumMember? other) => ((IComparable<EnumMember<TEnum>>)this).CompareTo((other as EnumMember<TEnum>)!);
 
-    internal sealed class EnumMember<TEnum, TUnderlying, TUnderlyingOperations> : EnumMember<TEnum>, IComparable<EnumMember<TEnum>>, IComparable<EnumMember>, IComparable
-        where TEnum : struct, Enum
-        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
-#if ICONVERTIBLE
-        , IConvertible
-#endif
-        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
-    {
-        internal new EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member => UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(base.Member);
-
-        internal EnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
-            : base(member)
-        {
-        }
-
-        internal override TEnum GetGenericValue()
-        {
-            var underlying = Member.Value;
-            return UnsafeUtility.As<TUnderlying, TEnum>(ref underlying);
-        }
-
-        #region Interface Implementation
-        public int CompareTo(object? other) => CompareTo(other as EnumMember<TEnum>);
-
-        public int CompareTo(EnumMember? other) => CompareTo(other as EnumMember<TEnum>);
-
-        public int CompareTo(EnumMember<TEnum>? other) => other != null ? Member.CompareTo(UnsafeUtility.As<EnumMember<TEnum, TUnderlying, TUnderlyingOperations>>(other).Member) : 1;
+        int IComparable<EnumMember<TEnum>>.CompareTo(EnumMember<TEnum>? other) => Member.CompareTo(other?.Member);
         #endregion
     }
 }

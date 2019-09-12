@@ -1986,22 +1986,6 @@ namespace EnumsNET
         #endregion
 
         #region Internal Methods
-        internal static object? GetBridge(Type enumType)
-        {
-            if (!enumType.IsEnum())
-            {
-                return null;
-            }
-
-            return typeof(Enums<>).MakeGenericType(enumType)
-#if TYPE_REFLECTION
-                .GetField(nameof(Enums<DayOfWeek>.Bridge), BindingFlags.Static | BindingFlags.Public)!
-#else
-                .GetTypeInfo().GetDeclaredField(nameof(Enums<DayOfWeek>.Bridge))
-#endif
-                .GetValue(null);
-        }
-
         internal static EnumCache? GetCache(Type enumType)
         {
             if (!enumType.IsEnum())
@@ -2018,25 +2002,34 @@ namespace EnumsNET
                 .GetValue(null)!;
         }
 
-        internal static EnumBridge<TEnum> CreateEnumBridge<TEnum>()
+        internal static EnumCache CreateCache<TEnum>()
             where TEnum : struct, Enum
         {
             var underlyingType = Enum.GetUnderlyingType(typeof(TEnum));
             return underlyingType.GetTypeCode() switch
             {
-                TypeCode.SByte => (EnumBridge<TEnum>)new EnumBridge<TEnum, sbyte, UnderlyingOperations>(),
-                TypeCode.Byte => new EnumBridge<TEnum, byte, UnderlyingOperations>(),
-                TypeCode.Int16 => new EnumBridge<TEnum, short, UnderlyingOperations>(),
-                TypeCode.UInt16 => new EnumBridge<TEnum, ushort, UnderlyingOperations>(),
-                TypeCode.Int32 => new EnumBridge<TEnum, int, UnderlyingOperations>(),
-                TypeCode.UInt32 => new EnumBridge<TEnum, uint, UnderlyingOperations>(),
-                TypeCode.Int64 => new EnumBridge<TEnum, long, UnderlyingOperations>(),
-                TypeCode.UInt64 => new EnumBridge<TEnum, ulong, UnderlyingOperations>(),
-                TypeCode.Boolean => new EnumBridge<TEnum, bool, UnderlyingOperations>(),
-                TypeCode.Char => new EnumBridge<TEnum, char, UnderlyingOperations>(),
+                TypeCode.SByte => CreateCache<TEnum, sbyte, UnderlyingOperations>(),
+                TypeCode.Byte => CreateCache<TEnum, byte, UnderlyingOperations>(),
+                TypeCode.Int16 => CreateCache<TEnum, short, UnderlyingOperations>(),
+                TypeCode.UInt16 => CreateCache<TEnum, ushort, UnderlyingOperations>(),
+                TypeCode.Int32 => CreateCache<TEnum, int, UnderlyingOperations>(),
+                TypeCode.UInt32 => CreateCache<TEnum, uint, UnderlyingOperations>(),
+                TypeCode.Int64 => CreateCache<TEnum, long, UnderlyingOperations>(),
+                TypeCode.UInt64 => CreateCache<TEnum, ulong, UnderlyingOperations>(),
+                TypeCode.Boolean => CreateCache<TEnum, bool, UnderlyingOperations>(),
+                TypeCode.Char => CreateCache<TEnum, char, UnderlyingOperations>(),
                 _ => throw new NotSupportedException($"Enum underlying type of {underlyingType} is not supported"),
             };
         }
+
+        internal static EnumCache CreateCache<TEnum, TUnderlying, TUnderlyingOperations>()
+            where TEnum : struct, Enum
+            where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+            , IConvertible
+#endif
+            where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+            => new EnumCache<TUnderlying, TUnderlyingOperations>(typeof(TEnum), new EnumBridge<TEnum, TUnderlying, TUnderlyingOperations>());
 
         internal static object? GetInterfaceAttribute(Type type, Type interfaceType)
         {
@@ -2058,8 +2051,6 @@ namespace EnumsNET
     internal static class Enums<TEnum>
         where TEnum : struct, Enum
     {
-        public static readonly EnumBridge<TEnum> Bridge = Enums.CreateEnumBridge<TEnum>();
-
-        public static readonly EnumCache Cache = Bridge.GetCache();
+        public static readonly EnumCache Cache = Enums.CreateCache<TEnum>();
     }
 }

@@ -115,7 +115,7 @@ namespace EnumsNET.Tests
             AssertEnumMemberIsCorrect(members[3], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
         }
 
-        public void AssertEnumMemberIsCorrect<TEnum>(EnumMember<TEnum> member, TEnum value, string name, params Attribute[] attributes)
+        public static void AssertEnumMemberIsCorrect<TEnum>(EnumMember<TEnum> member, TEnum value, string name, params Attribute[] attributes)
         {
             Assert.IsNotNull(member);
             Assert.AreEqual(value, member.Value);
@@ -780,14 +780,12 @@ namespace EnumsNET.Tests
             Assert.AreEqual("C", ToObject<CharEnum>('c').AsString());
             Assert.AreEqual("d", ToObject<CharEnum>('d').AsString());
 
-#if !NET20 && !NET35
             Assert.AreEqual("No", ToObject<BooleanEnum>(0).ToString());
             Assert.AreEqual("True", ToObject<BooleanEnum>(1).ToString());
             Assert.AreEqual("A", ToObject<CharEnum>('a').ToString());
             Assert.AreEqual("B", ToObject<CharEnum>('b').ToString());
             Assert.AreEqual("C", ToObject<CharEnum>('c').ToString());
             Assert.AreEqual("d", ToObject<CharEnum>('d').ToString());
-#endif
         }
 
         [Test]
@@ -923,13 +921,11 @@ namespace EnumsNET.Tests
             Assert.AreEqual("A", ToObject<CharEnum>('a').GetName());
             Assert.IsNull(ToObject<CharEnum>('d').GetName());
 
-#if !NET35 && !NET20
             Assert.AreEqual("No", Enum.GetName(typeof(BooleanEnum), ToObject<BooleanEnum>(0)));
             Assert.IsNull(Enum.GetName(typeof(BooleanEnum), ToObject<BooleanEnum>(1)));
             
             Assert.AreEqual("A", Enum.GetName(typeof(CharEnum), ToObject<CharEnum>('a')));
             Assert.IsNull(Enum.GetName(typeof(CharEnum), ToObject<CharEnum>('d')));
-#endif
         }
         #endregion
 

@@ -25,7 +25,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using EnumsNET.Utilities;
 
 namespace EnumsNET
@@ -41,15 +41,20 @@ namespace EnumsNET
     {
         private readonly IEnumerable<TUnderlying> _values;
         private TEnum[]? _valuesArray;
+        private IReadOnlyList<object>? _nonGenericValuesContainer;
 
         public int Count { get; }
 
-        public TEnum this[int index] => (_valuesArray ??= this.ToArray())[index];
+        public TEnum this[int index] => (_valuesArray ??= ArrayHelper.ToArray(this, Count))[index];
 
-        public ValuesContainer(IEnumerable<TUnderlying> values, int count)
+        public ValuesContainer(IEnumerable<TUnderlying> values, int count, bool cached)
         {
             _values = values;
             Count = count;
+            if (cached)
+            {
+                _valuesArray = ArrayHelper.ToArray(this, count);
+            }
         }
 
         public IEnumerator<TEnum> GetEnumerator() => _valuesArray != null ? ((IEnumerable<TEnum>)_valuesArray).GetEnumerator() : Enumerate();
@@ -63,7 +68,11 @@ namespace EnumsNET
             }
         }
 
-        public IReadOnlyList<object> GetNonGenericContainer() => new NonGenericValuesContainer<TEnum, TUnderlying>(this);
+        public IReadOnlyList<object> GetNonGenericContainer()
+        {
+            var nonGenericValuesContainer = _nonGenericValuesContainer;
+            return nonGenericValuesContainer ?? Interlocked.CompareExchange(ref _nonGenericValuesContainer, (nonGenericValuesContainer = new NonGenericValuesContainer<TEnum, TUnderlying>(this)), null) ?? nonGenericValuesContainer;
+        }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

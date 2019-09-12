@@ -27,10 +27,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using EnumsNET.Numerics;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
-    internal abstract class EnumMemberInternal : IFormattable
+    internal abstract class EnumMemberInternal : IFormattable, IComparable<EnumMemberInternal>
 #if ICONVERTIBLE
         , IConvertible
 #endif
@@ -56,6 +57,7 @@ namespace EnumsNET
             Attributes = attributes;
         }
 
+        public abstract void GetValue(ref byte result);
         public abstract object GetUnderlyingValue();
         public abstract string AsString(string? format);
         public abstract string? AsString(EnumFormat format);
@@ -76,6 +78,7 @@ namespace EnumsNET
         public abstract object GetFlags();
         public abstract IReadOnlyList<EnumMember> GetFlagMembers();
         public abstract string ToString(string? format, IFormatProvider? formatProvider);
+        public abstract int CompareTo(EnumMemberInternal? other);
 #if ICONVERTIBLE
         public abstract TypeCode GetTypeCode();
         public abstract bool ToBoolean(IFormatProvider? provider);
@@ -119,6 +122,12 @@ namespace EnumsNET
             _enumCache = enumCache;
         }
 
+        public override void GetValue(ref byte result)
+        {
+            ref var v = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
+            v = Value;
+        }
+
         public override object GetUnderlyingValue() => Value;
 
         public override string AsString(string? format) => _enumCache.AsStringInternal(Value, this, format);
@@ -136,8 +145,6 @@ namespace EnumsNET
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        internal int CompareTo(EnumMemberInternal<TUnderlying, TUnderlyingOperations> other) => Value.CompareTo(other.Value);
-
         public override bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
 
         public override int GetFlagCount() => _enumCache.GetFlagCount(Value);
@@ -151,6 +158,8 @@ namespace EnumsNET
         public override IReadOnlyList<EnumMember> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
 
         public override string ToString(string? format, IFormatProvider? formatProvider) => AsString(format);
+
+        public override int CompareTo(EnumMemberInternal? other) => other != null ? Value.CompareTo(UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(other).Value) : 1;
 
 #if ICONVERTIBLE
         public override sbyte ToSByte() => Value.ToSByte(null);

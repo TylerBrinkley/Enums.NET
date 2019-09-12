@@ -25,26 +25,38 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
-    internal abstract class EnumBridge<TEnum>
+    internal interface IEnumBridge
     {
-        public abstract TEnum CombineFlags(IEnumerable<TEnum>? flags);
-        public abstract EnumCache GetCache();
+        bool HasCustomValidator { get; }
+
+        EnumMember CreateEnumMember(EnumMemberInternal member);
+        bool IsEnum(object value);
+        IReadOnlyList<EnumMember> CreateMembersContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached);
     }
 
-    // Class that acts as a bridge from the enum type to the underlying type
-    // through the use of the implemented interfaces IEnumInfo<TEnum> and IEnumInfo.
-    // Also acts as a bridge in the reverse from the underlying type to the enum type
+    internal interface IEnumBridge<TUnderlying, TUnderlyingOperations> : IEnumBridge
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+    {
+        bool CustomValidate(TUnderlying value);
+        object ToObjectUnchecked(TUnderlying value);
+        IValuesContainer CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool cached);
+    }
+
+    // Acts as a bridge in the reverse from the underlying type to the enum type
     // through the use of the implemented interface IEnumInfoInternal<TUnderlying, TUnderlyingOperations>.
     // Putting the logic in EnumCache<TUnderlying, TUnderlyingOperations> reduces memory usage
     // because having the enum type as a generic type parameter causes code explosion
     // due to how .NET generics are handled with enums.
-    internal sealed class EnumBridge<TEnum, TUnderlying, TUnderlyingOperations> : EnumBridge<TEnum>, IEnumBridgeInternal<TUnderlying, TUnderlyingOperations>
+    internal sealed class EnumBridge<TEnum, TUnderlying, TUnderlyingOperations> : IEnumBridge<TUnderlying, TUnderlyingOperations>
         where TEnum : struct, Enum
         where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
 #if ICONVERTIBLE
@@ -52,31 +64,7 @@ namespace EnumsNET
 #endif
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        private readonly EnumCache<TUnderlying, TUnderlyingOperations> _cache;
         private readonly IEnumValidatorAttribute<TEnum>? _customEnumValidator = (IEnumValidatorAttribute<TEnum>?)Enums.GetInterfaceAttribute(typeof(TEnum), typeof(IEnumValidatorAttribute<TEnum>));
-
-        public EnumBridge()
-        {
-            _cache = new EnumCache<TUnderlying, TUnderlyingOperations>(typeof(TEnum), this);
-        }
-
-        public override TEnum CombineFlags(IEnumerable<TEnum>? flags)
-        {
-            TUnderlying result = default;
-            TUnderlyingOperations operations = default;
-            if (flags != null)
-            {
-                TEnum value;
-                foreach (var flag in flags)
-                {
-                    value = flag;
-                    result = operations.Or(result, UnsafeUtility.As<TEnum, TUnderlying>(ref value));
-                }
-            }
-            return UnsafeUtility.As<TUnderlying, TEnum>(ref result);
-        }
-
-        public override EnumCache GetCache() => _cache;
 
         public object ToObjectUnchecked(TUnderlying value) => UnsafeUtility.As<TUnderlying, TEnum>(ref value);
 
@@ -84,43 +72,12 @@ namespace EnumsNET
 
         public bool CustomValidate(TUnderlying value) => _customEnumValidator!.IsValid(UnsafeUtility.As<TUnderlying, TEnum>(ref value));
 
-        public EnumMember CreateEnumMember(EnumMemberInternal<TUnderlying, TUnderlyingOperations> member) => new EnumMember<TEnum, TUnderlying, TUnderlyingOperations>(member);
+        public EnumMember CreateEnumMember(EnumMemberInternal member) => new EnumMember<TEnum>(member);
 
         public bool IsEnum(object value) => value is TEnum || value is TEnum?;
 
-        public object CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool store = false)
-        {
-            if (store)
-            {
-                var a = new TEnum[count];
-                var i = 0;
-                foreach (var value in values)
-                {
-                    var v = value;
-                    a[i++] = UnsafeUtility.As<TUnderlying, TEnum>(ref v);
-                }
-                return new ReadOnlyCollection<TEnum>(a);
-            }
-            return new ValuesContainer<TEnum, TUnderlying>(values, count);
-        }
+        public IValuesContainer CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool cached) => new ValuesContainer<TEnum, TUnderlying>(values, count, cached);
 
-        public IReadOnlyList<EnumMember> CreateMembersContainer(IEnumerable<EnumMember> members, int count, bool store = false)
-        {
-            if (count == 0)
-            {
-                return ArrayHelper.Empty<EnumMember<TEnum>>();
-            }
-            if (store)
-            {
-                var a = new EnumMember<TEnum>[count];
-                var i = 0;
-                foreach (var member in members)
-                {
-                    a[i++] = UnsafeUtility.As<EnumMember<TEnum>>(member);
-                }
-                return new ReadOnlyCollection<EnumMember<TEnum>>(a);
-            }
-            return new MembersContainer<TEnum>(members, count);
-        }
+        public IReadOnlyList<EnumMember> CreateMembersContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached) => new MembersContainer<TEnum>(members, count, cached);
     }
 }
