@@ -23,17 +23,44 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace EnumsNET.NonGeneric
-{
-    internal struct NonGenericEnumInfo
-    {
-        public readonly EnumCache EnumCache;
-        public readonly bool IsNullable;
+#if !UNSAFE
 
-        public NonGenericEnumInfo(EnumCache enumCache, bool isNullable)
+using System.Security;
+
+namespace System.Runtime.CompilerServices
+{
+    internal static class Unsafe
+    {
+#if FORWARD_REF
+        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
+#else
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        [SecuritySafeCritical]
+        public static extern ref TTo As<TFrom, TTo>(ref TFrom source);
+
+#if FORWARD_REF
+        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
+#else
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        [SecuritySafeCritical]
+        public static extern T As<T>(object? value) where T : class;
+    }
+}
+#endif
+
+namespace System.Runtime.CompilerServices
+{
+    internal static class UnsafeExtensions
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref byte GetRawData(this object obj) =>
+            ref Unsafe.As<RawData>(obj).Data;
+
+        private sealed class RawData
         {
-            EnumCache = enumCache;
-            IsNullable = isNullable;
+            public byte Data;
         }
     }
 }

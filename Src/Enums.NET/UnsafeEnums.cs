@@ -23,29 +23,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.Collections.Generic;
-
-namespace EnumsNET.Utilities
+namespace EnumsNET
 {
-    internal static class ArrayHelper
+    internal static class UnsafeEnums<TEnum>
     {
-        public static T[] Empty<T>() =>
-#if ARRAY_EMPTY
-            Array.Empty<T>();
-#else
-            new T[0];
-#endif
-
-        public static T[] ToArray<T>(IEnumerable<T> items, int count)
-        {
-            var a = new T[count];
-            var i = 0;
-            foreach (var item in items)
-            {
-                a[i++] = item;
-            }
-            return a;
-        }
+        public static readonly EnumCache? Cache = Enums.GetEnumCache(typeof(TEnum));
     }
 }

@@ -20,27 +20,27 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
-    <AssemblyTitle>Enums.NET Tests .NET 4.6</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Test .NET 4.6</AssemblyTitle>
     <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <AssemblyTitle>Enums.NET Tests .NET 4.5</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Test .NET 4.5</AssemblyTitle>
     <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-    <AssemblyTitle>Enums.NET Tests .NET Core App 3.0</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Test .NET Core App 3.0</AssemblyTitle>
     <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <AssemblyTitle>Enums.NET Tests .NET Core App 2.0</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Test .NET Core App 2.0</AssemblyTitle>
     <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
-    <AssemblyTitle>Enums.NET Tests .NET Core App 1.1</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Test .NET Core App 1.1</AssemblyTitle>
     <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;BENCHMARKS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
-    <AssemblyTitle>Enums.NET Tests .NET Core App 1.0</AssemblyTitle>
+    <AssemblyTitle>Enums.NET Test .NET Core App 1.0</AssemblyTitle>
     <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
   </PropertyGroup>
 </Project>

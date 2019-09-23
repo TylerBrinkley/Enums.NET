@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using EnumsNET.Numerics;
-using EnumsNET.Utilities;
+using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 namespace EnumsNET
 {

@@ -28,10 +28,10 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="5.0.6" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="5.0.6" PrivateAssets="All" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.2.0-beta4-final" PrivateAssets="All" />
-    <WeaverFiles Include="$(SolutionDir)Weavers\bin\$(Configuration)\netstandard2.0\Weavers.dll" WeaverClassNames="UnsafeUtilityWeaver" />
+    <WeaverFiles Include="$(SolutionDir)Weavers\bin\$(Configuration)\netstandard2.0\Weavers.dll" WeaverClassNames="UnsafeWeaver" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net46'">
@@ -58,7 +58,7 @@
   </ItemGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>
-    <DefineConstants>NETCOREAPP;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;FORWARD_REF;SPAN;NULLABLE_ATTRIBUTES;ARRAY_EMPTY</DefineConstants>
+    <DefineConstants>NETCOREAPP;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;FORWARD_REF;SPAN;NULLABLE_ATTRIBUTES;ARRAY_EMPTY;UNSAFE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>Enums.NET .NET Standard 2.0</AssemblyTitle>

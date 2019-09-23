@@ -215,9 +215,9 @@ class EnumsNETDemo
 
 [`EnumsNET.FlagEnums`](Src/Enums.NET/FlagEnums.cs) static class for type-safe flag enum operations, with many exposed as extension methods.
 
-[`EnumsNET.Unsafe.UnsafeEnums`](Src/Enums.NET/Unsafe/UnsafeEnums.cs) static class for enum operations without the enum constraint for use in generic programming.
+[`EnumsNET.UnsafeEnums`](Src/Enums.NET/Unsafe/UnsafeEnums.cs) static class for enum operations without the enum constraint for use in generic programming.
 
-[`EnumsNET.Unsafe.UnsafeFlagEnums`](Src/Enums.NET/Unsafe/UnsafeFlagEnums.cs) static class for flag enum operations without the enum constraint for use in generic programming.
+[`EnumsNET.UnsafeFlagEnums`](Src/Enums.NET/Unsafe/UnsafeFlagEnums.cs) static class for flag enum operations without the enum constraint for use in generic programming.
 
 [`EnumsNET.NonGeneric.NonGenericEnums`](Src/Enums.NET/NonGeneric/NonGenericEnums.cs) static class for non-generic enum operations.
 

@@ -25,12 +25,9 @@
 
 using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
-using EnumsNET.NonGeneric;
 
 namespace EnumsNET.Tests.Benchmarks
 {
-    [ClrJob, CoreJob]
     public class HasFlagBenchmarks
     {
         private readonly AttributeTargets[] _attributeTargets;
@@ -72,7 +69,7 @@ namespace EnumsNET.Tests.Benchmarks
             {
                 foreach (var otherAttributeTargets in _allAttributeTargets)
                 {
-                    result |= NonGenericFlagEnums.HasAllFlags(_enumType, attributeTargets, otherAttributeTargets);
+                    result |= FlagEnums.HasAllFlags(_enumType, attributeTargets, otherAttributeTargets);
                 }
             }
             return result;
@@ -92,7 +89,7 @@ namespace EnumsNET.Tests.Benchmarks
             return result;
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public bool Manual_HasFlag()
         {
             var result = false;
@@ -100,12 +97,10 @@ namespace EnumsNET.Tests.Benchmarks
             {
                 foreach (var otherAttributeTargets in _allAttributeTargets)
                 {
-                    result |= ManualHasAllFlags(attributeTargets, otherAttributeTargets);
+                    result |= (attributeTargets & otherAttributeTargets) == otherAttributeTargets;
                 }
             }
             return result;
         }
-
-        public static bool ManualHasAllFlags(AttributeTargets flags, AttributeTargets otherFlags) => (flags & otherFlags) == otherFlags;
     }
 }

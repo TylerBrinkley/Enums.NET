@@ -23,29 +23,17 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using System;
-using System.Collections.Generic;
-
-namespace EnumsNET.Utilities
+namespace EnumsNET
 {
-    internal static class ArrayHelper
+    internal struct NonGenericEnumInfo
     {
-        public static T[] Empty<T>() =>
-#if ARRAY_EMPTY
-            Array.Empty<T>();
-#else
-            new T[0];
-#endif
+        public readonly EnumCache EnumCache;
+        public readonly bool IsNullable;
 
-        public static T[] ToArray<T>(IEnumerable<T> items, int count)
+        public NonGenericEnumInfo(EnumCache enumCache, bool isNullable)
         {
-            var a = new T[count];
-            var i = 0;
-            foreach (var item in items)
-            {
-                a[i++] = item;
-            }
-            return a;
+            EnumCache = enumCache;
+            IsNullable = isNullable;
         }
     }
 }

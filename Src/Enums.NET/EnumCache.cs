@@ -38,6 +38,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
+using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 #if SPAN
 using ParseType = System.ReadOnlySpan<char>;

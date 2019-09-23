@@ -25,6 +25,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using EnumsNET.Utilities;
 
@@ -72,6 +73,7 @@ namespace EnumsNET
                     ++i;
                 }
             }
+            Debug.Assert(count == i);
             _buckets = buckets;
             _entries = entries;
         }

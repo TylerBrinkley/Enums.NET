@@ -15,7 +15,6 @@
 
 using System;
 using EnumsNET.Tests.TestEnums;
-using EnumsNET.Unsafe;
 using NUnit.Framework;
 
 namespace EnumsNET.Tests
@@ -26,19 +25,19 @@ namespace EnumsNET.Tests
         [Test]
         public void UnsafeEnumsBasicTest()
         {
-            Assert.Throws<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<int>());
-            Assert.Throws<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<Enum>());
-            Assert.Throws<ArgumentException>(() => UnsafeEnums.GetUnderlyingType<string>());
-            Assert.AreEqual(typeof(short), UnsafeEnums.GetUnderlyingType<DateFilterOperator>());
+            Assert.Throws<ArgumentException>(() => Enums.GetUnderlyingTypeUnsafe<int>());
+            Assert.Throws<ArgumentException>(() => Enums.GetUnderlyingTypeUnsafe<Enum>());
+            Assert.Throws<ArgumentException>(() => Enums.GetUnderlyingTypeUnsafe<string>());
+            Assert.AreEqual(typeof(short), Enums.GetUnderlyingTypeUnsafe<DateFilterOperator>());
         }
 
         [Test]
         public void UnsafeFlagEnumsBasicTest()
         {
-            Assert.Throws<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<int>());
-            Assert.Throws<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<Enum>());
-            Assert.Throws<ArgumentException>(() => UnsafeFlagEnums.GetAllFlags<string>());
-            Assert.AreEqual(ColorFlagEnum.All, UnsafeFlagEnums.GetAllFlags<ColorFlagEnum>());
+            Assert.Throws<ArgumentException>(() => FlagEnums.GetAllFlagsUnsafe<int>());
+            Assert.Throws<ArgumentException>(() => FlagEnums.GetAllFlagsUnsafe<Enum>());
+            Assert.Throws<ArgumentException>(() => FlagEnums.GetAllFlagsUnsafe<string>());
+            Assert.AreEqual(ColorFlagEnum.All, FlagEnums.GetAllFlagsUnsafe<ColorFlagEnum>());
         }
     }
 }

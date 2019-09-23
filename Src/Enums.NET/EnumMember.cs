@@ -25,7 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using EnumsNET.Utilities;
+using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 namespace EnumsNET
 {

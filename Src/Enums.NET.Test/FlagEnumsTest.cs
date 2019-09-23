@@ -673,5 +673,13 @@ namespace EnumsNET.Tests
             Assert.AreEqual(result0, result1);
         }
         #endregion
+
+        #region EnumMember Extensions
+        [Test]
+        public void GetFlags_ReturnsValidValues_WhenUsingValidValue()
+        {
+            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet }, ColorFlagEnum.All.GetMember().GetFlags());
+        }
+        #endregion
     }
 }

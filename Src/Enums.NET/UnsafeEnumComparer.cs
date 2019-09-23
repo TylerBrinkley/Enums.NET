@@ -27,9 +27,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using EnumsNET.Utilities;
+using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
-namespace EnumsNET.Unsafe
+namespace EnumsNET
 {
     /// <summary>
     /// A type-unsafe version of <see cref="EnumComparer{TEnum}"/> which is useful when dealing with generics
@@ -59,7 +59,7 @@ namespace EnumsNET.Unsafe
         /// </summary>
         public UnsafeEnumComparer()
         {
-            UnsafeEnums.GetCache<TEnum>(); // Validates TEnum is an enum
+            Enums.GetCacheUnsafe<TEnum>(); // Validates TEnum is an enum
         }
 
         /// <summary>

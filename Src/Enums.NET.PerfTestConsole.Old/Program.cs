@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using EnumsNET.NonGeneric;
 
 namespace EnumsNET.PerfTestConsole
 {
@@ -27,8 +26,7 @@ namespace EnumsNET.PerfTestConsole
             {
                 foreach (var enumType in enumTypes)
                 {
-                    //methodInfo.MakeGenericMethod(enumType).Invoke(null, null);
-                    NonGenericEnums.GetUnderlyingType(enumType);
+                    Enums.GetUnderlyingType(enumType);
                 }
             }
             Console.WriteLine(enumTypes.Count);
@@ -98,7 +96,7 @@ namespace EnumsNET.PerfTestConsole
             {
                 if (tuple.Names.Count > 0)
                 {
-                    NonGenericEnums.Parse(tuple.Type, tuple.Names[0]);
+                    Enums.Parse(tuple.Type, tuple.Names[0]);
                 }
             }
 
@@ -111,7 +109,7 @@ namespace EnumsNET.PerfTestConsole
                     {
                         foreach (var name in tuple.Names)
                         {
-                            NonGenericEnums.Parse(enumType, name);
+                            Enums.Parse(enumType, name);
                         }
                     }
                 }
@@ -165,7 +163,7 @@ namespace EnumsNET.PerfTestConsole
                     {
                         foreach (var numericValue in tuple.NumericValues)
                         {
-                            NonGenericEnums.Parse(enumType, numericValue);
+                            Enums.Parse(enumType, numericValue);
                         }
                     }
                 }
@@ -221,7 +219,7 @@ namespace EnumsNET.PerfTestConsole
                 {
                     for (var j = 0; j < 7; ++j)
                     {
-                        NonGenericEnums.AsString(dayOfWeekType, dayOfWeekArray[j]);
+                        Enums.AsString(dayOfWeekType, dayOfWeekArray[j]);
                     }
                 }
             }
@@ -254,7 +252,7 @@ namespace EnumsNET.PerfTestConsole
                 {
                     for (var j = 0; j < dayOfWeekArray.Length; ++j)
                     {
-                        NonGenericEnums.AsString(dayOfWeekType, dayOfWeekArray[j], EnumFormat.DecimalValue);
+                        Enums.AsString(dayOfWeekType, dayOfWeekArray[j], EnumFormat.DecimalValue);
                     }
                 }
             }
@@ -294,7 +292,7 @@ namespace EnumsNET.PerfTestConsole
                 {
                     for (var j = 0; j < dayOfWeekArray.Length; ++j)
                     {
-                        NonGenericEnums.IsDefined(dayOfWeekType, dayOfWeekArray[j]);
+                        Enums.IsDefined(dayOfWeekType, dayOfWeekArray[j]);
                     }
                 }
             }
@@ -377,7 +375,7 @@ namespace EnumsNET.PerfTestConsole
                     {
                         foreach (var otherAttributeTargets in allAttributeTargets)
                         {
-                            NonGenericFlagEnums.HasAllFlags(attributeTargetsType, attributeTargets, otherAttributeTargets);
+                            FlagEnums.HasAllFlags(attributeTargetsType, attributeTargets, otherAttributeTargets);
                         }
                     }
                 }
