@@ -125,7 +125,7 @@ namespace ConsoleApplication1
                 Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 9, 83)
+                            new DiagnosticResultLocation("Test0.cs", 9, 72)
                         }
             };
 
@@ -166,7 +166,7 @@ namespace ConsoleApplication1
                 Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8, 92)
+                            new DiagnosticResultLocation("Test0.cs", 8, 72)
                         }
             };
 

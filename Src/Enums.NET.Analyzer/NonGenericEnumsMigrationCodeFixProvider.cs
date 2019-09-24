@@ -62,6 +62,17 @@ namespace EnumsNET.Analyzer
                             hasNewNamespace = true;
                         }
                         break;
+                    case "EnumsNET.Unsafe":
+                        if (hasNewNamespace)
+                        {
+                            syntaxEditor.RemoveNode(usingDirective);
+                        }
+                        else
+                        {
+                            syntaxEditor.ReplaceNode(usingDirective.Name, SyntaxFactory.IdentifierName("EnumsNET"));
+                            hasNewNamespace = true;
+                        }
+                        break;
                     case "EnumsNET":
                         if (hasNewNamespace)
                         {
@@ -75,7 +86,19 @@ namespace EnumsNET.Analyzer
                 }
             }
             var enumsType = semanticModel.Compilation.GetTypeByMetadataName("EnumsNET.Enums");
-            syntaxEditor.ReplaceNode(memberAccessNode, syntaxEditor.Generator.TypeExpression(enumsType));
+            SyntaxNode n = memberAccessNode;
+            if (memberAccessNode.Identifier.ToString() != "NonGenericEnums")
+            {
+                while (n.Parent is MemberAccessExpressionSyntax m)
+                {
+                    n = m;
+                    if (m.Name.Identifier.ToString() == "NonGenericEnums")
+                    {
+                        break;
+                    }
+                }
+            }
+            syntaxEditor.ReplaceNode(n, syntaxEditor.Generator.TypeExpression(enumsType));
             return document.WithSyntaxRoot(syntaxEditor.GetChangedRoot());
         }
     }

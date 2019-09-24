@@ -60,9 +60,9 @@ namespace EnumsNET
         public readonly TypeCode TypeCode;
         public readonly bool IsFlagEnum;
         private protected bool _hasDuplicateValues;
-        private protected IReadOnlyList<string>? _names;
-        private protected IValuesContainer? _values;
-        private protected IReadOnlyList<EnumMember>? _members;
+        private IReadOnlyList<string>? _names;
+        private IValuesContainer? _values;
+        private IReadOnlyList<EnumMember>? _members;
 
         private protected EnumCache(Type enumType, Type underlyingType)
         {
@@ -308,8 +308,7 @@ namespace EnumsNET
 
             // This is necessary due to a .NET reflection bug with retrieving Boolean Enums values
             Dictionary<string, TUnderlying>? fieldDictionary = null;
-            var isBoolean = typeof(TUnderlying) == typeof(bool);
-            if (isBoolean)
+            if (typeof(TUnderlying) == typeof(bool))
             {
                 fieldDictionary = new Dictionary<string, TUnderlying>();
                 var values = (TUnderlying[])Enum.GetValues(enumType);
@@ -324,7 +323,7 @@ namespace EnumsNET
             foreach (var field in fields)
             {
                 var name = field.Name;
-                var value = isBoolean ? fieldDictionary![name] : (TUnderlying)field.GetValue(null)!;
+                var value = fieldDictionary != null ? fieldDictionary[name] : (TUnderlying)field.GetValue(null)!;
                 var attributes = new AttributeCollection(
 #if TYPE_REFLECTION
                     Attribute.GetCustomAttributes(field, false));
