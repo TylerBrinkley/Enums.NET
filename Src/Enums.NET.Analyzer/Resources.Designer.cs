@@ -40,7 +40,7 @@ namespace EnumsNET.Analyzer {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Enums.NET.Analyzer.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EnumsNET.Analyzer.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +62,7 @@ namespace EnumsNET.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NonGenericEnums members have moved to Enums.
+        ///   Looks up a localized string similar to NonGeneric and Unsafe members have moved to Enums and FlagEnums static classes.
         /// </summary>
         internal static string ENUMS001Description {
             get {
@@ -71,7 +71,7 @@ namespace EnumsNET.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NonGenericEnums members have moved to Enums.
+        ///   Looks up a localized string similar to {0} members have moved to {1}.
         /// </summary>
         internal static string ENUMS001MessageFormat {
             get {
@@ -80,92 +80,11 @@ namespace EnumsNET.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NonGenericEnums Migrator.
+        ///   Looks up a localized string similar to Enums Migrator.
         /// </summary>
         internal static string ENUMS001Title {
             get {
                 return ResourceManager.GetString("ENUMS001Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NonGenericFlagEnums members have moved to FlagEnums.
-        /// </summary>
-        internal static string ENUMS002Description {
-            get {
-                return ResourceManager.GetString("ENUMS002Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NonGenericFlagEnums members have moved to FlagEnums.
-        /// </summary>
-        internal static string ENUMS002MessageFormat {
-            get {
-                return ResourceManager.GetString("ENUMS002MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NonGenericFlagEnums Migrator.
-        /// </summary>
-        internal static string ENUMS002Title {
-            get {
-                return ResourceManager.GetString("ENUMS002Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UnsafeEnums members have moved to Enums.
-        /// </summary>
-        internal static string ENUMS003Description {
-            get {
-                return ResourceManager.GetString("ENUMS003Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UnsafeEnums members have moved to Enums.
-        /// </summary>
-        internal static string ENUMS003MessageFormat {
-            get {
-                return ResourceManager.GetString("ENUMS003MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UnsafeEnums Migrator.
-        /// </summary>
-        internal static string ENUMS003Title {
-            get {
-                return ResourceManager.GetString("ENUMS003Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UnsafeFlagEnums members have moved to FlagEnums.
-        /// </summary>
-        internal static string ENUMS004Description {
-            get {
-                return ResourceManager.GetString("ENUMS004Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UnsafeFlagEnums members have moved to FlagEnums.
-        /// </summary>
-        internal static string ENUMS004MessageFormat {
-            get {
-                return ResourceManager.GetString("ENUMS004MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to UnsafeFlagEnums Migrator.
-        /// </summary>
-        internal static string ENUMS004Title {
-            get {
-                return ResourceManager.GetString("ENUMS004Title", resourceCulture);
             }
         }
     }

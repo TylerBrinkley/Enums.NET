@@ -118,39 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ENUMS001Description" xml:space="preserve">
-    <value>NonGenericEnums members have moved to Enums</value>
+    <value>NonGeneric and Unsafe members have moved to Enums and FlagEnums static classes</value>
   </data>
   <data name="ENUMS001MessageFormat" xml:space="preserve">
-    <value>NonGenericEnums members have moved to Enums</value>
+    <value>{0} members have moved to {1}</value>
   </data>
   <data name="ENUMS001Title" xml:space="preserve">
-    <value>NonGenericEnums Migrator</value>
-  </data>
-  <data name="ENUMS002Description" xml:space="preserve">
-    <value>NonGenericFlagEnums members have moved to FlagEnums</value>
-  </data>
-  <data name="ENUMS002MessageFormat" xml:space="preserve">
-    <value>NonGenericFlagEnums members have moved to FlagEnums</value>
-  </data>
-  <data name="ENUMS002Title" xml:space="preserve">
-    <value>NonGenericFlagEnums Migrator</value>
-  </data>
-  <data name="ENUMS003Description" xml:space="preserve">
-    <value>UnsafeEnums members have moved to Enums</value>
-  </data>
-  <data name="ENUMS003MessageFormat" xml:space="preserve">
-    <value>UnsafeEnums members have moved to Enums</value>
-  </data>
-  <data name="ENUMS003Title" xml:space="preserve">
-    <value>UnsafeEnums Migrator</value>
-  </data>
-  <data name="ENUMS004Description" xml:space="preserve">
-    <value>UnsafeFlagEnums members have moved to FlagEnums</value>
-  </data>
-  <data name="ENUMS004MessageFormat" xml:space="preserve">
-    <value>UnsafeFlagEnums members have moved to FlagEnums</value>
-  </data>
-  <data name="ENUMS004Title" xml:space="preserve">
-    <value>UnsafeFlagEnums Migrator</value>
+    <value>Enums Migrator</value>
   </data>
 </root>

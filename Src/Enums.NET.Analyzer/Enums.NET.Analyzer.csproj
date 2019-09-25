@@ -20,6 +20,7 @@
     <Copyright>Copyright</Copyright>
     <PackageTags>Enums.NET.Analyzer, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
+    <RootNamespace>EnumsNET.Analyzer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
