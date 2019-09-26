@@ -36,7 +36,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericEnums members have moved to Enums",
+                Message = "NonGenericEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -80,7 +80,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericEnums members have moved to Enums",
+                Message = "NonGenericEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -123,7 +123,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericEnums members have moved to Enums",
+                Message = "NonGenericEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -164,7 +164,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericEnums members have moved to Enums",
+                Message = "NonGenericEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -205,7 +205,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericFlagEnums members have moved to FlagEnums",
+                Message = "NonGenericFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -249,7 +249,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericFlagEnums members have moved to FlagEnums",
+                Message = "NonGenericFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -292,7 +292,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericFlagEnums members have moved to FlagEnums",
+                Message = "NonGenericFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -333,7 +333,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "NonGenericFlagEnums members have moved to FlagEnums",
+                Message = "NonGenericFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -374,7 +374,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeEnums members have moved to Enums",
+                Message = "UnsafeEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -418,7 +418,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeEnums members have moved to Enums",
+                Message = "UnsafeEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -461,7 +461,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeEnums members have moved to Enums",
+                Message = "UnsafeEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -502,7 +502,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeEnums members have moved to Enums",
+                Message = "UnsafeEnums methods have moved to Enums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -543,7 +543,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeFlagEnums members have moved to FlagEnums",
+                Message = "UnsafeFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -587,7 +587,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeFlagEnums members have moved to FlagEnums",
+                Message = "UnsafeFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -630,7 +630,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeFlagEnums members have moved to FlagEnums",
+                Message = "UnsafeFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -660,6 +660,7 @@ namespace ConsoleApplication1
         {
             var test = @"
 using System;
+using static System.Math;
 
 namespace ConsoleApplication1
 {
@@ -671,11 +672,11 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeFlagEnums members have moved to FlagEnums",
+                Message = "UnsafeFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8, 61)
+                            new DiagnosticResultLocation("Test0.cs", 9, 61)
                         }
             };
 
@@ -683,6 +684,7 @@ namespace ConsoleApplication1
 
             var fixtest = @"
 using System;
+using static System.Math;
 
 namespace ConsoleApplication1
 {
@@ -712,7 +714,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ENUMS001",
-                Message = "UnsafeFlagEnums members have moved to FlagEnums",
+                Message = "UnsafeFlagEnums methods have moved to FlagEnums",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -737,8 +739,8 @@ namespace ConsoleApplication1
             VerifyCSharpFix(test, fixtest, allowNewCompilerDiagnostics: true);
         }
 
-        protected override CodeFixProvider GetCSharpCodeFixProvider() => new EnumsMigrationCodeFixProvider();
+        protected override CodeFixProvider GetCSharpCodeFixProvider() => new ObsoletedMethodMigrationCodeFix();
 
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer() => new EnumsMigrationAnalyzer();
+        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer() => new ObsoletedMethodMigrationAnalyzer();
     }
 }

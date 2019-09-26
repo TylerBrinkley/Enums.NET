@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using EnumsNET.Tests.TestEnums;
 using NUnit.Framework;
@@ -84,23 +82,23 @@ namespace EnumsNET.Tests
         [Test]
         public void GetMembers()
         {
-            Assert.AreEqual(0, GetMembers<ByteEnum>().Count());
-            Assert.AreEqual(38, GetMembers<DateFilterOperator>().Count());
-            Assert.AreEqual(6, GetMembers<ColorFlagEnum>().Count());
-            Assert.AreEqual(10, GetMembers<NumericOperator>().Count());
-            Assert.AreEqual(1, GetMembers<BooleanEnum>().Count());
-            Assert.AreEqual(3, GetMembers<CharEnum>().Count());
+            Assert.AreEqual(0, GetMembers<ByteEnum>().Count);
+            Assert.AreEqual(38, GetMembers<DateFilterOperator>().Count);
+            Assert.AreEqual(6, GetMembers<ColorFlagEnum>().Count);
+            Assert.AreEqual(10, GetMembers<NumericOperator>().Count);
+            Assert.AreEqual(1, GetMembers<BooleanEnum>().Count);
+            Assert.AreEqual(3, GetMembers<CharEnum>().Count);
 
-            Assert.AreEqual(0, GetMembers<ByteEnum>(EnumMemberSelection.Distinct).Count());
-            Assert.AreEqual(38, GetMembers<DateFilterOperator>(EnumMemberSelection.Distinct).Count());
-            Assert.AreEqual(6, GetMembers<ColorFlagEnum>(EnumMemberSelection.Distinct).Count());
-            Assert.AreEqual(8, GetMembers<NumericOperator>(EnumMemberSelection.Distinct).Count()); // Has 2 duplicates
-            Assert.AreEqual(1, GetMembers<BooleanEnum>(EnumMemberSelection.Distinct).Count());
-            Assert.AreEqual(3, GetMembers<CharEnum>(EnumMemberSelection.Distinct).Count());
+            Assert.AreEqual(0, GetMembers<ByteEnum>(EnumMemberSelection.Distinct).Count);
+            Assert.AreEqual(38, GetMembers<DateFilterOperator>(EnumMemberSelection.Distinct).Count);
+            Assert.AreEqual(6, GetMembers<ColorFlagEnum>(EnumMemberSelection.Distinct).Count);
+            Assert.AreEqual(8, GetMembers<NumericOperator>(EnumMemberSelection.Distinct).Count); // Has 2 duplicates
+            Assert.AreEqual(1, GetMembers<BooleanEnum>(EnumMemberSelection.Distinct).Count);
+            Assert.AreEqual(3, GetMembers<CharEnum>(EnumMemberSelection.Distinct).Count);
 
-            Assert.AreEqual(4, GetMembers<ColorFlagEnum>(EnumMemberSelection.Flags).Count());
+            Assert.AreEqual(4, GetMembers<ColorFlagEnum>(EnumMemberSelection.Flags).Count);
 
-            var members = GetMembers<ColorFlagEnum>().ToList();
+            var members = GetMembers<ColorFlagEnum>();
             AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Black, "Black");
             AssertEnumMemberIsCorrect(members[1], ColorFlagEnum.Red, "Red");
             AssertEnumMemberIsCorrect(members[2], ColorFlagEnum.Green, "Green");
@@ -108,7 +106,7 @@ namespace EnumsNET.Tests
             AssertEnumMemberIsCorrect(members[4], ColorFlagEnum.UltraViolet, "UltraViolet", new DescriptionAttribute("Ultra-Violet"));
             AssertEnumMemberIsCorrect(members[5], ColorFlagEnum.All, "All");
 
-            members = GetMembers<ColorFlagEnum>(EnumMemberSelection.Flags).ToList();
+            members = GetMembers<ColorFlagEnum>(EnumMemberSelection.Flags);
             AssertEnumMemberIsCorrect(members[0], ColorFlagEnum.Red, "Red");
             AssertEnumMemberIsCorrect(members[1], ColorFlagEnum.Green, "Green");
             AssertEnumMemberIsCorrect(members[2], ColorFlagEnum.Blue, "Blue");
@@ -143,8 +141,8 @@ namespace EnumsNET.Tests
             CollectionAssert.AreEqual(new List<CharEnum> { ToObject<CharEnum>('a'), ToObject<CharEnum>('b'), ToObject<CharEnum>('c') }, GetValues<CharEnum>());
 
             // Duplicate order check
-            var numericFilterOperators = GetValues<NumericOperator>().ToArray();
-            for (var i = 1; i < numericFilterOperators.Length; ++i)
+            var numericFilterOperators = GetValues<NumericOperator>();
+            for (var i = 1; i < numericFilterOperators.Count; ++i)
             {
                 Assert.IsTrue(numericFilterOperators[i - 1] <= numericFilterOperators[i]);
             }

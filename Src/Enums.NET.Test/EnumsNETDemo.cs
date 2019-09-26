@@ -112,7 +112,7 @@ class EnumsNETDemo
     public void Attributes()
     {
         Assert.AreEqual("!=", NumericOperator.NotEquals.GetAttributes().Get<SymbolAttribute>().Symbol);
-        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetAttributes().Has<PrimaryEnumMemberAttribute>());
+        Assert.IsTrue(Enums.GetMember<NumericOperator>("GreaterThanOrEquals").Attributes.Has<PrimaryEnumMemberAttribute>());
         Assert.IsFalse(NumericOperator.LessThan.GetAttributes().Has<DescriptionAttribute>());
     }
 

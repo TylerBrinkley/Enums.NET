@@ -62,7 +62,7 @@ namespace EnumsNET.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NonGeneric and Unsafe members have moved to Enums and FlagEnums static classes.
+        ///   Looks up a localized string similar to NonGeneric and Unsafe methods have moved to Enums and FlagEnums static classes.
         /// </summary>
         internal static string ENUMS001Description {
             get {
@@ -71,7 +71,7 @@ namespace EnumsNET.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} members have moved to {1}.
+        ///   Looks up a localized string similar to {0} methods have moved to {1}.
         /// </summary>
         internal static string ENUMS001MessageFormat {
             get {
@@ -80,7 +80,7 @@ namespace EnumsNET.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enums Migrator.
+        ///   Looks up a localized string similar to Enums.NET Obsoleted Methods Migrator.
         /// </summary>
         internal static string ENUMS001Title {
             get {
