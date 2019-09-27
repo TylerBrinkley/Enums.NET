@@ -23,10 +23,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
@@ -37,11 +40,15 @@ namespace EnumsNET
         IReadOnlyList<object> GetNonGenericContainer();
     }
 
-    internal sealed class ValuesContainer<TEnum, TUnderlying> : IReadOnlyList<TEnum>, IValuesContainer
-        where TEnum : struct
-        where TUnderlying : struct
+    internal sealed class ValuesContainer<TEnum, TUnderlying, TUnderlyingOperations> : IReadOnlyList<TEnum>, IValuesContainer
+        where TEnum : struct, Enum
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        private readonly IEnumerable<TUnderlying> _values;
+        private readonly IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _members;
         private TEnum[]? _valuesArray;
         private IReadOnlyList<object>? _nonGenericValuesContainer;
 
@@ -49,9 +56,10 @@ namespace EnumsNET
 
         public TEnum this[int index] => (_valuesArray ??= ArrayHelper.ToArray(this, Count))[index];
 
-        public ValuesContainer(IEnumerable<TUnderlying> values, int count, bool cached)
+        public ValuesContainer(IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members, int count, bool cached)
         {
-            _values = values;
+            Debug.Assert(count == members.Count());
+            _members = members;
             Count = count;
             if (cached)
             {
@@ -63,9 +71,9 @@ namespace EnumsNET
 
         private IEnumerator<TEnum> Enumerate()
         {
-            foreach (var value in _values)
+            foreach (var member in _members)
             {
-                var v = value;
+                var v = member.Value;
                 yield return UnsafeUtility.As<TUnderlying, TEnum>(ref v);
             }
         }
@@ -73,23 +81,29 @@ namespace EnumsNET
         public IReadOnlyList<object> GetNonGenericContainer()
         {
             var nonGenericValuesContainer = _nonGenericValuesContainer;
-            return nonGenericValuesContainer ?? Interlocked.CompareExchange(ref _nonGenericValuesContainer, (nonGenericValuesContainer = new NonGenericValuesContainer<TEnum, TUnderlying>(this)), null) ?? nonGenericValuesContainer;
+            return nonGenericValuesContainer ?? Interlocked.CompareExchange(ref _nonGenericValuesContainer, (nonGenericValuesContainer = new NonGenericValuesContainer<TEnum, TUnderlying, TUnderlyingOperations>(this)), null) ?? nonGenericValuesContainer;
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+
     }
 
-    internal sealed class NonGenericValuesContainer<TEnum, TUnderlying> : IReadOnlyList<object>
-        where TEnum : struct
-        where TUnderlying : struct
+    internal sealed class NonGenericValuesContainer<TEnum, TUnderlying, TUnderlyingOperations> : IReadOnlyList<object>
+        where TEnum : struct, Enum
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        private readonly ValuesContainer<TEnum, TUnderlying> _container;
+        private readonly ValuesContainer<TEnum, TUnderlying, TUnderlyingOperations> _container;
 
         public object this[int index] => _container[index];
 
         public int Count => _container.Count;
 
-        public NonGenericValuesContainer(ValuesContainer<TEnum, TUnderlying> container)
+        public NonGenericValuesContainer(ValuesContainer<TEnum, TUnderlying, TUnderlyingOperations> container)
         {
             _container = container;
         }

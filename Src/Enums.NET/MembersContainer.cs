@@ -26,6 +26,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using EnumsNET.Utilities;
 using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
@@ -43,6 +45,7 @@ namespace EnumsNET
 
         public MembersContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached)
         {
+            Debug.Assert(count == members.Count());
             _members = members;
             Count = count;
             if (cached)

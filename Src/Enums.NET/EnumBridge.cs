@@ -48,7 +48,7 @@ namespace EnumsNET
     {
         bool CustomValidate(TUnderlying value);
         object ToObjectUnchecked(TUnderlying value);
-        IValuesContainer CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool cached);
+        IValuesContainer CreateValuesContainer(IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members, int count, bool cached);
     }
 
     // Acts as a bridge in the reverse from the underlying type to the enum type
@@ -76,7 +76,7 @@ namespace EnumsNET
 
         public bool IsEnum(object value) => value is TEnum || value is TEnum?;
 
-        public IValuesContainer CreateValuesContainer(IEnumerable<TUnderlying> values, int count, bool cached) => new ValuesContainer<TEnum, TUnderlying>(values, count, cached);
+        public IValuesContainer CreateValuesContainer(IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members, int count, bool cached) => new ValuesContainer<TEnum, TUnderlying, TUnderlyingOperations>(members, count, cached);
 
         public IReadOnlyList<EnumMember> CreateMembersContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached) => new MembersContainer<TEnum>(members, count, cached);
     }

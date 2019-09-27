@@ -35,6 +35,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
@@ -397,9 +398,9 @@ namespace EnumsNET
 
         protected override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
 
-        protected override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetInternalMembers(selection).Select(m => m.Name), GetMemberCount(selection), cached);
+        protected override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
 
-        protected override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetInternalMembers(selection).Select(m => m.Value), GetMemberCount(selection), cached);
+        protected override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
 
         private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetInternalMembers(EnumMemberSelection selection)
         {
@@ -416,7 +417,7 @@ namespace EnumsNET
                     selection.Validate(nameof(selection));
                     if (selection.HasAnyFlags(EnumMemberSelection.Flags))
                     {
-                        members = EnumerateFlags(_allFlags).Select(flag => GetMember(flag)!);
+                        members = EnumerateFlagMembers(_allFlags);
                     }
                     else if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
                     {
@@ -1217,7 +1218,22 @@ namespace EnumsNET
                 delimiter = FlagEnums.DefaultDelimiter;
             }
 
-            return string.Join(delimiter, EnumerateFlags(value).Select(flag => FormatInternal(flag, null, formats)));
+            var sb = new StringBuilder();
+            TUnderlyingOperations operations = default;
+            var isLessThanZero = operations.LessThan(value, default);
+            for (var currentValue = operations.One; (isLessThanZero || !operations.LessThan(value, currentValue)) && !currentValue.Equals(default); currentValue = operations.LeftShift(currentValue, 1))
+            {
+                if (HasAnyFlags(value, currentValue))
+                {
+                    if (sb.Length > 0)
+                    {
+                        sb.Append(delimiter);
+                    }
+                    sb.Append(FormatInternal(currentValue, null, formats));
+                }
+            }
+
+            return sb.ToString();
         }
 
         public override IReadOnlyList<object> GetFlags(object value) => GetFlags(ToObject(value)).GetNonGenericContainer();
@@ -1225,9 +1241,16 @@ namespace EnumsNET
         public override IValuesContainer GetFlags(ref byte value) => GetFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IValuesContainer GetFlags(TUnderlying value) => EnumBridge.CreateValuesContainer(EnumerateFlags(value), GetFlagCount(value), false);
+        public IValuesContainer GetFlags(TUnderlying value) => EnumBridge.CreateValuesContainer(EnumerateFlagMembers(value), GetFlagCount(value), false);
 
-        private IEnumerable<TUnderlying> EnumerateFlags(TUnderlying value)
+        public override IReadOnlyList<EnumMember> GetFlagMembers(ref byte value) => GetFlagMembers(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override IReadOnlyList<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IReadOnlyList<EnumMember> GetFlagMembers(TUnderlying value) => EnumBridge.CreateMembersContainer(EnumerateFlagMembers(value), GetFlagCount(value), false);
+
+        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> EnumerateFlagMembers(TUnderlying value)
         {
             TUnderlyingOperations operations = default;
             var validValue = operations.And(value, _allFlags);
@@ -1236,17 +1259,10 @@ namespace EnumsNET
             {
                 if (HasAnyFlags(validValue, currentValue))
                 {
-                    yield return currentValue;
+                    yield return GetMember(currentValue)!;
                 }
             }
         }
-
-        public override IReadOnlyList<EnumMember> GetFlagMembers(ref byte value) => GetFlagMembers(UnsafeUtility.As<byte, TUnderlying>(ref value));
-
-        public override IReadOnlyList<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IReadOnlyList<EnumMember> GetFlagMembers(TUnderlying value) => EnumBridge.CreateMembersContainer(EnumerateFlags(value).Select(flag => GetMember(flag)!), GetFlagCount(value), false);
 
         public override int GetFlagCount() => default(TUnderlyingOperations).BitCount(_allFlags);
 
@@ -1693,6 +1709,5 @@ namespace EnumsNET
                 return false;
             }
         }
-
     }
 }
