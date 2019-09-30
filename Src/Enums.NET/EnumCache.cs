@@ -396,13 +396,13 @@ namespace EnumsNET
             }
         }
 
-        protected override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
+        protected override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
 
-        protected override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
+        protected override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
 
-        protected override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetInternalMembers(selection), GetMemberCount(selection), cached);
+        protected override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
 
-        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetInternalMembers(EnumMemberSelection selection)
+        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal(EnumMemberSelection selection)
         {
             IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members;
             switch (selection)
@@ -414,19 +414,7 @@ namespace EnumsNET
                     members = _duplicateValues == null ? _valueMap.Values : GetMembersInternal();
                     break;
                 default:
-                    selection.Validate(nameof(selection));
-                    if (selection.HasAnyFlags(EnumMemberSelection.Flags))
-                    {
-                        members = EnumerateFlagMembers(_allFlags);
-                    }
-                    else if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
-                    {
-                        members = _valueMap.Values;
-                    }
-                    else
-                    {
-                        return null!; // should never get here
-                    }
+                    members = selection.Validate(nameof(selection)).HasAnyFlags(EnumMemberSelection.Flags) ? EnumerateFlagMembers(_allFlags) : _valueMap.Values;
                     break;
             }
 
@@ -774,22 +762,17 @@ namespace EnumsNET
 
         public override bool IsValid(object value, EnumValidation validation) => IsValid(ToObject(value), validation);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsValid(TUnderlying value, EnumValidation validation)
         {
-            switch (validation)
+            return validation switch
             {
-                case EnumValidation.Default:
-                    return _hasCustomValidator ? EnumBridge.CustomValidate(value) : (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value);
-                case EnumValidation.IsDefined:
-                    return IsDefined(value);
-                case EnumValidation.IsValidFlagCombination:
-                    return IsValidFlagCombination(value);
-                case EnumValidation.None:
-                    return true;
-                default:
-                    validation.Validate(nameof(validation));
-                    return false;
-            }
+                EnumValidation.Default => _hasCustomValidator ? EnumBridge.CustomValidate(value) : (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value),
+                EnumValidation.IsDefined => IsDefined(value),
+                EnumValidation.IsValidFlagCombination => IsValidFlagCombination(value),
+                EnumValidation.None => true,
+                _ => validation.Validate(nameof(validation)) != validation,
+            };
         }
 
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
@@ -812,32 +795,33 @@ namespace EnumsNET
             return EnumBridge.ToObjectUnchecked(underlying);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Validate(TUnderlying value, string paramName, EnumValidation validation)
         {
             if (!IsValid(value, validation))
             {
-                throw new ArgumentException($"invalid value of {AsStringInternal(value, null)} for {_enumTypeName}", paramName);
+                throw new ArgumentException($"invalid value of {AsStringInternal(value)} for {_enumTypeName}", paramName);
             }
         }
 
-        public override string AsString(ref byte value) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null);
+        public override string AsString(ref byte value) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override string AsString(ref byte value, string? format) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
+        public override string AsString(ref byte value, string? format) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
 
         public override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
 
-        public override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, formats);
+        public override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), formats);
 
-        public override string AsString(object value) => AsStringInternal(ToObject(value), null);
+        public override string AsString(object value) => AsStringInternal(ToObject(value));
 
-        public override string AsString(object value, string? format) => AsStringInternal(ToObject(value), null, format);
+        public override string AsString(object value, string? format) => AsStringInternal(ToObject(value), format);
 
         public override string? AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
 
-        public override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), null, formats);
+        public override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), formats);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member) => IsFlagEnum ? FormatFlagsInternal(value, member, null, Enums.DefaultFormats)! : FormatInternal(value, member, Enums.DefaultFormats)!;
+        private string AsStringInternal(TUnderlying value) => IsFlagEnum ? FormatFlagsInternal(value, null, Enums.DefaultFormats)! : GetMember(value)?.Name ?? value.ToString()!;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string? AsString(TUnderlying value, EnumFormat format)
@@ -848,29 +832,37 @@ namespace EnumsNET
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal string? AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats) => formats.Any() ? FormatInternal(value, member, formats) : AsStringInternal(value, member);
+        private string? AsStringInternal(TUnderlying value, ValueCollection<EnumFormat> formats) => formats.Any() ? FormatInternal(value, null, formats) : AsStringInternal(value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string? format) => string.IsNullOrEmpty(format) ? AsStringInternal(value, member) : FormatInternal(value, member, format!);
+        private string AsStringInternal(TUnderlying value, string? format) => string.IsNullOrEmpty(format) ? AsStringInternal(value) : FormatInternal(value, null, format!);
 
-        public override string Format(ref byte value, string format) => FormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
-
-        public override string Format(object value, string format) => FormatInternal(ToObject(value), null, format);
-
-        internal string FormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string format)
+        public override string Format(ref byte value, string format)
         {
             Preconditions.NotNull(format, nameof(format));
 
+            return FormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
+        }
+
+        public override string Format(object value, string format)
+        {
+            Preconditions.NotNull(format, nameof(format));
+
+            return FormatInternal(ToObject(value), null, format);
+        }
+
+        internal string FormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string format)
+        {
             if (format.Length == 1)
             {
                 switch (format[0])
                 {
                     case 'G':
                     case 'g':
-                        return AsStringInternal(value, member);
+                        return IsFlagEnum ? FormatFlagsInternal(value, member ?? GetMember(value), null, Enums.DefaultFormats)! : (member ?? GetMember(value))?.Name ?? value.ToString()!;
                     case 'F':
                     case 'f':
-                        return FormatFlagsInternal(value, member, null, Enums.DefaultFormats)!;
+                        return FormatFlagsInternal(value, member ?? GetMember(value), null, Enums.DefaultFormats)!;
                     case 'D':
                     case 'd':
                         return value.ToString()!;
@@ -884,40 +876,31 @@ namespace EnumsNET
 
         internal string? FormatInternal(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, EnumFormat format)
         {
-            if (format == EnumFormat.UnderlyingValue)
-            {
-                return value.ToString();
-            }
             TUnderlyingOperations operations = default;
-            if (format == EnumFormat.DecimalValue)
+            return format switch
             {
-                return operations.ToDecimalString(value);
-            }
-            if (format == EnumFormat.HexadecimalValue)
-            {
-                return operations.ToHexadecimalString(value);
-            }
+                EnumFormat.UnderlyingValue => value.ToString(),
+                EnumFormat.DecimalValue => operations.ToDecimalString(value),
+                EnumFormat.HexadecimalValue => operations.ToHexadecimalString(value),
+                EnumFormat.Name => TryInitializeMember(value, ref isInitialized, ref member)?.Name,
+                EnumFormat.Description => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DescriptionAttribute>()?.Description,
+                EnumFormat.EnumMemberValue => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<EnumMemberAttribute>()?.Value,
+#if DISPLAY_ATTRIBUTE
+                EnumFormat.DisplayName => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName(),
+#endif
+                _ => format.Validate(nameof(format)) == format && TryInitializeMember(value, ref isInitialized, ref member) != null ? Enums.CustomEnumMemberFormat(member!.EnumMember, format) : null,
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private EnumMemberInternal<TUnderlying, TUnderlyingOperations>? TryInitializeMember(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member)
+        {
             if (!isInitialized)
             {
                 member = GetMember(value);
                 isInitialized = true;
             }
-            switch (format)
-            {
-                case EnumFormat.Name:
-                    return member?.Name;
-                case EnumFormat.Description:
-                    return member?.Attributes.Get<DescriptionAttribute>()?.Description;
-                case EnumFormat.EnumMemberValue:
-                    return member?.Attributes.Get<EnumMemberAttribute>()?.Value;
-#if DISPLAY_ATTRIBUTE
-                case EnumFormat.DisplayName:
-                    return member?.Attributes.Get<DisplayAttribute>()?.GetName();
-#endif
-                default:
-                    format.Validate(nameof(format));
-                    return member != null ? Enums.CustomEnumMemberFormat(member.EnumMember, format) : null;
-            }
+            return member;
         }
 
         internal string? FormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats)
@@ -1192,20 +1175,18 @@ namespace EnumsNET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsValidFlagCombination(TUnderlying value) => default(TUnderlyingOperations).And(_allFlags, value).Equals(value);
 
-        public override string? FormatFlags(ref byte value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, delimiter, formats);
+        public override string? FormatFlags(ref byte value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), delimiter, formats);
 
-        public override string? FormatFlags(object value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(ToObject(value), null, delimiter, formats);
+        public override string? FormatFlags(object value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(ToObject(value), delimiter, formats);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string? FormatFlagsInternal(TUnderlying value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(value, GetMember(value), delimiter, formats);
 
         internal string? FormatFlagsInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string? delimiter, ValueCollection<EnumFormat> formats)
         {
             if (!formats.Any())
             {
                 formats = Enums.DefaultFormats;
-            }
-
-            if (member == null)
-            {
-                member = GetMember(value);
             }
 
             if (member != null || value.Equals(default) || !IsValidFlagCombination(value))
@@ -1640,7 +1621,7 @@ namespace EnumsNET
                 var ordinalIgnoreCaseBuckets = new int[size];
                 var entries = new Entry[size];
                 var i = 0;
-                foreach (var member in enumCache.GetInternalMembers(EnumMemberSelection.All))
+                foreach (var member in enumCache.GetMembersInternal(EnumMemberSelection.All))
                 {
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)

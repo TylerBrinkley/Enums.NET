@@ -130,7 +130,7 @@ namespace EnumsNET
 
         public override object GetUnderlyingValue() => Value;
 
-        public override string AsString(string? format) => _enumCache.AsStringInternal(Value, this, format);
+        public override string AsString(string? format) => string.IsNullOrEmpty(format) ? Name : _enumCache.FormatInternal(Value, this, format!);
 
         public override string? AsString(EnumFormat format)
         {
@@ -141,7 +141,12 @@ namespace EnumsNET
 
         public override string? AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
 
-        public override string Format(string format) => _enumCache.FormatInternal(Value, this, format);
+        public override string Format(string format)
+        {
+            Preconditions.NotNull(format, nameof(format));
+
+            return _enumCache.FormatInternal(Value, this, format);
+        }
 
         public override int GetHashCode() => Value.GetHashCode();
 
