@@ -77,7 +77,7 @@ namespace EnumsNET
         /// <param name="format">The output format to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        public string AsString(string? format) => Member.AsString(format);
+        public string AsString(string? format) => string.IsNullOrEmpty(format) ? Member.Name : Member.AsString(format!);
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
@@ -121,7 +121,12 @@ namespace EnumsNET
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        public string Format(string format) => Member.Format(format);
+        public string Format(string format)
+        {
+            Preconditions.NotNull(format, nameof(format));
+
+            return Member.AsString(format);
+        }
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
@@ -225,7 +230,7 @@ namespace EnumsNET
 
         internal abstract object GetValue();
 
-        internal object GetFlags() => Member.GetFlags();
+        internal IValuesContainer GetFlags() => Member.GetFlags();
 
         internal IReadOnlyList<EnumMember> GetFlagMembers() => Member.GetFlagMembers();
 
@@ -238,7 +243,7 @@ namespace EnumsNET
         internal bool HasAllFlags() => Member.HasAllFlags();
 
         #region Explicit Interface Implementation
-        string IFormattable.ToString(string? format, IFormatProvider? formatProvider) => Member.ToString(format, formatProvider);
+        string IFormattable.ToString(string? format, IFormatProvider? formatProvider) => AsString(format);
 
 #if ICONVERTIBLE
         TypeCode IConvertible.GetTypeCode() => Member.GetTypeCode();
@@ -247,21 +252,21 @@ namespace EnumsNET
 
         char IConvertible.ToChar(IFormatProvider? provider) => Member.ToChar(provider);
 
-        sbyte IConvertible.ToSByte(IFormatProvider? provider) => Member.ToSByte(provider);
+        sbyte IConvertible.ToSByte(IFormatProvider? provider) => Member.ToSByte();
 
-        byte IConvertible.ToByte(IFormatProvider? provider) => Member.ToByte(provider);
+        byte IConvertible.ToByte(IFormatProvider? provider) => Member.ToByte();
 
-        short IConvertible.ToInt16(IFormatProvider? provider) => Member.ToInt16(provider);
+        short IConvertible.ToInt16(IFormatProvider? provider) => Member.ToInt16();
 
-        ushort IConvertible.ToUInt16(IFormatProvider? provider) => Member.ToUInt16(provider);
+        ushort IConvertible.ToUInt16(IFormatProvider? provider) => Member.ToUInt16();
 
-        int IConvertible.ToInt32(IFormatProvider? provider) => Member.ToInt32(provider);
+        int IConvertible.ToInt32(IFormatProvider? provider) => Member.ToInt32();
 
-        uint IConvertible.ToUInt32(IFormatProvider? provider) => Member.ToUInt32(provider);
+        uint IConvertible.ToUInt32(IFormatProvider? provider) => Member.ToUInt32();
 
-        long IConvertible.ToInt64(IFormatProvider? provider) => Member.ToInt64(provider);
+        long IConvertible.ToInt64(IFormatProvider? provider) => Member.ToInt64();
 
-        ulong IConvertible.ToUInt64(IFormatProvider? provider) => Member.ToUInt64(provider);
+        ulong IConvertible.ToUInt64(IFormatProvider? provider) => Member.ToUInt64();
 
         float IConvertible.ToSingle(IFormatProvider? provider) => Member.ToSingle(provider);
 
@@ -271,7 +276,7 @@ namespace EnumsNET
 
         DateTime IConvertible.ToDateTime(IFormatProvider? provider) => Member.ToDateTime(provider);
 
-        string IConvertible.ToString(IFormatProvider? provider) => Member.ToString(provider);
+        string IConvertible.ToString(IFormatProvider? provider) => Member.Name;
 
         object IConvertible.ToType(Type conversionType, IFormatProvider? provider) => Member.ToType(conversionType, provider);
 #endif

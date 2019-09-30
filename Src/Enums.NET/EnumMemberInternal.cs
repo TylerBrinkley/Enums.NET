@@ -31,10 +31,7 @@ using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 namespace EnumsNET
 {
-    internal abstract class EnumMemberInternal : IFormattable, IComparable<EnumMemberInternal>
-#if ICONVERTIBLE
-        , IConvertible
-#endif
+    internal abstract class EnumMemberInternal : IComparable<EnumMemberInternal>
     {
         public readonly string Name;
         public readonly AttributeCollection Attributes;
@@ -59,10 +56,9 @@ namespace EnumsNET
 
         public abstract void GetValue(ref byte result);
         public abstract object GetUnderlyingValue();
-        public abstract string AsString(string? format);
+        public abstract string AsString(string format);
         public abstract string? AsString(EnumFormat format);
         public abstract string? AsString(ValueCollection<EnumFormat> formats);
-        public abstract string Format(string format);
         public abstract byte ToByte();
         public abstract short ToInt16();
         public abstract int ToInt32();
@@ -75,27 +71,17 @@ namespace EnumsNET
         public abstract bool HasAnyFlags();
         public abstract bool HasAllFlags();
         public abstract int GetFlagCount();
-        public abstract object GetFlags();
+        public abstract IValuesContainer GetFlags();
         public abstract IReadOnlyList<EnumMember> GetFlagMembers();
-        public abstract string ToString(string? format, IFormatProvider? formatProvider);
         public abstract int CompareTo(EnumMemberInternal? other);
 #if ICONVERTIBLE
         public abstract TypeCode GetTypeCode();
         public abstract bool ToBoolean(IFormatProvider? provider);
         public abstract char ToChar(IFormatProvider? provider);
-        public abstract sbyte ToSByte(IFormatProvider? provider);
-        public abstract byte ToByte(IFormatProvider? provider);
-        public abstract short ToInt16(IFormatProvider? provider);
-        public abstract ushort ToUInt16(IFormatProvider? provider);
-        public abstract int ToInt32(IFormatProvider? provider);
-        public abstract uint ToUInt32(IFormatProvider? provider);
-        public abstract long ToInt64(IFormatProvider? provider);
-        public abstract ulong ToUInt64(IFormatProvider? provider);
         public abstract float ToSingle(IFormatProvider? provider);
         public abstract double ToDouble(IFormatProvider? provider);
         public abstract decimal ToDecimal(IFormatProvider? provider);
         public abstract DateTime ToDateTime(IFormatProvider? provider);
-        public abstract string ToString(IFormatProvider? provider);
         public abstract object ToType(Type conversionType, IFormatProvider? provider);
 #endif
     }
@@ -130,7 +116,7 @@ namespace EnumsNET
 
         public override object GetUnderlyingValue() => Value;
 
-        public override string AsString(string? format) => string.IsNullOrEmpty(format) ? Name : _enumCache.FormatInternal(Value, this, format!);
+        public override string AsString(string format) => _enumCache.FormatInternal(Value, this, format);
 
         public override string? AsString(EnumFormat format)
         {
@@ -140,13 +126,6 @@ namespace EnumsNET
         }
 
         public override string? AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
-
-        public override string Format(string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return _enumCache.FormatInternal(Value, this, format);
-        }
 
         public override int GetHashCode() => Value.GetHashCode();
 
@@ -158,11 +137,9 @@ namespace EnumsNET
 
         public override bool HasAllFlags() => _enumCache.HasAllFlags(Value);
 
-        public override object GetFlags() => _enumCache.GetFlags(Value);
+        public override IValuesContainer GetFlags() => _enumCache.GetFlags(Value);
 
         public override IReadOnlyList<EnumMember> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
-
-        public override string ToString(string? format, IFormatProvider? formatProvider) => AsString(format);
 
         public override int CompareTo(EnumMemberInternal? other) => other != null ? Value.CompareTo(UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(other).Value) : 1;
 
@@ -189,22 +166,6 @@ namespace EnumsNET
 
         public override char ToChar(IFormatProvider? provider) => Value.ToChar(provider);
 
-        public override sbyte ToSByte(IFormatProvider? provider) => Value.ToSByte(provider);
-
-        public override byte ToByte(IFormatProvider? provider) => Value.ToByte(provider);
-
-        public override short ToInt16(IFormatProvider? provider) => Value.ToInt16(provider);
-
-        public override ushort ToUInt16(IFormatProvider? provider) => Value.ToUInt16(provider);
-
-        public override int ToInt32(IFormatProvider? provider) => Value.ToInt32(provider);
-
-        public override uint ToUInt32(IFormatProvider? provider) => Value.ToUInt32(provider);
-
-        public override long ToInt64(IFormatProvider? provider) => Value.ToInt64(provider);
-
-        public override ulong ToUInt64(IFormatProvider? provider) => Value.ToUInt64(provider);
-
         public override float ToSingle(IFormatProvider? provider) => Value.ToSingle(provider);
 
         public override double ToDouble(IFormatProvider? provider) => Value.ToDouble(provider);
@@ -212,8 +173,6 @@ namespace EnumsNET
         public override decimal ToDecimal(IFormatProvider? provider) => Value.ToDecimal(provider);
 
         public override DateTime ToDateTime(IFormatProvider? provider) => Value.ToDateTime(provider);
-
-        public override string ToString(IFormatProvider? provider) => Name;
 
         public override object ToType(Type conversionType, IFormatProvider? provider) => Value.ToType(conversionType, provider);
 #else

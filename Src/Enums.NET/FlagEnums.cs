@@ -5776,7 +5776,7 @@ namespace EnumsNET
         public static IReadOnlyList<object> GetFlags(this EnumMember member)
         {
             Preconditions.NotNull(member, nameof(member));
-            return UnsafeUtility.As<IValuesContainer>(member.GetFlags()).GetNonGenericContainer();
+            return member.GetFlags().GetNonGenericContainer();
         }
 
         /// <summary>
