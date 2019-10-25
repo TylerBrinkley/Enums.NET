@@ -23,44 +23,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-#if !UNSAFE
-
 using System.Security;
 
 namespace System.Runtime.CompilerServices
 {
-    internal static class Unsafe
-    {
-#if FORWARD_REF
-        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#else
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        [SecuritySafeCritical]
-        public static extern ref TTo As<TFrom, TTo>(ref TFrom source);
-
-#if FORWARD_REF
-        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-#else
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        [SecuritySafeCritical]
-        public static extern T As<T>(object? value) where T : class;
-    }
-}
-#endif
-
-namespace System.Runtime.CompilerServices
-{
-    internal static class UnsafeExtensions
+    internal static class UnsafeUtility
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref byte GetRawData(this object obj) =>
-            ref Unsafe.As<RawData>(obj).Data;
+        [SecuritySafeCritical]
+        public static ref TTo As<TFrom, TTo>(ref TFrom source) => ref Unsafe.As<TFrom, TTo>(ref source);
 
-        private sealed class RawData
-        {
-            public byte Data;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        public static T As<T>(object? value) where T : class => Unsafe.As<T>(value);
     }
 }

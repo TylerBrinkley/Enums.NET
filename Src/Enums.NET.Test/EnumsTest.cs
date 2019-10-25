@@ -485,14 +485,14 @@ namespace EnumsNET.Tests
         public void TryToObject_ReturnsFalse_WhenUsingValueInRangeButNotValid()
         {
             ColorFlagEnum result;
-            Assert.IsFalse(TryToObject((sbyte)16, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject((byte)16, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject((short)16, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject((ushort)16, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject(16, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject(16U, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject(16L, EnumValidation.Default, out result));
-            Assert.IsFalse(TryToObject(16UL, EnumValidation.Default, out result));
+            Assert.IsFalse(TryToObject((sbyte)16, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject((byte)16, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject((short)16, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject((ushort)16, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject(16, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject(16U, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject(16L, out result, EnumValidation.Default));
+            Assert.IsFalse(TryToObject(16UL, out result, EnumValidation.Default));
         }
 
         [Test]
@@ -871,18 +871,6 @@ namespace EnumsNET.Tests
         }
 
         [Test]
-        public void Format_ReturnsExpected_WhenUsingCustomEnumFormat()
-        {
-            // Custom enum member formatter
-            var descriptionOrNameFormat = RegisterCustomEnumFormat(member => member.AsString(EnumFormat.Description) ?? member.Name);
-            Assert.IsTrue(descriptionOrNameFormat.IsValid());
-            Assert.IsFalse((descriptionOrNameFormat + 2).IsValid());
-            Assert.AreEqual("Ultra-Violet", Format(ColorFlagEnum.UltraViolet, descriptionOrNameFormat));
-            Assert.AreEqual(nameof(ColorFlagEnum.Red), Format(ColorFlagEnum.Red, descriptionOrNameFormat));
-            Assert.AreEqual(nameof(EnumMemberAttributeEnum.B), Format(EnumMemberAttributeEnum.B, descriptionOrNameFormat));
-        }
-
-        [Test]
         public void GetUnderlyingValue_ReturnsExpected_OnAny()
         {
             Assert.AreEqual(2, GetUnderlyingValue(NumericOperator.GreaterThan));
@@ -971,15 +959,15 @@ namespace EnumsNET.Tests
         {
             Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("No"));
             Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("False"));
-            Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("0", EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<BooleanEnum>(0), Parse<BooleanEnum>("0", ignoreCase: false, EnumFormat.DecimalValue));
             Assert.AreEqual(ToObject<BooleanEnum>(1), Parse<BooleanEnum>("True"));
-            Assert.AreEqual(ToObject<BooleanEnum>(1), Parse<BooleanEnum>("1", EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<BooleanEnum>(1), Parse<BooleanEnum>("1", ignoreCase: false, EnumFormat.DecimalValue));
 
             Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>("A"));
             Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>("a"));
-            Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>(((ushort)'a').ToString(), EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<CharEnum>('a'), Parse<CharEnum>(((ushort)'a').ToString(), ignoreCase: false, EnumFormat.DecimalValue));
             Assert.AreEqual(ToObject<CharEnum>('d'), Parse<CharEnum>("d"));
-            Assert.AreEqual(ToObject<CharEnum>('d'), Parse<CharEnum>(((ushort)'d').ToString(), EnumFormat.DecimalValue));
+            Assert.AreEqual(ToObject<CharEnum>('d'), Parse<CharEnum>(((ushort)'d').ToString(), ignoreCase: false, EnumFormat.DecimalValue));
         }
         #endregion
     }

@@ -8,12 +8,12 @@ namespace EnumsNET.Utilities
     {
         public static int PowerOf2(int v)
         {
-            if ((v & (v - 1)) == 0 && v >= 2)
+            if ((v & (v - 1)) == 0 && v >= 1)
             {
                 return v;
             }
 
-            var i = 2;
+            var i = 4;
             while (i < v)
             {
                 i <<= 1;

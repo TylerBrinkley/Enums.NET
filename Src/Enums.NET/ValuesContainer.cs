@@ -28,10 +28,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
-using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 namespace EnumsNET
 {
@@ -85,8 +85,6 @@ namespace EnumsNET
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-
     }
 
     internal sealed class NonGenericValuesContainer<TEnum, TUnderlying, TUnderlyingOperations> : IReadOnlyList<object>

@@ -378,12 +378,12 @@ namespace EnumsNET.Tests
         [Test]
         public void ParseFlags_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
         {
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("Red", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Red", "|"));
-            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Green", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Green | Red", "|"));
-            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" Blue |UltraViolet|2 | Red", " | "));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("Red", ignoreCase: false, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red, FlagEnums.ParseFlags<ColorFlagEnum>("1", ignoreCase: false, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Red", ignoreCase: false, "|"));
+            Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Green", ignoreCase: false, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, FlagEnums.ParseFlags<ColorFlagEnum>("Blue | Green | Red", ignoreCase: false, "|"));
+            Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, FlagEnums.ParseFlags<ColorFlagEnum>(" Blue |UltraViolet|2 | Red", ignoreCase: false, " | "));
         }
 
         [Test]
@@ -444,13 +444,13 @@ namespace EnumsNET.Tests
         [Test]
         public void ParseFlags_UsesDefaultDelimiter_WhenUsingNullDelimiter()
         {
-            Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", (string)null));
+            Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", ignoreCase: false, (string)null));
         }
 
         [Test]
         public void ParseFlags_UsesDefaultDelimiter_WhenUsingEmptyStringDelimiter()
         {
-            Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", string.Empty));
+            Assert.AreEqual(FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green"), FlagEnums.ParseFlags<ColorFlagEnum>("Red, Green", ignoreCase: false, string.Empty));
         }
 
         [Test]
@@ -555,17 +555,17 @@ namespace EnumsNET.Tests
         public void TryParseFlags_ReturnsValidValue_WhenUsingValidStringWithCustomDelimiter()
         {
             ColorFlagEnum result;
-            Assert.IsTrue(FlagEnums.TryParseFlags("Red", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Red", ignoreCase: false, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParseFlags("1", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("1", ignoreCase: false, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red, result);
-            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Red", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Red", ignoreCase: false, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Green", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Green", ignoreCase: false, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Green | Red", "|", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags("Blue | Green | Red", ignoreCase: false, "|", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, result);
-            Assert.IsTrue(FlagEnums.TryParseFlags(" Blue |UltraViolet|2 | Red", " | ", out result));
+            Assert.IsTrue(FlagEnums.TryParseFlags(" Blue |UltraViolet|2 | Red", ignoreCase: false, " | ", out result));
             Assert.AreEqual(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, result);
         }
 
@@ -660,7 +660,7 @@ namespace EnumsNET.Tests
         {
             ColorFlagEnum result0;
             ColorFlagEnum result1;
-            Assert.AreEqual(FlagEnums.TryParseFlags("Red, Green", out result0), FlagEnums.TryParseFlags("Red, Green", null, out result1));
+            Assert.AreEqual(FlagEnums.TryParseFlags("Red, Green", out result0), FlagEnums.TryParseFlags("Red, Green", ignoreCase: false, null, out result1));
             Assert.AreEqual(result0, result1);
         }
 
@@ -669,7 +669,7 @@ namespace EnumsNET.Tests
         {
             ColorFlagEnum result0;
             ColorFlagEnum result1;
-            Assert.AreEqual(FlagEnums.TryParseFlags("Red, Green", out result0), FlagEnums.TryParseFlags("Red, Green", string.Empty, out result1));
+            Assert.AreEqual(FlagEnums.TryParseFlags("Red, Green", out result0), FlagEnums.TryParseFlags("Red, Green", ignoreCase: false, string.Empty, out result1));
             Assert.AreEqual(result0, result1);
         }
         #endregion

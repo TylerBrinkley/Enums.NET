@@ -25,16 +25,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace EnumsNET.Utilities
 {
     internal static class ArrayHelper
     {
+#if !ARRAY_EMPTY
+        private static class Cache<T>
+        {
+            public static readonly T[] Empty = new T[0];
+        }
+#endif
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] Empty<T>() =>
 #if ARRAY_EMPTY
             Array.Empty<T>();
 #else
-            new T[0];
+            Cache<T>.Empty;
 #endif
 
         public static T[] ToArray<T>(IEnumerable<T> items, int count)
@@ -45,6 +55,7 @@ namespace EnumsNET.Utilities
             {
                 a[i++] = item;
             }
+            Debug.Assert(i == count);
             return a;
         }
     }

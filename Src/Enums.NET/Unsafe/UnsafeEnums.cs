@@ -102,47 +102,47 @@ namespace EnumsNET.Unsafe
 
         public static bool TryToObject<TEnum>(object? value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
-        public static bool TryToObject<TEnum>(object? value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(object? value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(sbyte value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(sbyte value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(sbyte value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         public static bool TryToObject<TEnum>(byte value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
-        public static bool TryToObject<TEnum>(byte value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(byte value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         public static bool TryToObject<TEnum>(short value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
-        public static bool TryToObject<TEnum>(short value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(short value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ushort value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(ushort value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(ushort value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         public static bool TryToObject<TEnum>(int value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
-        public static bool TryToObject<TEnum>(int value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(int value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(uint value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(uint value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(uint value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         public static bool TryToObject<TEnum>(long value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
-        public static bool TryToObject<TEnum>(long value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(long value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         [CLSCompliant(false)]
         public static bool TryToObject<TEnum>(ulong value, out TEnum result) => Enums.TryToObjectUnsafe(value, out result);
 
         [CLSCompliant(false)]
-        public static bool TryToObject<TEnum>(ulong value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, validation, out result);
+        public static bool TryToObject<TEnum>(ulong value, EnumValidation validation, out TEnum result) => Enums.TryToObjectUnsafe(value, out result, validation);
 
         public static bool IsValid<TEnum>(TEnum value) => Enums.IsValidUnsafe(value);
 

@@ -89,6 +89,20 @@ namespace EnumsNET.Tests.Benchmarks
             return result;
         }
 
+        [Benchmark]
+        public bool FlagEnums_HasAnyFlags()
+        {
+            var result = false;
+            foreach (var attributeTargets in _attributeTargets)
+            {
+                foreach (var otherAttributeTargets in _allAttributeTargets)
+                {
+                    result |= attributeTargets.HasAnyFlags(otherAttributeTargets);
+                }
+            }
+            return result;
+        }
+
         [Benchmark(Baseline = true)]
         public bool Manual_HasFlag()
         {

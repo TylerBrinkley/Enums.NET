@@ -25,7 +25,7 @@
 
 namespace EnumsNET
 {
-    internal struct NonGenericEnumInfo
+    internal sealed class NonGenericEnumInfo
     {
         public readonly EnumCache EnumCache;
         public readonly bool IsNullable;

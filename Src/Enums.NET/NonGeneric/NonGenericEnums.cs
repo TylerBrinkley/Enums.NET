@@ -26,6 +26,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace EnumsNET.NonGeneric
 {
@@ -34,233 +36,355 @@ namespace EnumsNET.NonGeneric
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class NonGenericEnums
     {
-        public static Type GetUnderlyingType(Type enumType) => Enums.GetUnderlyingType(enumType);
+        private static readonly ConcurrentTypeDictionary<NonGenericEnumInfo> s_nonGenericEnumInfos = new ConcurrentTypeDictionary<NonGenericEnumInfo>();
+
+        private static readonly Func<Type, NonGenericEnumInfo> s_nonGenericEnumInfoFactory = enumType =>
+        {
+            if (enumType.IsEnum())
+            {
+                return new NonGenericEnumInfo(Enums.GetCache(enumType), false);
+            }
+            else
+            {
+                var nonNullableEnumType = Nullable.GetUnderlyingType(enumType);
+                if (nonNullableEnumType?.IsEnum() != true)
+                {
+                    throw new ArgumentException("must be an enum type", nameof(enumType));
+                }
+                return new NonGenericEnumInfo(GetCache(nonNullableEnumType), true);
+            }
+        };
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static NonGenericEnumInfo GetNonGenericEnumInfo(Type enumType)
+        {
+            Preconditions.NotNull(enumType, nameof(enumType));
+
+            return s_nonGenericEnumInfos.GetOrAdd(enumType, s_nonGenericEnumInfoFactory);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static EnumCache GetCache(Type enumType) => GetNonGenericEnumInfo(enumType).EnumCache;
+
+        public static Type GetUnderlyingType(Type enumType) => GetCache(enumType).UnderlyingType;
 
 #if ICONVERTIBLE
-        public static TypeCode GetTypeCode(Type enumType) => Enums.GetTypeCode(enumType);
+        public static TypeCode GetTypeCode(Type enumType) => GetCache(enumType).TypeCode;
 #endif
 
-        public static int GetMemberCount(Type enumType) => Enums.GetMemberCount(enumType);
+        public static int GetMemberCount(Type enumType, EnumMemberSelection selection = EnumMemberSelection.All) => GetCache(enumType).GetMemberCount(selection);
 
-        public static int GetMemberCount(Type enumType, EnumMemberSelection selection) => Enums.GetMemberCount(enumType, selection);
+        public static IEnumerable<EnumMember> GetMembers(Type enumType, EnumMemberSelection selection = EnumMemberSelection.All) => GetCache(enumType).GetMembers(selection);
 
-        public static IEnumerable<EnumMember> GetMembers(Type enumType) => Enums.GetMembers(enumType);
+        public static IEnumerable<string> GetNames(Type enumType, EnumMemberSelection selection = EnumMemberSelection.All) => GetCache(enumType).GetNames(selection);
 
-        public static IEnumerable<EnumMember> GetMembers(Type enumType, EnumMemberSelection selection) => Enums.GetMembers(enumType, selection);
+        public static IEnumerable<object> GetValues(Type enumType, EnumMemberSelection selection = EnumMemberSelection.All) => GetCache(enumType).GetValues(selection).GetNonGenericContainer();
 
-        public static IEnumerable<string> GetNames(Type enumType) => Enums.GetNames(enumType);
-
-        public static IEnumerable<string> GetNames(Type enumType, EnumMemberSelection selection) => Enums.GetNames(enumType, selection);
-
-        public static IEnumerable<object> GetValues(Type enumType) => Enums.GetValues(enumType);
-
-        public static IEnumerable<object> GetValues(Type enumType, EnumMemberSelection selection) => Enums.GetValues(enumType, selection);
-
-        public static object? ToObject(Type enumType, object? value) => Enums.ToObject(enumType, value);
-
-        public static object? ToObject(Type enumType, object? value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
+        [return: NotNullIfNotNull("value")]
+        public static object? ToObject(Type enumType, object? value, EnumValidation validation = EnumValidation.None)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.ToObject(value!, validation);
+        }
 
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, sbyte value) => Enums.ToObject(enumType, value);
+        public static object ToObject(Type enumType, sbyte value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
+
+        public static object ToObject(Type enumType, byte value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
+
+        public static object ToObject(Type enumType, short value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
 
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, sbyte value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
+        public static object ToObject(Type enumType, ushort value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
 
-        public static object ToObject(Type enumType, byte value) => Enums.ToObject(enumType, value);
-
-        public static object ToObject(Type enumType, byte value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
-
-        public static object ToObject(Type enumType, short value) => Enums.ToObject(enumType, value);
-
-        public static object ToObject(Type enumType, short value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
+        public static object ToObject(Type enumType, int value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
 
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ushort value) => Enums.ToObject(enumType, value);
+        public static object ToObject(Type enumType, uint value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
+
+        public static object ToObject(Type enumType, long value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
 
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ushort value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
+        public static object ToObject(Type enumType, ulong value, EnumValidation validation = EnumValidation.None) => GetCache(enumType).ToObject(value, validation);
 
-        public static object ToObject(Type enumType, int value) => Enums.ToObject(enumType, value);
+        public static bool TryToObject(Type enumType, object? value, out object? result, EnumValidation validation = EnumValidation.None)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
 
-        public static object ToObject(Type enumType, int value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
+            if (value == null && info.IsNullable)
+            {
+                result = null;
+                return true;
+            }
 
-        [CLSCompliant(false)]
-        public static object ToObject(Type enumType, uint value) => Enums.ToObject(enumType, value);
-
-        [CLSCompliant(false)]
-        public static object ToObject(Type enumType, uint value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
-
-        public static object ToObject(Type enumType, long value) => Enums.ToObject(enumType, value);
-
-        public static object ToObject(Type enumType, long value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
-
-        [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ulong value) => Enums.ToObject(enumType, value);
+            return info.EnumCache.TryToObject(value, out result, validation);
+        }
 
         [CLSCompliant(false)]
-        public static object ToObject(Type enumType, ulong value, EnumValidation validation) => Enums.ToObject(enumType, value, validation);
+        public static bool TryToObject(Type enumType, sbyte value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
-        public static bool TryToObject(Type enumType, object? value, out object? result) => Enums.TryToObject(enumType, value, out result);
+        public static bool TryToObject(Type enumType, byte value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
-        public static bool TryToObject(Type enumType, object? value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
-
-        [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, sbyte value, out object? result) => Enums.TryToObject(enumType, value, out result);
+        public static bool TryToObject(Type enumType, short value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, sbyte value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static bool TryToObject(Type enumType, ushort value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
-        public static bool TryToObject(Type enumType, byte value, out object? result) => Enums.TryToObject(enumType, value, out result);
-
-        public static bool TryToObject(Type enumType, byte value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
-
-        public static bool TryToObject(Type enumType, short value, out object? result) => Enums.TryToObject(enumType, value, out result);
-
-        public static bool TryToObject(Type enumType, short value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static bool TryToObject(Type enumType, int value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ushort value, out object? result) => Enums.TryToObject(enumType, value, out result);
+        public static bool TryToObject(Type enumType, uint value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
+
+        public static bool TryToObject(Type enumType, long value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ushort value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static bool TryToObject(Type enumType, ulong value, out object? result, EnumValidation validation = EnumValidation.None) => GetCache(enumType).TryToObject(value, out result, validation);
 
-        public static bool TryToObject(Type enumType, int value, out object? result) => Enums.TryToObject(enumType, value, out result);
+        public static bool IsValid(Type enumType, object? value, EnumValidation validation = EnumValidation.Default)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? true : info.EnumCache.IsValid(value!, validation);
+        }
 
-        public static bool TryToObject(Type enumType, int value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static bool IsDefined(Type enumType, object? value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? false : info.EnumCache.IsDefined(value!);
+        }
+
+        [return: NotNullIfNotNull("value")]
+        public static object? Validate(Type enumType, object? value, string paramName, EnumValidation validation = EnumValidation.Default)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.Validate(value!, paramName, validation);
+        }
+
+        [return: NotNullIfNotNull("value")]
+        public static string? AsString(Type enumType, object? value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.AsString(value!);
+        }
+
+        [return: NotNullIfNotNull("value")]
+        public static string? AsString(Type enumType, object? value, string? format)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.AsString(value!, string.IsNullOrEmpty(format) ? "G" : format!);
+        }
+
+        public static string? AsString(Type enumType, object? value, EnumFormat format)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.AsString(value!, format);
+        }
+
+        public static string? AsString(Type enumType, object? value, EnumFormat format0, EnumFormat format1) => AsString(enumType, value, ValueCollection.Create(format0, format1));
+
+        public static string? AsString(Type enumType, object? value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => AsString(enumType, value, ValueCollection.Create(format0, format1, format2));
+
+        public static string? AsString(Type enumType, object? value, params EnumFormat[]? formats) => AsString(enumType, value, ValueCollection.Create(formats));
+
+        private static string? AsString(Type enumType, object? value, ValueCollection<EnumFormat> formats)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.AsString(value!, formats);
+        }
+
+        public static string? Format(Type enumType, object? value, string format)
+        {
+            Preconditions.NotNull(format, nameof(format));
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.AsString(value!, format);
+        }
+
+        public static string? Format(Type enumType, object? value, params EnumFormat[] formats)
+        {
+            Preconditions.NotNull(formats, nameof(formats));
+            return AsString(enumType, value, formats);
+        }
+
+        public static object? GetUnderlyingValue(Type enumType, object? value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.GetUnderlyingValue(value!);
+        }
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, uint value, out object? result) => Enums.TryToObject(enumType, value, out result);
+        public static sbyte ToSByte(Type enumType, object value) => GetCache(enumType).ToSByte(value);
+
+        public static byte ToByte(Type enumType, object value) => GetCache(enumType).ToByte(value);
+
+        public static short ToInt16(Type enumType, object value) => GetCache(enumType).ToInt16(value);
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, uint value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static ushort ToUInt16(Type enumType, object value) => GetCache(enumType).ToUInt16(value);
 
-        public static bool TryToObject(Type enumType, long value, out object? result) => Enums.TryToObject(enumType, value, out result);
-
-        public static bool TryToObject(Type enumType, long value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static int ToInt32(Type enumType, object value) => GetCache(enumType).ToInt32(value);
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ulong value, out object? result) => Enums.TryToObject(enumType, value, out result);
+        public static uint ToUInt32(Type enumType, object value) => GetCache(enumType).ToUInt32(value);
+
+        public static long ToInt64(Type enumType, object value) => GetCache(enumType).ToInt64(value);
 
         [CLSCompliant(false)]
-        public static bool TryToObject(Type enumType, ulong value, EnumValidation validation, out object? result) => Enums.TryToObject(enumType, value, validation, out result);
+        public static ulong ToUInt64(Type enumType, object value) => GetCache(enumType).ToUInt64(value);
 
-        public static bool IsValid(Type enumType, object? value) => Enums.IsValid(enumType, value);
+        public static bool Equals(Type enumType, object? value, object? other)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            var cache = info.EnumCache;
 
-        public static bool IsValid(Type enumType, object? value, EnumValidation validation) => Enums.IsValid(enumType, value, validation);
+            if (info.IsNullable)
+            {
+                if (value == null)
+                {
+                    if (other == null)
+                    {
+                        return true;
+                    }
+                    cache.ToObject(other, EnumValidation.None);
+                    return false;
+                }
+                if (other == null)
+                {
+                    cache.ToObject(value, EnumValidation.None);
+                    return false;
+                }
+            }
 
-        public static bool IsDefined(Type enumType, object? value) => Enums.IsDefined(enumType, value);
+            return cache.Equals(value!, other!);
+        }
 
-        public static object? Validate(Type enumType, object? value, string paramName) => Enums.Validate(enumType, value, paramName);
+        public static int CompareTo(Type enumType, object? value, object? other)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            var cache = info.EnumCache;
+            if (info.IsNullable)
+            {
+                if (value == null)
+                {
+                    if (other == null)
+                    {
+                        return 0;
+                    }
+                    cache.ToObject(other, EnumValidation.None);
+                    return -1;
+                }
+                if (other == null)
+                {
+                    cache.ToObject(value, EnumValidation.None);
+                    return 1;
+                }
+            }
 
-        public static object? Validate(Type enumType, object? value, string paramName, EnumValidation validation) => Enums.Validate(enumType, value, paramName, validation);
+            return cache.CompareTo(value!, other!);
+        }
 
-        public static string? AsString(Type enumType, object? value) => Enums.AsString(enumType, value);
+        public static string? GetName(Type enumType, object? value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.GetMember(value!)?.Name;
+        }
 
-        public static string? AsString(Type enumType, object? value, string? format) => Enums.AsString(enumType, value, format);
+        public static AttributeCollection? GetAttributes(Type enumType, object? value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.GetMember(value!)?.Attributes;
+        }
 
-        public static string? AsString(Type enumType, object? value, EnumFormat format) => Enums.AsString(enumType, value, format);
+        public static EnumMember? GetMember(Type enumType, object? value)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
+            return value == null && info.IsNullable ? null : info.EnumCache.GetMember(value!)?.EnumMember;
+        }
 
-        public static string? AsString(Type enumType, object? value, EnumFormat format0, EnumFormat format1) => Enums.AsString(enumType, value, format0, format1);
+        public static EnumMember? GetMember(Type enumType, string name) => GetMember(enumType, name, false);
 
-        public static string? AsString(Type enumType, object? value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.AsString(enumType, value, format0, format1, format2);
+        public static EnumMember? GetMember(Type enumType, string name, bool ignoreCase) => GetCache(enumType).GetMember(name, ignoreCase, default);
 
-        public static string? AsString(Type enumType, object? value, params EnumFormat[]? formats) => Enums.AsString(enumType, value, formats);
+        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format) => GetMember(enumType, value, false, format);
 
-        public static string? Format(Type enumType, object? value, string format) => Enums.Format(enumType, value, format);
+        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1) => GetMember(enumType, value, false, format0, format1);
 
-        public static string? Format(Type enumType, object? value, params EnumFormat[] formats) => Enums.Format(enumType, value, formats);
+        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetMember(enumType, value, false, format0, format1, format2);
 
-        public static object? GetUnderlyingValue(Type enumType, object? value) => Enums.GetUnderlyingValue(enumType, value);
+        public static EnumMember? GetMember(Type enumType, string value, params EnumFormat[]? formats) => GetMember(enumType, value, false, formats);
 
-        [CLSCompliant(false)]
-        public static sbyte ToSByte(Type enumType, object value) => Enums.ToSByte(enumType, value);
+        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format) => GetCache(enumType).GetMember(value, ignoreCase, ValueCollection.Create(format));
 
-        public static byte ToByte(Type enumType, object value) => Enums.ToByte(enumType, value);
+        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => GetCache(enumType).GetMember(value, ignoreCase, ValueCollection.Create(format0, format1));
 
-        public static short ToInt16(Type enumType, object value) => Enums.ToInt16(enumType, value);
+        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetCache(enumType).GetMember(value, ignoreCase, ValueCollection.Create(format0, format1, format2));
 
-        [CLSCompliant(false)]
-        public static ushort ToUInt16(Type enumType, object value) => Enums.ToUInt16(enumType, value);
+        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[]? formats) => GetCache(enumType).GetMember(value, ignoreCase, ValueCollection.Create(formats));
 
-        public static int ToInt32(Type enumType, object value) => Enums.ToInt32(enumType, value);
+        public static object? Parse(Type enumType, string? value) => Parse(enumType, value, false, default(ValueCollection<EnumFormat>));
 
-        [CLSCompliant(false)]
-        public static uint ToUInt32(Type enumType, object value) => Enums.ToUInt32(enumType, value);
+        public static object? Parse(Type enumType, string? value, EnumFormat format) => Parse(enumType, value, false, ValueCollection.Create(format));
 
-        public static long ToInt64(Type enumType, object value) => Enums.ToInt64(enumType, value);
+        public static object? Parse(Type enumType, string? value, EnumFormat format0, EnumFormat format1) => Parse(enumType, value, false, ValueCollection.Create(format0, format1));
 
-        [CLSCompliant(false)]
-        public static ulong ToUInt64(Type enumType, object value) => Enums.ToUInt64(enumType, value);
+        public static object? Parse(Type enumType, string? value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Parse(enumType, value, false, ValueCollection.Create(format0, format1, format2));
 
-        public static bool Equals(Type enumType, object? value, object? other) => Enums.Equals(enumType, value, other);
+        public static object? Parse(Type enumType, string? value, params EnumFormat[]? formats) => Parse(enumType, value, false, ValueCollection.Create(formats));
 
-        public static int CompareTo(Type enumType, object? value, object? other) => Enums.CompareTo(enumType, value, other);
+        public static object? Parse(Type enumType, string? value, bool ignoreCase) => Parse(enumType, value, ignoreCase, default(ValueCollection<EnumFormat>));
 
-        public static string? GetName(Type enumType, object? value) => Enums.GetName(enumType, value);
+        public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format) => Parse(enumType, value, ignoreCase, ValueCollection.Create(format));
 
-        public static AttributeCollection? GetAttributes(Type enumType, object? value) => Enums.GetAttributes(enumType, value);
+        public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => Parse(enumType, value, ignoreCase, ValueCollection.Create(format0, format1));
 
-        public static EnumMember? GetMember(Type enumType, object? value) => Enums.GetMember(enumType, value);
+        public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Parse(enumType, value, ignoreCase, ValueCollection.Create(format0, format1, format2));
 
-        public static EnumMember? GetMember(Type enumType, string name) => Enums.GetMember(enumType, name);
+        public static object? Parse(Type enumType, string? value, bool ignoreCase, params EnumFormat[]? formats) => Parse(enumType, value, ignoreCase, ValueCollection.Create(formats));
 
-        public static EnumMember? GetMember(Type enumType, string name, bool ignoreCase) => Enums.GetMember(enumType, name, ignoreCase);
+        private static object? Parse(Type enumType, string? value, bool ignoreCase, ValueCollection<EnumFormat> formats)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
 
-        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format) => Enums.GetMember(enumType, value, format);
+            if (info.IsNullable && string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
 
-        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1) => Enums.GetMember(enumType, value, format0, format1);
+            Preconditions.NotNull(value, nameof(value));
 
-        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.GetMember(enumType, value, format0, format1, format2);
+            return info.EnumCache.Parse(value!, ignoreCase, formats);
+        }
 
-        public static EnumMember? GetMember(Type enumType, string value, params EnumFormat[]? formats) => Enums.GetMember(enumType, value, formats);
+        public static bool TryParse(Type enumType, string? value, out object? result) => TryParse(enumType, value, false, out result, default(ValueCollection<EnumFormat>));
 
-        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format) => Enums.GetMember(enumType, value, ignoreCase, format);
+        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format) => TryParse(enumType, value, false, out result, ValueCollection.Create(format));
 
-        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => Enums.GetMember(enumType, value, ignoreCase, format0, format1);
+        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1) => TryParse(enumType, value, false, out result, ValueCollection.Create(format0, format1));
 
-        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.GetMember(enumType, value, ignoreCase, format0, format1, format2);
+        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParse(enumType, value, false, out result, ValueCollection.Create(format0, format1, format2));
 
-        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[]? formats) => Enums.GetMember(enumType, value, ignoreCase, formats);
+        public static bool TryParse(Type enumType, string? value, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, false, out result, ValueCollection.Create(formats));
 
-        public static object? Parse(Type enumType, string? value) => Enums.Parse(enumType, value);
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result) => TryParse(enumType, value, ignoreCase, out result, default(ValueCollection<EnumFormat>));
 
-        public static object? Parse(Type enumType, string? value, EnumFormat format) => Enums.Parse(enumType, value, format);
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(format));
 
-        public static object? Parse(Type enumType, string? value, EnumFormat format0, EnumFormat format1) => Enums.Parse(enumType, value, format0, format1);
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(format0, format1));
 
-        public static object? Parse(Type enumType, string? value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.Parse(enumType, value, format0, format1, format2);
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(format0, format1, format2));
 
-        public static object? Parse(Type enumType, string? value, params EnumFormat[]? formats) => Enums.Parse(enumType, value, formats);
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(formats));
 
-        public static object? Parse(Type enumType, string? value, bool ignoreCase) => Enums.Parse(enumType, value, ignoreCase);
+        private static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats)
+        {
+            var info = GetNonGenericEnumInfo(enumType);
 
-        public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format) => Enums.Parse(enumType, value, ignoreCase, format);
+            if (info.IsNullable && string.IsNullOrEmpty(value))
+            {
+                result = null;
+                return true;
+            }
 
-        public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => Enums.Parse(enumType, value, ignoreCase, format0, format1);
-
-        public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.Parse(enumType, value, ignoreCase, format0, format1, format2);
-
-        public static object? Parse(Type enumType, string? value, bool ignoreCase, params EnumFormat[]? formats) => Enums.Parse(enumType, value, ignoreCase, formats);
-
-        public static bool TryParse(Type enumType, string? value, out object? result) => Enums.TryParse(enumType, value, out result);
-
-        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format) => Enums.TryParse(enumType, value, out result, format);
-
-        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1) => Enums.TryParse(enumType, value, out result, format0, format1);
-
-        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.TryParse(enumType, value, out result, format0, format1, format2);
-
-        public static bool TryParse(Type enumType, string? value, out object? result, params EnumFormat[]? formats) => Enums.TryParse(enumType, value, out result, formats);
-
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result) => Enums.TryParse(enumType, value, ignoreCase, out result);
-
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format) => Enums.TryParse(enumType, value, ignoreCase, out result, format);
-
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1) => Enums.TryParse(enumType, value, ignoreCase, out result, format0, format1);
-
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Enums.TryParse(enumType, value, ignoreCase, out result, format0, format1, format2);
-
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, params EnumFormat[]? formats) => Enums.TryParse(enumType, value, ignoreCase, out result, formats);
+            return info.EnumCache.TryParse(value, ignoreCase, out result, formats);
+        }
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

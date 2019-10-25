@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net46;net45;netcoreapp3.0;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.3.2</FileVersion>
-    <VersionPrefix>2.3.2</VersionPrefix>
+    <TargetFrameworks>net46;net45;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0</FileVersion>
+    <VersionPrefix>3.0.0</VersionPrefix>
     <VersionSufix></VersionSufix>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
@@ -28,52 +28,53 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Fody" Version="5.0.6" PrivateAssets="All" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.2.0-beta4-final" PrivateAssets="All" />
-    <WeaverFiles Include="$(SolutionDir)Weavers\bin\$(Configuration)\netstandard2.0\Weavers.dll" WeaverClassNames="UnsafeWeaver" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net46'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
-    <AssemblyTitle>Enums.NET .NET 4.6</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;FORWARD_REF;ARRAY_EMPTY</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <AssemblyTitle>Enums.NET .NET 4.5</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;FORWARD_REF</DefineConstants>
-  </PropertyGroup>
-  
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
+  </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1' OR '$(TargetFramework)' == 'netstandard1.0'">
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1'">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
-  </ItemGroup>
+  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
+    <AssemblyTitle>Enums.NET .NET 4.6</AssemblyTitle>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <AssemblyTitle>Enums.NET .NET 4.5</AssemblyTitle>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>
-    <DefineConstants>NETCOREAPP;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;FORWARD_REF;SPAN;NULLABLE_ATTRIBUTES;ARRAY_EMPTY;UNSAFE</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <AssemblyTitle>Enums.NET .NET Standard 2.1</AssemblyTitle>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>Enums.NET .NET Standard 2.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;FORWARD_REF;ARRAY_EMPTY</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <AssemblyTitle>Enums.NET .NET Standard 1.3</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
     <AssemblyTitle>Enums.NET .NET Standard 1.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.0'">
     <AssemblyTitle>Enums.NET .NET Standard 1.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD</DefineConstants>
+    <DefineConstants></DefineConstants>
   </PropertyGroup>
 </Project>

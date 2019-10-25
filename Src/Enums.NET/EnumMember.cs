@@ -25,7 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
+using System.Runtime.CompilerServices;
 
 namespace EnumsNET
 {
@@ -37,7 +37,7 @@ namespace EnumsNET
         , IConvertible
 #endif
     {
-        internal readonly EnumMemberInternal Member;
+        private protected readonly EnumMemberInternal Member;
 
         /// <summary>
         /// The enum member's value.
@@ -54,7 +54,7 @@ namespace EnumsNET
         /// </summary>
         public AttributeCollection Attributes => Member.Attributes;
 
-        internal EnumMember(EnumMemberInternal member)
+        private protected EnumMember(EnumMemberInternal member)
         {
             Member = member;
         }
@@ -94,7 +94,7 @@ namespace EnumsNET
         /// <param name="format1">The second output format to use if using the first resolves to <c>null</c>.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        public string? AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1));
+        public string? AsString(EnumFormat format0, EnumFormat format1) => Member.AsString(ValueCollection.Create(format0, format1));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified formats.
@@ -104,7 +104,7 @@ namespace EnumsNET
         /// <param name="format2">The third output format to use if using the first and second both resolve to <c>null</c>.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        public string? AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(new ValueCollection<EnumFormat>(format0, format1, format2));
+        public string? AsString(EnumFormat format0, EnumFormat format1, EnumFormat format2) => Member.AsString(ValueCollection.Create(format0, format1, format2));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
@@ -112,7 +112,7 @@ namespace EnumsNET
         /// <param name="formats">The output formats to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public string? AsString(params EnumFormat[]? formats) => Member.AsString(new ValueCollection<EnumFormat>(formats));
+        public string? AsString(params EnumFormat[]? formats) => Member.AsString(ValueCollection.Create(formats));
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
@@ -121,6 +121,7 @@ namespace EnumsNET
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
+        [Obsolete("Use AsString instead")]
         public string Format(string format)
         {
             Preconditions.NotNull(format, nameof(format));
@@ -135,6 +136,7 @@ namespace EnumsNET
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        [Obsolete("Use AsString instead")]
         public string? Format(params EnumFormat[] formats)
         {
             Preconditions.NotNull(formats, nameof(formats));
@@ -146,7 +148,7 @@ namespace EnumsNET
         /// Retrieves the enum member's underlying integral value.
         /// </summary>
         /// <returns>The enum member's underlying integral value.</returns>
-        public object GetUnderlyingValue() => Member.GetUnderlyingValue();
+        public object GetUnderlyingValue() => Member.GetValue();
 
         /// <summary>
         /// Converts <see cref="Value"/> to an <see cref="sbyte"/>.
@@ -228,7 +230,7 @@ namespace EnumsNET
         /// <returns>Indication whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.</returns>
         public sealed override bool Equals(object? other) => ReferenceEquals(this, other);
 
-        internal abstract object GetValue();
+        private protected abstract object GetValue();
 
         internal IValuesContainer GetFlags() => Member.GetFlags();
 
@@ -319,7 +321,7 @@ namespace EnumsNET
         /// <returns>Indication whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>.</returns>
         public bool Equals(EnumMember<TEnum> other) => ReferenceEquals(this, other);
 
-        internal override object GetValue() => Value!;
+        private protected override object GetValue() => Value!;
 
         #region Explicit Interface Implementation
         int IComparable<EnumMember>.CompareTo(EnumMember? other) => ((IComparable<EnumMember<TEnum>>)this).CompareTo((other as EnumMember<TEnum>)!);

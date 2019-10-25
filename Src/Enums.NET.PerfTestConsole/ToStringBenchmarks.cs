@@ -73,6 +73,28 @@ namespace EnumsNET.Tests.Benchmarks
         }
 
         [Benchmark]
+        public string Enums_GetName()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = value.GetName();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string FastEnum_GetName()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = FastEnumUtility.FastEnum.GetName(value);
+            }
+            return result;
+        }
+
+        [Benchmark]
         public string Enum_ToString_Decimal()
         {
             string result = null;

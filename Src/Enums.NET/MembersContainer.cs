@@ -28,8 +28,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using EnumsNET.Utilities;
-using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 namespace EnumsNET
 {

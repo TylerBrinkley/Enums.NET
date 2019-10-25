@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="5.0.6" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="6.0.2" PrivateAssets="All" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
     <WeaverFiles Include="$(SolutionDir)Weavers\bin\$(Configuration)\netstandard2.0\Weavers.dll" WeaverClassNames="EnumUnderlyingTypeChanger" />
     <Folder Include="Properties\" />

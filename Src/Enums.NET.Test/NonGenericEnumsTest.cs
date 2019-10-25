@@ -17,9 +17,8 @@ namespace EnumsNET.Tests
         [Test]
         public void NonGenericEnumsNullableTest()
         {
-            Assert.AreEqual("Today", Enums.GetName(typeof(DateFilterOperator?), (DateFilterOperator?)DateFilterOperator.Today));
-            Assert.AreEqual("Today", Enums.GetName(typeof(DateFilterOperator?), DateFilterOperator.Today));
-            Assert.AreEqual(null, Enums.GetName(typeof(DateFilterOperator?), null));
+            Assert.AreEqual("Today", Enums.GetName(typeof(DateFilterOperator), (DateFilterOperator?)DateFilterOperator.Today));
+            Assert.AreEqual("Today", Enums.GetName(typeof(DateFilterOperator), DateFilterOperator.Today));
         }
 
         [Test]

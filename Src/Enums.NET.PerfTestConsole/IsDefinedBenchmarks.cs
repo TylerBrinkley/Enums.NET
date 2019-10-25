@@ -112,6 +112,28 @@ namespace EnumsNET.Tests.Benchmarks
         }
 
         [Benchmark]
+        public bool FastEnum_IsDefined_True()
+        {
+            var result = false;
+            foreach (var value in _values)
+            {
+                result |= FastEnumUtility.FastEnum.IsDefined(value);
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public bool FastEnum_IsDefined_False()
+        {
+            var result = false;
+            foreach (var value in _undefinedValues)
+            {
+                result |= FastEnumUtility.FastEnum.IsDefined(value);
+            }
+            return result;
+        }
+
+        [Benchmark]
         public bool Enums_IsValid_True()
         {
             var result = false;

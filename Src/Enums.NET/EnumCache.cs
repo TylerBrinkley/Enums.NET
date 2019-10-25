@@ -32,14 +32,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
-using UnsafeUtility = System.Runtime.CompilerServices.Unsafe;
 
 #if SPAN
 using ParseType = System.ReadOnlySpan<char>;
@@ -60,16 +58,18 @@ namespace EnumsNET
         public readonly Type UnderlyingType;
         public readonly TypeCode TypeCode;
         public readonly bool IsFlagEnum;
-        private protected bool _hasDuplicateValues;
+        private protected readonly bool _hasDuplicateValues;
         private IReadOnlyList<string>? _names;
         private IValuesContainer? _values;
         private IReadOnlyList<EnumMember>? _members;
+        private EnumComparer? _enumComparer;
 
-        private protected EnumCache(Type enumType, Type underlyingType)
+        protected EnumCache(Type underlyingType, bool isFlagEnum, bool hasDuplicateValues)
         {
             UnderlyingType = underlyingType;
             TypeCode = underlyingType.GetTypeCode();
-            IsFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
+            IsFlagEnum = isFlagEnum;
+            _hasDuplicateValues = hasDuplicateValues;
         }
 
         public IReadOnlyList<EnumMember> GetMembers(EnumMemberSelection selection)
@@ -117,12 +117,22 @@ namespace EnumsNET
             return values;
         }
 
+        public EnumComparer EnumComparer
+        {
+            get
+            {
+                var enumComparer = _enumComparer;
+                return enumComparer ?? Interlocked.CompareExchange(ref _enumComparer, (enumComparer = CreateEnumComparer()), null) ?? enumComparer;
+            }
+        }
+
+        protected abstract EnumComparer CreateEnumComparer();
         public abstract string AsString(ref byte value);
-        public abstract string AsString(ref byte value, string? format);
+        public abstract string AsString(ref byte value, string format);
         public abstract string? AsString(ref byte value, EnumFormat format);
         public abstract string? AsString(ref byte value, ValueCollection<EnumFormat> formats);
         public abstract string AsString(object value);
-        public abstract string AsString(object value, string? format);
+        public abstract string AsString(object value, string format);
         public abstract string? AsString(object value, EnumFormat format);
         public abstract string? AsString(object value, ValueCollection<EnumFormat> formats);
         public abstract void CombineFlags(ref byte value, ref byte otherFlags, ref byte result);
@@ -137,8 +147,6 @@ namespace EnumsNET
         public abstract int CompareTo(object value, object other);
         public abstract bool Equals(ref byte value, ref byte other);
         public new abstract bool Equals(object value, object other);
-        public abstract string Format(ref byte value, string format);
-        public abstract string Format(object value, string format);
         public abstract string? FormatFlags(ref byte value, string? delimiter, ValueCollection<EnumFormat> formats);
         public abstract string? FormatFlags(object value, string? delimiter, ValueCollection<EnumFormat> formats);
         public abstract void GetAllFlags(ref byte result);
@@ -152,6 +160,7 @@ namespace EnumsNET
         public abstract IReadOnlyList<EnumMember> GetFlagMembers(object value);
         public abstract IValuesContainer GetFlags(ref byte value);
         public abstract IReadOnlyList<object> GetFlags(object value);
+        public abstract int GetHashCode(object value);
         public abstract int GetHashCode(ref byte value);
         public abstract EnumMemberInternal? GetMember(ref byte value);
         public abstract EnumMemberInternal? GetMember(object value);
@@ -246,7 +255,7 @@ namespace EnumsNET
         public abstract object Validate(object value, string paramName, EnumValidation validation);
     }
 
-    internal sealed class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCache
+    internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCache
         where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
 #if ICONVERTIBLE
         , IConvertible
@@ -255,125 +264,43 @@ namespace EnumsNET
     {
         internal readonly IEnumBridge<TUnderlying, TUnderlyingOperations> EnumBridge;
         private readonly bool _isContiguous;
-        private readonly bool _hasCustomValidator;
+        private readonly object? _customValidator;
         private readonly string _enumTypeName;
         private readonly TUnderlying _allFlags;
-        private readonly TUnderlying _maxDefined;
-        private readonly TUnderlying _minDefined;
-        private readonly DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>> _valueMap;
-        private readonly List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>? _duplicateValues;
-        private EnumMemberParser[]? _enumMemberParsers;
+        private protected readonly TUnderlying _maxDefined;
+        private protected readonly TUnderlying _minDefined;
+        private readonly EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] _buckets; // A hash bucket for lookups by value
+        private readonly EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] _members;
+        private readonly int _distinctCount;
+        private EnumMemberParser?[] _enumMemberParsers = ArrayHelper.Empty<EnumMemberParser>();
 
-        private EnumMemberParser GetEnumMemberParser(EnumFormat format)
-        {
-            var index = format - EnumFormat.Name;
-            var parsers = _enumMemberParsers;
-            EnumMemberParser parser;
-            if (index < 0 || parsers == null || index >= parsers.Length || (parser = parsers[index]) == null)
-            {
-                format.Validate(nameof(format));
-
-                parser = new EnumMemberParser(format, this);
-                EnumMemberParser[]? oldParsers;
-                do
-                {
-                    oldParsers = parsers;
-                    parsers = new EnumMemberParser[Math.Max(oldParsers?.Length ?? 0, index + 1)];
-                    oldParsers?.CopyTo(parsers, 0);
-                    parsers[index] = parser;
-                } while ((parsers = Interlocked.CompareExchange(ref _enumMemberParsers, parsers, oldParsers)) != oldParsers);
-            }
-            return parser;
-        }
-
-        public EnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge)
-            : base(enumType, typeof(TUnderlying))
+        protected EnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, bool isFlagEnum, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
+            : base(typeof(TUnderlying), isFlagEnum, distinctCount != members.Length)
         {
             _enumTypeName = enumType.Name;
             EnumBridge = enumBridge;
-            _hasCustomValidator = enumBridge.HasCustomValidator;
-
-            var fields =
-#if TYPE_REFLECTION
-                enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-#else
-                enumType.GetTypeInfo().DeclaredFields.Where(fieldInfo => (fieldInfo.Attributes & (FieldAttributes.Static | FieldAttributes.Public)) == (FieldAttributes.Static | FieldAttributes.Public)).ToArray();
-#endif
-            var valueMap = new Dictionary<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(fields.Length);
-            if (fields.Length == 0)
+            _customValidator = customValidator;
+            _members = members;
+            _buckets = buckets;
+            _allFlags = allFlags;
+            _distinctCount = distinctCount;
+            _isContiguous = isContiguous;
+            if (members.Length > 0)
             {
-                _valueMap = new DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(valueMap, 0);
-                return;
+                _maxDefined = members[members.Length - 1].Value;
+                _minDefined = members[0].Value;
             }
-            List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>? duplicateValues = null;
-
-            // This is necessary due to a .NET reflection bug with retrieving Boolean Enums values
-            Dictionary<string, TUnderlying>? fieldDictionary = null;
-            if (typeof(TUnderlying) == typeof(bool))
+            foreach (var member in members)
             {
-                fieldDictionary = new Dictionary<string, TUnderlying>();
-                var values = (TUnderlying[])Enum.GetValues(enumType);
-                var names = Enum.GetNames(enumType);
-                for (var i = 0; i < names.Length; ++i)
-                {
-                    fieldDictionary.Add(names[i], values[i]);
-                }
-            }
-
-            TUnderlyingOperations operations = default;
-            foreach (var field in fields)
-            {
-                var name = field.Name;
-                var value = fieldDictionary != null ? fieldDictionary[name] : (TUnderlying)field.GetValue(null)!;
-                var attributes = new AttributeCollection(
-#if TYPE_REFLECTION
-                    Attribute.GetCustomAttributes(field, false));
-#else
-                    field.GetCustomAttributes(false).ToArray());
-#endif
-                var member = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>(value, name, attributes, this);
-                if (valueMap.TryGetValue(value, out var existing))
-                {
-                    if (attributes.Has<PrimaryEnumMemberAttribute>())
-                    {
-                        valueMap[value] = member;
-                        member = existing;
-                    }
-                    (duplicateValues ??= new List<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>()).Add(member);
-                }
-                else
-                {
-                    valueMap.Add(value, member);
-                    // Is Power of Two
-                    if (operations.BitCount(value) == 1)
-                    {
-                        _allFlags = operations.Or(_allFlags, value);
-                    }
-                }
-            }
-            
-            // Makes sure is in increasing value order, due to no removals
-            _valueMap = new DictionarySlim<TUnderlying, EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(valueMap.OrderBy(p => p.Key), valueMap.Count);
-
-            _maxDefined = _valueMap._entries[_valueMap.Count - 1].Key;
-            _minDefined = _valueMap._entries[0].Key;
-            
-            _isContiguous = operations.Subtract(_maxDefined, operations.Create(_valueMap.Count - 1)).Equals(_minDefined);
-
-            if (duplicateValues != null)
-            {
-                duplicateValues.TrimExcess();
-                // Makes sure is in increasing order
-                duplicateValues.Sort((first, second) => first.Value.CompareTo(second.Value));
-                _duplicateValues = duplicateValues;
-                _duplicateValues.Capacity = _duplicateValues.Count;
-                _hasDuplicateValues = true;
+                member.EnumCache = this;
             }
         }
 
         #region Standard Enum Operations
         #region Type Methods
-        public override int GetMemberCount(EnumMemberSelection selection)
+        protected sealed override EnumComparer CreateEnumComparer() => EnumBridge.CreateEnumComparer(this);
+
+        public sealed override int GetMemberCount(EnumMemberSelection selection)
         {
             switch (selection)
             {
@@ -381,26 +308,29 @@ namespace EnumsNET
 #if DISPLAY_ATTRIBUTE
                 case EnumMemberSelection.DisplayOrder:
 #endif
-                    return _valueMap.Count + (_duplicateValues?.Count ?? 0);
+                    return _members.Length;
+                case EnumMemberSelection.Flags:
+                case EnumMemberSelection.Flags | EnumMemberSelection.Distinct:
+#if DISPLAY_ATTRIBUTE
+                case EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder:
+                case EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder | EnumMemberSelection.Distinct:
+#endif
+                    return GetFlagCount();
+                case EnumMemberSelection.Distinct:
+#if DISPLAY_ATTRIBUTE
+                case EnumMemberSelection.Distinct | EnumMemberSelection.DisplayOrder:
+#endif
+                    return _distinctCount;
                 default:
-                    selection.Validate(nameof(selection));
-                    if (selection.HasAnyFlags(EnumMemberSelection.Flags))
-                    {
-                        return GetFlagCount();
-                    }
-                    if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
-                    {
-                        return _valueMap.Count;
-                    }
-                    return 0;
+                    throw new ArgumentException($"invalid value of {selection.AsString()} for EnumMemberSelection", nameof(selection));
             }
         }
 
-        protected override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
+        protected sealed override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
 
-        protected override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
+        protected sealed override IReadOnlyList<string> GetNamesInternal(EnumMemberSelection selection, bool cached) => new NamesContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
 
-        protected override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
+        protected sealed override IValuesContainer GetValuesInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateValuesContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
 
         private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal(EnumMemberSelection selection)
         {
@@ -411,11 +341,24 @@ namespace EnumsNET
 #if DISPLAY_ATTRIBUTE
                 case EnumMemberSelection.DisplayOrder:
 #endif
-                    members = _duplicateValues == null ? _valueMap.Values : GetMembersInternal();
+                    members = _members;
+                    break;
+                case EnumMemberSelection.Flags:
+                case EnumMemberSelection.Flags | EnumMemberSelection.Distinct:
+#if DISPLAY_ATTRIBUTE
+                case EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder:
+                case EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder | EnumMemberSelection.Distinct:
+#endif
+                    members = EnumerateFlagMembers(_allFlags);
+                    break;
+                case EnumMemberSelection.Distinct:
+#if DISPLAY_ATTRIBUTE
+                case EnumMemberSelection.Distinct | EnumMemberSelection.DisplayOrder:
+#endif
+                    members = _hasDuplicateValues ? _members.Distinct() : _members;
                     break;
                 default:
-                    members = selection.Validate(nameof(selection)).HasAnyFlags(EnumMemberSelection.Flags) ? EnumerateFlagMembers(_allFlags) : _valueMap.Values;
-                    break;
+                    throw new ArgumentException($"invalid value of {selection.AsString()} for EnumMemberSelection", nameof(selection));
             }
 
 #if DISPLAY_ATTRIBUTE
@@ -426,81 +369,54 @@ namespace EnumsNET
             return members;
 #endif
         }
-
-        private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal()
-        {
-            var primaryEnumerator = _valueMap.GetEnumerator();
-            var primaryIsActive = primaryEnumerator.MoveNext();
-            var primaryMember = primaryEnumerator.Current;
-            var duplicateEnumerator = _duplicateValues!.GetEnumerator();
-            TUnderlyingOperations operations = default;
-            var duplicateIsActive = duplicateEnumerator.MoveNext();
-            var duplicateMember = duplicateEnumerator.Current;
-            while (primaryIsActive || duplicateIsActive)
-            {
-                if (duplicateIsActive && (!primaryIsActive || operations.LessThan(duplicateMember.Value, primaryMember.Key)))
-                {
-                    yield return duplicateMember;
-                    if (duplicateIsActive = duplicateEnumerator.MoveNext())
-                    {
-                        duplicateMember = duplicateEnumerator.Current;
-                    }
-                }
-                else
-                {
-                    yield return primaryMember.Value;
-                    if (primaryIsActive = primaryEnumerator.MoveNext())
-                    {
-                        primaryMember = primaryEnumerator.Current;
-                    }
-                }
-            }
-        }
         #endregion
 
         #region ToObject
-        public override void ToObject(ulong value, EnumValidation validation, ref byte result)
+        public sealed override void ToObject(ulong value, EnumValidation validation, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ToObjectInternal(value, validation);
         }
 
-        public override object ToObject(ulong value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
+        public sealed override object ToObject(ulong value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
 
-        public override void ToObject(object value, EnumValidation validation, ref byte result)
+        public sealed override void ToObject(object value, EnumValidation validation, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ToObjectInternal(value, validation);
         }
 
-        public override object ToObject(object value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
+        public sealed override object ToObject(object value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
 
-        public override void ToObject(long value, EnumValidation validation, ref byte result)
+        public sealed override void ToObject(long value, EnumValidation validation, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ToObjectInternal(value, validation);
         }
 
-        public override object ToObject(long value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
+        public sealed override object ToObject(long value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
 
         public TUnderlying ToObject(object value)
         {
+            var v = EnumBridge.IsEnum(value);
+            if (v.HasValue)
+            {
+                return v.GetValueOrDefault();
+            }
+
+            if (value is TUnderlying u)
+            {
+                return u;
+            }
+
             Preconditions.NotNull(value, nameof(value));
-
-            if (EnumBridge.IsEnum(value))
-            {
-                return UnsafeUtility.As<byte, TUnderlying>(ref value.GetRawData());
-            }
-
-            if (value is TUnderlying || value is TUnderlying?)
-            {
-                return (TUnderlying)value;
-            }
 
             var type = value.GetType();
 
             return ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode()) switch
             {
+                TypeCode.Boolean => ToObject(Convert.ToByte((bool)value)),
+                TypeCode.Char => ToObject((char)value),
                 TypeCode.SByte => ToObject((sbyte)value),
                 TypeCode.Byte => ToObject((byte)value),
                 TypeCode.Int16 => ToObject((short)value),
@@ -510,34 +426,35 @@ namespace EnumsNET
                 TypeCode.Int64 => ToObject((long)value),
                 TypeCode.UInt64 => ToObject((ulong)value),
                 TypeCode.String => ParseInternal((string)value, false, Enums.DefaultFormats),
-                TypeCode.Boolean => ToObject(Convert.ToByte((bool)value)),
-                TypeCode.Char => ToObject((char)value),
-                _ => throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, or String."),
+                _ => throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String."),
             };
         }
 
         public TUnderlying ToObjectInternal(object value, EnumValidation validation)
         {
+            var v = EnumBridge.IsEnum(value);
+            if (v.HasValue)
+            {
+                Validate(v.GetValueOrDefault(), nameof(value), validation);
+                return v.GetValueOrDefault();
+            }
+
+            if (value is TUnderlying u)
+            {
+                Validate(u, nameof(value), validation);
+                return u;
+            }
+
             Preconditions.NotNull(value, nameof(value));
-
-            if (EnumBridge.IsEnum(value))
-            {
-                var result = UnsafeUtility.As<byte, TUnderlying>(ref value.GetRawData());
-                Validate(result, nameof(value), validation);
-                return result;
-            }
-
-            if (value is TUnderlying || value is TUnderlying?)
-            {
-                var result = (TUnderlying)value;
-                Validate(result, nameof(value), validation);
-                return result;
-            }
 
             var type = value.GetType();
 
             switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
             {
+                case TypeCode.Boolean:
+                    return ToObjectInternal(Convert.ToByte((bool)value), validation);
+                case TypeCode.Char:
+                    return ToObjectInternal((char)value, validation);
                 case TypeCode.SByte:
                     return ToObjectInternal((sbyte)value, validation);
                 case TypeCode.Byte:
@@ -558,12 +475,8 @@ namespace EnumsNET
                     var result = ParseInternal((string)value, false, Enums.DefaultFormats);
                     Validate(result, nameof(value), validation);
                     return result;
-                case TypeCode.Boolean:
-                    return ToObjectInternal(Convert.ToByte((bool)value), validation);
-                case TypeCode.Char:
-                    return ToObjectInternal((char)value, validation);
             }
-            throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, or String.");
+            throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String.");
         }
 
         public TUnderlying ToObject(long value)
@@ -614,7 +527,7 @@ namespace EnumsNET
             return result;
         }
 
-        public override bool TryToObject(object? value, ref byte result, EnumValidation validation)
+        public sealed override bool TryToObject(object? value, ref byte result, EnumValidation validation)
         {
             if (TryToObject(value, out var r, validation))
             {
@@ -625,7 +538,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryToObject(object? value, out object? result, EnumValidation validation)
+        public sealed override bool TryToObject(object? value, out object? result, EnumValidation validation)
         {
             if (TryToObject(value, out var r, validation))
             {
@@ -636,7 +549,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryToObject(long value, ref byte result, EnumValidation validation)
+        public sealed override bool TryToObject(long value, ref byte result, EnumValidation validation)
         {
             if (TryToObject(value, out var r, validation))
             {
@@ -647,7 +560,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryToObject(long value, out object? result, EnumValidation validation)
+        public sealed override bool TryToObject(long value, out object? result, EnumValidation validation)
         {
             if (TryToObject(value, out var r, validation))
             {
@@ -658,7 +571,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryToObject(ulong value, ref byte result, EnumValidation validation)
+        public sealed override bool TryToObject(ulong value, ref byte result, EnumValidation validation)
         {
             if (TryToObject(value, out var r, validation))
             {
@@ -669,7 +582,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryToObject(ulong value, out object? result, EnumValidation validation)
+        public sealed override bool TryToObject(ulong value, out object? result, EnumValidation validation)
         {
             if (TryToObject(value, out var r, validation))
             {
@@ -684,22 +597,27 @@ namespace EnumsNET
         {
             if (value != null)
             {
-                if (EnumBridge.IsEnum(value))
+                var v = EnumBridge.IsEnum(value);
+                if (v.HasValue)
                 {
-                    result = UnsafeUtility.As<byte, TUnderlying>(ref value.GetRawData());
+                    result = v.GetValueOrDefault();
                     return IsValid(result, validation);
                 }
 
-                if (value is TUnderlying || value is TUnderlying?)
+                if (value is TUnderlying u)
                 {
-                    result = (TUnderlying)value;
-                    return IsValid(result, validation);
+                    result = u;
+                    return IsValid(u, validation);
                 }
 
                 var type = value.GetType();
 
                 switch ((Nullable.GetUnderlyingType(type) ?? type).GetTypeCode())
                 {
+                    case TypeCode.Boolean:
+                        return TryToObject(Convert.ToByte((bool)value), out result, validation);
+                    case TypeCode.Char:
+                        return TryToObject((char)value, out result, validation);
                     case TypeCode.SByte:
                         return TryToObject((sbyte)value, out result, validation);
                     case TypeCode.Byte:
@@ -722,10 +640,6 @@ namespace EnumsNET
                             return IsValid(result, validation);
                         }
                         break;
-                    case TypeCode.Boolean:
-                        return TryToObject(Convert.ToByte((bool)value), out result, validation);
-                    case TypeCode.Char:
-                        return TryToObject((char)value, out result, validation);
                 }
             }
             result = default;
@@ -758,37 +672,26 @@ namespace EnumsNET
         #endregion
 
         #region All Values Main Methods
-        public override bool IsValid(ref byte value, EnumValidation validation) => IsValid(UnsafeUtility.As<byte, TUnderlying>(ref value), validation);
+        public sealed override bool IsValid(ref byte value, EnumValidation validation) => IsValid(UnsafeUtility.As<byte, TUnderlying>(ref value), validation);
 
-        public override bool IsValid(object value, EnumValidation validation) => IsValid(ToObject(value), validation);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsValid(TUnderlying value, EnumValidation validation)
-        {
-            return validation switch
-            {
-                EnumValidation.Default => _hasCustomValidator ? EnumBridge.CustomValidate(value) : (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value),
-                EnumValidation.IsDefined => IsDefined(value),
-                EnumValidation.IsValidFlagCombination => IsValidFlagCombination(value),
-                EnumValidation.None => true,
-                _ => validation.Validate(nameof(validation)) != validation,
-            };
-        }
-
-        public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
-
-        public override bool IsDefined(object value) => IsDefined(ToObject(value));
+        public sealed override bool IsValid(object value, EnumValidation validation) => IsValid(ToObject(value), validation);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsDefined(TUnderlying value)
+        public bool IsValid(TUnderlying value, EnumValidation validation) => validation switch
         {
-            TUnderlyingOperations operations = default;
-            return _isContiguous ? !(operations.LessThan(value, _minDefined) || operations.LessThan(_maxDefined, value)) : _valueMap.TryGetValue(value, out _);
-        }
+            EnumValidation.None => true,
+            EnumValidation.Default => _customValidator != null ? EnumBridge.CustomValidate(_customValidator, value) : (IsFlagEnum && IsValidFlagCombination(value)) || IsDefined(value),
+            EnumValidation.IsDefined => IsDefined(value),
+            EnumValidation.IsValidFlagCombination => IsValidFlagCombination(value),
+            _ => validation.Validate(nameof(validation)) != validation,
+        };
 
-        public override void Validate(ref byte value, string paramName, EnumValidation validation) => Validate(UnsafeUtility.As<byte, TUnderlying>(ref value), paramName, validation);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsDefined(TUnderlying value) => _isContiguous ? default(TUnderlyingOperations).InRange(value, _minDefined, _maxDefined) : GetMember(value) != null;
 
-        public override object Validate(object value, string paramName, EnumValidation validation)
+        public sealed override void Validate(ref byte value, string paramName, EnumValidation validation) => Validate(UnsafeUtility.As<byte, TUnderlying>(ref value), paramName, validation);
+
+        public sealed override object Validate(object value, string paramName, EnumValidation validation)
         {
             var underlying = ToObject(value);
             Validate(underlying, paramName, validation);
@@ -800,58 +703,44 @@ namespace EnumsNET
         {
             if (!IsValid(value, validation))
             {
-                throw new ArgumentException($"invalid value of {AsStringInternal(value)} for {_enumTypeName}", paramName);
+                throw new ArgumentException($"invalid value of {AsString(value)} for {_enumTypeName}", paramName);
             }
         }
 
-        public override string AsString(ref byte value) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override string AsString(ref byte value, string format) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
 
-        public override string AsString(ref byte value, string? format) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
+        public sealed override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
 
-        public override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
+        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), formats);
 
-        public override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), formats);
+        public sealed override string AsString(object value, string format) => AsStringInternal(ToObject(value), null, format);
 
-        public override string AsString(object value) => AsStringInternal(ToObject(value));
+        public sealed override string? AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
 
-        public override string AsString(object value, string? format) => AsStringInternal(ToObject(value), format);
-
-        public override string? AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
-
-        public override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), formats);
+        public sealed override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), formats);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string AsStringInternal(TUnderlying value) => IsFlagEnum ? FormatFlagsInternal(value, null, Enums.DefaultFormats)! : GetMember(value)?.Name ?? value.ToString()!;
+        public string AsString(TUnderlying value) => IsFlagEnum ? FormatFlagsInternal(value, null, default)! : GetMember(value)?.Name ?? value.ToString()!;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string? AsString(TUnderlying value, EnumFormat format)
+        public string? AsString(TUnderlying value, EnumFormat format) => format switch
         {
-            var isInitialized = false;
-            EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member = null;
-            return FormatInternal(value, ref isInitialized, ref member, format);
-        }
+            EnumFormat.DecimalValue => default(TUnderlyingOperations).ToDecimalString(value),
+            EnumFormat.HexadecimalValue => default(TUnderlyingOperations).ToHexadecimalString(value),
+            EnumFormat.UnderlyingValue => value.ToString(),
+            EnumFormat.Name => GetMember(value)?.Name,
+            EnumFormat.Description => GetMember(value)?.Attributes.Get<DescriptionAttribute>()?.Description,
+            EnumFormat.EnumMemberValue => GetMember(value)?.Attributes.Get<EnumMemberAttribute>()?.Value,
+#if DISPLAY_ATTRIBUTE
+            EnumFormat.DisplayName => GetMember(value)?.Attributes.Get<DisplayAttribute>()?.GetName(),
+#endif
+            _ => Enums.CustomEnumMemberFormat(GetMember(value)?.EnumMember, format.Validate(nameof(format)))
+        };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string? AsStringInternal(TUnderlying value, ValueCollection<EnumFormat> formats) => formats.Any() ? FormatInternal(value, null, formats) : AsStringInternal(value);
+        private string? AsStringInternal(TUnderlying value, ValueCollection<EnumFormat> formats) => formats.Count > 0 ? AsStringInternal(value, null, formats) : AsString(value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string AsStringInternal(TUnderlying value, string? format) => string.IsNullOrEmpty(format) ? AsStringInternal(value) : FormatInternal(value, null, format!);
-
-        public override string Format(ref byte value, string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return FormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
-        }
-
-        public override string Format(object value, string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return FormatInternal(ToObject(value), null, format);
-        }
-
-        internal string FormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string format)
+        internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string format)
         {
             if (format.Length == 1)
             {
@@ -859,10 +748,10 @@ namespace EnumsNET
                 {
                     case 'G':
                     case 'g':
-                        return IsFlagEnum ? FormatFlagsInternal(value, member ?? GetMember(value), null, Enums.DefaultFormats)! : (member ?? GetMember(value))?.Name ?? value.ToString()!;
+                        return IsFlagEnum ? FormatFlagsInternal(value, member ?? GetMember(value), null, default)! : (member ?? GetMember(value))?.Name ?? value.ToString()!;
                     case 'F':
                     case 'f':
-                        return FormatFlagsInternal(value, member ?? GetMember(value), null, Enums.DefaultFormats)!;
+                        return FormatFlagsInternal(value, member ?? GetMember(value), null, default)!;
                     case 'D':
                     case 'd':
                         return value.ToString()!;
@@ -874,23 +763,19 @@ namespace EnumsNET
             throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
         }
 
-        internal string? FormatInternal(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, EnumFormat format)
+        internal string? AsStringInternal(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, EnumFormat format) => format switch
         {
-            TUnderlyingOperations operations = default;
-            return format switch
-            {
-                EnumFormat.UnderlyingValue => value.ToString(),
-                EnumFormat.DecimalValue => operations.ToDecimalString(value),
-                EnumFormat.HexadecimalValue => operations.ToHexadecimalString(value),
-                EnumFormat.Name => TryInitializeMember(value, ref isInitialized, ref member)?.Name,
-                EnumFormat.Description => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DescriptionAttribute>()?.Description,
-                EnumFormat.EnumMemberValue => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<EnumMemberAttribute>()?.Value,
+            EnumFormat.DecimalValue => default(TUnderlyingOperations).ToDecimalString(value),
+            EnumFormat.HexadecimalValue => default(TUnderlyingOperations).ToHexadecimalString(value),
+            EnumFormat.UnderlyingValue => value.ToString(),
+            EnumFormat.Name => TryInitializeMember(value, ref isInitialized, ref member)?.Name,
+            EnumFormat.Description => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DescriptionAttribute>()?.Description,
+            EnumFormat.EnumMemberValue => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<EnumMemberAttribute>()?.Value,
 #if DISPLAY_ATTRIBUTE
-                EnumFormat.DisplayName => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName(),
+            EnumFormat.DisplayName => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName(),
 #endif
-                _ => format.Validate(nameof(format)) == format && TryInitializeMember(value, ref isInitialized, ref member) != null ? Enums.CustomEnumMemberFormat(member!.EnumMember, format) : null,
-            };
-        }
+            _ => Enums.CustomEnumMemberFormat(TryInitializeMember(value, ref isInitialized, ref member)?.EnumMember, format.Validate(nameof(format)))
+        };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private EnumMemberInternal<TUnderlying, TUnderlyingOperations>? TryInitializeMember(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member)
@@ -903,12 +788,12 @@ namespace EnumsNET
             return member;
         }
 
-        internal string? FormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats)
+        internal string? AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats)
         {
             var isInitialized = member != null;
             foreach (var format in formats)
             {
-                var formattedValue = FormatInternal(value, ref isInitialized, ref member, format);
+                var formattedValue = AsStringInternal(value, ref isInitialized, ref member, format);
                 if (formattedValue != null)
                 {
                     return formattedValue;
@@ -917,104 +802,110 @@ namespace EnumsNET
             return null;
         }
 
-        public override object GetUnderlyingValue(object value) => ToObject(value);
+        public sealed override object GetUnderlyingValue(object value) => ToObject(value);
 
-        public override object GetUnderlyingValue(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value);
+        public sealed override object GetUnderlyingValue(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value);
 
-        public override int GetHashCode(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).GetHashCode();
+        public sealed override int GetHashCode(object value) => ToObject(value).GetHashCode();
 
-        public override bool Equals(ref byte value, ref byte other) => UnsafeUtility.As<byte, TUnderlying>(ref value).Equals(UnsafeUtility.As<byte, TUnderlying>(ref other));
+        public sealed override int GetHashCode(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).GetHashCode();
 
-        public override bool Equals(object value, object other) => ToObject(value).Equals(ToObject(other));
+        public sealed override bool Equals(ref byte value, ref byte other) => UnsafeUtility.As<byte, TUnderlying>(ref value).Equals(UnsafeUtility.As<byte, TUnderlying>(ref other));
 
-        public override int CompareTo(ref byte value, ref byte other) => UnsafeUtility.As<byte, TUnderlying>(ref value).CompareTo(UnsafeUtility.As<byte, TUnderlying>(ref other));
+        public sealed override bool Equals(object value, object other) => ToObject(value).Equals(ToObject(other));
 
-        public override int CompareTo(object value, object other) => ToObject(value).CompareTo(ToObject(other));
+        public sealed override int CompareTo(ref byte value, ref byte other) => UnsafeUtility.As<byte, TUnderlying>(ref value).CompareTo(UnsafeUtility.As<byte, TUnderlying>(ref other));
+
+        public sealed override int CompareTo(object value, object other) => ToObject(value).CompareTo(ToObject(other));
 
 #if ICONVERTIBLE
-        public override sbyte ToSByte(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToSByte(null);
+        public sealed override sbyte ToSByte(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToSByte(null);
 
-        public override sbyte ToSByte(object value) => ToObject(value).ToSByte(null);
+        public sealed override sbyte ToSByte(object value) => ToObject(value).ToSByte(null);
 
-        public override byte ToByte(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToByte(null);
+        public sealed override byte ToByte(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToByte(null);
 
-        public override byte ToByte(object value) => ToObject(value).ToByte(null);
+        public sealed override byte ToByte(object value) => ToObject(value).ToByte(null);
 
-        public override short ToInt16(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToInt16(null);
+        public sealed override short ToInt16(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToInt16(null);
 
-        public override short ToInt16(object value) => ToObject(value).ToInt16(null);
+        public sealed override short ToInt16(object value) => ToObject(value).ToInt16(null);
 
-        public override ushort ToUInt16(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToUInt16(null);
+        public sealed override ushort ToUInt16(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToUInt16(null);
 
-        public override ushort ToUInt16(object value) => ToObject(value).ToUInt16(null);
+        public sealed override ushort ToUInt16(object value) => ToObject(value).ToUInt16(null);
 
-        public override int ToInt32(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToInt32(null);
+        public sealed override int ToInt32(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToInt32(null);
 
-        public override int ToInt32(object value) => ToObject(value).ToInt32(null);
+        public sealed override int ToInt32(object value) => ToObject(value).ToInt32(null);
 
-        public override uint ToUInt32(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToUInt32(null);
+        public sealed override uint ToUInt32(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToUInt32(null);
 
-        public override uint ToUInt32(object value) => ToObject(value).ToUInt32(null);
+        public sealed override uint ToUInt32(object value) => ToObject(value).ToUInt32(null);
 
-        public override long ToInt64(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToInt64(null);
+        public sealed override long ToInt64(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToInt64(null);
 
-        public override long ToInt64(object value) => ToObject(value).ToInt64(null);
+        public sealed override long ToInt64(object value) => ToObject(value).ToInt64(null);
 
-        public override ulong ToUInt64(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToUInt64(null);
+        public sealed override ulong ToUInt64(ref byte value) => UnsafeUtility.As<byte, TUnderlying>(ref value).ToUInt64(null);
 
-        public override ulong ToUInt64(object value) => ToObject(value).ToUInt64(null);
+        public sealed override ulong ToUInt64(object value) => ToObject(value).ToUInt64(null);
 #else
-        public override sbyte ToSByte(ref byte value) => default(TUnderlyingOperations).ToSByte(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override sbyte ToSByte(ref byte value) => default(TUnderlyingOperations).ToSByte(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override sbyte ToSByte(object value) => default(TUnderlyingOperations).ToSByte(ToObject(value));
+        public sealed override sbyte ToSByte(object value) => default(TUnderlyingOperations).ToSByte(ToObject(value));
 
-        public override byte ToByte(ref byte value) => default(TUnderlyingOperations).ToByte(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override byte ToByte(ref byte value) => default(TUnderlyingOperations).ToByte(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override byte ToByte(object value) => default(TUnderlyingOperations).ToByte(ToObject(value));
+        public sealed override byte ToByte(object value) => default(TUnderlyingOperations).ToByte(ToObject(value));
 
-        public override short ToInt16(ref byte value) => default(TUnderlyingOperations).ToInt16(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override short ToInt16(ref byte value) => default(TUnderlyingOperations).ToInt16(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override short ToInt16(object value) => default(TUnderlyingOperations).ToInt16(ToObject(value));
+        public sealed override short ToInt16(object value) => default(TUnderlyingOperations).ToInt16(ToObject(value));
 
-        public override ushort ToUInt16(ref byte value) => default(TUnderlyingOperations).ToUInt16(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override ushort ToUInt16(ref byte value) => default(TUnderlyingOperations).ToUInt16(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override ushort ToUInt16(object value) => default(TUnderlyingOperations).ToUInt16(ToObject(value));
+        public sealed override ushort ToUInt16(object value) => default(TUnderlyingOperations).ToUInt16(ToObject(value));
 
-        public override int ToInt32(ref byte value) => default(TUnderlyingOperations).ToInt32(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override int ToInt32(ref byte value) => default(TUnderlyingOperations).ToInt32(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override int ToInt32(object value) => default(TUnderlyingOperations).ToInt32(ToObject(value));
+        public sealed override int ToInt32(object value) => default(TUnderlyingOperations).ToInt32(ToObject(value));
 
-        public override uint ToUInt32(ref byte value) => default(TUnderlyingOperations).ToUInt32(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override uint ToUInt32(ref byte value) => default(TUnderlyingOperations).ToUInt32(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override uint ToUInt32(object value) => default(TUnderlyingOperations).ToUInt32(ToObject(value));
+        public sealed override uint ToUInt32(object value) => default(TUnderlyingOperations).ToUInt32(ToObject(value));
 
-        public override long ToInt64(ref byte value) => default(TUnderlyingOperations).ToInt64(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override long ToInt64(ref byte value) => default(TUnderlyingOperations).ToInt64(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override long ToInt64(object value) => default(TUnderlyingOperations).ToInt64(ToObject(value));
+        public sealed override long ToInt64(object value) => default(TUnderlyingOperations).ToInt64(ToObject(value));
 
-        public override ulong ToUInt64(ref byte value) => default(TUnderlyingOperations).ToUInt64(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override ulong ToUInt64(ref byte value) => default(TUnderlyingOperations).ToUInt64(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override ulong ToUInt64(object value) => default(TUnderlyingOperations).ToUInt64(ToObject(value));
+        public sealed override ulong ToUInt64(object value) => default(TUnderlyingOperations).ToUInt64(ToObject(value));
 #endif
         #endregion
 
         #region Defined Values Main Methods
-        public override EnumMemberInternal? GetMember(ref byte value) => GetMember(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override EnumMemberInternal? GetMember(ref byte value) => GetMember(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override EnumMemberInternal? GetMember(object value) => GetMember(ToObject(value));
+        public sealed override EnumMemberInternal? GetMember(object value) => GetMember(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EnumMemberInternal<TUnderlying, TUnderlyingOperations>? GetMember(TUnderlying value)
         {
-            _valueMap.TryGetValue(value, out var member);
-            return member;
+            var next = _buckets[value.GetHashCode() & (_buckets.Length - 1)];
+            while (next?.Value.Equals(value) == false)
+            {
+                next = next.Next;
+            }
+            return next;
         }
 
-        public override EnumMember? GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
+        public sealed override EnumMember? GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
             value = value.Trim();
 
-            if (!formats.Any())
+            if (formats.Count == 0)
             {
                 formats = Enums.NameFormat;
             }
@@ -1025,13 +916,13 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
+        public sealed override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ParseInternal(value, ignoreCase, formats);
         }
 
-        public override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
+        public sealed override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
 
         public TUnderlying ParseInternal(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
@@ -1042,7 +933,7 @@ namespace EnumsNET
 
             value = value.Trim();
             
-            if (!formats.Any())
+            if (formats.Count == 0)
             {
                 formats = Enums.DefaultFormats;
             }
@@ -1058,7 +949,7 @@ namespace EnumsNET
             throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
         }
 
-        public override bool TryParse(
+        public sealed override bool TryParse(
 #if SPAN
             ReadOnlySpan<char>
 #else
@@ -1075,7 +966,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryParse(
+        public sealed override bool TryParse(
 #if SPAN
             ReadOnlySpan<char>
 #else
@@ -1088,7 +979,7 @@ namespace EnumsNET
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
             }
-            result = default;
+            result = null;
             return false;
         }
 
@@ -1109,7 +1000,7 @@ namespace EnumsNET
             {
                 value = value.Trim();
 
-                if (!formats.Any())
+                if (formats.Count == 0)
                 {
                     formats = Enums.DefaultFormats;
                 }
@@ -1143,7 +1034,23 @@ namespace EnumsNET
                 }
                 else
                 {
-                    var parser = GetEnumMemberParser(format);
+                    var index = format - EnumFormat.Name;
+                    var parsers = _enumMemberParsers;
+                    EnumMemberParser? parser;
+                    if ((uint)index >= (uint)parsers.Length || (parser = parsers[index]) == null)
+                    {
+                        format.Validate(nameof(format));
+
+                        parser = new EnumMemberParser(format, this);
+                        EnumMemberParser?[] oldParsers;
+                        do
+                        {
+                            oldParsers = parsers;
+                            parsers = new EnumMemberParser?[Math.Max(oldParsers.Length, index + 1)];
+                            oldParsers.CopyTo(parsers, 0);
+                            parsers[index] = parser;
+                        } while ((parsers = Interlocked.CompareExchange(ref _enumMemberParsers, parsers, oldParsers)) != oldParsers);
+                    }
                     if (parser.TryParse(value, ignoreCase, out member))
                     {
                         result = member.Value;
@@ -1159,39 +1066,39 @@ namespace EnumsNET
         #endregion
 
         #region Flag Enum Operations
-        public override void GetAllFlags(ref byte result)
+        public sealed override void GetAllFlags(ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = _allFlags;
         }
 
-        public override object GetAllFlags() => EnumBridge.ToObjectUnchecked(_allFlags);
+        public sealed override object GetAllFlags() => EnumBridge.ToObjectUnchecked(_allFlags);
 
         #region Main Methods
-        public override bool IsValidFlagCombination(ref byte value) => IsValidFlagCombination(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override bool IsValidFlagCombination(ref byte value) => IsValidFlagCombination(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
+        public sealed override bool IsValidFlagCombination(object value) => IsValidFlagCombination(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsValidFlagCombination(TUnderlying value) => default(TUnderlyingOperations).And(_allFlags, value).Equals(value);
 
-        public override string? FormatFlags(ref byte value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), delimiter, formats);
+        public sealed override string? FormatFlags(ref byte value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), delimiter, formats);
 
-        public override string? FormatFlags(object value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(ToObject(value), delimiter, formats);
+        public sealed override string? FormatFlags(object value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(ToObject(value), delimiter, formats);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string? FormatFlagsInternal(TUnderlying value, string? delimiter, ValueCollection<EnumFormat> formats) => FormatFlagsInternal(value, GetMember(value), delimiter, formats);
 
         internal string? FormatFlagsInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string? delimiter, ValueCollection<EnumFormat> formats)
         {
-            if (!formats.Any())
+            if (formats.Count == 0)
             {
                 formats = Enums.DefaultFormats;
             }
 
             if (member != null || value.Equals(default) || !IsValidFlagCombination(value))
             {
-                return FormatInternal(value, member, formats);
+                return AsStringInternal(value, member, formats);
             }
 
             if (string.IsNullOrEmpty(delimiter))
@@ -1210,23 +1117,23 @@ namespace EnumsNET
                     {
                         sb.Append(delimiter);
                     }
-                    sb.Append(FormatInternal(currentValue, null, formats));
+                    sb.Append(AsStringInternal(currentValue, null, formats));
                 }
             }
 
             return sb.ToString();
         }
 
-        public override IReadOnlyList<object> GetFlags(object value) => GetFlags(ToObject(value)).GetNonGenericContainer();
+        public sealed override IReadOnlyList<object> GetFlags(object value) => GetFlags(ToObject(value)).GetNonGenericContainer();
 
-        public override IValuesContainer GetFlags(ref byte value) => GetFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override IValuesContainer GetFlags(ref byte value) => GetFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IValuesContainer GetFlags(TUnderlying value) => EnumBridge.CreateValuesContainer(EnumerateFlagMembers(value), GetFlagCount(value), false);
 
-        public override IReadOnlyList<EnumMember> GetFlagMembers(ref byte value) => GetFlagMembers(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override IReadOnlyList<EnumMember> GetFlagMembers(ref byte value) => GetFlagMembers(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override IReadOnlyList<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
+        public sealed override IReadOnlyList<EnumMember> GetFlagMembers(object value) => GetFlagMembers(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IReadOnlyList<EnumMember> GetFlagMembers(TUnderlying value) => EnumBridge.CreateMembersContainer(EnumerateFlagMembers(value), GetFlagCount(value), false);
@@ -1245,11 +1152,11 @@ namespace EnumsNET
             }
         }
 
-        public override int GetFlagCount() => default(TUnderlyingOperations).BitCount(_allFlags);
+        public sealed override int GetFlagCount() => default(TUnderlyingOperations).BitCount(_allFlags);
 
-        public override int GetFlagCount(ref byte value) => GetFlagCount(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override int GetFlagCount(ref byte value) => GetFlagCount(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override int GetFlagCount(object value) => GetFlagCount(ToObject(value));
+        public sealed override int GetFlagCount(object value) => GetFlagCount(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetFlagCount(TUnderlying value)
@@ -1258,9 +1165,9 @@ namespace EnumsNET
             return operations.BitCount(operations.And(value, _allFlags));
         }
 
-        public override int GetFlagCount(ref byte value, ref byte otherFlags) => GetFlagCount(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
+        public sealed override int GetFlagCount(ref byte value, ref byte otherFlags) => GetFlagCount(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
 
-        public override int GetFlagCount(object value, object otherFlags) => GetFlagCount(ToObject(value), ToObject(otherFlags));
+        public sealed override int GetFlagCount(object value, object otherFlags) => GetFlagCount(ToObject(value), ToObject(otherFlags));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetFlagCount(TUnderlying value, TUnderlying otherFlags)
@@ -1269,97 +1176,97 @@ namespace EnumsNET
             return operations.BitCount(operations.And(operations.And(value, otherFlags), _allFlags));
         }
 
-        public override bool HasAnyFlags(ref byte value) => HasAnyFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override bool HasAnyFlags(ref byte value) => HasAnyFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override bool HasAnyFlags(object value) => HasAnyFlags(ToObject(value));
+        public sealed override bool HasAnyFlags(object value) => HasAnyFlags(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasAnyFlags(TUnderlying value) => !value.Equals(default);
 
-        public override bool HasAnyFlags(ref byte value, ref byte otherFlags) => HasAnyFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
+        public sealed override bool HasAnyFlags(ref byte value, ref byte otherFlags) => HasAnyFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
 
-        public override bool HasAnyFlags(object value, object otherFlags) => HasAnyFlags(ToObject(value), ToObject(otherFlags));
+        public sealed override bool HasAnyFlags(object value, object otherFlags) => HasAnyFlags(ToObject(value), ToObject(otherFlags));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasAnyFlags(TUnderlying value, TUnderlying otherFlags) => !default(TUnderlyingOperations).And(value, otherFlags).Equals(default);
 
-        public override bool HasAllFlags(ref byte value) => HasAllFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override bool HasAllFlags(ref byte value) => HasAllFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override bool HasAllFlags(object value) => HasAllFlags(ToObject(value));
+        public sealed override bool HasAllFlags(object value) => HasAllFlags(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasAllFlags(TUnderlying value) => HasAllFlags(value, _allFlags);
 
-        public override bool HasAllFlags(ref byte value, ref byte otherFlags) => HasAllFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
+        public sealed override bool HasAllFlags(ref byte value, ref byte otherFlags) => HasAllFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
 
-        public override bool HasAllFlags(object value, object otherFlags) => HasAllFlags(ToObject(value), ToObject(otherFlags));
+        public sealed override bool HasAllFlags(object value, object otherFlags) => HasAllFlags(ToObject(value), ToObject(otherFlags));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasAllFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).And(value, otherFlags).Equals(otherFlags);
 
-        public override void ToggleFlags(ref byte value, ref byte result)
+        public sealed override void ToggleFlags(ref byte value, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ToggleFlags(UnsafeUtility.As<byte, TUnderlying>(ref value));
         }
 
-        public override object ToggleFlags(object value) => EnumBridge.ToObjectUnchecked(ToggleFlags(ToObject(value)));
+        public sealed override object ToggleFlags(object value) => EnumBridge.ToObjectUnchecked(ToggleFlags(ToObject(value)));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying ToggleFlags(TUnderlying value) => default(TUnderlyingOperations).Xor(value, _allFlags);
 
-        public override void ToggleFlags(ref byte value, ref byte otherFlags, ref byte result)
+        public sealed override void ToggleFlags(ref byte value, ref byte otherFlags, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ToggleFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
         }
 
-        public override object ToggleFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(ToggleFlags(ToObject(value), ToObject(otherFlags)));
+        public sealed override object ToggleFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(ToggleFlags(ToObject(value), ToObject(otherFlags)));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying ToggleFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).Xor(value, otherFlags);
 
-        public override void CommonFlags(ref byte value, ref byte otherFlags, ref byte result)
+        public sealed override void CommonFlags(ref byte value, ref byte otherFlags, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = CommonFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
         }
 
-        public override object CommonFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(CommonFlags(ToObject(value), ToObject(otherFlags)));
+        public sealed override object CommonFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(CommonFlags(ToObject(value), ToObject(otherFlags)));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying CommonFlags(TUnderlying value, TUnderlying otherFlags) => default(TUnderlyingOperations).And(value, otherFlags);
 
-        public override void CombineFlags(ref byte value, ref byte otherFlags, ref byte result)
+        public sealed override void CombineFlags(ref byte value, ref byte otherFlags, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = default(TUnderlyingOperations).Or(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
         }
 
-        public override object CombineFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(default(TUnderlyingOperations).Or(ToObject(value), ToObject(otherFlags)));
+        public sealed override object CombineFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(default(TUnderlyingOperations).Or(ToObject(value), ToObject(otherFlags)));
 
-        public override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte result)
+        public sealed override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             TUnderlyingOperations operations = default;
             underlying = operations.Or(operations.Or(UnsafeUtility.As<byte, TUnderlying>(ref flag0), UnsafeUtility.As<byte, TUnderlying>(ref flag1)), UnsafeUtility.As<byte, TUnderlying>(ref flag2));
         }
 
-        public override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte flag3, ref byte result)
+        public sealed override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte flag3, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             TUnderlyingOperations operations = default;
             underlying = operations.Or(operations.Or(operations.Or(UnsafeUtility.As<byte, TUnderlying>(ref flag0), UnsafeUtility.As<byte, TUnderlying>(ref flag1)), UnsafeUtility.As<byte, TUnderlying>(ref flag2)), UnsafeUtility.As<byte, TUnderlying>(ref flag3));
         }
 
-        public override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte flag3, ref byte flag4, ref byte result)
+        public sealed override void CombineFlags(ref byte flag0, ref byte flag1, ref byte flag2, ref byte flag3, ref byte flag4, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             TUnderlyingOperations operations = default;
             underlying = operations.Or(operations.Or(operations.Or(operations.Or(UnsafeUtility.As<byte, TUnderlying>(ref flag0), UnsafeUtility.As<byte, TUnderlying>(ref flag1)), UnsafeUtility.As<byte, TUnderlying>(ref flag2)), UnsafeUtility.As<byte, TUnderlying>(ref flag3)), UnsafeUtility.As<byte, TUnderlying>(ref flag4));
         }
 
-        public override object CombineFlags(IEnumerable<object?>? flags, bool isNullable)
+        public sealed override object CombineFlags(IEnumerable<object?>? flags, bool isNullable)
         {
             TUnderlyingOperations operations = default;
             TUnderlying result = default;
@@ -1376,13 +1283,13 @@ namespace EnumsNET
             return EnumBridge.ToObjectUnchecked(result);
         }
 
-        public override void RemoveFlags(ref byte value, ref byte otherFlags, ref byte result)
+        public sealed override void RemoveFlags(ref byte value, ref byte otherFlags, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = RemoveFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), UnsafeUtility.As<byte, TUnderlying>(ref otherFlags));
         }
 
-        public override object RemoveFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(RemoveFlags(ToObject(value), ToObject(otherFlags)));
+        public sealed override object RemoveFlags(object value, object otherFlags) => EnumBridge.ToObjectUnchecked(RemoveFlags(ToObject(value), ToObject(otherFlags)));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TUnderlying RemoveFlags(TUnderlying value, TUnderlying otherFlags)
@@ -1393,13 +1300,13 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public override void ParseFlags(ParseType value, bool ignoreCase, string? delimiter, ValueCollection<EnumFormat> formats, ref byte result)
+        public sealed override void ParseFlags(ParseType value, bool ignoreCase, string? delimiter, ValueCollection<EnumFormat> formats, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
             underlying = ParseFlagsInternal(value, ignoreCase, delimiter, formats);
         }
 
-        public override object ParseFlags(ParseType value, bool ignoreCase, string? delimiter, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, delimiter, formats));
+        public sealed override object ParseFlags(ParseType value, bool ignoreCase, string? delimiter, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, delimiter, formats));
 
         public TUnderlying ParseFlagsInternal(ParseType value, bool ignoreCase, string? delimiter, ValueCollection<EnumFormat> formats)
         {
@@ -1422,7 +1329,7 @@ namespace EnumsNET
             }
 #endif
 
-            if (!formats.Any())
+            if (formats.Count == 0)
             {
                 formats = Enums.DefaultFormats;
             }
@@ -1439,13 +1346,14 @@ namespace EnumsNET
                 }
 #if SPAN
                 var delimiterIndex = value.Slice(startIndex).IndexOf(effectiveDelimiter, StringComparison.Ordinal);
+                delimiterIndex = delimiterIndex < 0 ? valueLength : delimiterIndex + startIndex;
 #else
                 var delimiterIndex = value.IndexOf(effectiveDelimiter, startIndex, StringComparison.Ordinal);
-#endif
                 if (delimiterIndex < 0)
                 {
                     delimiterIndex = valueLength;
                 }
+#endif
                 var newStartIndex = delimiterIndex + effectiveDelimiter.Length;
                 while (delimiterIndex > startIndex && char.IsWhiteSpace(value[delimiterIndex - 1]))
                 {
@@ -1473,7 +1381,7 @@ namespace EnumsNET
             return result;
         }
 
-        public override bool TryParseFlags(
+        public sealed override bool TryParseFlags(
 #if SPAN
             ReadOnlySpan<char>
 #else
@@ -1490,7 +1398,7 @@ namespace EnumsNET
             return false;
         }
 
-        public override bool TryParseFlags(
+        public sealed override bool TryParseFlags(
 #if SPAN
             ReadOnlySpan<char>
 #else
@@ -1540,7 +1448,7 @@ namespace EnumsNET
             }
 #endif
 
-            if (!formats.Any())
+            if (formats.Count == 0)
             {
                 formats = Enums.DefaultFormats;
             }
@@ -1557,13 +1465,14 @@ namespace EnumsNET
                 }
 #if SPAN
                 var delimiterIndex = value.Slice(startIndex).IndexOf(effectiveDelimiter, StringComparison.Ordinal);
+                delimiterIndex = delimiterIndex < 0 ? valueLength : delimiterIndex + startIndex;
 #else
                 var delimiterIndex = value.IndexOf(effectiveDelimiter, startIndex, StringComparison.Ordinal);
-#endif
                 if (delimiterIndex < 0)
                 {
                     delimiterIndex = valueLength;
                 }
+#endif
                 var newStartIndex = delimiterIndex + effectiveDelimiter.Length;
                 while (delimiterIndex > startIndex && char.IsWhiteSpace(value[delimiterIndex - 1]))
                 {
@@ -1616,13 +1525,14 @@ namespace EnumsNET
 
             public EnumMemberParser(EnumFormat format, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
             {
-                var size = HashHelpers.PowerOf2(enumCache.GetMemberCount(EnumMemberSelection.All));
+                var size = enumCache._buckets.Length;
                 var ordinalBuckets = new int[size];
                 var ordinalIgnoreCaseBuckets = new int[size];
-                var entries = new Entry[size];
-                var i = 0;
-                foreach (var member in enumCache.GetMembersInternal(EnumMemberSelection.All))
+                var members = enumCache._members;
+                var entries = new Entry[members.Length];
+                for (var i = 0; i < members.Length; ++i)
                 {
+                    var member = members[i];
                     var formattedValue = member.AsString(format);
                     if (formattedValue != null)
                     {
@@ -1634,7 +1544,6 @@ namespace EnumsNET
                         ordinalBucket = i + 1;
                         ordinalIgnoreCaseBucket = i + 1;
                     }
-                    ++i;
                 }
                 _ordinalBuckets = ordinalBuckets;
                 _ordinalIgnoreCaseBuckets = ordinalIgnoreCaseBuckets;
@@ -1690,5 +1599,93 @@ namespace EnumsNET
                 return false;
             }
         }
+    }
+
+    internal abstract class StandardEnumCache<TUnderlying, TUnderlyingOperations> : EnumCache<TUnderlying, TUnderlyingOperations>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+    {
+        public StandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
+            : base(enumType, enumBridge, isFlagEnum: false, members, buckets, allFlags, distinctCount, isContiguous, customValidator)
+        {
+        }
+
+        public override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override string AsString(object value) => AsString(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new string AsString(TUnderlying value)
+        {
+            var member = GetMember(value);
+            return member != null ? member.Name : value.ToString()!;
+        }
+    }
+
+    internal sealed class ContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations> : StandardEnumCache<TUnderlying, TUnderlyingOperations>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+    {
+        public ContiguousStandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, object? customValidator)
+            : base(enumType, enumBridge, members, buckets, allFlags, distinctCount, isContiguous: true, customValidator)
+        {
+        }
+
+        public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override bool IsDefined(object value) => IsDefined(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new bool IsDefined(TUnderlying value) => default(TUnderlyingOperations).InRange(value, _minDefined, _maxDefined);
+    }
+
+    internal sealed class NonContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations> : StandardEnumCache<TUnderlying, TUnderlyingOperations>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+    {
+        public NonContiguousStandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, object? customValidator)
+            : base(enumType, enumBridge, members, buckets, allFlags, distinctCount, isContiguous: false, customValidator)
+        {
+        }
+
+        public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override bool IsDefined(object value) => IsDefined(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new bool IsDefined(TUnderlying value) => GetMember(value) != null;
+    }
+
+    internal sealed class FlagEnumCache<TUnderlying, TUnderlyingOperations> : EnumCache<TUnderlying, TUnderlyingOperations>
+        where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+        where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+    {
+        public FlagEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
+            : base(enumType, enumBridge, isFlagEnum: true, members, buckets, allFlags, distinctCount, isContiguous, customValidator)
+        {
+        }
+
+        public override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override string AsString(object value) => AsString(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new string AsString(TUnderlying value) => FormatFlagsInternal(value, GetMember(value), null, default)!;
+
+        public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override bool IsDefined(object value) => IsDefined(ToObject(value));
     }
 }
