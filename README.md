@@ -207,8 +207,9 @@ class EnumsNETDemo
 }
 ```
 
-## Performance Comparison
+---
 ![Performance](performance.png)
+Results from running the [PerformanceTestConsole](./Src/Enums.NET.PerfTestConsole/Program.cs) BenchmarkDotNet application.
 
 ## Interface
 See [fuget](https://www.fuget.org/packages/Enums.NET) for exploring the interface.

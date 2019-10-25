@@ -265,7 +265,7 @@ namespace EnumsNET
         internal readonly IEnumBridge<TUnderlying, TUnderlyingOperations> EnumBridge;
         private readonly bool _isContiguous;
         private readonly object? _customValidator;
-        private readonly string _enumTypeName;
+        private protected readonly string _enumTypeName;
         private readonly TUnderlying _allFlags;
         private protected readonly TUnderlying _maxDefined;
         private protected readonly TUnderlying _minDefined;
@@ -916,14 +916,6 @@ namespace EnumsNET
         #endregion
 
         #region Parsing
-        public sealed override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
-        {
-            ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
-            underlying = ParseInternal(value, ignoreCase, formats);
-        }
-
-        public sealed override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
-
         public TUnderlying ParseInternal(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
             if (IsFlagEnum)
@@ -947,40 +939,6 @@ namespace EnumsNET
                 throw new OverflowException("value is outside the underlying type's value range");
             }
             throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
-        }
-
-        public sealed override bool TryParse(
-#if SPAN
-            ReadOnlySpan<char>
-#else
-            string?
-#endif
-            value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
-        {
-            if (TryParse(value, ignoreCase, out var r, formats))
-            {
-                ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
-                underlying = r;
-                return true;
-            }
-            return false;
-        }
-
-        public sealed override bool TryParse(
-#if SPAN
-            ReadOnlySpan<char>
-#else
-            string?
-#endif
-            value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats)
-        {
-            if (TryParse(value, ignoreCase, out var r, formats))
-            {
-                result = EnumBridge.ToObjectUnchecked(r);
-                return true;
-            }
-            result = null;
-            return false;
         }
 
         public bool TryParse(
@@ -1011,7 +969,7 @@ namespace EnumsNET
             return false;
         }
 
-        private bool TryParseInternal(ParseType value, bool ignoreCase, out TUnderlying result, out EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats, bool getValueOnly)
+        protected bool TryParseInternal(ParseType value, bool ignoreCase, out TUnderlying result, out EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats, bool getValueOnly)
         {
             TUnderlyingOperations operations = default;
             foreach (var format in formats)
@@ -1613,15 +1571,100 @@ namespace EnumsNET
         {
         }
 
-        public override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public sealed override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public override string AsString(object value) => AsString(ToObject(value));
+        public sealed override string AsString(object value) => AsString(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new string AsString(TUnderlying value)
         {
             var member = GetMember(value);
             return member != null ? member.Name : value.ToString()!;
+        }
+
+        public sealed override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
+        {
+            ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
+            underlying = ParseInternal(value, ignoreCase, formats);
+        }
+
+        public sealed override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
+
+        public new TUnderlying ParseInternal(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
+        {
+            value = value.Trim();
+
+            if (formats.Count == 0)
+            {
+                formats = Enums.DefaultFormats;
+            }
+
+            if (TryParseInternal(value, ignoreCase, out var result, out _, formats, true))
+            {
+                return result;
+            }
+            if (IsNumeric(value))
+            {
+                throw new OverflowException("value is outside the underlying type's value range");
+            }
+            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+        }
+
+        public sealed override bool TryParse(
+#if SPAN
+            ReadOnlySpan<char>
+#else
+            string?
+#endif
+            value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
+        {
+            if (TryParse(value, ignoreCase, out var r, formats))
+            {
+                ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
+                underlying = r;
+                return true;
+            }
+            return false;
+        }
+
+        public sealed override bool TryParse(
+#if SPAN
+            ReadOnlySpan<char>
+#else
+            string?
+#endif
+            value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats)
+        {
+            if (TryParse(value, ignoreCase, out var r, formats))
+            {
+                result = EnumBridge.ToObjectUnchecked(r);
+                return true;
+            }
+            result = null;
+            return false;
+        }
+
+        public new bool TryParse(
+#if SPAN
+            ReadOnlySpan<char>
+#else
+            string?
+#endif
+            value, bool ignoreCase, out TUnderlying result, ValueCollection<EnumFormat> formats)
+        {
+            if (value != null)
+            {
+                value = value.Trim();
+
+                if (formats.Count == 0)
+                {
+                    formats = Enums.DefaultFormats;
+                }
+
+                return TryParseInternal(value, ignoreCase, out result, out _, formats, true);
+            }
+            result = default;
+            return false;
         }
     }
 
@@ -1687,5 +1730,47 @@ namespace EnumsNET
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
+
+        public override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
+        {
+            ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
+            underlying = ParseFlagsInternal(value, ignoreCase, null, formats);
+        }
+
+        public override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, null, formats));
+
+        public override bool TryParse(
+#if SPAN
+            ReadOnlySpan<char>
+#else
+            string?
+#endif
+            value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
+        {
+            if (TryParseFlags(value, ignoreCase, null, out var r, formats))
+            {
+                ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
+                underlying = r;
+                return true;
+            }
+            return false;
+        }
+
+        public override bool TryParse(
+#if SPAN
+            ReadOnlySpan<char>
+#else
+            string?
+#endif
+            value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats)
+        {
+            if (TryParseFlags(value, ignoreCase, null, out var r, formats))
+            {
+                result = EnumBridge.ToObjectUnchecked(r);
+                return true;
+            }
+            result = null;
+            return false;
+        }
     }
 }

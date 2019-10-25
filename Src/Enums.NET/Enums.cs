@@ -1075,7 +1075,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value)
-            where TEnum : struct, Enum => Parse<TEnum>(value, false);
+            where TEnum : struct, Enum => Parse<TEnum>(value, false, default(ValueCollection<EnumFormat>));
 
         /// <summary>
         /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
