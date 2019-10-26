@@ -209,6 +209,7 @@ class EnumsNETDemo
 
 ---
 ![Performance](performance.png)
+
 Results from running the [PerformanceTestConsole](./Src/Enums.NET.PerfTestConsole/Program.cs) BenchmarkDotNet application.
 
 ## Interface
