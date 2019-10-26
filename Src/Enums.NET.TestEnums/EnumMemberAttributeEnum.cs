@@ -1,5 +1,4 @@
-﻿#if ENUM_MEMBER_ATTRIBUTE
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace EnumsNET.Tests.TestEnums
 {
@@ -15,4 +14,3 @@ namespace EnumsNET.Tests.TestEnums
         D
     }
 }
-#endif

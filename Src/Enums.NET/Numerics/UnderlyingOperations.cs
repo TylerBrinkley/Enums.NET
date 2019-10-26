@@ -54,6 +54,7 @@ namespace EnumsNET.Numerics
         string ToHexadecimalString(T value);
         string ToDecimalString(T value);
         int BitCount(T value);
+        bool InRange(T value, T minValue, T maxValue);
 
 #if !ICONVERTIBLE
         sbyte ToSByte(T value);
@@ -155,6 +156,28 @@ namespace EnumsNET.Numerics
         uint IUnderlyingOperations<uint>.Create(long value) => (uint)value;
 
         ulong IUnderlyingOperations<ulong>.Create(long value) => (ulong)value;
+        #endregion
+
+        #region InRange
+        public bool InRange(bool value, bool minValue, bool maxValue) => value == minValue || value == maxValue;
+
+        public bool InRange(byte value, byte minValue, byte maxValue) => ((uint)value - minValue) <= ((uint)maxValue - minValue);
+
+        public bool InRange(char value, char minValue, char maxValue) => ((uint)value - minValue) <= ((uint)maxValue - minValue);
+
+        public bool InRange(short value, short minValue, short maxValue) => (uint)(value - minValue) <= (uint)(maxValue - minValue);
+
+        public bool InRange(int value, int minValue, int maxValue) => (uint)(value - minValue) <= (uint)(maxValue - minValue);
+
+        public bool InRange(long value, long minValue, long maxValue) => (ulong)(value - minValue) <= (ulong)(maxValue - minValue);
+
+        public bool InRange(sbyte value, sbyte minValue, sbyte maxValue) => (uint)(value - minValue) <= (uint)(maxValue - minValue);
+
+        public bool InRange(ushort value, ushort minValue, ushort maxValue) => ((uint)value - minValue) <= ((uint)maxValue - minValue);
+
+        public bool InRange(uint value, uint minValue, uint maxValue) => (value - minValue) <= (maxValue - minValue);
+
+        public bool InRange(ulong value, ulong minValue, ulong maxValue) => (value - minValue) <= (maxValue - minValue);
         #endregion
 
         #region IsInValueRange

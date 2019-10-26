@@ -25,12 +25,9 @@
 
 using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
-using EnumsNET.NonGeneric;
 
 namespace EnumsNET.Tests.Benchmarks
 {
-    [ClrJob, CoreJob]
     public class ToStringBenchmarks
     {
         private readonly DayOfWeek[] _values;
@@ -42,7 +39,7 @@ namespace EnumsNET.Tests.Benchmarks
             _values = (DayOfWeek[])Enum.GetValues(_enumType);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public string Enum_ToString_Name()
         {
             string result = null;
@@ -59,7 +56,7 @@ namespace EnumsNET.Tests.Benchmarks
             string result = null;
             foreach (var value in _values)
             {
-                result = NonGenericEnums.AsString(_enumType, value);
+                result = Enums.AsString(_enumType, value);
             }
             return result;
         }
@@ -71,6 +68,28 @@ namespace EnumsNET.Tests.Benchmarks
             foreach (var value in _values)
             {
                 result = value.AsString();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string Enums_GetName()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = value.GetName();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public string FastEnum_GetName()
+        {
+            string result = null;
+            foreach (var value in _values)
+            {
+                result = FastEnumUtility.FastEnum.GetName(value);
             }
             return result;
         }
@@ -92,7 +111,7 @@ namespace EnumsNET.Tests.Benchmarks
             string result = null;
             foreach (var value in _values)
             {
-                result = NonGenericEnums.AsString(_enumType, value, EnumFormat.DecimalValue);
+                result = Enums.AsString(_enumType, value, EnumFormat.DecimalValue);
             }
             return result;
         }

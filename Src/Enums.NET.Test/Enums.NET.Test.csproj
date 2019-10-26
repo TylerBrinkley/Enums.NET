@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45</TargetFrameworks>
+    <RootNamespace>EnumsNET.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <ProjectReference Include="..\Enums.NET.TestEnums\Enums.NET.TestEnums.csproj" />
+    <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
+    <AssemblyTitle>Enums.NET Test .NET 4.6</AssemblyTitle>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <AssemblyTitle>Enums.NET Test .NET 4.5</AssemblyTitle>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <AssemblyTitle>Enums.NET Test .NET Core App 3.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <AssemblyTitle>Enums.NET Test .NET Core App 2.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
+    <AssemblyTitle>Enums.NET Test .NET Core App 1.1</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;BENCHMARKS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
+    <AssemblyTitle>Enums.NET Test .NET Core App 1.0</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
+  </PropertyGroup>
+</Project>

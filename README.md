@@ -1,5 +1,5 @@
 # Enums.NET
-Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is available as a [NuGet Package](https://www.nuget.org/packages/Enums.NET/) and is compatible with .NET Framework 2.0+ and .NET Standard 1.0+.
+Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is available as a [NuGet Package](https://www.nuget.org/packages/Enums.NET/) and is compatible with .NET Framework 4.5+ and .NET Standard 1.0+.
 
 I'm trying to integrate some of Enums.NET's improvements into [corefx](https://github.com/dotnet/corefx) so if interested in its progress please check out the proposal [here](https://github.com/dotnet/corefx/issues/15453).
 
@@ -207,23 +207,15 @@ class EnumsNETDemo
 }
 ```
 
-## Performance Comparison
+---
 ![Performance](performance.png)
 
+Results from running the [PerformanceTestConsole](./Src/Enums.NET.PerfTestConsole/Program.cs) BenchmarkDotNet application.
+
 ## Interface
-[`EnumsNET.Enums`](Src/Enums.NET/Enums.cs) static class for type-safe enum operations, with many exposed as extension methods.
-
-[`EnumsNET.FlagEnums`](Src/Enums.NET/FlagEnums.cs) static class for type-safe flag enum operations, with many exposed as extension methods.
-
-[`EnumsNET.Unsafe.UnsafeEnums`](Src/Enums.NET/Unsafe/UnsafeEnums.cs) static class for enum operations without the enum constraint for use in generic programming.
-
-[`EnumsNET.Unsafe.UnsafeFlagEnums`](Src/Enums.NET/Unsafe/UnsafeFlagEnums.cs) static class for flag enum operations without the enum constraint for use in generic programming.
-
-[`EnumsNET.NonGeneric.NonGenericEnums`](Src/Enums.NET/NonGeneric/NonGenericEnums.cs) static class for non-generic enum operations.
-
-[`EnumsNET.NonGeneric.NonGenericFlagEnums`](Src/Enums.NET/NonGeneric/NonGenericFlagEnums.cs) static class for non-generic flag enum operations.
+See [fuget](https://www.fuget.org/packages/Enums.NET) for exploring the interface.
 
 ## Credits
 Inspired by Jon Skeet's [Unconstrained Melody](https://github.com/jskeet/unconstrained-melody).
 
-Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil) for building the assembly.
+Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil) for building the test enums assembly.

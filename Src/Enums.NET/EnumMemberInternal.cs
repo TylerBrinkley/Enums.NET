@@ -25,15 +25,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using EnumsNET.Numerics;
 
 namespace EnumsNET
 {
-    internal abstract class EnumMemberInternal : IFormattable
-#if ICONVERTIBLE
-        , IConvertible
-#endif
+    internal abstract class EnumMemberInternal : IComparable<EnumMemberInternal>
     {
         public readonly string Name;
         public readonly AttributeCollection Attributes;
@@ -48,7 +46,7 @@ namespace EnumsNET
             }
         }
 
-        internal abstract EnumMember CreateEnumMember();
+        private protected abstract EnumMember CreateEnumMember();
 
         protected EnumMemberInternal(string name, AttributeCollection attributes)
         {
@@ -56,11 +54,11 @@ namespace EnumsNET
             Attributes = attributes;
         }
 
-        public abstract object GetUnderlyingValue();
-        public abstract string AsString(string? format);
+        public abstract void GetValue(ref byte result);
+        public abstract object GetValue();
+        public abstract string AsString(string format);
         public abstract string? AsString(EnumFormat format);
         public abstract string? AsString(ValueCollection<EnumFormat> formats);
-        public abstract string Format(string format);
         public abstract byte ToByte();
         public abstract short ToInt16();
         public abstract int ToInt32();
@@ -73,82 +71,84 @@ namespace EnumsNET
         public abstract bool HasAnyFlags();
         public abstract bool HasAllFlags();
         public abstract int GetFlagCount();
-        public abstract string ToString(string? format, IFormatProvider? formatProvider);
+        public abstract IValuesContainer GetFlags();
+        public abstract IReadOnlyList<EnumMember> GetFlagMembers();
+        public abstract int CompareTo(EnumMemberInternal? other);
 #if ICONVERTIBLE
         public abstract TypeCode GetTypeCode();
         public abstract bool ToBoolean(IFormatProvider? provider);
         public abstract char ToChar(IFormatProvider? provider);
-        public abstract sbyte ToSByte(IFormatProvider? provider);
-        public abstract byte ToByte(IFormatProvider? provider);
-        public abstract short ToInt16(IFormatProvider? provider);
-        public abstract ushort ToUInt16(IFormatProvider? provider);
-        public abstract int ToInt32(IFormatProvider? provider);
-        public abstract uint ToUInt32(IFormatProvider? provider);
-        public abstract long ToInt64(IFormatProvider? provider);
-        public abstract ulong ToUInt64(IFormatProvider? provider);
         public abstract float ToSingle(IFormatProvider? provider);
         public abstract double ToDouble(IFormatProvider? provider);
         public abstract decimal ToDecimal(IFormatProvider? provider);
         public abstract DateTime ToDateTime(IFormatProvider? provider);
-        public abstract string ToString(IFormatProvider? provider);
         public abstract object ToType(Type conversionType, IFormatProvider? provider);
 #endif
     }
 
     // Putting the logic here as opposed to directly in EnumMember<TEnum, TUnderlying, TUnderlyingOperations>
     // reduces memory usage because it doesn't have the enum type as a generic type parameter.
-    internal sealed class EnumMemberInternal<TUnderlying, TUnderlyingOperations> : EnumMemberInternal
+    internal sealed class EnumMemberInternal<TUnderlying, TUnderlyingOperations> : EnumMemberInternal, IEquatable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>
         where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
 #if ICONVERTIBLE
         , IConvertible
 #endif
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        private readonly EnumCache<TUnderlying, TUnderlyingOperations> _enumCache;
+        internal EnumCache<TUnderlying, TUnderlyingOperations> EnumCache;
 
         public readonly TUnderlying Value;
 
-        internal override EnumMember CreateEnumMember() => _enumCache.EnumBridge.CreateEnumMember(this);
+        // Used for lookups by value from EnumCache
+        internal EnumMemberInternal<TUnderlying, TUnderlyingOperations>? Next;
 
-        public EnumMemberInternal(TUnderlying value, string name, AttributeCollection attributes, EnumCache<TUnderlying, TUnderlyingOperations> enumCache)
+        private protected override EnumMember CreateEnumMember() => EnumCache.EnumBridge.CreateEnumMember(this);
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable. Gets set soon after creation but cannot be set at creation as EnumCache is not created yet
+        public EnumMemberInternal(TUnderlying value, string name, AttributeCollection attributes)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             : base(name, attributes)
         {
             Value = value;
-            _enumCache = enumCache;
         }
 
-        public override object GetUnderlyingValue() => Value;
+        public override void GetValue(ref byte result)
+        {
+            ref var v = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
+            v = Value;
+        }
 
-        public override string AsString(string? format) => _enumCache.AsStringInternal(Value, this, format);
+        public override object GetValue() => Value;
+
+        public override string AsString(string format) => EnumCache.AsStringInternal(Value, this, format);
 
         public override string? AsString(EnumFormat format)
         {
             var isInitialized = true;
             EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member = this;
-            return _enumCache.FormatInternal(Value, ref isInitialized, ref member, format);
+            return EnumCache.AsStringInternal(Value, ref isInitialized, ref member, format);
         }
 
-        public override string? AsString(ValueCollection<EnumFormat> formats) => _enumCache.FormatInternal(Value, this, formats);
-
-        public override string Format(string format) => _enumCache.FormatInternal(Value, this, format);
+        public override string? AsString(ValueCollection<EnumFormat> formats) => EnumCache.AsStringInternal(Value, this, formats);
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        internal int CompareTo(EnumMemberInternal<TUnderlying, TUnderlyingOperations> other) => Value.CompareTo(other.Value);
+        public override bool IsValidFlagCombination() => EnumCache.IsValidFlagCombination(Value);
 
-        public override bool IsValidFlagCombination() => _enumCache.IsValidFlagCombination(Value);
+        public override int GetFlagCount() => EnumCache.GetFlagCount(Value);
 
-        public override int GetFlagCount() => _enumCache.GetFlagCount(Value);
+        public override bool HasAnyFlags() => EnumCache.HasAnyFlags(Value);
 
-        public override bool HasAnyFlags() => _enumCache.HasAnyFlags(Value);
+        public override bool HasAllFlags() => EnumCache.HasAllFlags(Value);
 
-        public override bool HasAllFlags() => _enumCache.HasAllFlags(Value);
+        public override IValuesContainer GetFlags() => EnumCache.GetFlags(Value);
 
-        public IEnumerable<TUnderlying> GetFlags() => _enumCache.GetFlags(Value);
+        public override IReadOnlyList<EnumMember> GetFlagMembers() => EnumCache.GetFlagMembers(Value);
 
-        public IEnumerable<EnumMember> GetFlagMembers() => _enumCache.GetFlagMembers(Value);
+        public override int CompareTo(EnumMemberInternal? other) => other != null ? Value.CompareTo(UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(other).Value) : 1;
 
-        public override string ToString(string? format, IFormatProvider? formatProvider) => AsString(format);
+        // Implemented so that Distinct will work
+        public bool Equals(EnumMemberInternal<TUnderlying, TUnderlyingOperations> other) => Value.Equals(other.Value);
 
 #if ICONVERTIBLE
         public override sbyte ToSByte() => Value.ToSByte(null);
@@ -173,22 +173,6 @@ namespace EnumsNET
 
         public override char ToChar(IFormatProvider? provider) => Value.ToChar(provider);
 
-        public override sbyte ToSByte(IFormatProvider? provider) => Value.ToSByte(provider);
-
-        public override byte ToByte(IFormatProvider? provider) => Value.ToByte(provider);
-
-        public override short ToInt16(IFormatProvider? provider) => Value.ToInt16(provider);
-
-        public override ushort ToUInt16(IFormatProvider? provider) => Value.ToUInt16(provider);
-
-        public override int ToInt32(IFormatProvider? provider) => Value.ToInt32(provider);
-
-        public override uint ToUInt32(IFormatProvider? provider) => Value.ToUInt32(provider);
-
-        public override long ToInt64(IFormatProvider? provider) => Value.ToInt64(provider);
-
-        public override ulong ToUInt64(IFormatProvider? provider) => Value.ToUInt64(provider);
-
         public override float ToSingle(IFormatProvider? provider) => Value.ToSingle(provider);
 
         public override double ToDouble(IFormatProvider? provider) => Value.ToDouble(provider);
@@ -196,8 +180,6 @@ namespace EnumsNET
         public override decimal ToDecimal(IFormatProvider? provider) => Value.ToDecimal(provider);
 
         public override DateTime ToDateTime(IFormatProvider? provider) => Value.ToDateTime(provider);
-
-        public override string ToString(IFormatProvider? provider) => Name;
 
         public override object ToType(Type conversionType, IFormatProvider? provider) => Value.ToType(conversionType, provider);
 #else

@@ -25,12 +25,9 @@
 
 using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
-using EnumsNET.NonGeneric;
 
 namespace EnumsNET.Tests.Benchmarks
 {
-    [ClrJob, CoreJob]
     public class IsDefinedBenchmarks
     {
         private readonly DayOfWeek[] _values;
@@ -48,7 +45,7 @@ namespace EnumsNET.Tests.Benchmarks
             }
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public bool Enum_IsDefined_True()
         {
             var result = false;
@@ -76,7 +73,7 @@ namespace EnumsNET.Tests.Benchmarks
             var result = false;
             foreach (var value in _values)
             {
-                result |= NonGenericEnums.IsDefined(_enumType, value);
+                result |= Enums.IsDefined(_enumType, value);
             }
             return result;
         }
@@ -87,7 +84,7 @@ namespace EnumsNET.Tests.Benchmarks
             var result = false;
             foreach (var value in _undefinedValues)
             {
-                result |= NonGenericEnums.IsDefined(_enumType, value);
+                result |= Enums.IsDefined(_enumType, value);
             }
             return result;
         }
@@ -110,6 +107,28 @@ namespace EnumsNET.Tests.Benchmarks
             foreach (var value in _undefinedValues)
             {
                 result |= value.IsDefined();
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public bool FastEnum_IsDefined_True()
+        {
+            var result = false;
+            foreach (var value in _values)
+            {
+                result |= FastEnumUtility.FastEnum.IsDefined(value);
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public bool FastEnum_IsDefined_False()
+        {
+            var result = false;
+            foreach (var value in _undefinedValues)
+            {
+                result |= FastEnumUtility.FastEnum.IsDefined(value);
             }
             return result;
         }

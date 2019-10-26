@@ -26,29 +26,70 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using EnumsNET.Utilities;
+using System.Runtime.CompilerServices;
 
 namespace EnumsNET
 {
     /// <summary>
-    /// An efficient type-safe enum comparer which doesn't box the values.
+    /// An efficient enum comparer.
+    /// </summary>
+    public abstract class EnumComparer : IEqualityComparer, IComparer
+    {
+        /// <summary>
+        /// Gets a singleton instance of <see cref="EnumComparer"/> for the enum type provided.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <returns>A singleton instance of <see cref="EnumComparer"/> for the enum type provided.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
+        public static EnumComparer GetInstance(Type enumType) => Enums.GetCache(enumType).EnumComparer;
+
+        private protected readonly EnumCache _enumCache;
+
+        private protected EnumComparer(EnumCache enumCache)
+        {
+            _enumCache = enumCache;
+        }
+
+        /// <summary>
+        /// Indicates if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.
+        /// </summary>
+        /// <param name="x">The first enum value.</param>
+        /// <param name="y">The second enum value.</param>
+        /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
+        public new bool Equals(object? x, object? y) => x is object ? (y is object && _enumCache.Equals(x, y)) : y is null;
+
+        /// <summary>
+        /// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
+        /// </summary>
+        /// <param name="obj">The enum value.</param>
+        /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
+        public int GetHashCode(object? obj) => obj is object ? _enumCache.GetHashCode(obj) : 0;
+
+        /// <summary>
+        /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
+        /// </summary>
+        /// <param name="x">The first enum value.</param>
+        /// <param name="y">The second enum value.</param>
+        /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
+        /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
+        public int Compare(object? x, object? y) => x is object ? (y is object ? _enumCache.CompareTo(x, y) : 1) : (y is null ? 0 : -1);
+    }
+
+    /// <summary>
+    /// An efficient enum comparer which doesn't box the values.
     /// </summary>
     /// <typeparam name="TEnum">The enum type.</typeparam>
-    public sealed class EnumComparer<TEnum> : IEqualityComparer<TEnum>, IComparer<TEnum>, IEqualityComparer, IComparer
-        where TEnum : struct, Enum
+    public sealed class EnumComparer<TEnum> : EnumComparer, IEqualityComparer<TEnum>, IComparer<TEnum>
     {
-        private static readonly EnumCache s_cache = Enums<TEnum>.Cache;
-
         /// <summary>
         /// The singleton instance of <see cref="EnumComparer{TEnum}"/>. 
         /// </summary>
-        public static EnumComparer<TEnum> Instance { get; } = new EnumComparer<TEnum>();
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        public static EnumComparer<TEnum> Instance => UnsafeUtility.As<EnumComparer<TEnum>>(Enums.GetCacheUnsafe<TEnum>().EnumComparer);
 
-        /// <summary>
-        /// <see cref="EnumComparer{TEnum}"/> constructor, should use singleton property <see cref="Instance"/> instead.
-        /// This constructor's public for visibility and serialization.
-        /// </summary>
-        public EnumComparer()
+        internal EnumComparer(EnumCache enumCache)
+            : base(enumCache)
         {
         }
 
@@ -58,14 +99,14 @@ namespace EnumsNET
         /// <param name="x">The first enum value.</param>
         /// <param name="y">The second enum value.</param>
         /// <returns>Indication if <paramref name="x"/> equals <paramref name="y"/> without boxing the values.</returns>
-        public bool Equals(TEnum x, TEnum y) => s_cache.Equals(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
+        public bool Equals(TEnum x, TEnum y) => _enumCache.Equals(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
 
         /// <summary>
         /// Retrieves a hash code for <paramref name="obj"/> without boxing the value.
         /// </summary>
         /// <param name="obj">The enum value.</param>
         /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-        public int GetHashCode(TEnum obj) => s_cache.GetHashCode(ref UnsafeUtility.As<TEnum, byte>(ref obj));
+        public int GetHashCode(TEnum obj) => _enumCache.GetHashCode(ref UnsafeUtility.As<TEnum, byte>(ref obj));
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.
@@ -74,14 +115,6 @@ namespace EnumsNET
         /// <param name="y">The second enum value.</param>
         /// <returns>1 if <paramref name="x"/> is greater than <paramref name="y"/>, 0 if <paramref name="x"/> equals <paramref name="y"/>,
         /// and -1 if <paramref name="x"/> is less than <paramref name="y"/>.</returns>
-        public int Compare(TEnum x, TEnum y) => s_cache.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
-
-        #region Explicit Interface Implementation
-        bool IEqualityComparer.Equals(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum && Equals(xEnum, yEnum);
-
-        int IEqualityComparer.GetHashCode(object? obj) => obj is TEnum objEnum ? GetHashCode(objEnum) : 0;
-
-        int IComparer.Compare(object? x, object? y) => x is TEnum xEnum && y is TEnum yEnum ? Compare(xEnum, yEnum) : 0;
-        #endregion
+        public int Compare(TEnum x, TEnum y) => _enumCache.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
     }
 }

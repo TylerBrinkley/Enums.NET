@@ -23,9 +23,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-namespace EnumsNET.NonGeneric
+namespace EnumsNET
 {
-    internal struct NonGenericEnumInfo
+    internal sealed class NonGenericEnumInfo
     {
         public readonly EnumCache EnumCache;
         public readonly bool IsNullable;

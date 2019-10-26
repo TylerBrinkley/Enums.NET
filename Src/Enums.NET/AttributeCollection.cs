@@ -32,10 +32,7 @@ namespace EnumsNET
     /// <summary>
     /// An <see cref="Attribute"/> collection. 
     /// </summary>
-    public sealed class AttributeCollection : IList<Attribute>
-#if IREADONLYLIST
-        , IReadOnlyList<Attribute>
-#endif
+    public sealed class AttributeCollection : IList<Attribute>, IReadOnlyList<Attribute>
     {
         private readonly Attribute[] _attributes;
 
