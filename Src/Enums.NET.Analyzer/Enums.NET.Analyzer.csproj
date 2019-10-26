@@ -8,16 +8,14 @@
 
   <PropertyGroup>
     <PackageId>Enums.NET.Analyzer</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>brinkleyt</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>Enums.NET.Analyzer</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Copyright>Copyright</Copyright>
+    <PackageVersion>3.0.0</PackageVersion>
+    <Authors>Tyler Brinkley</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/TylerBrinkley/Enums.NET</PackageProjectUrl>
+    <PublishRepositoryUrl>True</PublishRepositoryUrl>
+    <Description>Analyzer to provide C# code fixes for migrating away from obsoleted Enums.NET API's.</Description>
+    <AssemblyName>Enums.NET.Analyzer</AssemblyName>
+    <Copyright>Copyright © Tyler Brinkley 2019</Copyright>
     <PackageTags>Enums.NET.Analyzer, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <RootNamespace>EnumsNET.Analyzer</RootNamespace>

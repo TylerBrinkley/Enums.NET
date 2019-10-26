@@ -16,7 +16,7 @@ Enums.NET solves all of these issues and more.
 
 ## Enums.NET Demo
 
-```cs
+```c#
 using System;
 using System.Linq;
 using EnumsNET;
@@ -124,14 +124,14 @@ class EnumsNETDemo
     {
         EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.Attributes.Get<SymbolAttribute>()?.Symbol);
         Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(symbolFormat));
-        Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", symbolFormat));
+        Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", ignoreCase: false, symbolFormat));
     }
 
     [Test]
     public void Attributes()
     {
         Assert.AreEqual("!=", NumericOperator.NotEquals.GetAttributes().Get<SymbolAttribute>().Symbol);
-        Assert.IsTrue(NumericOperator.GreaterThanOrEquals.GetAttributes().Has<PrimaryEnumMemberAttribute>());
+        Assert.IsTrue(Enums.GetMember<NumericOperator>("GreaterThanOrEquals").Attributes.Has<PrimaryEnumMemberAttribute>());
         Assert.IsFalse(NumericOperator.LessThan.GetAttributes().Has<DescriptionAttribute>());
     }
 
@@ -140,10 +140,10 @@ class EnumsNETDemo
     {
         Assert.AreEqual(NumericOperator.GreaterThan, Enums.Parse<NumericOperator>("GreaterThan"));
         Assert.AreEqual(NumericOperator.NotEquals, Enums.Parse<NumericOperator>("1"));
-        Assert.AreEqual(NumericOperator.Equals, Enums.Parse<NumericOperator>("Is", EnumFormat.Description));
+        Assert.AreEqual(NumericOperator.Equals, Enums.Parse<NumericOperator>("Is", ignoreCase: false, EnumFormat.Description));
 
         Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, Enums.Parse<DaysOfWeek>("Monday, Wednesday"));
-        Assert.AreEqual(DaysOfWeek.Tuesday | DaysOfWeek.Thursday, FlagEnums.ParseFlags<DaysOfWeek>("Tuesday | Thursday", delimiter: "|"));
+        Assert.AreEqual(DaysOfWeek.Tuesday | DaysOfWeek.Thursday, FlagEnums.ParseFlags<DaysOfWeek>("Tuesday | Thursday", ignoreCase: false, delimiter: "|"));
     }
 
     enum NumericOperator
