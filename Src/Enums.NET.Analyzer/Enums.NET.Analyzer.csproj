@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>Enums.NET.Analyzer</PackageId>
-    <PackageVersion>3.0.0</PackageVersion>
+    <PackageVersion>3.0.1</PackageVersion>
     <Authors>Tyler Brinkley</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/TylerBrinkley/Enums.NET</PackageProjectUrl>
