@@ -397,14 +397,12 @@ namespace EnumsNET
 
         public sealed override object ToObject(long value, EnumValidation validation) => EnumBridge.ToObjectUnchecked(ToObjectInternal(value, validation));
 
-        public TUnderlying ToObject(object value)
-        {
-            var v = EnumBridge.IsEnum(value);
-            if (v.HasValue)
-            {
-                return v.GetValueOrDefault();
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TUnderlying ToObject(object value) => EnumBridge.IsEnum(value) ?? ToObjectNoInlining(value);
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public TUnderlying ToObjectNoInlining(object value)
+        {
             if (value is TUnderlying u)
             {
                 return u;

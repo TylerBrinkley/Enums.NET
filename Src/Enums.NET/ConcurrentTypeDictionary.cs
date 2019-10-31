@@ -80,6 +80,7 @@ namespace EnumsNET
                     }
                     n = n.Next;
                 }
+                var value = valueFactory(key);
                 var entries = _entries;
                 var count = _count;
                 if (entries.Length == count)
@@ -100,7 +101,6 @@ namespace EnumsNET
                     _buckets = buckets;
                     next = ref buckets[key.GetHashCode() & (buckets.Length - 1)];
                 }
-                var value = valueFactory(key);
                 var entry = new Entry(key, value, next);
                 entries[count] = entry;
                 next = entry;
