@@ -85,6 +85,7 @@ namespace EnumsNET.Tests.Benchmarks
                 {
                     Enums.Parse(enumType, names[0]); // Warmup
                     parser.Parse(names[0]); // Warmup
+                    fastEnumParser.Parse(names[0]); // Warmup
                 }
             }
         }
@@ -104,20 +105,20 @@ namespace EnumsNET.Tests.Benchmarks
             return result;
         }
 
-        [Benchmark]
-        public object NonGenericEnums_Parse_Names()
-        {
-            object result = null;
-            foreach (var enumData in _enumDatas)
-            {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.Names)
-                {
-                    result = Enums.Parse(enumType, value);
-                }
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public object NonGenericEnums_Parse_Names()
+        //{
+        //    object result = null;
+        //    foreach (var enumData in _enumDatas)
+        //    {
+        //        var enumType = enumData.Type;
+        //        foreach (var value in enumData.Names)
+        //        {
+        //            result = Enums.Parse(enumType, value);
+        //        }
+        //    }
+        //    return result;
+        //}
 
         [Benchmark]
         public int Enums_Parse_Names()
@@ -151,66 +152,66 @@ namespace EnumsNET.Tests.Benchmarks
             return i;
         }
 
-        [Benchmark]
-        public object Enum_Parse_Decimals()
-        {
-            object result = null;
-            foreach (var enumData in _enumDatas)
-            {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.NumericValues)
-                {
-                    result = Enum.Parse(enumType, value);
-                }
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public object Enum_Parse_Decimals()
+        //{
+        //    object result = null;
+        //    foreach (var enumData in _enumDatas)
+        //    {
+        //        var enumType = enumData.Type;
+        //        foreach (var value in enumData.NumericValues)
+        //        {
+        //            result = Enum.Parse(enumType, value);
+        //        }
+        //    }
+        //    return result;
+        //}
 
-        [Benchmark]
-        public object NonGenericEnums_Parse_Decimals()
-        {
-            object result = null;
-            foreach (var enumData in _enumDatas)
-            {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.NumericValues)
-                {
-                    result = Enums.Parse(enumType, value);
-                }
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public object NonGenericEnums_Parse_Decimals()
+        //{
+        //    object result = null;
+        //    foreach (var enumData in _enumDatas)
+        //    {
+        //        var enumType = enumData.Type;
+        //        foreach (var value in enumData.NumericValues)
+        //        {
+        //            result = Enums.Parse(enumType, value);
+        //        }
+        //    }
+        //    return result;
+        //}
 
-        [Benchmark]
-        public int Enums_Parse_Decimals()
-        {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
-            {
-                var genericParser = enumData.GenericParser;
-                foreach (var value in enumData.NumericValues)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
-            }
-            return i;
-        }
+        //[Benchmark]
+        //public int Enums_Parse_Decimals()
+        //{
+        //    var i = 0;
+        //    foreach (var enumData in _enumDatas)
+        //    {
+        //        var genericParser = enumData.GenericParser;
+        //        foreach (var value in enumData.NumericValues)
+        //        {
+        //            genericParser.Parse(value);
+        //            ++i;
+        //        }
+        //    }
+        //    return i;
+        //}
 
-        [Benchmark]
-        public int FastEnum_Parse_Decimals()
-        {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
-            {
-                var fastEnumParser = enumData.FastEnumParser;
-                foreach (var value in enumData.NumericValues)
-                {
-                    fastEnumParser.Parse(value);
-                    ++i;
-                }
-            }
-            return i;
-        }
+        //[Benchmark]
+        //public int FastEnum_Parse_Decimals()
+        //{
+        //    var i = 0;
+        //    foreach (var enumData in _enumDatas)
+        //    {
+        //        var fastEnumParser = enumData.FastEnumParser;
+        //        foreach (var value in enumData.NumericValues)
+        //        {
+        //            fastEnumParser.Parse(value);
+        //            ++i;
+        //        }
+        //    }
+        //    return i;
+        //}
     }
 }

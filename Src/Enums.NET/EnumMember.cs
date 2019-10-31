@@ -112,7 +112,7 @@ namespace EnumsNET
         /// <param name="formats">The output formats to use.</param>
         /// <returns>A string representation of the enum member.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        public string? AsString(params EnumFormat[]? formats) => Member.AsString(ValueCollection.Create(formats));
+        public string? AsString(params EnumFormat[]? formats) => formats?.Length > 0 ? Member.AsString(ValueCollection.Create(formats)) : Member.Name;
 
         /// <summary>
         /// Converts the enum member to its string representation using the specified <paramref name="format"/>.

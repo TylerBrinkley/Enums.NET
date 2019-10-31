@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace EnumsNET
@@ -39,7 +40,7 @@ namespace EnumsNET
         public static ValueCollection<T> Create<T>(T item1, T item2, T item3) => new ValueCollection<T>(item1, item2, item3);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ValueCollection<T> Create<T>(params T[]? items) => new ValueCollection<T>(items);
+        public static ValueCollection<T> Create<T>(params T[] items) => new ValueCollection<T>(items);
     }
 
     // A struct that's foreach-able without allocations and supports up to 3 elements or an array
@@ -53,12 +54,12 @@ namespace EnumsNET
         private readonly T _item1;
         private readonly T _item2;
         private readonly T _item3;
-        private readonly T[]? _items;
+        private readonly T[] _items;
         private int _index;
 
-        public int Count => _items?.Length ?? 0;
+        public int Count => _items.Length;
 
-        public T Current => (uint)_index >= (uint)Count
+        public T Current => (uint)_index >= (uint)_items.Length
             ? default
             : _index switch
         {
@@ -95,11 +96,12 @@ namespace EnumsNET
             _index = 0;
         }
 
-        public ValueCollection(params T[]? items)
+        public ValueCollection(params T[] items)
         {
-            _item1 = items?.Length > 0 ? items[0] : default!;
-            _item2 = items?.Length > 1 ? items[1] : default!;
-            _item3 = items?.Length > 2 ? items[2] : default!;
+            Debug.Assert(items.Length > 0);
+            _item1 = items[0];
+            _item2 = items.Length > 1 ? items[1] : default!;
+            _item3 = items.Length > 2 ? items[2] : default!;
             _items = items;
             _index = 0;
         }
@@ -110,6 +112,6 @@ namespace EnumsNET
             return this;
         }
 
-        public bool MoveNext() => ++_index < Count;
+        public bool MoveNext() => ++_index < _items.Length;
     }
 }

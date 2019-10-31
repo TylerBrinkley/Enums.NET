@@ -58,7 +58,7 @@ namespace EnumsNET.NonGeneric
         public static string? FormatFlags(Type enumType, object? value, params EnumFormat[]? formats) => FormatFlags(enumType, value, null, formats);
 
         [return: NotNullIfNotNull("value")]
-        public static string? FormatFlags(Type enumType, object? value, string? delimiter) => FormatFlags(enumType, value, delimiter, default(ValueCollection<EnumFormat>));
+        public static string? FormatFlags(Type enumType, object? value, string? delimiter) => FormatFlags(enumType, value, delimiter, Enums.DefaultFormats);
 
         public static string? FormatFlags(Type enumType, object? value, string? delimiter, EnumFormat format) => FormatFlags(enumType, value, delimiter, ValueCollection.Create(format));
 
@@ -66,7 +66,7 @@ namespace EnumsNET.NonGeneric
 
         public static string? FormatFlags(Type enumType, object? value, string? delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2) => FormatFlags(enumType, value, delimiter, ValueCollection.Create(format0, format1, format2));
 
-        public static string? FormatFlags(Type enumType, object? value, string? delimiter, params EnumFormat[]? formats) => FormatFlags(enumType, value, delimiter, ValueCollection.Create(formats));
+        public static string? FormatFlags(Type enumType, object? value, string? delimiter, params EnumFormat[]? formats) => FormatFlags(enumType, value, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
         private static string? FormatFlags(Type enumType, object? value, string? delimiter, ValueCollection<EnumFormat> formats)
         {
@@ -310,7 +310,7 @@ namespace EnumsNET.NonGeneric
 
         public static object? ParseFlags(Type enumType, string? value, string? delimiter, params EnumFormat[]? formats) => ParseFlags(enumType, value, false, delimiter, formats);
 
-        public static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter) => ParseFlags(enumType, value, ignoreCase, delimiter, default(ValueCollection<EnumFormat>));
+        public static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter) => ParseFlags(enumType, value, ignoreCase, delimiter, Enums.DefaultFormats);
 
         public static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, EnumFormat format) => ParseFlags(enumType, value, ignoreCase, delimiter, ValueCollection.Create(format));
 
@@ -318,7 +318,7 @@ namespace EnumsNET.NonGeneric
 
         public static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlags(enumType, value, ignoreCase, delimiter, ValueCollection.Create(format0, format1, format2));
 
-        public static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, params EnumFormat[]? formats) => ParseFlags(enumType, value, ignoreCase, delimiter, ValueCollection.Create(formats));
+        public static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, params EnumFormat[]? formats) => ParseFlags(enumType, value, ignoreCase, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
         private static object? ParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, ValueCollection<EnumFormat> formats)
         {
@@ -364,7 +364,7 @@ namespace EnumsNET.NonGeneric
 
         public static bool TryParseFlags(Type enumType, string? value, string? delimiter, out object? result, params EnumFormat[]? formats) => TryParseFlags(enumType, value, false, delimiter, out result, formats);
 
-        public static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, default(ValueCollection<EnumFormat>));
+        public static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, Enums.DefaultFormats);
 
         public static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result, EnumFormat format) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, ValueCollection.Create(format));
 
@@ -372,7 +372,7 @@ namespace EnumsNET.NonGeneric
 
         public static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, ValueCollection.Create(format0, format1, format2));
 
-        public static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result, params EnumFormat[]? formats) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, ValueCollection.Create(formats));
+        public static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result, params EnumFormat[]? formats) => TryParseFlags(enumType, value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
         private static bool TryParseFlags(Type enumType, string? value, bool ignoreCase, string? delimiter, out object? result, ValueCollection<EnumFormat> formats)
         {

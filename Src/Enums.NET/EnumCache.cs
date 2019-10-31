@@ -29,6 +29,7 @@ using System.ComponentModel;
 #if DISPLAY_ATTRIBUTE
 using System.ComponentModel.DataAnnotations;
 #endif
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -711,16 +712,20 @@ namespace EnumsNET
 
         public sealed override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
 
-        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), formats);
+        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, formats);
 
         public sealed override string AsString(object value, string format) => AsStringInternal(ToObject(value), null, format);
 
         public sealed override string? AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
 
-        public sealed override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), formats);
+        public sealed override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), null, formats);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string AsString(TUnderlying value) => IsFlagEnum ? FormatFlagsInternal(value, null, default)! : GetMember(value)?.Name ?? value.ToString()!;
+        public string AsString(TUnderlying value)
+        {
+            var member = GetMember(value);
+            return IsFlagEnum ? FormatFlagsInternal(value, member, null, Enums.DefaultFormats)! : member?.Name ?? value.ToString()!;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string? AsString(TUnderlying value, EnumFormat format) => format switch
@@ -737,9 +742,6 @@ namespace EnumsNET
             _ => Enums.CustomEnumMemberFormat(GetMember(value)?.EnumMember, format.Validate(nameof(format)))
         };
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string? AsStringInternal(TUnderlying value, ValueCollection<EnumFormat> formats) => formats.Count > 0 ? AsStringInternal(value, null, formats) : AsString(value);
-
         internal string AsStringInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string format)
         {
             if (format.Length == 1)
@@ -748,10 +750,10 @@ namespace EnumsNET
                 {
                     case 'G':
                     case 'g':
-                        return IsFlagEnum ? FormatFlagsInternal(value, member ?? GetMember(value), null, default)! : (member ?? GetMember(value))?.Name ?? value.ToString()!;
+                        return IsFlagEnum ? FormatFlagsInternal(value, member ?? GetMember(value), null, Enums.DefaultFormats)! : (member ?? GetMember(value))?.Name ?? value.ToString()!;
                     case 'F':
                     case 'f':
-                        return FormatFlagsInternal(value, member ?? GetMember(value), null, default)!;
+                        return FormatFlagsInternal(value, member ?? GetMember(value), null, Enums.DefaultFormats)!;
                     case 'D':
                     case 'd':
                         return value.ToString()!;
@@ -886,9 +888,9 @@ namespace EnumsNET
         #endregion
 
         #region Defined Values Main Methods
-        public sealed override EnumMemberInternal? GetMember(ref byte value) => GetMember(UnsafeUtility.As<byte, TUnderlying>(ref value));
+        public override EnumMemberInternal? GetMember(ref byte value) => GetMember(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
-        public sealed override EnumMemberInternal? GetMember(object value) => GetMember(ToObject(value));
+        public override EnumMemberInternal? GetMember(object value) => GetMember(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EnumMemberInternal<TUnderlying, TUnderlyingOperations>? GetMember(TUnderlying value)
@@ -903,14 +905,7 @@ namespace EnumsNET
 
         public sealed override EnumMember? GetMember(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
-            value = value.Trim();
-
-            if (formats.Count == 0)
-            {
-                formats = Enums.NameFormat;
-            }
-
-            TryParseInternal(value, ignoreCase, out _, out var member, formats, false);
+            TryParseInternal(value.Trim(), ignoreCase, out _, out var member, formats, false);
             return member?.EnumMember;
         }
         #endregion
@@ -924,11 +919,6 @@ namespace EnumsNET
             }
 
             value = value.Trim();
-            
-            if (formats.Count == 0)
-            {
-                formats = Enums.DefaultFormats;
-            }
 
             if (TryParseInternal(value, ignoreCase, out var result, out _, formats, true))
             {
@@ -958,11 +948,6 @@ namespace EnumsNET
             {
                 value = value.Trim();
 
-                if (formats.Count == 0)
-                {
-                    formats = Enums.DefaultFormats;
-                }
-
                 return TryParseInternal(value, ignoreCase, out result, out _, formats, true);
             }
             result = default;
@@ -971,6 +956,8 @@ namespace EnumsNET
 
         protected bool TryParseInternal(ParseType value, bool ignoreCase, out TUnderlying result, out EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, ValueCollection<EnumFormat> formats, bool getValueOnly)
         {
+            Debug.Assert(formats.Count > 0);
+
             TUnderlyingOperations operations = default;
             foreach (var format in formats)
             {
@@ -1049,11 +1036,6 @@ namespace EnumsNET
 
         internal string? FormatFlagsInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, string? delimiter, ValueCollection<EnumFormat> formats)
         {
-            if (formats.Count == 0)
-            {
-                formats = Enums.DefaultFormats;
-            }
-
             if (member != null || value.Equals(default) || !IsValidFlagCombination(value))
             {
                 return AsStringInternal(value, member, formats);
@@ -1067,7 +1049,7 @@ namespace EnumsNET
             var sb = new StringBuilder();
             TUnderlyingOperations operations = default;
             var isLessThanZero = operations.LessThan(value, default);
-            for (var currentValue = operations.One; (isLessThanZero || !operations.LessThan(value, currentValue)) && !currentValue.Equals(default); currentValue = operations.LeftShift(currentValue, 1))
+            for (var currentValue = operations.One; isLessThanZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
             {
                 if (HasAnyFlags(value, currentValue))
                 {
@@ -1101,7 +1083,7 @@ namespace EnumsNET
             TUnderlyingOperations operations = default;
             var validValue = operations.And(value, _allFlags);
             var isLessThanZero = operations.LessThan(validValue, default);
-            for (var currentValue = operations.One; (isLessThanZero || !operations.LessThan(validValue, currentValue)) && !currentValue.Equals(default); currentValue = operations.LeftShift(currentValue, 1))
+            for (var currentValue = operations.One; isLessThanZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
             {
                 if (HasAnyFlags(validValue, currentValue))
                 {
@@ -1275,21 +1257,12 @@ namespace EnumsNET
 
 #if SPAN
             var effectiveDelimiter = delimiter.AsSpan().Trim();
-            if (effectiveDelimiter.Length == 0)
-            {
-                effectiveDelimiter = delimiter;
-            }
 #else
             var effectiveDelimiter = delimiter!.Trim();
+#endif
             if (effectiveDelimiter.Length == 0)
             {
                 effectiveDelimiter = delimiter;
-            }
-#endif
-
-            if (formats.Count == 0)
-            {
-                formats = Enums.DefaultFormats;
             }
 
             TUnderlyingOperations operations = default;
@@ -1394,24 +1367,15 @@ namespace EnumsNET
 
 #if SPAN
             var effectiveDelimiter = delimiter.AsSpan().Trim();
-            if (effectiveDelimiter.Length == 0)
-            {
-                effectiveDelimiter = delimiter;
-            }
 #else
             var effectiveDelimiter = delimiter!.Trim();
+#endif
             if (effectiveDelimiter.Length == 0)
             {
                 effectiveDelimiter = delimiter;
             }
-#endif
 
-            if (formats.Count == 0)
-            {
-                formats = Enums.DefaultFormats;
-            }
-
-            TUnderlying resultAsInt = default;
+            TUnderlying resultAsUnderlying = default;
             var startIndex = 0;
             var valueLength = value.Length;
             TUnderlyingOperations operations = default;
@@ -1446,10 +1410,10 @@ namespace EnumsNET
                     result = default;
                     return false;
                 }
-                resultAsInt = operations.Or(resultAsInt, underlying);
+                resultAsUnderlying = operations.Or(resultAsUnderlying, underlying);
                 startIndex = newStartIndex;
             }
-            result = resultAsInt;
+            result = resultAsUnderlying;
             return true;
         }
         #endregion
@@ -1459,18 +1423,14 @@ namespace EnumsNET
         {
             private readonly struct Entry
             {
-                public readonly int OrdinalHashCode;
                 public readonly int OrdinalNext;
-                public readonly int OrdinalIgnoreCaseHashCode;
                 public readonly int OrdinalIgnoreCaseNext;
                 public readonly string FormattedValue;
                 public readonly EnumMemberInternal<TUnderlying, TUnderlyingOperations> Member;
 
-                public Entry(int ordinalHashCode, int ordinalNext, int ordinalIgnoreCaseHashCode, int ordinalIgnoreCaseNext, string formattedValue, EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
+                public Entry(int ordinalNext, int ordinalIgnoreCaseNext, string formattedValue, EnumMemberInternal<TUnderlying, TUnderlyingOperations> member)
                 {
-                    OrdinalHashCode = ordinalHashCode;
                     OrdinalNext = ordinalNext;
-                    OrdinalIgnoreCaseHashCode = ordinalIgnoreCaseHashCode;
                     OrdinalIgnoreCaseNext = ordinalIgnoreCaseNext;
                     FormattedValue = formattedValue;
                     Member = member;
@@ -1498,7 +1458,7 @@ namespace EnumsNET
                         ref int ordinalBucket = ref ordinalBuckets[ordinalHashCode & (size - 1)];
                         var ordinalIgnoreCaseHashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
                         ref int ordinalIgnoreCaseBucket = ref ordinalIgnoreCaseBuckets[ordinalIgnoreCaseHashCode & (size - 1)];
-                        entries[i] = new Entry(ordinalHashCode, ordinalBucket - 1, ordinalIgnoreCaseHashCode, ordinalIgnoreCaseBucket - 1, formattedValue, member);
+                        entries[i] = new Entry(ordinalBucket - 1, ordinalIgnoreCaseBucket - 1, formattedValue, member);
                         ordinalBucket = i + 1;
                         ordinalIgnoreCaseBucket = i + 1;
                     }
@@ -1520,11 +1480,10 @@ namespace EnumsNET
 #endif
                     for (var i = _ordinalIgnoreCaseBuckets[hashCode & (_ordinalIgnoreCaseBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalIgnoreCaseNext)
                     {
-                        if (entries[i].OrdinalIgnoreCaseHashCode == hashCode &&
 #if SPAN
-                            entries[i].FormattedValue.AsSpan().Equals(formattedValue, StringComparison.OrdinalIgnoreCase))
+                        if (formattedValue.Equals(entries[i].FormattedValue, StringComparison.OrdinalIgnoreCase))
 #else
-                            string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
 #endif
                         {
                             result = entries[i].Member;
@@ -1541,11 +1500,10 @@ namespace EnumsNET
 #endif
                     for (var i = _ordinalBuckets[hashCode & (_ordinalBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalNext)
                     {
-                        if (entries[i].OrdinalHashCode == hashCode &&
 #if SPAN
-                            entries[i].FormattedValue.AsSpan().Equals(formattedValue, StringComparison.Ordinal))
+                        if (formattedValue.Equals(entries[i].FormattedValue, StringComparison.Ordinal))
 #else
-                            string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.Ordinal))
+                        if (entries[i].FormattedValue == formattedValue)
 #endif
                         {
                             result = entries[i].Member;
@@ -1571,17 +1529,6 @@ namespace EnumsNET
         {
         }
 
-        public sealed override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
-
-        public sealed override string AsString(object value) => AsString(ToObject(value));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public new string AsString(TUnderlying value)
-        {
-            var member = GetMember(value);
-            return member != null ? member.Name : value.ToString()!;
-        }
-
         public sealed override void Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats, ref byte result)
         {
             ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
@@ -1590,14 +1537,10 @@ namespace EnumsNET
 
         public sealed override object Parse(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats) => EnumBridge.ToObjectUnchecked(ParseInternal(value, ignoreCase, formats));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new TUnderlying ParseInternal(ParseType value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
             value = value.Trim();
-
-            if (formats.Count == 0)
-            {
-                formats = Enums.DefaultFormats;
-            }
 
             if (TryParseInternal(value, ignoreCase, out var result, out _, formats, true))
             {
@@ -1618,7 +1561,7 @@ namespace EnumsNET
 #endif
             value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats)
         {
-            if (TryParse(value, ignoreCase, out var r, formats))
+            if (value != null && TryParseInternal(value.Trim(), ignoreCase, out var r, out _, formats, true))
             {
                 ref TUnderlying underlying = ref UnsafeUtility.As<byte, TUnderlying>(ref result);
                 underlying = r;
@@ -1635,35 +1578,12 @@ namespace EnumsNET
 #endif
             value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats)
         {
-            if (TryParse(value, ignoreCase, out var r, formats))
+            if (value != null && TryParseInternal(value.Trim(), ignoreCase, out var r, out _, formats, true))
             {
                 result = EnumBridge.ToObjectUnchecked(r);
                 return true;
             }
             result = null;
-            return false;
-        }
-
-        public new bool TryParse(
-#if SPAN
-            ReadOnlySpan<char>
-#else
-            string?
-#endif
-            value, bool ignoreCase, out TUnderlying result, ValueCollection<EnumFormat> formats)
-        {
-            if (value != null)
-            {
-                value = value.Trim();
-
-                if (formats.Count == 0)
-                {
-                    formats = Enums.DefaultFormats;
-                }
-
-                return TryParseInternal(value, ignoreCase, out result, out _, formats, true);
-            }
-            result = default;
             return false;
         }
     }
@@ -1675,9 +1595,43 @@ namespace EnumsNET
 #endif
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
+        private readonly EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] _distinctMembers;
+
         public ContiguousStandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, object? customValidator)
             : base(enumType, enumBridge, members, buckets, allFlags, distinctCount, isContiguous: true, customValidator)
         {
+            if (distinctCount == members.Length)
+            {
+                _distinctMembers = members;
+            }
+            else
+            {
+                var distinctMembers = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>[distinctCount];
+                var previous = members[0];
+                distinctMembers[0] = previous;
+                var i = 1;
+                for (var j = 1; j < members.Length; ++j)
+                {
+                    var next = members[j];
+                    if (!next.Value.Equals(previous.Value))
+                    {
+                        distinctMembers[i++] = next;
+                        previous = next;
+                    }
+                }
+                _distinctMembers = distinctMembers;
+            }
+        }
+
+        public sealed override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public sealed override string AsString(object value) => AsString(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new string AsString(TUnderlying value)
+        {
+            var member = GetMember(value);
+            return member != null ? member.Name : value.ToString()!;
         }
 
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
@@ -1686,6 +1640,27 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new bool IsDefined(TUnderlying value) => default(TUnderlyingOperations).InRange(value, _minDefined, _maxDefined);
+
+        public override EnumMemberInternal? GetMember(ref byte value) => GetMember(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public override EnumMemberInternal? GetMember(object value) => GetMember(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new EnumMemberInternal<TUnderlying, TUnderlyingOperations>? GetMember(TUnderlying value)
+        {
+            TUnderlyingOperations operations = default;
+            if (operations.InRange(value, _minDefined, _maxDefined))
+            {
+                var index = operations.Subtract(value, _minDefined);
+                return _distinctMembers
+#if ICONVERTIBLE
+                    [index.ToInt32(null)];
+#else
+                    [operations.ToInt32(index)];
+#endif
+            }
+            return null;
+        }
     }
 
     internal sealed class NonContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations> : StandardEnumCache<TUnderlying, TUnderlyingOperations>
@@ -1698,6 +1673,17 @@ namespace EnumsNET
         public NonContiguousStandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, object? customValidator)
             : base(enumType, enumBridge, members, buckets, allFlags, distinctCount, isContiguous: false, customValidator)
         {
+        }
+
+        public sealed override string AsString(ref byte value) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value));
+
+        public sealed override string AsString(object value) => AsString(ToObject(value));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public new string AsString(TUnderlying value)
+        {
+            var member = GetMember(value);
+            return member != null ? member.Name : value.ToString()!;
         }
 
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
@@ -1725,7 +1711,7 @@ namespace EnumsNET
         public override string AsString(object value) => AsString(ToObject(value));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public new string AsString(TUnderlying value) => FormatFlagsInternal(value, GetMember(value), null, default)!;
+        public new string AsString(TUnderlying value) => FormatFlagsInternal(value, GetMember(value), null, Enums.DefaultFormats)!;
 
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 

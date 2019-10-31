@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET", "Enums.NET\Enums.NET.csproj", "{86547778-1DCF-43A6-B951-0D0A5207DF21}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F0B39FA-B1FE-4F38-92F4-F06618D1948A} = {0F0B39FA-B1FE-4F38-92F4-F06618D1948A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums.NET.Test", "Enums.NET.Test\Enums.NET.Test.csproj", "{81E3E1E8-7581-46B0-B8DC-D47ACEA240FE}"
 EndProject

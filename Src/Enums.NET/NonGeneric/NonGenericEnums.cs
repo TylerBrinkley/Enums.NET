@@ -183,7 +183,7 @@ namespace EnumsNET.NonGeneric
 
         public static string? AsString(Type enumType, object? value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => AsString(enumType, value, ValueCollection.Create(format0, format1, format2));
 
-        public static string? AsString(Type enumType, object? value, params EnumFormat[]? formats) => AsString(enumType, value, ValueCollection.Create(formats));
+        public static string? AsString(Type enumType, object? value, params EnumFormat[]? formats) => AsString(enumType, value, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
         private static string? AsString(Type enumType, object? value, ValueCollection<EnumFormat> formats)
         {
@@ -301,7 +301,7 @@ namespace EnumsNET.NonGeneric
 
         public static EnumMember? GetMember(Type enumType, string name) => GetMember(enumType, name, false);
 
-        public static EnumMember? GetMember(Type enumType, string name, bool ignoreCase) => GetCache(enumType).GetMember(name, ignoreCase, default);
+        public static EnumMember? GetMember(Type enumType, string name, bool ignoreCase) => GetCache(enumType).GetMember(name, ignoreCase, Enums.NameFormat);
 
         public static EnumMember? GetMember(Type enumType, string value, EnumFormat format) => GetMember(enumType, value, false, format);
 
@@ -317,9 +317,9 @@ namespace EnumsNET.NonGeneric
 
         public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetCache(enumType).GetMember(value, ignoreCase, ValueCollection.Create(format0, format1, format2));
 
-        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[]? formats) => GetCache(enumType).GetMember(value, ignoreCase, ValueCollection.Create(formats));
+        public static EnumMember? GetMember(Type enumType, string value, bool ignoreCase, params EnumFormat[]? formats) => GetCache(enumType).GetMember(value, ignoreCase, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.NameFormat);
 
-        public static object? Parse(Type enumType, string? value) => Parse(enumType, value, false, default(ValueCollection<EnumFormat>));
+        public static object? Parse(Type enumType, string? value) => Parse(enumType, value, false, Enums.DefaultFormats);
 
         public static object? Parse(Type enumType, string? value, EnumFormat format) => Parse(enumType, value, false, ValueCollection.Create(format));
 
@@ -327,9 +327,9 @@ namespace EnumsNET.NonGeneric
 
         public static object? Parse(Type enumType, string? value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Parse(enumType, value, false, ValueCollection.Create(format0, format1, format2));
 
-        public static object? Parse(Type enumType, string? value, params EnumFormat[]? formats) => Parse(enumType, value, false, ValueCollection.Create(formats));
+        public static object? Parse(Type enumType, string? value, params EnumFormat[]? formats) => Parse(enumType, value, false, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-        public static object? Parse(Type enumType, string? value, bool ignoreCase) => Parse(enumType, value, ignoreCase, default(ValueCollection<EnumFormat>));
+        public static object? Parse(Type enumType, string? value, bool ignoreCase) => Parse(enumType, value, ignoreCase, Enums.DefaultFormats);
 
         public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format) => Parse(enumType, value, ignoreCase, ValueCollection.Create(format));
 
@@ -337,7 +337,7 @@ namespace EnumsNET.NonGeneric
 
         public static object? Parse(Type enumType, string? value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Parse(enumType, value, ignoreCase, ValueCollection.Create(format0, format1, format2));
 
-        public static object? Parse(Type enumType, string? value, bool ignoreCase, params EnumFormat[]? formats) => Parse(enumType, value, ignoreCase, ValueCollection.Create(formats));
+        public static object? Parse(Type enumType, string? value, bool ignoreCase, params EnumFormat[]? formats) => Parse(enumType, value, ignoreCase, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
         private static object? Parse(Type enumType, string? value, bool ignoreCase, ValueCollection<EnumFormat> formats)
         {
@@ -353,7 +353,7 @@ namespace EnumsNET.NonGeneric
             return info.EnumCache.Parse(value!, ignoreCase, formats);
         }
 
-        public static bool TryParse(Type enumType, string? value, out object? result) => TryParse(enumType, value, false, out result, default(ValueCollection<EnumFormat>));
+        public static bool TryParse(Type enumType, string? value, out object? result) => TryParse(enumType, value, false, out result, Enums.DefaultFormats);
 
         public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format) => TryParse(enumType, value, false, out result, ValueCollection.Create(format));
 
@@ -361,9 +361,9 @@ namespace EnumsNET.NonGeneric
 
         public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParse(enumType, value, false, out result, ValueCollection.Create(format0, format1, format2));
 
-        public static bool TryParse(Type enumType, string? value, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, false, out result, ValueCollection.Create(formats));
+        public static bool TryParse(Type enumType, string? value, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, false, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result) => TryParse(enumType, value, ignoreCase, out result, default(ValueCollection<EnumFormat>));
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result) => TryParse(enumType, value, ignoreCase, out result, Enums.DefaultFormats);
 
         public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(format));
 
@@ -371,7 +371,7 @@ namespace EnumsNET.NonGeneric
 
         public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(format0, format1, format2));
 
-        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, ignoreCase, out result, ValueCollection.Create(formats));
+        public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, ignoreCase, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
         private static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats)
         {

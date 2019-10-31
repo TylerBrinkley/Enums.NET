@@ -39,27 +39,27 @@ namespace EnumsNET.Tests.Benchmarks
             _values = (DayOfWeek[])Enum.GetValues(_enumType);
         }
 
-        [Benchmark(Baseline = true)]
-        public string Enum_ToString_Name()
-        {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.ToString();
-            }
-            return result;
-        }
+        //[Benchmark(Baseline = true)]
+        //public string Enum_ToString_Name()
+        //{
+        //    string result = null;
+        //    foreach (var value in _values)
+        //    {
+        //        result = value.ToString();
+        //    }
+        //    return result;
+        //}
 
-        [Benchmark]
-        public string NonGenericEnums_AsString_Name()
-        {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = Enums.AsString(_enumType, value);
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public string NonGenericEnums_AsString_Name()
+        //{
+        //    string result = null;
+        //    foreach (var value in _values)
+        //    {
+        //        result = Enums.AsString(_enumType, value);
+        //    }
+        //    return result;
+        //}
 
         [Benchmark]
         public string Enums_AsString_Name()
@@ -94,37 +94,37 @@ namespace EnumsNET.Tests.Benchmarks
             return result;
         }
 
-        [Benchmark]
-        public string Enum_ToString_Decimal()
-        {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.ToString("D");
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public string Enum_ToString_Decimal()
+        //{
+        //    string result = null;
+        //    foreach (var value in _values)
+        //    {
+        //        result = value.ToString("D");
+        //    }
+        //    return result;
+        //}
 
-        [Benchmark]
-        public string NonGenericEnums_AsString_Decimal()
-        {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = Enums.AsString(_enumType, value, EnumFormat.DecimalValue);
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public string NonGenericEnums_AsString_Decimal()
+        //{
+        //    string result = null;
+        //    foreach (var value in _values)
+        //    {
+        //        result = Enums.AsString(_enumType, value, EnumFormat.DecimalValue);
+        //    }
+        //    return result;
+        //}
 
-        [Benchmark]
-        public string Enums_AsString_Decimal()
-        {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.AsString(EnumFormat.DecimalValue);
-            }
-            return result;
-        }
+        //[Benchmark]
+        //public string Enums_AsString_Decimal()
+        //{
+        //    string result = null;
+        //    foreach (var value in _values)
+        //    {
+        //        result = value.AsString(EnumFormat.DecimalValue);
+        //    }
+        //    return result;
+        //}
     }
 }

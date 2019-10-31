@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net46;net45;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
+    <TargetFrameworks>net45;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0</FileVersion>
     <VersionPrefix>3.0.0</VersionPrefix>
@@ -32,10 +32,12 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <PackageReference Include="Fody" Version="6.0.3" PrivateAssets="All" />
+    <WeaverFiles Include="$(SolutionDir)Weavers\bin\$(Configuration)\netstandard2.0\Weavers.dll" WeaverClassNames="UnsafeUtilityWeaver" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0' AND '$(TargetFramework)' != 'net45'">
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1' OR '$(TargetFramework)' == 'netstandard1.0'">
@@ -46,36 +48,32 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
   </ItemGroup>
   
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
-    <AssemblyTitle>Enums.NET .NET 4.6</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <AssemblyTitle>Enums.NET .NET 4.5</AssemblyTitle>
     <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
+    <DefineConstants>UNSAFE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <AssemblyTitle>Enums.NET .NET Standard 2.1</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES</DefineConstants>
+    <DefineConstants>UNSAFE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>Enums.NET .NET Standard 2.0</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+    <DefineConstants>UNSAFE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <AssemblyTitle>Enums.NET .NET Standard 1.3</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY</DefineConstants>
+    <DefineConstants>UNSAFE;DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
     <AssemblyTitle>Enums.NET .NET Standard 1.1</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
+    <DefineConstants>UNSAFE;DISPLAY_ATTRIBUTE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.0'">
     <AssemblyTitle>Enums.NET .NET Standard 1.0</AssemblyTitle>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>UNSAFE</DefineConstants>
   </PropertyGroup>
 </Project>
