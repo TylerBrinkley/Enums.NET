@@ -4760,6 +4760,7 @@ namespace EnumsNET
                         if (isPrimary)
                         {
                             member.Next = next.Next;
+                            next.Next = null;
                             next = member;
                         }
                         break;
@@ -4770,11 +4771,10 @@ namespace EnumsNET
                 {
                     next = member;
                     ++distinctCount;
-                }
-
-                if (operations.BitCount(value) == 1)
-                {
-                    allFlags = operations.Or(allFlags, value);
+                    if (operations.BitCount(value) == 1)
+                    {
+                        allFlags = operations.Or(allFlags, value);
+                    }
                 }
             }
 

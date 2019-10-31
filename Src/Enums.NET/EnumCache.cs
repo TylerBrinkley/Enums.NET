@@ -1522,7 +1522,7 @@ namespace EnumsNET
 #endif
         where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
     {
-        public StandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
+        protected StandardEnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
             : base(enumType, enumBridge, isFlagEnum: false, members, buckets, allFlags, distinctCount, isContiguous, customValidator)
         {
         }
