@@ -115,36 +115,6 @@ namespace EnumsNET
         public string? AsString(params EnumFormat[]? formats) => formats?.Length > 0 ? Member.AsString(ValueCollection.Create(formats)) : Member.Name;
 
         /// <summary>
-        /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
-        /// </summary>
-        /// <param name="format">The output format to use.</param>
-        /// <returns>A string representation of the enum member.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
-        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use AsString instead")]
-        public string Format(string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return Member.AsString(format);
-        }
-
-        /// <summary>
-        /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
-        /// </summary>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns>A string representation of the enum member.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use AsString instead")]
-        public string? Format(params EnumFormat[] formats)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return AsString(formats);
-        }
-
-        /// <summary>
         /// Retrieves the enum member's underlying integral value.
         /// </summary>
         /// <returns>The enum member's underlying integral value.</returns>

@@ -667,24 +667,6 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use AsString instead")]
-        public static string? Format<TEnum>(TEnum value, params EnumFormat[] formats)
-            where TEnum : struct, Enum
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return AsString(value, formats);
-        }
-
-        /// <summary>
         /// Returns <paramref name="value"/>'s underlying integral value.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -865,61 +847,6 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMember<TEnum>(string value, EnumFormat format)
-            where TEnum : struct, Enum => GetMember<TEnum>(value, false, format);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMember<TEnum>(string value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => GetMember<TEnum>(value, false, format0, format1);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMember<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => GetMember<TEnum>(value, false, format0, format1, format2);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMember<TEnum>(string value, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => GetMember<TEnum>(value, false, formats);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
         /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -1076,77 +1003,6 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum Parse<TEnum>(string value)
             where TEnum : struct, Enum => Parse<TEnum>(value, false, DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum Parse<TEnum>(string value, EnumFormat format)
-            where TEnum : struct, Enum => Parse<TEnum>(value, false, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum Parse<TEnum>(string value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => Parse<TEnum>(value, false, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum Parse<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => Parse<TEnum>(value, false, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum Parse<TEnum>(string value, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => Parse<TEnum>(value, false, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -1350,68 +1206,6 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParse<TEnum>(string? value, out TEnum result)
             where TEnum : struct, Enum => TryParse(value, false, out result, DefaultFormats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse<TEnum>(string? value, out TEnum result, EnumFormat format)
-            where TEnum : struct, Enum => TryParse(value, false, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => TryParse(value, false, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => TryParse(value, false, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse<TEnum>(string? value, out TEnum result, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => TryParse(value, false, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -2174,25 +1968,6 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum value.</param>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use AsString instead")]
-        public static string? FormatUnsafe<TEnum>(TEnum value, params EnumFormat[] formats)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return AsStringUnsafe(value, formats);
-        }
-
-        /// <summary>
         /// Returns <paramref name="value"/>'s underlying integral value.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -2374,65 +2149,6 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMemberUnsafe<TEnum>(string value, EnumFormat format) => GetMemberUnsafe<TEnum>(value, false, format);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMemberUnsafe<TEnum>(string value, EnumFormat format0, EnumFormat format1) => GetMemberUnsafe<TEnum>(value, false, format0, format1);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMemberUnsafe<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetMemberUnsafe<TEnum>(value, false, format0, format1, format2);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember<TEnum>? GetMemberUnsafe<TEnum>(string value, params EnumFormat[]? formats) => GetMemberUnsafe<TEnum>(value, false, formats);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
         /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <typeparam name="TEnum">The enum type.</typeparam>
@@ -2596,81 +2312,6 @@ namespace EnumsNET
         /// <paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
         public static TEnum ParseUnsafe<TEnum>(string value) => ParseUnsafe<TEnum>(value, false, DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum ParseUnsafe<TEnum>(string value, EnumFormat format) => ParseUnsafe<TEnum>(value, false, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum ParseUnsafe<TEnum>(string value, EnumFormat format0, EnumFormat format1) => ParseUnsafe<TEnum>(value, false, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum ParseUnsafe<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseUnsafe<TEnum>(value, false, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static TEnum ParseUnsafe<TEnum>(string value, params EnumFormat[]? formats) => ParseUnsafe<TEnum>(value, false, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -2882,72 +2523,6 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryParseUnsafe<TEnum>(string? value, out TEnum result) => TryParseUnsafe(value, false, out result, DefaultFormats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParseUnsafe<TEnum>(string? value, out TEnum result, EnumFormat format) => TryParseUnsafe(value, false, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParseUnsafe<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1) => TryParseUnsafe(value, false, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParseUnsafe<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseUnsafe(value, false, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParseUnsafe<TEnum>(string? value, out TEnum result, params EnumFormat[]? formats) => TryParseUnsafe(value, false, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
@@ -3684,27 +3259,6 @@ namespace EnumsNET
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="formats"/>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum value.</param>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns>A string representation of <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/>, <paramref name="value"/>, or <paramref name="formats"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use AsString instead.")]
-        public static string? Format(Type enumType, object value, params EnumFormat[] formats)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return AsString(enumType, value, formats);
-        }
-
-        /// <summary>
         /// Returns <paramref name="value"/>'s underlying integral value.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -3919,65 +3473,6 @@ namespace EnumsNET
 
         /// <summary>
         /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format) => GetMember(enumType, value, false, format);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1) => GetMember(enumType, value, false, format0, format1);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified formats is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember? GetMember(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => GetMember(enumType, value, false, format0, format1, format2);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="formats"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum member's string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Enum member represented by <paramref name="value"/> if defined otherwise <c>null</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static EnumMember? GetMember(Type enumType, string value, params EnumFormat[]? formats) => GetMember(enumType, value, false, formats);
-
-        /// <summary>
-        /// Retrieves an enum member whose string representation using the specified <paramref name="format"/> is <paramref name="value"/> if defined otherwise <c>null</c>.
         /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
         /// </summary>
         /// <param name="enumType">The enum type.</param>
@@ -4138,81 +3633,6 @@ namespace EnumsNET
         /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <paramref name="enumType"/>'s underlying type.</exception>
         public static object Parse(Type enumType, string value) => Parse(enumType, value, false, DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static object Parse(Type enumType, string value, EnumFormat format) => Parse(enumType, value, false, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static object Parse(Type enumType, string value, EnumFormat format0, EnumFormat format1) => Parse(enumType, value, false, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static object Parse(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => Parse(enumType, value, false, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static object Parse(Type enumType, string value, params EnumFormat[]? formats) => Parse(enumType, value, false, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
@@ -4415,76 +3835,6 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParse(Type enumType, string? value, out object? result) => TryParse(enumType, value, false, out result);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format) => TryParse(enumType, value, false, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1) => TryParse(enumType, value, false, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse(Type enumType, string? value, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParse(enumType, value, false, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with ignoreCase parameter")]
-        public static bool TryParse(Type enumType, string? value, out object? result, params EnumFormat[]? formats) => TryParse(enumType, value, false, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
