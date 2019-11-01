@@ -18,5 +18,5 @@ jobs:
         dotnet-version: 3.0.100
     - name: Build and test with dotnet
       run: |
-        dotnet build -c Release
-        dotnet test -c Release
+        dotnet build src/Enums.NET.sln -c Release
+        dotnet test src/Enums.NET.sln -c Release
