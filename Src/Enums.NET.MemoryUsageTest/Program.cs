@@ -9,13 +9,15 @@ namespace EnumsNET.MemoryUsageTest
         static void Main()
         {
             var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
-            var methodInfo = typeof(Enums).GetMethod("GetUnderlyingType", Array.Empty<Type>());
-            var genericMethods = enumTypes.Select(enumType => methodInfo.MakeGenericMethod(enumType)).ToList();
+            //var methodInfo = typeof(Enums).GetMethod("GetUnderlyingType", Array.Empty<Type>());
+            //var genericMethods = enumTypes.Select(enumType => methodInfo.MakeGenericMethod(enumType)).ToList();
             using (new OperationTimer("All Available Enums Caching Performance"))
             {
-                foreach (var genericMethod in genericMethods)
+                //foreach (var genericMethod in genericMethods)
+                foreach (var enumType in enumTypes)
                 {
-                    genericMethod.Invoke(null, null);
+                    //genericMethod.Invoke(null, null);
+                    Enums.GetUnderlyingType(enumType);
                 }
             }
             Console.WriteLine(enumTypes.Count);

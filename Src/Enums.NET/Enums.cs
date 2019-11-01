@@ -2711,16 +2711,72 @@ namespace EnumsNET
         #endregion
 
         #region NonGeneric
-        private static readonly ConcurrentTypeDictionary<EnumCache> s_enumCaches = new ConcurrentTypeDictionary<EnumCache>();
-
-        private static readonly Func<Type, EnumCache> s_enumCacheFactory = t => GetEnumCache(t) ?? throw new ArgumentException("must be an enum type", "enumType");
+        private static EnumCache?[] s_enumCacheBuckets = new EnumCache?[4];
+        private static EnumCache?[] s_enumCaches = new EnumCache?[4];
+        private static readonly object s_lockObject = new object();
+        private static int s_enumCacheCount;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static EnumCache GetCache(Type enumType)
         {
             Preconditions.NotNull(enumType, nameof(enumType));
 
-            return s_enumCaches.GetOrAdd(enumType, s_enumCacheFactory);
+            var buckets = s_enumCacheBuckets;
+            var cache = buckets[enumType.GetHashCode() & (buckets.Length - 1)];
+            while (cache != null)
+            {
+                if (cache.EnumType.Equals(enumType))
+                {
+                    return cache;
+                }
+                cache = cache.Next;
+            }
+            return GetOrAddCache(enumType);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static EnumCache GetOrAddCache(Type enumType)
+        {
+            var cache = GetEnumCache(enumType) ?? throw new ArgumentException("must be an enum type", nameof(enumType));
+            lock (s_lockObject)
+            {
+                var buckets = s_enumCacheBuckets;
+                ref var next = ref buckets[enumType.GetHashCode() & (buckets.Length - 1)];
+                var n = next;
+                while (n != null)
+                {
+                    if (n.EnumType.Equals(enumType))
+                    {
+                        return n;
+                    }
+                    n = n.Next;
+                }
+                var enumCaches = s_enumCaches;
+                var enumCacheCount = s_enumCacheCount;
+                if (enumCaches.Length == enumCacheCount)
+                {
+                    var newSize = enumCacheCount << 1;
+                    var newEntries = new EnumCache?[newSize];
+                    enumCaches.CopyTo(newEntries, 0);
+                    enumCaches = newEntries;
+                    buckets = new EnumCache?[newSize];
+                    for (var i = 0; i < enumCacheCount; ++i)
+                    {
+                        ref var e = ref enumCaches[i]!;
+                        next = ref buckets[e.EnumType.GetHashCode() & (newSize - 1)];
+                        e.Next = next;
+                        next = e;
+                    }
+                    s_enumCaches = enumCaches;
+                    s_enumCacheBuckets = buckets;
+                    next = ref buckets[enumType.GetHashCode() & (buckets.Length - 1)];
+                }
+                cache.Next = next;
+                enumCaches[enumCacheCount] = cache;
+                next = cache;
+                ++s_enumCacheCount;
+                return cache;
+            }
         }
 
         #region Type Methods

@@ -56,6 +56,7 @@ namespace EnumsNET
             return value.Length > 0 && (char.IsDigit((firstChar = value[0])) || firstChar == '-' || firstChar == '+');
         }
 
+        public readonly Type EnumType;
         public readonly Type UnderlyingType;
         public readonly TypeCode TypeCode;
         public readonly bool IsFlagEnum;
@@ -65,8 +66,11 @@ namespace EnumsNET
         private IReadOnlyList<EnumMember>? _members;
         private EnumComparer? _enumComparer;
 
-        protected EnumCache(Type underlyingType, bool isFlagEnum, bool hasDuplicateValues)
+        internal EnumCache? Next;
+
+        protected EnumCache(Type enumType, Type underlyingType, bool isFlagEnum, bool hasDuplicateValues)
         {
+            EnumType = enumType;
             UnderlyingType = underlyingType;
             TypeCode = underlyingType.GetTypeCode();
             IsFlagEnum = isFlagEnum;
@@ -266,7 +270,6 @@ namespace EnumsNET
         internal readonly IEnumBridge<TUnderlying, TUnderlyingOperations> EnumBridge;
         private readonly bool _isContiguous;
         private readonly object? _customValidator;
-        private protected readonly string _enumTypeName;
         private readonly TUnderlying _allFlags;
         private protected readonly TUnderlying _maxDefined;
         private protected readonly TUnderlying _minDefined;
@@ -276,9 +279,8 @@ namespace EnumsNET
         private EnumMemberParser?[] _enumMemberParsers = ArrayHelper.Empty<EnumMemberParser>();
 
         protected EnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, bool isFlagEnum, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
-            : base(typeof(TUnderlying), isFlagEnum, distinctCount != members.Length)
+            : base(enumType, typeof(TUnderlying), isFlagEnum, distinctCount != members.Length)
         {
-            _enumTypeName = enumType.Name;
             EnumBridge = enumBridge;
             _customValidator = customValidator;
             _members = members;
@@ -425,7 +427,7 @@ namespace EnumsNET
                 TypeCode.Int64 => ToObject((long)value),
                 TypeCode.UInt64 => ToObject((ulong)value),
                 TypeCode.String => ParseInternal((string)value, false, Enums.DefaultFormats),
-                _ => throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String."),
+                _ => throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String."),
             };
         }
 
@@ -475,7 +477,7 @@ namespace EnumsNET
                     Validate(result, nameof(value), validation);
                     return result;
             }
-            throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String.");
+            throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String.");
         }
 
         public TUnderlying ToObject(long value)
@@ -702,7 +704,7 @@ namespace EnumsNET
         {
             if (!IsValid(value, validation))
             {
-                throw new ArgumentException($"invalid value of {AsString(value)} for {_enumTypeName}", paramName);
+                throw new ArgumentException($"invalid value of {AsString(value)} for {EnumType}", paramName);
             }
         }
 
@@ -926,7 +928,7 @@ namespace EnumsNET
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
-            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+            throw new ArgumentException($"string was not recognized as being a member of {EnumType}", nameof(value));
         }
 
         public bool TryParse(
@@ -1548,7 +1550,7 @@ namespace EnumsNET
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
-            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+            throw new ArgumentException($"string was not recognized as being a member of {EnumType}", nameof(value));
         }
 
         public sealed override bool TryParse(
