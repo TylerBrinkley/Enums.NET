@@ -3138,7 +3138,7 @@ namespace EnumsNET
         #region NonGeneric
         private static readonly ConcurrentTypeDictionary<EnumCache> s_enumCaches = new ConcurrentTypeDictionary<EnumCache>();
 
-        private static readonly Func<Type, EnumCache> s_enumCacheFactory = t => t.IsEnum() ? GetEnumCache(t)! : throw new ArgumentException("must be an enum type", "enumType");
+        private static readonly Func<Type, EnumCache> s_enumCacheFactory = t => GetEnumCache(t) ?? throw new ArgumentException("must be an enum type", "enumType");
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static EnumCache GetCache(Type enumType)

@@ -51,7 +51,7 @@ namespace EnumsNET.NonGeneric
                 {
                     throw new ArgumentException("must be an enum type", nameof(enumType));
                 }
-                return new NonGenericEnumInfo(GetCache(nonNullableEnumType), true);
+                return new NonGenericEnumInfo(Enums.GetCache(nonNullableEnumType), true);
             }
         };
 
