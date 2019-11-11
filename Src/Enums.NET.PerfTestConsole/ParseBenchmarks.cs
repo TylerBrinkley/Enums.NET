@@ -41,7 +41,7 @@ namespace EnumsNET.Tests.Benchmarks
         public override void Parse(string value)
         {
 #if NET461
-                Enum.TryParse<TEnum>(value, out _);
+            Enum.TryParse<TEnum>(value, out _);
 #else
             Enum.Parse<TEnum>(value);
 #endif
