@@ -25,6 +25,7 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 #if SPAN
 using ParseType = System.ReadOnlySpan<char>;

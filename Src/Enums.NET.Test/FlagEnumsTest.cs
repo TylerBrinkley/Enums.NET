@@ -624,6 +624,14 @@ namespace EnumsNET.Tests
         }
 
         [Test]
+        public void TryParseFlags_ReturnsFalse_WhenUsingEmptyString()
+        {
+            ColorFlagEnum result;
+            Assert.IsFalse(FlagEnums.TryParseFlags(string.Empty, out result));
+            Assert.AreEqual(default(ColorFlagEnum), result);
+        }
+
+        [Test]
         public void TryParseFlags_ReturnsFalse_WhenUsingWhiteSpaceString()
         {
             ColorFlagEnum result;

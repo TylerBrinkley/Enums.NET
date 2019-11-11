@@ -36,6 +36,7 @@ namespace EnumsNET
     public static class FlagEnums
     {
         internal const string DefaultDelimiter = ", ";
+        internal const string DefaultParsingDelimiter = ",";
 
         #region "Properties"
         /// <summary>
