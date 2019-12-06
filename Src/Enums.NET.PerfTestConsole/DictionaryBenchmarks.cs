@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace EnumsNET.PerfTestConsole
 {
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
     public class DictionaryBenchmarks
     {
         private readonly Dictionary<Type, string> _typeDictionary;

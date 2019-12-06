@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace EnumsNET.Tests.Benchmarks
 {
@@ -60,6 +61,7 @@ namespace EnumsNET.Tests.Benchmarks
         public override void Parse(string value) => FastEnumUtility.FastEnum.Parse<TEnum>(value);
     }
 
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
     public class ParseNamesBenchmarks
     {
         private class EnumData
