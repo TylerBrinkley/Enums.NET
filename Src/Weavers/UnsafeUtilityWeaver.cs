@@ -22,6 +22,13 @@ public class UnsafeUtilityWeaver : BaseModuleWeaver
                 processor.Emit(OpCodes.Ret);
                 LogInfo($"Set implementation of {method.Name}");
             }
+            else if (method.Name == "SizeOf")
+            {
+                var processor = method.Body.GetILProcessor();
+                processor.Emit(OpCodes.Sizeof, method.GenericParameters[0]);
+                processor.Emit(OpCodes.Ret);
+                LogInfo($"Set implementation of {method.Name}");
+            }
         }
     }
 
