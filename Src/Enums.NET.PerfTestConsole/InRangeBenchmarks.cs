@@ -1,7 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace EnumsNET.PerfTestConsole
 {
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
     public class InRangeBenchmarks
     {
         [Benchmark]

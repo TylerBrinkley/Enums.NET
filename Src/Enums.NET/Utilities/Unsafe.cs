@@ -32,6 +32,10 @@ namespace System.Runtime.CompilerServices
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SecuritySafeCritical]
+        public static int SizeOf<T>() => Unsafe.SizeOf<T>();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
         public static ref TTo As<TFrom, TTo>(ref TFrom source) => ref Unsafe.As<TFrom, TTo>(ref source);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

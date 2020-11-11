@@ -36,6 +36,7 @@ namespace EnumsNET
     public static class FlagEnums
     {
         internal const string DefaultDelimiter = ", ";
+        internal const string DefaultParsingDelimiter = ",";
 
         #region "Properties"
         /// <summary>
@@ -211,8 +212,28 @@ namespace EnumsNET
         /// <typeparam name="TEnum">The enum type.</typeparam>
         /// <param name="value">The flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has any flags.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasAnyFlags<TEnum>(this TEnum value)
-            where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.HasAnyFlags(ref UnsafeUtility.As<TEnum, byte>(ref value));
+            where TEnum : struct, Enum
+        {
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                return UnsafeUtility.As<TEnum, byte>(ref value) != default;
+            }
+            else if (size == 2)
+            {
+                return UnsafeUtility.As<TEnum, ushort>(ref value) != default;
+            }
+            else if (size == 4)
+            {
+                return UnsafeUtility.As<TEnum, uint>(ref value) != default;
+            }
+            else
+            {
+                return UnsafeUtility.As<TEnum, ulong>(ref value) != default;
+            }
+        }
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has any flags that are in <paramref name="otherFlags"/>.
@@ -221,8 +242,28 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has any flags that are in <paramref name="otherFlags"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasAnyFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.HasAnyFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags));
+            where TEnum : struct, Enum
+        {
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                return (UnsafeUtility.As<TEnum, byte>(ref value) & UnsafeUtility.As<TEnum, byte>(ref otherFlags)) != default;
+            }
+            else if (size == 2)
+            {
+                return (UnsafeUtility.As<TEnum, ushort>(ref value) & UnsafeUtility.As<TEnum, ushort>(ref otherFlags)) != default;
+            }
+            else if (size == 4)
+            {
+                return (UnsafeUtility.As<TEnum, uint>(ref value) & UnsafeUtility.As<TEnum, uint>(ref otherFlags)) != default;
+            }
+            else
+            {
+                return (UnsafeUtility.As<TEnum, ulong>(ref value) & UnsafeUtility.As<TEnum, ulong>(ref otherFlags)) != default;
+            }
+        }
 
         /// <summary>
         /// Indicates if <paramref name="value"/> has all of the flags that are defined in <typeparamref name="TEnum"/>.
@@ -240,8 +281,28 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>Indication if <paramref name="value"/> has all of the flags that are in <paramref name="otherFlags"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasAllFlags<TEnum>(this TEnum value, TEnum otherFlags)
-            where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.HasAllFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags));
+            where TEnum : struct, Enum
+        {
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                return (UnsafeUtility.As<TEnum, byte>(ref value) & UnsafeUtility.As<TEnum, byte>(ref otherFlags)) == UnsafeUtility.As<TEnum, byte>(ref otherFlags);
+            }
+            else if (size == 2)
+            {
+                return (UnsafeUtility.As<TEnum, ushort>(ref value) & UnsafeUtility.As<TEnum, ushort>(ref otherFlags)) == UnsafeUtility.As<TEnum, ushort>(ref otherFlags);
+            }
+            else if (size == 4)
+            {
+                return (UnsafeUtility.As<TEnum, uint>(ref value) & UnsafeUtility.As<TEnum, uint>(ref otherFlags)) == UnsafeUtility.As<TEnum, uint>(ref otherFlags);
+            }
+            else
+            {
+                return (UnsafeUtility.As<TEnum, ulong>(ref value) & UnsafeUtility.As<TEnum, ulong>(ref otherFlags)) == UnsafeUtility.As<TEnum, ulong>(ref otherFlags);
+            }
+        }
 
         /// <summary>
         /// Returns <paramref name="value"/> with all of it's flags toggled. Equivalent to the bitwise "xor" operator with <see cref="GetAllFlags{TEnum}()"/>.
@@ -264,12 +325,31 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns><paramref name="value"/> while toggling the flags that are in <paramref name="otherFlags"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum ToggleFlags<TEnum>(TEnum value, TEnum otherFlags)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.ToggleFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref value) ^ UnsafeUtility.As<TEnum, byte>(ref otherFlags));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref value) ^ UnsafeUtility.As<TEnum, ushort>(ref otherFlags));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref value) ^ UnsafeUtility.As<TEnum, uint>(ref otherFlags);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref value) ^ UnsafeUtility.As<TEnum, ulong>(ref otherFlags);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -279,12 +359,31 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns><paramref name="value"/> with only the flags that are also in <paramref name="otherFlags"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum CommonFlags<TEnum>(this TEnum value, TEnum otherFlags)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.CommonFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref value) & UnsafeUtility.As<TEnum, byte>(ref otherFlags));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref value) & UnsafeUtility.As<TEnum, ushort>(ref otherFlags));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref value) & UnsafeUtility.As<TEnum, uint>(ref otherFlags);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref value) & UnsafeUtility.As<TEnum, ulong>(ref otherFlags);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -294,12 +393,31 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns>Combination of <paramref name="value"/> with the flags in <paramref name="otherFlags"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum CombineFlags<TEnum>(this TEnum value, TEnum otherFlags)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref value) | UnsafeUtility.As<TEnum, byte>(ref otherFlags));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref value) | UnsafeUtility.As<TEnum, ushort>(ref otherFlags));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref value) | UnsafeUtility.As<TEnum, uint>(ref otherFlags);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref value) | UnsafeUtility.As<TEnum, ulong>(ref otherFlags);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -310,12 +428,31 @@ namespace EnumsNET
         /// <param name="flag1">The second flags enum value.</param>
         /// <param name="flag2">The third flags enum value.</param>
         /// <returns>Combination of the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, and <paramref name="flag2"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref flag0), ref UnsafeUtility.As<TEnum, byte>(ref flag1), ref UnsafeUtility.As<TEnum, byte>(ref flag2), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref flag0) | UnsafeUtility.As<TEnum, byte>(ref flag1) | UnsafeUtility.As<TEnum, byte>(ref flag2));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref flag0) | UnsafeUtility.As<TEnum, ushort>(ref flag1) | UnsafeUtility.As<TEnum, ushort>(ref flag2));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref flag0) | UnsafeUtility.As<TEnum, uint>(ref flag1) | UnsafeUtility.As<TEnum, uint>(ref flag2);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref flag0) | UnsafeUtility.As<TEnum, ulong>(ref flag1) | UnsafeUtility.As<TEnum, ulong>(ref flag2);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -327,12 +464,31 @@ namespace EnumsNET
         /// <param name="flag2">The third flags enum value.</param>
         /// <param name="flag3">The fourth flags enum value.</param>
         /// <returns>Combination of the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, and <paramref name="flag3"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref flag0), ref UnsafeUtility.As<TEnum, byte>(ref flag1), ref UnsafeUtility.As<TEnum, byte>(ref flag2), ref UnsafeUtility.As<TEnum, byte>(ref flag3), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref flag0) | UnsafeUtility.As<TEnum, byte>(ref flag1) | UnsafeUtility.As<TEnum, byte>(ref flag2) | UnsafeUtility.As<TEnum, byte>(ref flag3));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref flag0) | UnsafeUtility.As<TEnum, ushort>(ref flag1) | UnsafeUtility.As<TEnum, ushort>(ref flag2) | UnsafeUtility.As<TEnum, ushort>(ref flag3));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref flag0) | UnsafeUtility.As<TEnum, uint>(ref flag1) | UnsafeUtility.As<TEnum, uint>(ref flag2) | UnsafeUtility.As<TEnum, uint>(ref flag3);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref flag0) | UnsafeUtility.As<TEnum, ulong>(ref flag1) | UnsafeUtility.As<TEnum, ulong>(ref flag2) | UnsafeUtility.As<TEnum, ulong>(ref flag3);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -345,12 +501,31 @@ namespace EnumsNET
         /// <param name="flag3">The fourth flags enum value.</param>
         /// <param name="flag4">The fifth flags enum value.</param>
         /// <returns>Combination of the flags of <paramref name="flag0"/>, <paramref name="flag1"/>, <paramref name="flag2"/>, <paramref name="flag3"/>, and <paramref name="flag4"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum CombineFlags<TEnum>(TEnum flag0, TEnum flag1, TEnum flag2, TEnum flag3, TEnum flag4)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref flag0), ref UnsafeUtility.As<TEnum, byte>(ref flag1), ref UnsafeUtility.As<TEnum, byte>(ref flag2), ref UnsafeUtility.As<TEnum, byte>(ref flag3), ref UnsafeUtility.As<TEnum, byte>(ref flag4), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref flag0) | UnsafeUtility.As<TEnum, byte>(ref flag1) | UnsafeUtility.As<TEnum, byte>(ref flag2) | UnsafeUtility.As<TEnum, byte>(ref flag3) | UnsafeUtility.As<TEnum, byte>(ref flag4));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref flag0) | UnsafeUtility.As<TEnum, ushort>(ref flag1) | UnsafeUtility.As<TEnum, ushort>(ref flag2) | UnsafeUtility.As<TEnum, ushort>(ref flag3) | UnsafeUtility.As<TEnum, ushort>(ref flag4));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref flag0) | UnsafeUtility.As<TEnum, uint>(ref flag1) | UnsafeUtility.As<TEnum, uint>(ref flag2) | UnsafeUtility.As<TEnum, uint>(ref flag3) | UnsafeUtility.As<TEnum, uint>(ref flag4);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref flag0) | UnsafeUtility.As<TEnum, ulong>(ref flag1) | UnsafeUtility.As<TEnum, ulong>(ref flag2) | UnsafeUtility.As<TEnum, ulong>(ref flag3) | UnsafeUtility.As<TEnum, ulong>(ref flag4);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -371,18 +546,51 @@ namespace EnumsNET
         public static TEnum CombineFlags<TEnum>(IEnumerable<TEnum>? flags)
             where TEnum : struct, Enum
         {
-            TEnum enumResult = default;
-            if (flags != null)
+            if (flags == null)
             {
-                ref byte result = ref UnsafeUtility.As<TEnum, byte>(ref enumResult);
-                var cache = Enums.Cache<TEnum>.Instance;
+                return default;
+            }
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                byte result = default;
                 foreach (var flag in flags)
                 {
                     var f = flag;
-                    cache.CombineFlags(ref UnsafeUtility.As<TEnum, byte>(ref f), ref result, ref result);
+                    result |= UnsafeUtility.As<TEnum, byte>(ref f);
                 }
+                return UnsafeUtility.As<byte, TEnum>(ref result);
             }
-            return enumResult;
+            else if (size == 2)
+            {
+                ushort result = default;
+                foreach (var flag in flags)
+                {
+                    var f = flag;
+                    result |= UnsafeUtility.As<TEnum, ushort>(ref f);
+                }
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                uint result = default;
+                foreach (var flag in flags)
+                {
+                    var f = flag;
+                    result |= UnsafeUtility.As<TEnum, uint>(ref f);
+                }
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                ulong result = default;
+                foreach (var flag in flags)
+                {
+                    var f = flag;
+                    result |= UnsafeUtility.As<TEnum, ulong>(ref f);
+                }
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
 
         /// <summary>
@@ -392,12 +600,31 @@ namespace EnumsNET
         /// <param name="value">The flags enum value.</param>
         /// <param name="otherFlags">The other flags enum value.</param>
         /// <returns><paramref name="value"/> without the flags specified in <paramref name="otherFlags"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TEnum RemoveFlags<TEnum>(this TEnum value, TEnum otherFlags)
             where TEnum : struct, Enum
         {
-            TEnum result = default;
-            Enums.Cache<TEnum>.Instance.RemoveFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), ref UnsafeUtility.As<TEnum, byte>(ref otherFlags), ref UnsafeUtility.As<TEnum, byte>(ref result));
-            return result;
+            var size = UnsafeUtility.SizeOf<TEnum>();
+            if (size == 1)
+            {
+                var result = (byte)(UnsafeUtility.As<TEnum, byte>(ref value) & ~UnsafeUtility.As<TEnum, byte>(ref otherFlags));
+                return UnsafeUtility.As<byte, TEnum>(ref result);
+            }
+            else if (size == 2)
+            {
+                var result = (ushort)(UnsafeUtility.As<TEnum, ushort>(ref value) & ~UnsafeUtility.As<TEnum, ushort>(ref otherFlags));
+                return UnsafeUtility.As<ushort, TEnum>(ref result);
+            }
+            else if (size == 4)
+            {
+                var result = UnsafeUtility.As<TEnum, uint>(ref value) & ~UnsafeUtility.As<TEnum, uint>(ref otherFlags);
+                return UnsafeUtility.As<uint, TEnum>(ref result);
+            }
+            else
+            {
+                var result = UnsafeUtility.As<TEnum, ulong>(ref value) & ~UnsafeUtility.As<TEnum, ulong>(ref otherFlags);
+                return UnsafeUtility.As<ulong, TEnum>(ref result);
+            }
         }
         #endregion
 

@@ -64,7 +64,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="obj">The enum value.</param>
         /// <returns>Hash code for <paramref name="obj"/> without boxing the value.</returns>
-        public int GetHashCode(object? obj) => obj is object ? _enumCache.GetHashCode(obj) : 0;
+        public int GetHashCode(object? obj) => obj?.GetHashCode() ?? 0;
 
         /// <summary>
         /// Compares <paramref name="x"/> to <paramref name="y"/> without boxing the values.

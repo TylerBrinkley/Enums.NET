@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFrameworks>net45;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0</FileVersion>
-    <VersionPrefix>3.0.0</VersionPrefix>
+    <FileVersion>3.0.3</FileVersion>
+    <VersionPrefix>3.0.3</VersionPrefix>
     <VersionSufix></VersionSufix>
-    <PackageVersion>3.0.0</PackageVersion>
+    <PackageVersion>3.0.3</PackageVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
     <Description>Enums.NET is a high-performance type-safe .NET enum utility library</Description>
@@ -48,7 +48,7 @@
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
     <AssemblyTitle>Enums.NET .NET 4.5</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>

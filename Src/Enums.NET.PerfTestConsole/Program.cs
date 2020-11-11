@@ -13,7 +13,7 @@ namespace EnumsNET.PerfTestConsole
             var version = FileVersionInfo.GetVersionInfo(typeof(Enums).GetTypeInfo().Assembly.Location).FileVersion;
             Console.WriteLine("Enums.NET Version: " + version);
 
-            new BenchmarkSwitcher(new[] { typeof(HasFlagBenchmarks), typeof(GetHashCodeBenchmarks), typeof(IsDefinedBenchmarks), typeof(ToStringBenchmarks), typeof(ParseBenchmarks), typeof(DictionaryBenchmarks), typeof(InRangeBenchmarks) }).Run(new[] { "*" });
+            new BenchmarkSwitcher(new[] { typeof(HasFlagBenchmarks), typeof(GetHashCodeBenchmarks), typeof(IsDefinedBenchmarks), typeof(ToStringBenchmarks), typeof(ParseNamesBenchmarks), typeof(ParseValuesBenchmarks), typeof(ParseFlagsBenchmarks), typeof(DictionaryBenchmarks), typeof(InRangeBenchmarks) }).Run(new[] { "*" });
         }
     }
 }

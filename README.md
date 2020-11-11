@@ -83,7 +83,7 @@ class EnumsNETDemo
         Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
 
         // GetFlags, splits out the individual flags in increasing significance bit order
-        var flags = DaysOfWeek.Weekend.GetFlags().ToList();
+        var flags = DaysOfWeek.Weekend.GetFlags();
         Assert.AreEqual(2, flags.Count);
         Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
         Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
