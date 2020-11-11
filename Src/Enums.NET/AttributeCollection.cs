@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using EnumsNET.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ namespace EnumsNET
     /// </summary>
     public sealed class AttributeCollection : IList<Attribute>, IReadOnlyList<Attribute>
     {
+        internal static readonly AttributeCollection Empty = new AttributeCollection(ArrayHelper.Empty<Attribute>());
+
         private readonly Attribute[] _attributes;
 
         /// <summary>

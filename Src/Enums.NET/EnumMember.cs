@@ -289,7 +289,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="other">The other <see cref="EnumMember{TEnum}"/>.</param>
         /// <returns>Indication whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>.</returns>
-        public bool Equals(EnumMember<TEnum> other) => ReferenceEquals(this, other);
+        public bool Equals(EnumMember<TEnum>? other) => ReferenceEquals(this, other);
 
         private protected override object GetValue() => Value!;
 

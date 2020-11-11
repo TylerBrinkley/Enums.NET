@@ -44,30 +44,150 @@ namespace EnumsNET
         internal static class Cache<TEnum>
             where TEnum : struct, Enum
         {
-            public static readonly EnumCache Instance = 
-#if GET_TYPE_CODE
-                Type.GetTypeCode(typeof(TEnum))
-#else
-                Enum.GetUnderlyingType(typeof(TEnum)).GetTypeCode()
-#endif
-                switch
-            {
-                TypeCode.Boolean => CreateCache<TEnum, bool, UnderlyingOperations>(),
-                TypeCode.Char => CreateCache<TEnum, char, UnderlyingOperations>(),
-                TypeCode.SByte => CreateCache<TEnum, sbyte, UnderlyingOperations>(),
-                TypeCode.Byte => CreateCache<TEnum, byte, UnderlyingOperations>(),
-                TypeCode.Int16 => CreateCache<TEnum, short, UnderlyingOperations>(),
-                TypeCode.UInt16 => CreateCache<TEnum, ushort, UnderlyingOperations>(),
-                TypeCode.Int32 => CreateCache<TEnum, int, UnderlyingOperations>(),
-                TypeCode.UInt32 => CreateCache<TEnum, uint, UnderlyingOperations>(),
-                TypeCode.Int64 => CreateCache<TEnum, long, UnderlyingOperations>(),
-                TypeCode.UInt64 => CreateCache<TEnum, ulong, UnderlyingOperations>(),
-                _ => ThrowUnderlyingTypeNotSupportedException(typeof(TEnum))
-            };
+            public static readonly EnumCache Instance = Cacher.Create(typeof(TEnum)).CreateCache<TEnum>();
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static EnumCache ThrowUnderlyingTypeNotSupportedException(Type enumType) => throw new NotSupportedException($"Enum underlying type of {Enum.GetUnderlyingType(enumType)} is not supported");
+        internal abstract class Cacher
+        {
+            public readonly Type EnumType;
+
+            protected Cacher(Type enumType)
+            {
+                EnumType = enumType;
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            public static Cacher Create(Type enumType) =>
+#if GET_TYPE_CODE
+                Type.GetTypeCode(enumType)
+#else
+                Enum.GetUnderlyingType(enumType).GetTypeCode()
+#endif
+            switch
+            {
+                TypeCode.Boolean => new Cacher<bool, UnderlyingOperations>(enumType),
+                TypeCode.Char => new Cacher<char, UnderlyingOperations>(enumType),
+                TypeCode.SByte => new Cacher<sbyte, UnderlyingOperations>(enumType),
+                TypeCode.Byte => new Cacher<byte, UnderlyingOperations>(enumType),
+                TypeCode.Int16 => new Cacher<short, UnderlyingOperations>(enumType),
+                TypeCode.UInt16 => new Cacher<ushort, UnderlyingOperations>(enumType),
+                TypeCode.Int32 => new Cacher<int, UnderlyingOperations>(enumType),
+                TypeCode.UInt32 => new Cacher<uint, UnderlyingOperations>(enumType),
+                TypeCode.Int64 => new Cacher<long, UnderlyingOperations>(enumType),
+                TypeCode.UInt64 => new Cacher<ulong, UnderlyingOperations>(enumType),
+                _ => ThrowUnderlyingTypeNotSupportedException(enumType)
+            };
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private static Cacher ThrowUnderlyingTypeNotSupportedException(Type enumType) => throw new NotSupportedException($"Enum underlying type of {Enum.GetUnderlyingType(enumType)} is not supported");
+
+            public abstract EnumCache CreateCache<TEnum>()
+                where TEnum : struct, Enum;
+        }
+
+        internal sealed class Cacher<TUnderlying, TUnderlyingOperations> : Cacher
+            where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
+#if ICONVERTIBLE
+        , IConvertible
+#endif
+            where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
+        {
+            public Cacher(Type enumType)
+                : base(enumType)
+            {
+            }
+
+            public override EnumCache CreateCache<TEnum>() => CreateCache(new EnumBridge<TEnum, TUnderlying, TUnderlyingOperations>());
+
+            private EnumCache CreateCache(IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge)
+            {
+                var enumType = EnumType;
+                var fields =
+#if TYPE_REFLECTION
+                enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+#else
+                enumType.GetTypeInfo().DeclaredFields.Where(fieldInfo => (fieldInfo.Attributes & (FieldAttributes.Static | FieldAttributes.Public)) == (FieldAttributes.Static | FieldAttributes.Public)).ToArray();
+#endif
+                var size = HashHelpers.PowerOf2(Math.Max(fields.Length, 1));
+                var buckets = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[size];
+                var members = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>[fields.Length];
+
+                // This is necessary due to a .NET reflection bug with retrieving Boolean Enum values
+                Dictionary<string, TUnderlying>? fieldDictionary = null;
+                if (typeof(TUnderlying) == typeof(bool))
+                {
+                    fieldDictionary = new Dictionary<string, TUnderlying>();
+                    var values = (TUnderlying[])Enum.GetValues(enumType);
+                    var names = Enum.GetNames(enumType);
+                    for (var j = 0; j < names.Length; ++j)
+                    {
+                        fieldDictionary.Add(names[j], values[j]);
+                    }
+                }
+
+                TUnderlyingOperations operations = default;
+                var distinctCount = 0;
+                TUnderlying allFlags = default;
+                for (var i = 0; i < fields.Length; ++i)
+                {
+                    var field = fields[i];
+                    var name = field.Name;
+                    var value = fieldDictionary != null ? fieldDictionary[name] : (TUnderlying)field.GetValue(null)!;
+                    var attributesArray =
+#if TYPE_REFLECTION
+                        Attribute.GetCustomAttributes(field, false);
+#else
+                        field.GetCustomAttributes(false).ToArray();
+#endif
+                    var attributes = attributesArray.Length == 0 ? AttributeCollection.Empty : new AttributeCollection(attributesArray);
+
+                    var member = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>(value, name, attributes);
+                    var index = i;
+                    var isPrimary = attributes.Has<PrimaryEnumMemberAttribute>();
+                    while (index > 0 && (isPrimary ? !operations.LessThan(members[index - 1].Value, value) : operations.LessThan(value, members[index - 1].Value)))
+                    {
+                        --index;
+                    }
+                    Array.Copy(members, index, members, index + 1, i - index);
+                    members[index] = member;
+
+                    // Try add to buckets
+                    ref var next = ref buckets[value.GetHashCode() & (size - 1)];
+                    while (next != null)
+                    {
+                        if (next.Value.Equals(value))
+                        {
+                            if (isPrimary)
+                            {
+                                member.Next = next.Next;
+                                next.Next = null;
+                                next = member;
+                            }
+                            break;
+                        }
+                        next = ref next.Next;
+                    }
+                    if (next == null)
+                    {
+                        next = member;
+                        ++distinctCount;
+                        if (operations.BitCount(value) == 1)
+                        {
+                            allFlags = operations.Or(allFlags, value);
+                        }
+                    }
+                }
+
+                var customValidator = GetEnumValidatorAttribute(enumType);
+                var isContiguous = members.Length > 0 && operations.Subtract(members[members.Length - 1].Value, operations.Create(distinctCount - 1)).Equals(members[0].Value);
+                var isFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
+                return isFlagEnum
+                    ? new FlagEnumCache<TUnderlying, TUnderlyingOperations>(enumType, enumBridge, members, buckets, allFlags, distinctCount, isContiguous, customValidator)
+                    : isContiguous
+                    ? (EnumCache)new ContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations>(enumType, enumBridge, members, buckets, allFlags, distinctCount, customValidator)
+                    : new NonContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations>(enumType, enumBridge, members, buckets, allFlags, distinctCount, customValidator);
+            }
+        }
 
         internal static ValueCollection<EnumFormat> DefaultFormats
         {
@@ -4091,107 +4211,6 @@ namespace EnumsNET
                 .GetTypeInfo().GetDeclaredField(nameof(Cache<DayOfWeek>.Instance))
 #endif
                 .GetValue(null)!;
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static EnumCache CreateCache<TEnum, TUnderlying, TUnderlyingOperations>()
-            where TEnum : struct, Enum
-            where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
-#if ICONVERTIBLE
-            , IConvertible
-#endif
-            where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
-            => CreateCache(typeof(TEnum), new EnumBridge<TEnum, TUnderlying, TUnderlyingOperations>());
-
-        private static EnumCache CreateCache<TUnderlying, TUnderlyingOperations>(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge)
-            where TUnderlying : struct, IComparable<TUnderlying>, IEquatable<TUnderlying>
-#if ICONVERTIBLE
-            , IConvertible
-#endif
-            where TUnderlyingOperations : struct, IUnderlyingOperations<TUnderlying>
-        {
-            var fields =
-#if TYPE_REFLECTION
-                enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-#else
-                enumType.GetTypeInfo().DeclaredFields.Where(fieldInfo => (fieldInfo.Attributes & (FieldAttributes.Static | FieldAttributes.Public)) == (FieldAttributes.Static | FieldAttributes.Public)).ToArray();
-#endif
-            var size = HashHelpers.PowerOf2(Math.Max(fields.Length, 1));
-            var buckets = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[size];
-            var members = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>[fields.Length];
-
-            // This is necessary due to a .NET reflection bug with retrieving Boolean Enum values
-            Dictionary<string, TUnderlying>? fieldDictionary = null;
-            if (typeof(TUnderlying) == typeof(bool))
-            {
-                fieldDictionary = new Dictionary<string, TUnderlying>();
-                var values = (TUnderlying[])Enum.GetValues(enumType);
-                var names = Enum.GetNames(enumType);
-                for (var j = 0; j < names.Length; ++j)
-                {
-                    fieldDictionary.Add(names[j], values[j]);
-                }
-            }
-
-            TUnderlyingOperations operations = default;
-            var distinctCount = 0;
-            TUnderlying allFlags = default;
-            for (var i = 0; i < fields.Length; ++i)
-            {
-                var field = fields[i];
-                var name = field.Name;
-                var value = fieldDictionary != null ? fieldDictionary[name] : (TUnderlying)field.GetValue(null)!;
-                var attributes = new AttributeCollection(
-#if TYPE_REFLECTION
-                    Attribute.GetCustomAttributes(field, false));
-#else
-                    field.GetCustomAttributes(false).ToArray());
-#endif
-                var member = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>(value, name, attributes);
-                var index = i;
-                var isPrimary = attributes.Has<PrimaryEnumMemberAttribute>();
-                while (index > 0 && (isPrimary ? !operations.LessThan(members[index - 1].Value, value) : operations.LessThan(value, members[index - 1].Value)))
-                {
-                    --index;
-                }
-                Array.Copy(members, index, members, index + 1, i - index);
-                members[index] = member;
-
-                // Try add to buckets
-                ref var next = ref buckets[value.GetHashCode() & (size - 1)];
-                while (next != null)
-                {
-                    if (next.Value.Equals(value))
-                    {
-                        if (isPrimary)
-                        {
-                            member.Next = next.Next;
-                            next.Next = null;
-                            next = member;
-                        }
-                        break;
-                    }
-                    next = ref next.Next;
-                }
-                if (next == null)
-                {
-                    next = member;
-                    ++distinctCount;
-                    if (operations.BitCount(value) == 1)
-                    {
-                        allFlags = operations.Or(allFlags, value);
-                    }
-                }
-            }
-
-            var customValidator = GetEnumValidatorAttribute(enumType);
-            var isContiguous = members.Length > 0 && operations.Subtract(members[members.Length - 1].Value, operations.Create(distinctCount - 1)).Equals(members[0].Value);
-            var isFlagEnum = enumType.IsDefined(typeof(FlagsAttribute), false);
-            return isFlagEnum
-                ? new FlagEnumCache<TUnderlying, TUnderlyingOperations>(enumType, enumBridge, members, buckets, allFlags, distinctCount, isContiguous, customValidator)
-                : isContiguous
-                ? (EnumCache)new ContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations>(enumType, enumBridge, members, buckets, allFlags, distinctCount, customValidator)
-                : new NonContiguousStandardEnumCache<TUnderlying, TUnderlyingOperations>(enumType, enumBridge, members, buckets, allFlags, distinctCount, customValidator);
         }
 
         private static object? GetEnumValidatorAttribute(Type enumType)

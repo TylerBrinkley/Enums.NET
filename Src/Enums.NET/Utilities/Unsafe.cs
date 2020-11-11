@@ -23,28 +23,20 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 
 namespace System.Runtime.CompilerServices
 {
     internal static class UnsafeUtility
     {
-#if UNSAFE
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SecuritySafeCritical]
         public static ref TTo As<TFrom, TTo>(ref TFrom source) => ref Unsafe.As<TFrom, TTo>(ref source);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SecuritySafeCritical]
-        public static T As<T>(object? value) where T : class => Unsafe.As<T>(value);
-#else
-        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-        [SecuritySafeCritical]
-        public static extern ref TTo As<TFrom, TTo>(ref TFrom source);
-
-        [MethodImpl(MethodImplOptions.ForwardRef | MethodImplOptions.AggressiveInlining)]
-        [SecuritySafeCritical]
-        public static extern T As<T>(object? value) where T : class;
-#endif
+        [return: NotNullIfNotNull("value")]
+        public static T? As<T>(object? value) where T : class => Unsafe.As<T>(value);
     }
 }
