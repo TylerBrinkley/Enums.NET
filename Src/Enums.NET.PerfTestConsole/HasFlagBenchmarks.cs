@@ -29,7 +29,7 @@ using BenchmarkDotNet.Jobs;
 
 namespace EnumsNET.Tests.Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class HasFlagBenchmarks
     {
         private readonly AttributeTargets[] _attributeTargets;

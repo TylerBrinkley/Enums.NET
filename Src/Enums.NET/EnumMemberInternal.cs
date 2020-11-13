@@ -148,7 +148,7 @@ namespace EnumsNET
         public override int CompareTo(EnumMemberInternal? other) => other != null ? Value.CompareTo(UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(other).Value) : 1;
 
         // Implemented so that Distinct will work
-        public bool Equals(EnumMemberInternal<TUnderlying, TUnderlyingOperations> other) => Value.Equals(other.Value);
+        public bool Equals(EnumMemberInternal<TUnderlying, TUnderlyingOperations>? other) => other != null && Value.Equals(other.Value);
 
 #if ICONVERTIBLE
         public override sbyte ToSByte() => Value.ToSByte(null);
