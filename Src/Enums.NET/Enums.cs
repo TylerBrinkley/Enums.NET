@@ -148,7 +148,10 @@ namespace EnumsNET
                     {
                         --index;
                     }
-                    Array.Copy(members, index, members, index + 1, i - index);
+                    if (index < i)
+                    {
+                        Array.Copy(members, index, members, index + 1, i - index);
+                    }
                     members[index] = member;
 
                     // Try add to buckets
@@ -2872,7 +2875,6 @@ namespace EnumsNET
 
         #region NonGeneric
         private static EnumCache?[] s_enumCacheBuckets = new EnumCache?[4];
-        private static EnumCache?[] s_enumCaches = new EnumCache?[4];
         private static readonly object s_lockObject = new object();
         private static int s_enumCacheCount;
 
@@ -2897,7 +2899,6 @@ namespace EnumsNET
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static EnumCache GetOrAddCache(Type enumType)
         {
-            var cache = GetEnumCache(enumType) ?? throw new ArgumentException("must be an enum type", nameof(enumType));
             lock (s_lockObject)
             {
                 var buckets = s_enumCacheBuckets;
@@ -2911,28 +2912,28 @@ namespace EnumsNET
                     }
                     n = n.Next;
                 }
-                var enumCaches = s_enumCaches;
                 var enumCacheCount = s_enumCacheCount;
-                if (enumCaches.Length == enumCacheCount)
+                if (buckets.Length == enumCacheCount)
                 {
                     var newSize = enumCacheCount << 1;
-                    var newEntries = new EnumCache?[newSize];
-                    enumCaches.CopyTo(newEntries, 0);
-                    enumCaches = newEntries;
-                    buckets = new EnumCache?[newSize];
-                    for (var i = 0; i < enumCacheCount; ++i)
+                    var newBuckets = new EnumCache?[newSize];
+                    for (var i = 0; i < buckets.Length; ++i)
                     {
-                        ref var e = ref enumCaches[i]!;
-                        next = ref buckets[e.EnumType.GetHashCode() & (newSize - 1)];
-                        e.Next = next;
-                        next = e;
+                        var c = buckets[i];
+                        while (c != null)
+                        {
+                            var nextItem = c.Next;
+                            ref var b = ref newBuckets[c.EnumType.GetHashCode() & (newSize - 1)];
+                            c.Next = b;
+                            b = c;
+                            c = nextItem;
+                        }
                     }
-                    s_enumCaches = enumCaches;
-                    s_enumCacheBuckets = buckets;
-                    next = ref buckets[enumType.GetHashCode() & (buckets.Length - 1)];
+                    s_enumCacheBuckets = newBuckets;
+                    next = ref newBuckets[enumType.GetHashCode() & (newBuckets.Length - 1)];
                 }
+                var cache = GetEnumCache(enumType) ?? throw new ArgumentException("must be an enum type", nameof(enumType));
                 cache.Next = next;
-                enumCaches[enumCacheCount] = cache;
                 next = cache;
                 ++s_enumCacheCount;
                 return cache;
