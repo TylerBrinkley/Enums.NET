@@ -13,17 +13,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.2.x 
-    - name: Setup .NET Core
+    - name: Setup .NET Core Latest
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
     - name: Install dependencies
       run: dotnet restore
       working-directory: ./Src
+    - name: Setup .NET Core 2.2
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.x 
     - name: Build
       run: dotnet build --configuration Release --no-restore
       working-directory: ./Src
