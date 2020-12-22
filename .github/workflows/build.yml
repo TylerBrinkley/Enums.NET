@@ -8,21 +8,14 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core 2.2
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.2.x
-    - name: Setup .NET Core 5.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./Src
     - name: Build
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release --no-restore
       working-directory: ./Src
     - name: Test
       run: dotnet test --no-restore --verbosity normal
