@@ -762,46 +762,74 @@ namespace EnumsNET.Tests
             for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
             {
                 var value = (ColorFlagEnum)i;
-                Assert.AreEqual(value.ToString(), value.AsString());
+                AssertTryFormat(value, value.ToString());
             }
 
             for (int i = short.MinValue; i <= short.MaxValue; ++i)
             {
                 var value = (DateFilterOperator)i;
-                Assert.AreEqual(value.ToString(), value.AsString());
+                AssertTryFormat(value, value.ToString());
             }
 
-            Assert.AreEqual("No", ToObject<BooleanEnum>(0).AsString());
-            Assert.AreEqual("True", ToObject<BooleanEnum>(1).AsString()); // true.ToString()
-            Assert.AreEqual("A", ToObject<CharEnum>('a').AsString());
-            Assert.AreEqual("B", ToObject<CharEnum>('b').AsString());
-            Assert.AreEqual("C", ToObject<CharEnum>('c').AsString());
-            Assert.AreEqual("d", ToObject<CharEnum>('d').AsString());
+            AssertTryFormat(ToObject<BooleanEnum>(0), "No");
+            AssertTryFormat(ToObject<BooleanEnum>(1), "True"); // true.ToString()
+            AssertTryFormat(ToObject<CharEnum>('a'), "A");
+            AssertTryFormat(ToObject<CharEnum>('b'), "B");
+            AssertTryFormat(ToObject<CharEnum>('c'), "C");
+            AssertTryFormat(ToObject<CharEnum>('d'), "d");
 
-            Assert.AreEqual("No", ToObject<BooleanEnum>(0).ToString());
-            Assert.AreEqual("True", ToObject<BooleanEnum>(1).ToString());
-            Assert.AreEqual("A", ToObject<CharEnum>('a').ToString());
-            Assert.AreEqual("B", ToObject<CharEnum>('b').ToString());
-            Assert.AreEqual("C", ToObject<CharEnum>('c').ToString());
-            Assert.AreEqual("d", ToObject<CharEnum>('d').ToString());
+            void AssertTryFormat<TEnum>(TEnum value, string expected)
+                where TEnum : struct, Enum
+            {
+                Assert.AreEqual(expected, value.ToString());
+                Assert.AreEqual(expected, value.AsString());
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(value.TryFormat(dest, out var charsWritten));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(value.TryFormat(dest, out charsWritten));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]
         public void AsString_ReturnsValidResult_WhenUsingValidEnumFormat()
         {
 #if DISPLAY_ATTRIBUTE
-            Assert.AreEqual("Arriba", DisplayAttributeEnum.Up.AsString(EnumFormat.DisplayName));
-            Assert.AreEqual("Abajo", DisplayAttributeEnum.Down.AsString(EnumFormat.DisplayName));
-            Assert.AreEqual("Izquierda", DisplayAttributeEnum.Left.AsString(EnumFormat.DisplayName));
-            Assert.AreEqual("Derecho", DisplayAttributeEnum.Right.AsString(EnumFormat.DisplayName));
+            AssertTryFormat(DisplayAttributeEnum.Up, "Arriba", EnumFormat.DisplayName);
+            AssertTryFormat(DisplayAttributeEnum.Down, "Abajo", EnumFormat.DisplayName);
+            AssertTryFormat(DisplayAttributeEnum.Left, "Izquierda", EnumFormat.DisplayName);
+            AssertTryFormat(DisplayAttributeEnum.Right, "Derecho", EnumFormat.DisplayName);
 #endif
 
-            Assert.AreEqual("False", ToObject<BooleanEnum>(0).AsString(EnumFormat.UnderlyingValue));
-            Assert.AreEqual("0", ToObject<BooleanEnum>(0).AsString(EnumFormat.DecimalValue));
-            Assert.AreEqual("00", ToObject<BooleanEnum>(0).AsString(EnumFormat.HexadecimalValue));
-            Assert.AreEqual("a", ToObject<CharEnum>('a').AsString(EnumFormat.UnderlyingValue));
-            Assert.AreEqual(((ushort)'a').ToString(), ToObject<CharEnum>('a').AsString(EnumFormat.DecimalValue));
-            Assert.AreEqual(((ushort)'a').ToString("X4"), ToObject<CharEnum>('a').AsString(EnumFormat.HexadecimalValue));
+            AssertTryFormat(ToObject<BooleanEnum>(0), "False", EnumFormat.UnderlyingValue);
+            AssertTryFormat(ToObject<BooleanEnum>(0), "0", EnumFormat.DecimalValue);
+            AssertTryFormat(ToObject<BooleanEnum>(0), "00", EnumFormat.HexadecimalValue);
+            AssertTryFormat(ToObject<CharEnum>('a'), "a", EnumFormat.UnderlyingValue);
+            AssertTryFormat(ToObject<CharEnum>('a'), ((ushort)'a').ToString(), EnumFormat.DecimalValue);
+            AssertTryFormat(ToObject<CharEnum>('a'), ((ushort)'a').ToString("X4"), EnumFormat.HexadecimalValue);
+
+            void AssertTryFormat<TEnum>(TEnum value, string expected, EnumFormat format)
+                where TEnum : struct, Enum
+            {
+                Assert.AreEqual(expected, value.AsString(format));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(value.TryFormat(dest, out var charsWritten, format));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(value.TryFormat(dest, out charsWritten, format));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]
@@ -814,14 +842,31 @@ namespace EnumsNET.Tests
                 for (int i = sbyte.MinValue; i <= sbyte.MaxValue; ++i)
                 {
                     var value = (ColorFlagEnum)i;
-                    Assert.AreEqual(value.ToString(format), value.AsString(format));
+                    AssertTryFormat(value, value.ToString(format), format);
                 }
 
                 for (int i = short.MinValue; i <= (int)DateFilterOperator.NextNumberOfBusinessDays; ++i)
                 {
                     var value = (DateFilterOperator)i;
-                    Assert.AreEqual(value.ToString(format), value.AsString(format));
+                    AssertTryFormat(value, value.ToString(format), format);
                 }
+            }
+
+            void AssertTryFormat<TEnum>(TEnum value, string expected, string format)
+                where TEnum : struct, Enum
+            {
+                Assert.AreEqual(expected, value.AsString(format));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(value.TryFormat(dest, out var charsWritten, format));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(value.TryFormat(dest, out charsWritten, format));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
             }
         }
 
@@ -829,6 +874,34 @@ namespace EnumsNET.Tests
         public void AsString_ThrowsFormatException_WhenUsingInvalidFormat()
         {
             Assert.Throws<FormatException>(() => ColorFlagEnum.Blue.AsString("a"));
+#if SPAN
+            Assert.Throws<FormatException>(() => ColorFlagEnum.Blue.TryFormat(new char[20], out _, "a"));
+#endif
+        }
+
+        [Test]
+        public void TryFormatLongFlagName()
+        {
+            AssertTryFormat((LongFlagNamesEnum)2047);
+
+            void AssertTryFormat<TEnum>(TEnum value)
+                where TEnum : struct, Enum
+            {
+                var expected = value.ToString();
+                Assert.IsTrue(expected.Length > 256);
+                Assert.AreEqual(expected, value.AsString());
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(value.TryFormat(dest, out var charsWritten));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(value.TryFormat(dest, out charsWritten));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]

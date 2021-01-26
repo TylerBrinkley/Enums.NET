@@ -36,7 +36,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET Test .NET Core App 3.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS;SPAN</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <AssemblyTitle>Enums.NET Test .NET Core App 2.0</AssemblyTitle>

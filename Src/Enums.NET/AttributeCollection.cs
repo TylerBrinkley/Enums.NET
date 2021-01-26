@@ -23,10 +23,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using EnumsNET.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {

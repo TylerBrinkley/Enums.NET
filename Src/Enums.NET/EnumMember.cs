@@ -128,7 +128,7 @@ namespace EnumsNET
             return false;
         }
 
-        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => Member.TryFormat(destination, out charsWritten, format);
+        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => format.Length == 0 ? TryFormat(destination, out charsWritten) : Member.TryFormat(destination, out charsWritten, format);
 
         public bool TryFormat(Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => formats?.Length > 0 ? Member.TryFormat(destination, out charsWritten, ValueCollection.Create(formats)) : TryFormat(destination, out charsWritten);
 #endif
