@@ -161,6 +161,11 @@ namespace EnumsNET
         public static string? FormatFlags<TEnum>(TEnum value, string? delimiter, params EnumFormat[]? formats)
             where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
+#if SPAN
+        public static bool TryFormatFlags<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, params EnumFormat[]? formats)
+            where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.TryFormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+#endif
+
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
         /// </summary>
@@ -1208,6 +1213,10 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string? FormatFlagsUnsafe<TEnum>(TEnum value, string? delimiter, params EnumFormat[]? formats) => Enums.GetCacheUnsafe<TEnum>().FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
+#if SPAN
+        public static bool TryFormatFlagsUnsafe<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, params EnumFormat[]? formats) => Enums.GetCacheUnsafe<TEnum>().TryFormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+#endif
+
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
         /// </summary>
@@ -2064,6 +2073,10 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string? FormatFlags(Type enumType, object value, string? delimiter, params EnumFormat[]? formats) => Enums.GetCache(enumType).FormatFlags(value, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+
+#if SPAN
+        public static bool TryFormatFlags(Type enumType, object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, params EnumFormat[]? formats) => Enums.GetCache(enumType).TryFormatFlags(value, destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+#endif
 
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.

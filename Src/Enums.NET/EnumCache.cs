@@ -224,6 +224,16 @@ namespace EnumsNET
         public abstract uint ToUInt32(object value);
         public abstract ulong ToUInt64(ref byte value);
         public abstract ulong ToUInt64(object value);
+#if SPAN
+        public abstract bool TryFormat(ref byte value, Span<char> destination, out int charsWritten);
+        public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten);
+        public abstract bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
+        public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
+        public abstract bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
+        public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
+        public abstract bool TryFormatFlags(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
+        public abstract bool TryFormatFlags(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
+#endif
         public abstract bool TryParse(
 #if SPAN
             ReadOnlySpan<char>
@@ -726,13 +736,13 @@ namespace EnumsNET
 
         public sealed override string AsString(ref byte value, string format) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
 
-        public sealed override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
-
-        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, formats);
-
         public sealed override string AsString(object value, string format) => AsStringInternal(ToObject(value), null, format);
 
+        public sealed override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
+
         public sealed override string? AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
+
+        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, formats);
 
         public sealed override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), null, formats);
 
@@ -819,6 +829,118 @@ namespace EnumsNET
             }
             return null;
         }
+
+#if SPAN
+        public sealed override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => TryFormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, destination, out charsWritten, format);
+
+        public sealed override bool TryFormat(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => TryFormatInternal(ToObject(value), null, destination, out charsWritten, format);
+
+        internal bool TryFormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
+        {
+            if (format.Length == 1)
+            {
+                switch (format[0])
+                {
+                    case 'G':
+                    case 'g':
+                        member ??= GetMember(value);
+                        if (IsFlagEnum)
+                        {
+                            return TryFormatFlagsInternal(value, member, destination, out charsWritten, default, Enums.DefaultFormats);
+                        }
+                        if (member != null)
+                        {
+                            if (destination.Length >= member.Name.Length)
+                            {
+                                member.Name.AsSpan().CopyTo(destination);
+                                charsWritten = member.Name.Length;
+                                return true;
+                            }
+                            charsWritten = 0;
+                            return false;
+                        }
+                        return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+                    case 'F':
+                    case 'f':
+                        return TryFormatFlagsInternal(value, member ?? GetMember(value), destination, out charsWritten, default, Enums.DefaultFormats);
+                    case 'D':
+                    case 'd':
+                        return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+                    case 'X':
+                    case 'x':
+                        return default(TUnderlyingOperations).TryToHexadecimalString(value, destination, out charsWritten);
+                }
+            }
+            throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
+        }
+
+        public sealed override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats) => TryFormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, destination, out charsWritten, formats);
+
+        public sealed override bool TryFormat(object value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats) => TryFormatInternal(ToObject(value), null, destination, out charsWritten, formats);
+
+        internal bool TryFormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats)
+        {
+            var isInitialized = member != null;
+            foreach (var format in formats)
+            {
+                var success = TryFormatInternal(value, ref isInitialized, ref member, destination, out charsWritten, format);
+                if (success != null)
+                {
+                    return success.GetValueOrDefault();
+                }
+            }
+            charsWritten = 0;
+            return false;
+        }
+
+        private bool? TryFormatInternal(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, EnumFormat format)
+        {
+            switch (format)
+            {
+                case EnumFormat.DecimalValue:
+                    return default(TUnderlyingOperations).TryToDecimalString(value, destination, out charsWritten);
+                case EnumFormat.HexadecimalValue:
+                    return default(TUnderlyingOperations).TryToHexadecimalString(value, destination, out charsWritten);
+                case EnumFormat.UnderlyingValue:
+                    return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+                case EnumFormat.Name:
+                    var name = TryInitializeMember(value, ref isInitialized, ref member)?.Name;
+                    return TryWriteStringToSpan(name, destination, out charsWritten);
+                case EnumFormat.Description:
+                    var description = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DescriptionAttribute>()?.Description;
+                    return TryWriteStringToSpan(description, destination, out charsWritten);
+                case EnumFormat.EnumMemberValue:
+                    var enumMemberValue = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<EnumMemberAttribute>()?.Value;
+                    return TryWriteStringToSpan(enumMemberValue, destination, out charsWritten);
+                case EnumFormat.DisplayName:
+                    var displayName = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName();
+                    return TryWriteStringToSpan(displayName, destination, out charsWritten);
+                default:
+                    var v = Enums.CustomEnumMemberFormat(TryInitializeMember(value, ref isInitialized, ref member)?.EnumMember, format.Validate(nameof(format)));
+                    return TryWriteStringToSpan(v, destination, out charsWritten);
+            };
+
+            static bool? TryWriteStringToSpan(string? str, Span<char> destination, out int charsWritten)
+            {
+                if (str == null)
+                {
+                    charsWritten = 0;
+                    return null;
+                }
+                else if (str.Length <= destination.Length)
+                {
+                    str.AsSpan().CopyTo(destination);
+                    charsWritten = str.Length;
+                    return true;
+                }
+                else
+                {
+                    charsWritten = 0;
+                    return false;
+                }
+            }
+        }
+#endif
 
         public sealed override object GetUnderlyingValue(object value) => ToObject(value);
 
@@ -1101,6 +1223,94 @@ namespace EnumsNET
 
             return sb.ToString();
         }
+
+#if SPAN
+        public sealed override bool TryFormatFlags(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats) => TryFormatFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten, delimiter, formats);
+
+        public sealed override bool TryFormatFlags(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats) => TryFormatFlags(ToObject(value), destination, out charsWritten, delimiter, formats);
+
+        private bool TryFormatFlags(TUnderlying value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats) => TryFormatFlagsInternal(value, GetMember(value), destination, out charsWritten, delimiter, formats);
+
+        internal bool TryFormatFlagsInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats)
+        {
+            if (member != null || value.Equals(default) || !IsValidFlagCombination(value))
+            {
+                return TryFormatInternal(value, member, destination, out charsWritten, formats);
+            }
+
+            if (delimiter.Length == 0)
+            {
+                delimiter = FlagEnums.DefaultDelimiter;
+            }
+
+            Span<char> temp = stackalloc char[Math.Min(destination.Length, 256)];
+            var length = Iterate(delimiter, temp, destination.Length);
+
+            if (length > 0)
+            {
+                if (length <= temp.Length)
+                {
+                    temp[0..length].CopyTo(destination);
+                }
+                else
+                {
+                    var l = Iterate(delimiter, destination, destination.Length);
+                    Debug.Assert(length == l);
+                }
+                charsWritten = length;
+                return true;
+            }
+
+            charsWritten = 0;
+            return false;
+
+            int Iterate(ReadOnlySpan<char> delimiter, Span<char> dest, int maxLength)
+            {
+                var original = dest;
+                var length = 0;
+                TUnderlyingOperations operations = default;
+                var isLessThanZero = operations.LessThan(value, default);
+                for (var currentValue = operations.One; isLessThanZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
+                {
+                    if (HasAnyFlags(value, currentValue))
+                    {
+                        if (length > 0)
+                        {
+                            if (length + delimiter.Length > maxLength)
+                            {
+                                length = 0;
+                                break;
+                            }
+                            if (dest.Length < delimiter.Length)
+                            {
+                                dest = original;
+                            }
+                            delimiter.CopyTo(dest);
+                            dest = dest[delimiter.Length..];
+                            length += delimiter.Length;
+                        }
+                        if (TryFormatInternal(currentValue, null, dest, out var cw, formats))
+                        {
+                            dest = dest[cw..];
+                            length += cw;
+                        }
+                        else
+                        {
+                            dest = original;
+                            if (!TryFormatInternal(currentValue, null, dest, out cw, formats) || length + cw > maxLength)
+                            {
+                                length = 0;
+                                break;
+                            }
+                            dest = dest[cw..];
+                            length += cw;
+                        }
+                    }
+                }
+                return length;
+            }
+        }
+#endif
 
         public sealed override IReadOnlyList<object> GetFlags(object value) => GetFlags(ToObject(value)).GetNonGenericContainer();
 
@@ -1719,6 +1929,32 @@ namespace EnumsNET
             return member != null ? member.Name : value.ToString()!;
         }
 
+#if SPAN
+        public override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten) => TryFormat(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten);
+
+        public override bool TryFormat(object value, Span<char> destination, out int charsWritten) => TryFormat(ToObject(value), destination, out charsWritten);
+
+        public bool TryFormat(TUnderlying value, Span<char> destination, out int charsWritten)
+        {
+            var member = GetMember(value);
+            if (member != null)
+            {
+                if (destination.Length >= member.Name.Length)
+                {
+                    member.Name.AsSpan().CopyTo(destination);
+                    charsWritten = member.Name.Length;
+                    return true;
+                }
+                else
+                {
+                    charsWritten = 0;
+                    return false;
+                }
+            }
+            return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+        }
+#endif
+
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
@@ -1771,6 +2007,32 @@ namespace EnumsNET
             return member != null ? member.Name : value.ToString()!;
         }
 
+#if SPAN
+        public override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten) => TryFormat(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten);
+
+        public override bool TryFormat(object value, Span<char> destination, out int charsWritten) => TryFormat(ToObject(value), destination, out charsWritten);
+
+        public bool TryFormat(TUnderlying value, Span<char> destination, out int charsWritten)
+        {
+            var member = GetMember(value);
+            if (member != null)
+            {
+                if (destination.Length >= member.Name.Length)
+                {
+                    member.Name.AsSpan().CopyTo(destination);
+                    charsWritten = member.Name.Length;
+                    return true;
+                }
+                else
+                {
+                    charsWritten = 0;
+                    return false;
+                }
+            }
+            return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+        }
+#endif
+
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
@@ -1797,6 +2059,14 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new string AsString(TUnderlying value) => FormatFlagsInternal(value, GetMember(value), null, Enums.DefaultFormats)!;
+
+#if SPAN
+        public override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten) => TryFormat(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten);
+
+        public override bool TryFormat(object value, Span<char> destination, out int charsWritten) => TryFormat(ToObject(value), destination, out charsWritten);
+
+        public bool TryFormat(TUnderlying value, Span<char> destination, out int charsWritten) => TryFormatFlagsInternal(value, GetMember(value), destination, out charsWritten, default, Enums.DefaultFormats);
+#endif
 
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 

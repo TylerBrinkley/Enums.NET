@@ -772,6 +772,17 @@ namespace EnumsNET
         public static string? AsString<TEnum>(this TEnum value, params EnumFormat[]? formats)
             where TEnum : struct, Enum => Cache<TEnum>.Instance.AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
+#if SPAN
+        public static bool TryFormat<TEnum>(this TEnum value, Span<char> destination, out int charsWritten)
+            where TEnum : struct, Enum => Cache<TEnum>.Instance.TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten);
+
+        public static bool TryFormat<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default)
+            where TEnum : struct, Enum => Cache<TEnum>.Instance.TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, format);
+
+        public static bool TryFormat<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats)
+            where TEnum : struct, Enum => Cache<TEnum>.Instance.TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
+#endif
+
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
         /// </summary>
@@ -2092,6 +2103,14 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string? AsStringUnsafe<TEnum>(TEnum value, params EnumFormat[]? formats) => GetCacheUnsafe<TEnum>().AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
+
+#if SPAN
+        public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten);
+
+        public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, format);
+
+        public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
+#endif
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
@@ -3454,6 +3473,14 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string? AsString(Type enumType, object value, params EnumFormat[]? formats) => GetCache(enumType).AsString(value, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
+
+#if SPAN
+        public static bool TryFormat(Type enumType, object value, Span<char> destination, out int charsWritten) => GetCache(enumType).TryFormat(value, destination, out charsWritten);
+
+        public static bool TryFormat(Type enumType, object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default) => GetCache(enumType).TryFormat(value, destination, out charsWritten, format);
+
+        public static bool TryFormat(Type enumType, object value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => GetCache(enumType).TryFormat(value, destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
+#endif
 
         /// <summary>
         /// Converts the specified <paramref name="value"/> to its string representation using the specified <paramref name="format"/>.
