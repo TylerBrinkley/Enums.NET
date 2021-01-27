@@ -773,12 +773,40 @@ namespace EnumsNET
             where TEnum : struct, Enum => Cache<TEnum>.Instance.AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
 #if SPAN
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
         public static bool TryFormat<TEnum>(this TEnum value, Span<char> destination, out int charsWritten)
             where TEnum : struct, Enum => Cache<TEnum>.Instance.TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten);
 
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static bool TryFormat<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default)
             where TEnum : struct, Enum => Cache<TEnum>.Instance.TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, format.Length == 0 ? "G" : format);
 
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryFormat<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats)
             where TEnum : struct, Enum => Cache<TEnum>.Instance.TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 #endif
@@ -1047,7 +1075,7 @@ namespace EnumsNET
             return UnsafeUtility.As<EnumMember<TEnum>>(Cache<TEnum>.Instance.GetMember(value, ignoreCase, formats));
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -1241,7 +1269,7 @@ namespace EnumsNET
             return result;
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -1432,7 +1460,7 @@ namespace EnumsNET
         public static bool TryParse<TEnum>(string? value, bool ignoreCase, out TEnum result, params EnumFormat[]? formats)
             where TEnum : struct, Enum => TryParse(value, ignoreCase, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The return value indicates whether the conversion succeeded.
@@ -1526,7 +1554,7 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryParse<TEnum>(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -2105,10 +2133,42 @@ namespace EnumsNET
         public static string? AsStringUnsafe<TEnum>(TEnum value, params EnumFormat[]? formats) => GetCacheUnsafe<TEnum>().AsString(ref UnsafeUtility.As<TEnum, byte>(ref value), formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
 #if SPAN
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten);
 
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, format.Length == 0 ? "G" : format);
 
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 #endif
 
@@ -2380,7 +2440,7 @@ namespace EnumsNET
             return UnsafeUtility.As<EnumMember<TEnum>>(GetCacheUnsafe<TEnum>().GetMember(value, ignoreCase, formats));
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -2582,7 +2642,7 @@ namespace EnumsNET
             return result;
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -2781,7 +2841,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseUnsafe<TEnum>(string? value, bool ignoreCase, out TEnum result, params EnumFormat[]? formats) => TryParseUnsafe(value, ignoreCase, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The return value indicates whether the conversion succeeded.
@@ -2879,7 +2939,7 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryParseUnsafe<TEnum>(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -3475,10 +3535,49 @@ namespace EnumsNET
         public static string? AsString(Type enumType, object value, params EnumFormat[]? formats) => GetCache(enumType).AsString(value, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
 #if SPAN
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type.</exception>
         public static bool TryFormat(Type enumType, object value, Span<char> destination, out int charsWritten) => GetCache(enumType).TryFormat(value, destination, out charsWritten);
 
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type.</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public static bool TryFormat(Type enumType, object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default) => GetCache(enumType).TryFormat(value, destination, out charsWritten, format.Length == 0 ? "G" : format);
 
+        /// <summary>
+        /// Tries to format the value of the enum value into the provided span of characters.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryFormat(Type enumType, object value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => GetCache(enumType).TryFormat(value, destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 #endif
 
@@ -3786,7 +3885,7 @@ namespace EnumsNET
             return GetCache(enumType).GetMember(value, ignoreCase, formats);
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Retrieves the enum member with the specified <paramref name="name"/> if defined otherwise <c>null</c>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -3981,7 +4080,7 @@ namespace EnumsNET
             return GetCache(enumType).Parse(value, ignoreCase, formats);
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -4169,7 +4268,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParse(Type enumType, string? value, bool ignoreCase, out object? result, params EnumFormat[]? formats) => GetCache(enumType).TryParse(value, ignoreCase, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// The return value indicates whether the conversion succeeded.

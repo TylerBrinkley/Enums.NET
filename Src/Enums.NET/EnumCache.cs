@@ -40,7 +40,7 @@ using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
-#if SPAN
+#if SPAN_PARSE
 using ParseType = System.ReadOnlySpan<char>;
 #else
 using ParseType = System.String;
@@ -235,42 +235,42 @@ namespace EnumsNET
         public abstract bool TryFormatFlags(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
 #endif
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats);
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats);
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, ref byte result);
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, out object? result);
         public abstract bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, string? delimiter, ref byte result, ValueCollection<EnumFormat> formats);
         public abstract bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -850,14 +850,7 @@ namespace EnumsNET
                         }
                         if (member != null)
                         {
-                            if (destination.Length >= member.Name.Length)
-                            {
-                                member.Name.AsSpan().CopyTo(destination);
-                                charsWritten = member.Name.Length;
-                                return true;
-                            }
-                            charsWritten = 0;
-                            return false;
+                            return TryWriteNonNullableStringToSpan(member.Name, destination, out charsWritten);
                         }
                         return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
                     case 'F':
@@ -890,7 +883,7 @@ namespace EnumsNET
                 }
             }
             charsWritten = 0;
-            return false;
+            return true;
         }
 
         private bool? TryFormatInternal(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, EnumFormat format)
@@ -919,25 +912,35 @@ namespace EnumsNET
                     var v = Enums.CustomEnumMemberFormat(TryInitializeMember(value, ref isInitialized, ref member)?.EnumMember, format.Validate(nameof(format)));
                     return TryWriteStringToSpan(v, destination, out charsWritten);
             };
+        }
 
-            static bool? TryWriteStringToSpan(string? str, Span<char> destination, out int charsWritten)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool? TryWriteStringToSpan(string? str, Span<char> destination, out int charsWritten)
+        {
+            if (str == null)
             {
-                if (str == null)
-                {
-                    charsWritten = 0;
-                    return null;
-                }
-                else if (str.Length <= destination.Length)
-                {
-                    str.AsSpan().CopyTo(destination);
-                    charsWritten = str.Length;
-                    return true;
-                }
-                else
-                {
-                    charsWritten = 0;
-                    return false;
-                }
+                charsWritten = 0;
+                return null;
+            }
+            else
+            {
+                return TryWriteNonNullableStringToSpan(str, destination, out charsWritten);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool TryWriteNonNullableStringToSpan(string str, Span<char> destination, out int charsWritten)
+        {
+            if (str.Length <= destination.Length)
+            {
+                str.AsSpan().CopyTo(destination);
+                charsWritten = str.Length;
+                return true;
+            }
+            else
+            {
+                charsWritten = 0;
+                return false;
             }
         }
 #endif
@@ -1069,7 +1072,7 @@ namespace EnumsNET
         }
 
         public bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1246,7 +1249,7 @@ namespace EnumsNET
             Span<char> temp = stackalloc char[Math.Min(destination.Length, 256)];
             var length = Iterate(delimiter, temp, destination.Length);
 
-            if (length > 0)
+            if (length >= 0)
             {
                 if (length <= temp.Length)
                 {
@@ -1278,7 +1281,7 @@ namespace EnumsNET
                         {
                             if (length + delimiter.Length > maxLength)
                             {
-                                length = 0;
+                                length = -1;
                                 break;
                             }
                             if (dest.Length < delimiter.Length)
@@ -1299,7 +1302,7 @@ namespace EnumsNET
                             dest = original;
                             if (!TryFormatInternal(currentValue, null, dest, out cw, formats) || length + cw > maxLength)
                             {
-                                length = 0;
+                                length = -1;
                                 break;
                             }
                             dest = dest[cw..];
@@ -1512,7 +1515,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1529,7 +1532,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1545,7 +1548,7 @@ namespace EnumsNET
             return false;
         }
 
-#if SPAN
+#if SPAN_PARSE
         public bool TryParseFlags(ReadOnlySpan<char> value, bool ignoreCase, string? delimiter, out TUnderlying result, ValueCollection<EnumFormat> formats)
         {
             ReadOnlySpan<char> effectiveDelimiter;
@@ -1710,14 +1713,14 @@ namespace EnumsNET
                 var entries = _entries;
                 if (ignoreCase)
                 {
-#if SPAN
+#if SPAN_PARSE
                     var hashCode = string.GetHashCode(formattedValue, StringComparison.OrdinalIgnoreCase);
 #else
                     var hashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
 #endif
                     for (var i = _ordinalIgnoreCaseBuckets[hashCode & (_ordinalIgnoreCaseBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalIgnoreCaseNext)
                     {
-#if SPAN
+#if SPAN_PARSE
                         if (formattedValue.Equals(entries[i].FormattedValue, StringComparison.OrdinalIgnoreCase))
 #else
                         if (string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
@@ -1730,14 +1733,14 @@ namespace EnumsNET
                 }
                 else
                 {
-#if SPAN
+#if SPAN_PARSE
                     var hashCode = string.GetHashCode(formattedValue, StringComparison.Ordinal);
 #else
                     var hashCode = formattedValue.GetHashCode();
 #endif
                     for (var i = _ordinalBuckets[hashCode & (_ordinalBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalNext)
                     {
-#if SPAN
+#if SPAN_PARSE
                         if (formattedValue.Equals(entries[i].FormattedValue, StringComparison.Ordinal))
 #else
                         if (entries[i].FormattedValue == formattedValue)
@@ -1815,7 +1818,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1832,7 +1835,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1849,7 +1852,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1866,7 +1869,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1939,17 +1942,7 @@ namespace EnumsNET
             var member = GetMember(value);
             if (member != null)
             {
-                if (destination.Length >= member.Name.Length)
-                {
-                    member.Name.AsSpan().CopyTo(destination);
-                    charsWritten = member.Name.Length;
-                    return true;
-                }
-                else
-                {
-                    charsWritten = 0;
-                    return false;
-                }
+                return TryWriteNonNullableStringToSpan(member.Name, destination, out charsWritten);
             }
             return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
         }
@@ -2017,17 +2010,7 @@ namespace EnumsNET
             var member = GetMember(value);
             if (member != null)
             {
-                if (destination.Length >= member.Name.Length)
-                {
-                    member.Name.AsSpan().CopyTo(destination);
-                    charsWritten = member.Name.Length;
-                    return true;
-                }
-                else
-                {
-                    charsWritten = 0;
-                    return false;
-                }
+                return TryWriteNonNullableStringToSpan(member.Name, destination, out charsWritten);
             }
             return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
         }
@@ -2089,7 +2072,7 @@ namespace EnumsNET
         public override object Parse(ParseType value, bool ignoreCase) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, null, Enums.DefaultFormats));
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -2106,7 +2089,7 @@ namespace EnumsNET
         }
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -2123,7 +2106,7 @@ namespace EnumsNET
         }
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -2140,7 +2123,7 @@ namespace EnumsNET
         }
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?

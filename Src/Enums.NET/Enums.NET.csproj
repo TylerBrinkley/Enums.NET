@@ -52,11 +52,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN;SPAN_PARSE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <AssemblyTitle>Enums.NET .NET Standard 2.1</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES</DefineConstants>
+    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>Enums.NET .NET Standard 2.0</AssemblyTitle>

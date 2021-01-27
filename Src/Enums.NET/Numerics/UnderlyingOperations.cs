@@ -26,7 +26,7 @@
 using System;
 using System.Globalization;
 
-#if SPAN
+#if SPAN_PARSE
 using ParseType = System.ReadOnlySpan<char>;
 #else
 using ParseType = System.String;
@@ -498,7 +498,7 @@ namespace EnumsNET.Numerics
 
         public bool TryParseNative(ParseType s, out char result)
         {
-#if SPAN
+#if SPAN_PARSE
             if (s.Length == 1)
             {
                 result = s[0];

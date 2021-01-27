@@ -114,7 +114,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public string? AsString(params EnumFormat[]? formats) => formats?.Length > 0 ? Member.AsString(ValueCollection.Create(formats)) : Member.Name;
 
-#if SPAN
+#if SPAN_PARSE
         public bool TryFormat(Span<char> destination, out int charsWritten)
         {
             var name = Member.Name;

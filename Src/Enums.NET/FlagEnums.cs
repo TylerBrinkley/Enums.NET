@@ -162,6 +162,17 @@ namespace EnumsNET
             where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
 #if SPAN
+        /// <summary>
+        /// Tries to format the value of the flag enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryFormatFlags<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter = default, params EnumFormat[]? formats)
             where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.TryFormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 #endif
@@ -761,7 +772,7 @@ namespace EnumsNET
             return result;
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -965,7 +976,7 @@ namespace EnumsNET
         public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, string? delimiter, out TEnum result, params EnumFormat[]? formats)
             where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The return value indicates whether the conversion succeeded.
@@ -1072,7 +1083,7 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryParseFlags<TEnum>(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1214,6 +1225,19 @@ namespace EnumsNET
         public static string? FormatFlagsUnsafe<TEnum>(TEnum value, string? delimiter, params EnumFormat[]? formats) => Enums.GetCacheUnsafe<TEnum>().FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
 #if SPAN
+        /// <summary>
+        /// Tries to format the value of the flag enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryFormatFlagsUnsafe<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter = default, params EnumFormat[]? formats) => Enums.GetCacheUnsafe<TEnum>().TryFormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 #endif
 
@@ -1592,7 +1616,7 @@ namespace EnumsNET
             return result;
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -1804,7 +1828,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, string? delimiter, out TEnum result, params EnumFormat[]? formats) => TryParseFlagsUnsafe(value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The return value indicates whether the conversion succeeded.
@@ -1915,7 +1939,7 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryParseFlagsUnsafe<TEnum>(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -2075,6 +2099,22 @@ namespace EnumsNET
         public static string? FormatFlags(Type enumType, object value, string? delimiter, params EnumFormat[]? formats) => Enums.GetCache(enumType).FormatFlags(value, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
 #if SPAN
+        /// <summary>
+        /// Tries to format the value of the flag enum value into the provided span of characters.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryFormatFlags(Type enumType, object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter = default, params EnumFormat[]? formats) => Enums.GetCache(enumType).TryFormatFlags(value, destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 #endif
 
@@ -2407,7 +2447,7 @@ namespace EnumsNET
             return Enums.GetCache(enumType).ParseFlags(value, ignoreCase, delimiter, formats);
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -2618,7 +2658,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string? delimiter, out object? result, params EnumFormat[]? formats) => Enums.GetCache(enumType).TryParseFlags(value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// The return value indicates whether the conversion succeeded.

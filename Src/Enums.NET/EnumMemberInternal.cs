@@ -59,7 +59,7 @@ namespace EnumsNET
         public abstract string AsString(string format);
         public abstract string? AsString(EnumFormat format);
         public abstract string? AsString(ValueCollection<EnumFormat> formats);
-#if SPAN
+#if SPAN_PARSE
         public abstract bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
         public abstract bool TryFormat(Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
 #endif
@@ -135,7 +135,7 @@ namespace EnumsNET
 
         public override string? AsString(ValueCollection<EnumFormat> formats) => EnumCache.AsStringInternal(Value, this, formats);
 
-#if SPAN
+#if SPAN_PARSE
         public override bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => EnumCache.TryFormatInternal(Value, this, destination, out charsWritten, format);
 
         public override bool TryFormat(Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats) => EnumCache.TryFormatInternal(Value, this, destination, out charsWritten, formats);
