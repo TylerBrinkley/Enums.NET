@@ -3,6 +3,9 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Enums.NET.svg?logo=nuget)](https://www.nuget.org/packages/Enums.NET/)
 [![Build status](https://img.shields.io/azure-devops/build/tydude4christ/Public/2.svg?logo=azuredevops)](https://dev.azure.com/tydude4christ/Public/_build?definitionId=2)
 
+## v4.0 Changes
+Removed `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes which were deprecated in v3.0 and also removed all other deprecated methods in an effort to slim the library size down.
+
 ## v3.0 Changes
 One of the major changes for v3.0 is the deprecation of the `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes whose methods have been added to the `Enums` and `FlagEnums` classes to better match `System.Enum` and provide better discoverability. To help you migrate your code to using the new methods I have created the C# roslyn analyzer [`Enums.NET.Analyzer`](https://www.nuget.org/packages/Enums.NET.Analyzer/) which provides a code fix to migrate your usages of the non-generic and unsafe methods to the new methods.
 
