@@ -233,6 +233,14 @@ namespace EnumsNET
         public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
         public abstract bool TryFormatFlags(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
         public abstract bool TryFormatFlags(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryWriteNonNullableStringToSpan(string str, Span<char> destination, out int charsWritten)
+        {
+            var success = str.AsSpan().TryCopyTo(destination);
+            charsWritten = success ? str.Length : 0;
+            return success;
+        }
 #endif
         public abstract bool TryParse(
 #if SPAN_PARSE
@@ -925,22 +933,6 @@ namespace EnumsNET
             else
             {
                 return TryWriteNonNullableStringToSpan(str, destination, out charsWritten);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected static bool TryWriteNonNullableStringToSpan(string str, Span<char> destination, out int charsWritten)
-        {
-            if (str.Length <= destination.Length)
-            {
-                str.AsSpan().CopyTo(destination);
-                charsWritten = str.Length;
-                return true;
-            }
-            else
-            {
-                charsWritten = 0;
-                return false;
             }
         }
 #endif

@@ -114,22 +114,33 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public string? AsString(params EnumFormat[]? formats) => formats?.Length > 0 ? Member.AsString(ValueCollection.Create(formats)) : Member.Name;
 
-#if SPAN_PARSE
-        public bool TryFormat(Span<char> destination, out int charsWritten)
-        {
-            var name = Member.Name;
-            if (destination.Length >= name.Length)
-            {
-                name.AsSpan().CopyTo(destination);
-                charsWritten = name.Length;
-                return true;
-            }
-            charsWritten = 0;
-            return false;
-        }
+#if SPAN
+        /// <summary>
+        /// Tries to format the value of the enum member into the provided span of characters.
+        /// </summary>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        public bool TryFormat(Span<char> destination, out int charsWritten) => EnumCache.TryWriteNonNullableStringToSpan(Member.Name, destination, out charsWritten);
 
+        /// <summary>
+        /// Tries to format the value of the enum member into the provided span of characters.
+        /// </summary>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="format">The output format to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
         public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => format.Length == 0 ? TryFormat(destination, out charsWritten) : Member.TryFormat(destination, out charsWritten, format);
 
+        /// <summary>
+        /// Tries to format the value of the enum member into the provided span of characters.
+        /// </summary>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public bool TryFormat(Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => formats?.Length > 0 ? Member.TryFormat(destination, out charsWritten, ValueCollection.Create(formats)) : TryFormat(destination, out charsWritten);
 #endif
 

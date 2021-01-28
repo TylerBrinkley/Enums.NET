@@ -2142,7 +2142,7 @@ namespace EnumsNET
         /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
         /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten);
+        public static bool TryFormatUnsafe<TEnum>(TEnum value, Span<char> destination, out int charsWritten) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten);
 
         /// <summary>
         /// Tries to format the value of the enum value into the provided span of characters.
@@ -2155,7 +2155,7 @@ namespace EnumsNET
         /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, format.Length == 0 ? "G" : format);
+        public static bool TryFormatUnsafe<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, format.Length == 0 ? "G" : format);
 
         /// <summary>
         /// Tries to format the value of the enum value into the provided span of characters.
@@ -2169,7 +2169,7 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
-        public static bool TryFormatUnsafe<TEnum>(this TEnum value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
+        public static bool TryFormatUnsafe<TEnum>(TEnum value, Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => GetCacheUnsafe<TEnum>().TryFormat(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, formats?.Length > 0 ? ValueCollection.Create(formats) : DefaultFormats);
 #endif
 
         /// <summary>
