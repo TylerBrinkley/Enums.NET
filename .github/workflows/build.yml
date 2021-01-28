@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: dotnet restore
+      working-directory: ./Src
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      working-directory: ./Src
+    - name: Test .NET 4.5
+      run: dotnet test -f net45 --no-restore --verbosity normal
+      working-directory: ./Src
+    - name: Test .NET Core 3.0
+      run: dotnet test -f netcoreapp3.0 --no-restore --verbosity normal
+      working-directory: ./Src

@@ -3,13 +3,14 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Enums.NET.svg?logo=nuget)](https://www.nuget.org/packages/Enums.NET/)
 [![Build status](https://img.shields.io/azure-devops/build/tydude4christ/Public/2.svg?logo=azuredevops)](https://dev.azure.com/tydude4christ/Public/_build?definitionId=2)
 
+## v4.0 Changes
+Removed `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes which were deprecated in v3.0 and also removed all other deprecated methods in an effort to slim the library size down.
+
 ## v3.0 Changes
 One of the major changes for v3.0 is the deprecation of the `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes whose methods have been added to the `Enums` and `FlagEnums` classes to better match `System.Enum` and provide better discoverability. To help you migrate your code to using the new methods I have created the C# roslyn analyzer [`Enums.NET.Analyzer`](https://www.nuget.org/packages/Enums.NET.Analyzer/) which provides a code fix to migrate your usages of the non-generic and unsafe methods to the new methods.
 
 # Enums.NET
 Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is compatible with .NET Framework 4.5+ and .NET Standard 1.0+.
-
-I'm trying to integrate some of Enums.NET's improvements into [corefx](https://github.com/dotnet/corefx) so if interested in its progress please check out the proposal [here](https://github.com/dotnet/corefx/issues/15453).
 
 ## What's wrong with `System.Enum`
 1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
@@ -225,5 +226,3 @@ See [fuget](https://www.fuget.org/packages/Enums.NET) for exploring the interfac
 
 ## Credits
 Inspired by Jon Skeet's [Unconstrained Melody](https://github.com/jskeet/unconstrained-melody).
-
-Uses Simon Cropp's [Fody](https://github.com/Fody/Fody) which is built on Jb Evain's [Mono.Cecil](https://github.com/jbevain/cecil) for building the assembly.

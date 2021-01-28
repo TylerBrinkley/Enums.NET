@@ -76,6 +76,7 @@ namespace EnumsNET
         public int Compare(object? x, object? y) => x is object ? (y is object ? _enumCache.CompareTo(x, y) : 1) : (y is null ? 0 : -1);
     }
 
+#pragma warning disable CS8767
     /// <summary>
     /// An efficient enum comparer which doesn't box the values.
     /// </summary>
@@ -118,3 +119,4 @@ namespace EnumsNET
         public int Compare(TEnum x, TEnum y) => _enumCache.CompareTo(ref UnsafeUtility.As<TEnum, byte>(ref x), ref UnsafeUtility.As<TEnum, byte>(ref y));
     }
 }
+#pragma warning restore CS8767

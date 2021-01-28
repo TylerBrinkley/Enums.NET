@@ -61,7 +61,7 @@ namespace EnumsNET.Tests.Benchmarks
         public override void Parse(string value) => FastEnumUtility.FastEnum.Parse<TEnum>(value);
     }
 
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class ParseNamesBenchmarks
     {
         private class EnumData
@@ -180,6 +180,7 @@ namespace EnumsNET.Tests.Benchmarks
         }
     }
 
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class ParseValuesBenchmarks
     {
         private class EnumData
@@ -303,6 +304,7 @@ namespace EnumsNET.Tests.Benchmarks
         }
     }
 
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class ParseFlagsBenchmarks
     {
         private class EnumData

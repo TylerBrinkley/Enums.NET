@@ -29,7 +29,7 @@ using BenchmarkDotNet.Jobs;
 
 namespace EnumsNET.Tests.Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class IsDefinedBenchmarks
     {
         private readonly DayOfWeek[] _values;

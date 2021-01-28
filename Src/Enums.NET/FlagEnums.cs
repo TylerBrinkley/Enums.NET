@@ -83,73 +83,6 @@ namespace EnumsNET
             where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), null, Enums.DefaultFormats)!;
 
         /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format">The output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags<TEnum>(TEnum value, EnumFormat format)
-            where TEnum : struct, Enum => FormatFlags(value, null, format);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => FormatFlags(value, null, format0, format1);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <param name="format2">The third output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => FormatFlags(value, null, format0, format1, format2);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags<TEnum>(TEnum value, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => FormatFlags(value, null, formats);
-
-        /// <summary>
         /// Retrieves the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
         /// </summary>
@@ -227,6 +160,22 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public static string? FormatFlags<TEnum>(TEnum value, string? delimiter, params EnumFormat[]? formats)
             where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+
+#if SPAN
+        /// <summary>
+        /// Tries to format the value of the flag enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryFormatFlags<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter = default, params EnumFormat[]? formats)
+            where TEnum : struct, Enum => Enums.Cache<TEnum>.Instance.TryFormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+#endif
 
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
@@ -709,77 +658,6 @@ namespace EnumsNET
             where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, null, Enums.DefaultFormats);
 
         /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, EnumFormat format)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, null, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, null, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, null, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, null, formats);
-
-        /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
@@ -792,170 +670,6 @@ namespace EnumsNET
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase)
             where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, null, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, EnumFormat format)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, null, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, null, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, null, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, bool ignoreCase, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, ignoreCase, null, formats);
-
-        /// <summary>
-        /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member names or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, string? delimiter)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, delimiter, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, string? delimiter, EnumFormat format)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, delimiter, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, string? delimiter, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, delimiter, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, string? delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, delimiter, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlags<TEnum>(string value, string? delimiter, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => ParseFlags<TEnum>(value, false, delimiter, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -1058,7 +772,7 @@ namespace EnumsNET
             return result;
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -1171,68 +885,6 @@ namespace EnumsNET
             where TEnum : struct, Enum => TryParseFlags(value, false, null, out result);
 
         /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, out TEnum result, EnumFormat format)
-            where TEnum : struct, Enum => TryParseFlags(value, false, null, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The first parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => TryParseFlags(value, false, null, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => TryParseFlags(value, false, null, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, out TEnum result, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => TryParseFlags(value, false, null, out result, formats);
-
-        /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -1243,152 +895,6 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, out TEnum result)
             where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, null, out result);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, out TEnum result, EnumFormat format)
-            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, null, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The first parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, null, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, null, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, out TEnum result, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, null, out result, formats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member names or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, string? delimiter, out TEnum result)
-            where TEnum : struct, Enum => TryParseFlags(value, false, delimiter, out result);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, string? delimiter, out TEnum result, EnumFormat format)
-            where TEnum : struct, Enum => TryParseFlags(value, false, delimiter, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The first parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, string? delimiter, out TEnum result, EnumFormat format0, EnumFormat format1)
-            where TEnum : struct, Enum => TryParseFlags(value, false, delimiter, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, string? delimiter, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2)
-            where TEnum : struct, Enum => TryParseFlags(value, false, delimiter, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags<TEnum>(string? value, string? delimiter, out TEnum result, params EnumFormat[]? formats)
-            where TEnum : struct, Enum => TryParseFlags(value, false, delimiter, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -1470,7 +976,7 @@ namespace EnumsNET
         public static bool TryParseFlags<TEnum>(string? value, bool ignoreCase, string? delimiter, out TEnum result, params EnumFormat[]? formats)
             where TEnum : struct, Enum => TryParseFlags(value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The return value indicates whether the conversion succeeded.
@@ -1577,7 +1083,7 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryParseFlags<TEnum>(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1634,77 +1140,6 @@ namespace EnumsNET
         /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static string FormatFlagsUnsafe<TEnum>(TEnum value) => Enums.GetCacheUnsafe<TEnum>().FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), null, Enums.DefaultFormats)!;
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format">The output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlagsUnsafe<TEnum>(TEnum value, EnumFormat format) => FormatFlagsUnsafe(value, null, format);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlagsUnsafe<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1) => FormatFlagsUnsafe(value, null, format0, format1);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <param name="format2">The third output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlagsUnsafe<TEnum>(TEnum value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => FormatFlagsUnsafe(value, null, format0, format1, format2);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlagsUnsafe<TEnum>(TEnum value, params EnumFormat[]? formats) => FormatFlagsUnsafe(value, null, formats);
 
         /// <summary>
         /// Retrieves the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -1788,6 +1223,23 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string? FormatFlagsUnsafe<TEnum>(TEnum value, string? delimiter, params EnumFormat[]? formats) => Enums.GetCacheUnsafe<TEnum>().FormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+
+#if SPAN
+        /// <summary>
+        /// Tries to format the value of the flag enum value into the provided span of characters.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryFormatFlagsUnsafe<TEnum>(TEnum value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter = default, params EnumFormat[]? formats) => Enums.GetCacheUnsafe<TEnum>().TryFormatFlags(ref UnsafeUtility.As<TEnum, byte>(ref value), destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+#endif
 
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
@@ -2045,81 +1497,6 @@ namespace EnumsNET
         public static TEnum ParseFlagsUnsafe<TEnum>(string value) => ParseFlagsUnsafe<TEnum>(value, false, null, Enums.DefaultFormats);
 
         /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, EnumFormat format) => ParseFlagsUnsafe<TEnum>(value, false, null, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, EnumFormat format0, EnumFormat format1) => ParseFlagsUnsafe<TEnum>(value, false, null, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlagsUnsafe<TEnum>(value, false, null, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, params EnumFormat[]? formats) => ParseFlagsUnsafe<TEnum>(value, false, null, formats);
-
-        /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
@@ -2133,179 +1510,6 @@ namespace EnumsNET
         /// <paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
         public static TEnum ParseFlagsUnsafe<TEnum>(string value, bool ignoreCase) => ParseFlagsUnsafe<TEnum>(value, ignoreCase, null, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, bool ignoreCase, EnumFormat format) => ParseFlagsUnsafe<TEnum>(value, ignoreCase, null, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => ParseFlagsUnsafe<TEnum>(value, ignoreCase, null, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlagsUnsafe<TEnum>(value, ignoreCase, null, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, bool ignoreCase, params EnumFormat[]? formats) => ParseFlagsUnsafe<TEnum>(value, ignoreCase, null, formats);
-
-        /// <summary>
-        /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member names or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member name or value of <typeparamref name="TEnum"/>.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <typeparamref name="TEnum"/>'s underlying type.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, string? delimiter) => ParseFlagsUnsafe<TEnum>(value, false, delimiter);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, string? delimiter, EnumFormat format) => ParseFlagsUnsafe<TEnum>(value, false, delimiter, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, string? delimiter, EnumFormat format0, EnumFormat format1) => ParseFlagsUnsafe<TEnum>(value, false, delimiter, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, string? delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlagsUnsafe<TEnum>(value, false, delimiter, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <typeparamref name="TEnum"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <typeparamref name="TEnum"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static TEnum ParseFlagsUnsafe<TEnum>(string value, string? delimiter, params EnumFormat[]? formats) => ParseFlagsUnsafe<TEnum>(value, false, delimiter, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -2412,7 +1616,7 @@ namespace EnumsNET
             return result;
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -2529,72 +1733,6 @@ namespace EnumsNET
         public static bool TryParseFlagsUnsafe<TEnum>(string? value, out TEnum result) => TryParseFlagsUnsafe(value, false, null, out result, Enums.DefaultFormats);
 
         /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, out TEnum result, EnumFormat format) => TryParseFlagsUnsafe(value, false, null, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1) => TryParseFlagsUnsafe(value, false, null, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlagsUnsafe(value, false, null, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, out TEnum result, params EnumFormat[]? formats) => TryParseFlagsUnsafe(value, false, null, out result, formats);
-
-        /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -2605,160 +1743,6 @@ namespace EnumsNET
         /// <returns>Indication whether the conversion succeeded.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
         public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, out TEnum result) => TryParseFlagsUnsafe(value, ignoreCase, null, out result, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, out TEnum result, EnumFormat format) => TryParseFlagsUnsafe(value, ignoreCase, null, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1) => TryParseFlagsUnsafe(value, ignoreCase, null, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlagsUnsafe(value, ignoreCase, null, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, out TEnum result, params EnumFormat[]? formats) => TryParseFlagsUnsafe(value, ignoreCase, null, out result, formats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum member names or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, string? delimiter, out TEnum result) => TryParseFlagsUnsafe(value, false, delimiter, out result, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, string? delimiter, out TEnum result, EnumFormat format) => TryParseFlagsUnsafe(value, false, delimiter, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, string? delimiter, out TEnum result, EnumFormat format0, EnumFormat format1) => TryParseFlagsUnsafe(value, false, delimiter, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, string? delimiter, out TEnum result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlagsUnsafe(value, false, delimiter, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <typeparam name="TEnum">The enum type.</typeparam>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a <typeparamref name="TEnum"/> value that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="TEnum"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlagsUnsafe<TEnum>(string? value, string? delimiter, out TEnum result, params EnumFormat[]? formats) => TryParseFlagsUnsafe(value, false, delimiter, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> delimited with <paramref name="delimiter"/> to its respective <typeparamref name="TEnum"/> value.
@@ -2844,7 +1828,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlagsUnsafe<TEnum>(string? value, bool ignoreCase, string? delimiter, out TEnum result, params EnumFormat[]? formats) => TryParseFlagsUnsafe(value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <typeparamref name="TEnum"/> to its respective <typeparamref name="TEnum"/> value.
         /// The return value indicates whether the conversion succeeded.
@@ -2955,7 +1939,7 @@ namespace EnumsNET
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryParseFlagsUnsafe<TEnum>(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -3015,89 +1999,6 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="value"/> is of an invalid type.</exception>
         public static string FormatFlags(Type enumType, object value) => Enums.GetCache(enumType).FormatFlags(value, null, Enums.DefaultFormats)!;
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format">The output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="format"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="format"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags(Type enumType, object value, EnumFormat format) => FormatFlags(enumType, value, null, format);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags(Type enumType, object value, EnumFormat format0, EnumFormat format1) => FormatFlags(enumType, value, null, format0, format1);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="format0">The first output format to use.</param>
-        /// <param name="format1">The second output format to use.</param>
-        /// <param name="format2">The third output format to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with formats and delimited with commas
-        /// or if empty returns the zero flag formatted with formats.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags(Type enumType, object value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => FormatFlags(enumType, value, null, format0, format1, format2);
-
-        /// <summary>
-        /// Retrieves <paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The flags enum value.</param>
-        /// <param name="formats">The output formats to use.</param>
-        /// <returns><paramref name="value"/>'s flags formatted with <paramref name="formats"/> and delimited with commas
-        /// or if empty returns the zero flag formatted with <paramref name="formats"/>.
-        /// If <paramref name="value"/> is not a valid flag combination <c>null</c> is returned.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> is of an invalid type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter parameter")]
-        public static string? FormatFlags(Type enumType, object value, params EnumFormat[]? formats) => FormatFlags(enumType, value, null, formats);
 
         /// <summary>
         /// Retrieves the names of <paramref name="value"/>'s flags delimited with <paramref name="delimiter"/> or if empty returns the name of the zero flag if defined otherwise "0".
@@ -3196,6 +2097,26 @@ namespace EnumsNET
         /// -or-
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static string? FormatFlags(Type enumType, object value, string? delimiter, params EnumFormat[]? formats) => Enums.GetCache(enumType).FormatFlags(value, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+
+#if SPAN
+        /// <summary>
+        /// Tries to format the value of the flag enum value into the provided span of characters.
+        /// </summary>
+        /// <param name="enumType">The enum type.</param>
+        /// <param name="value">The flags enum value.</param>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <param name="delimiter">The delimiter to use to separate individual flags.</param>
+        /// <param name="formats">The output formats to use.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
+        /// -or-
+        /// <paramref name="value"/> is of an invalid type
+        /// -or-
+        /// <paramref name="formats"/> contains an invalid value.</exception>
+        public static bool TryFormatFlags(Type enumType, object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter = default, params EnumFormat[]? formats) => Enums.GetCache(enumType).TryFormatFlags(value, destination, out charsWritten, delimiter, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
+#endif
 
         /// <summary>
         /// Retrieves the flags that compose <paramref name="value"/>.
@@ -3409,81 +2330,6 @@ namespace EnumsNET
         public static object ParseFlags(Type enumType, string value) => ParseFlags(enumType, value, false, null, Enums.DefaultFormats);
 
         /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, EnumFormat format) => ParseFlags(enumType, value, false, null, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, EnumFormat format0, EnumFormat format1) => ParseFlags(enumType, value, false, null, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlags(enumType, value, false, null, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, params EnumFormat[]? formats) => ParseFlags(enumType, value, false, null, formats);
-
-        /// <summary>
         /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
         /// </summary>
@@ -3497,179 +2343,6 @@ namespace EnumsNET
         /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
         /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
         public static object ParseFlags(Type enumType, string value, bool ignoreCase) => ParseFlags(enumType, value, ignoreCase, null, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, bool ignoreCase, EnumFormat format) => ParseFlags(enumType, value, ignoreCase, null, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1) => ParseFlags(enumType, value, ignoreCase, null, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, bool ignoreCase, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlags(enumType, value, ignoreCase, null, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, bool ignoreCase, params EnumFormat[]? formats) => ParseFlags(enumType, value, ignoreCase, null, formats);
-
-        /// <summary>
-        /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum member names or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member name or value of <paramref name="enumType"/>.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of <paramref name="enumType"/>'s underlying type.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, string? delimiter) => ParseFlags(enumType, value, false, delimiter);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, string? delimiter, EnumFormat format) => ParseFlags(enumType, value, false, delimiter, format);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, string? delimiter, EnumFormat format0, EnumFormat format1) => ParseFlags(enumType, value, false, delimiter, format0, format1);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>The <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, string? delimiter, EnumFormat format0, EnumFormat format1, EnumFormat format2) => ParseFlags(enumType, value, false, delimiter, format0, format1, format2);
-
-        /// <summary>
-        /// Converts the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>A <paramref name="enumType"/> value that is represented by <paramref name="value"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> or <paramref name="value"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="value"/> doesn't represent a member or value of <paramref name="enumType"/>
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        /// <exception cref="OverflowException"><paramref name="value"/> is outside the range of the underlying type of <paramref name="enumType"/>.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static object ParseFlags(Type enumType, string value, string? delimiter, params EnumFormat[]? formats) => ParseFlags(enumType, value, false, delimiter, formats);
 
         /// <summary>
         /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
@@ -3774,7 +2447,7 @@ namespace EnumsNET
             return Enums.GetCache(enumType).ParseFlags(value, ignoreCase, delimiter, formats);
         }
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Converts the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
         /// The parameter <paramref name="ignoreCase"/> specifies if the operation is case-insensitive.
@@ -3884,76 +2557,6 @@ namespace EnumsNET
         public static bool TryParseFlags(Type enumType, string value, out object? result) => Enums.GetCache(enumType).TryParseFlags(value, false, null, out result, Enums.DefaultFormats);
 
         /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, out object? result, EnumFormat format) => TryParseFlags(enumType, value, false, null, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, out object? result, EnumFormat format0, EnumFormat format1) => TryParseFlags(enumType, value, false, null, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlags(enumType, value, false, null, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, out object? result, params EnumFormat[]? formats) => TryParseFlags(enumType, value, false, null, out result, formats);
-
-        /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive. The return value indicates whether the conversion succeeded.
         /// </summary>
@@ -3965,169 +2568,6 @@ namespace EnumsNET
         /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object? result) => Enums.GetCache(enumType).TryParseFlags(value, ignoreCase, null, out result, Enums.DefaultFormats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object? result, EnumFormat format) => TryParseFlags(enumType, value, ignoreCase, null, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1) => TryParseFlags(enumType, value, ignoreCase, null, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlags(enumType, value, ignoreCase, null, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The parameter <paramref name="ignoreCase"/> specifies whether the operation is case-insensitive.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="ignoreCase">Indicates if the operation is case-insensitive.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, out object? result, params EnumFormat[]? formats) => TryParseFlags(enumType, value, ignoreCase, null, out result, formats);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum member names or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, string? delimiter, out object? result) => TryParseFlags(enumType, value, false, delimiter, out result, null);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum format.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format">The parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, string? delimiter, out object? result, EnumFormat format) => TryParseFlags(enumType, value, false, delimiter, out result, format);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/> or <paramref name="format1"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, string? delimiter, out object? result, EnumFormat format0, EnumFormat format1) => TryParseFlags(enumType, value, false, delimiter, out result, format0, format1);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats.
-        /// The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="format0">The first parsing enum format.</param>
-        /// <param name="format1">The second parsing enum format.</param>
-        /// <param name="format2">The third parsing enum format.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="format0"/>, <paramref name="format1"/>, or <paramref name="format2"/> is an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, string? delimiter, out object? result, EnumFormat format0, EnumFormat format1, EnumFormat format2) => TryParseFlags(enumType, value, false, delimiter, out result, format0, format1, format2);
-
-        /// <summary>
-        /// Tries to convert the string representation of one or more members or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>
-        /// using the specified parsing enum formats. The return value indicates whether the conversion succeeded.
-        /// </summary>
-        /// <param name="enumType">The enum type.</param>
-        /// <param name="value">The enum members or values' string representation.</param>
-        /// <param name="delimiter">The delimiter used to separate individual flags.</param>
-        /// <param name="result">If the conversion succeeds this contains a value of type <paramref name="enumType"/> that is represented by <paramref name="value"/>.</param>
-        /// <param name="formats">The parsing enum formats.</param>
-        /// <returns>Indication whether the conversion succeeded.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="enumType"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException"><paramref name="enumType"/> is not an enum type
-        /// -or-
-        /// <paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use overload with delimiter and ignoreCase parameters")]
-        public static bool TryParseFlags(Type enumType, string value, string? delimiter, out object? result, params EnumFormat[]? formats) => TryParseFlags(enumType, value, false, delimiter, out result, formats);
 
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> delimited with <paramref name="delimiter"/> to its respective value of type <paramref name="enumType"/>.
@@ -4218,7 +2658,7 @@ namespace EnumsNET
         /// <paramref name="formats"/> contains an invalid value.</exception>
         public static bool TryParseFlags(Type enumType, string value, bool ignoreCase, string? delimiter, out object? result, params EnumFormat[]? formats) => Enums.GetCache(enumType).TryParseFlags(value, ignoreCase, delimiter, out result, formats?.Length > 0 ? ValueCollection.Create(formats) : Enums.DefaultFormats);
 
-#if SPAN
+#if SPAN_PARSE
         /// <summary>
         /// Tries to convert the string representation of one or more member names or values of <paramref name="enumType"/> to its respective value of type <paramref name="enumType"/>.
         /// The return value indicates whether the conversion succeeded.

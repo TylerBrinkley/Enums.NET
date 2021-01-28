@@ -59,6 +59,10 @@ namespace EnumsNET
         public abstract string AsString(string format);
         public abstract string? AsString(EnumFormat format);
         public abstract string? AsString(ValueCollection<EnumFormat> formats);
+#if SPAN
+        public abstract bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
+        public abstract bool TryFormat(Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
+#endif
         public abstract byte ToByte();
         public abstract short ToInt16();
         public abstract int ToInt32();
@@ -131,6 +135,12 @@ namespace EnumsNET
 
         public override string? AsString(ValueCollection<EnumFormat> formats) => EnumCache.AsStringInternal(Value, this, formats);
 
+#if SPAN
+        public override bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => EnumCache.TryFormatInternal(Value, this, destination, out charsWritten, format);
+
+        public override bool TryFormat(Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats) => EnumCache.TryFormatInternal(Value, this, destination, out charsWritten, formats);
+#endif
+
         public override int GetHashCode() => Value.GetHashCode();
 
         public override bool IsValidFlagCombination() => EnumCache.IsValidFlagCombination(Value);
@@ -148,7 +158,7 @@ namespace EnumsNET
         public override int CompareTo(EnumMemberInternal? other) => other != null ? Value.CompareTo(UnsafeUtility.As<EnumMemberInternal<TUnderlying, TUnderlyingOperations>>(other).Value) : 1;
 
         // Implemented so that Distinct will work
-        public bool Equals(EnumMemberInternal<TUnderlying, TUnderlyingOperations> other) => Value.Equals(other.Value);
+        public bool Equals(EnumMemberInternal<TUnderlying, TUnderlyingOperations>? other) => other != null && Value.Equals(other.Value);
 
 #if ICONVERTIBLE
         public override sbyte ToSByte() => Value.ToSByte(null);

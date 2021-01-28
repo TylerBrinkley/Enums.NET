@@ -14,8 +14,10 @@ namespace EnumsNET.MemoryUsageTest
             using (new OperationTimer("All Available Enums Caching Performance"))
             {
                 foreach (var genericMethod in genericMethods)
+                //foreach (var enumType in enumTypes)
                 {
                     genericMethod.Invoke(null, null);
+                    //Enums.GetUnderlyingType(enumType);
                 }
             }
             Console.WriteLine(enumTypes.Count);

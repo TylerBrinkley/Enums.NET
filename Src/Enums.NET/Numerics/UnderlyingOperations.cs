@@ -25,9 +25,8 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 
-#if SPAN
+#if SPAN_PARSE
 using ParseType = System.ReadOnlySpan<char>;
 #else
 using ParseType = System.String;
@@ -54,6 +53,11 @@ namespace EnumsNET.Numerics
         bool TryParseNative(ParseType s, out T result);
         string ToHexadecimalString(T value);
         string ToDecimalString(T value);
+#if SPAN
+        bool TryFormat(T value, Span<char> destination, out int charsWritten);
+        bool TryToHexadecimalString(T value, Span<char> destination, out int charsWritten);
+        bool TryToDecimalString(T value, Span<char> destination, out int charsWritten);
+#endif
         int BitCount(T value);
         bool InRange(T value, T minValue, T maxValue);
 
@@ -377,6 +381,84 @@ namespace EnumsNET.Numerics
         public string ToDecimalString(ulong value) => value.ToString();
         #endregion
 
+#if SPAN
+        #region TryFormat
+        public bool TryFormat(bool value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(byte value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(char value, Span<char> destination, out int charsWritten)
+        {
+            if (destination.Length >= 1)
+            {
+                destination[0] = value;
+                charsWritten = 1;
+                return true;
+            }
+            charsWritten = 0;
+            return false;
+        }
+
+        public bool TryFormat(short value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(int value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(long value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(sbyte value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(ushort value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(uint value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryFormat(ulong value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+        #endregion
+
+        #region TryToHexadecimalString
+        public bool TryToHexadecimalString(bool value, Span<char> destination, out int charsWritten) => Convert.ToByte(value).TryFormat(destination, out charsWritten, "X2");
+
+        public bool TryToHexadecimalString(byte value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X2");
+
+        public bool TryToHexadecimalString(char value, Span<char> destination, out int charsWritten) => ((ushort)value).TryFormat(destination, out charsWritten, "X4");
+
+        public bool TryToHexadecimalString(short value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X4");
+
+        public bool TryToHexadecimalString(int value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X8");
+
+        public bool TryToHexadecimalString(long value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X16");
+
+        public bool TryToHexadecimalString(sbyte value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X2");
+
+        public bool TryToHexadecimalString(ushort value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X4");
+
+        public bool TryToHexadecimalString(uint value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X8");
+
+        public bool TryToHexadecimalString(ulong value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten, "X16");
+        #endregion
+
+        #region TryToDecimalString
+        public bool TryToDecimalString(bool value, Span<char> destination, out int charsWritten) => Convert.ToByte(value).TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(byte value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(char value, Span<char> destination, out int charsWritten) => ((ushort)value).TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(short value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(int value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(long value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(sbyte value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(ushort value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(uint value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+
+        public bool TryToDecimalString(ulong value, Span<char> destination, out int charsWritten) => value.TryFormat(destination, out charsWritten);
+        #endregion
+#endif
+
         #region TryParseNumber
         public bool TryParseNumber(ParseType s, NumberStyles style, IFormatProvider provider, out bool result)
         {
@@ -416,7 +498,7 @@ namespace EnumsNET.Numerics
 
         public bool TryParseNative(ParseType s, out char result)
         {
-#if SPAN
+#if SPAN_PARSE
             if (s.Length == 1)
             {
                 result = s[0];

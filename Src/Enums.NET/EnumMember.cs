@@ -114,35 +114,35 @@ namespace EnumsNET
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
         public string? AsString(params EnumFormat[]? formats) => formats?.Length > 0 ? Member.AsString(ValueCollection.Create(formats)) : Member.Name;
 
+#if SPAN
         /// <summary>
-        /// Converts the enum member to its string representation using the specified <paramref name="format"/>.
+        /// Tries to format the value of the enum member into the provided span of characters.
         /// </summary>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
+        public bool TryFormat(Span<char> destination, out int charsWritten) => EnumCache.TryWriteNonNullableStringToSpan(Member.Name, destination, out charsWritten);
+
+        /// <summary>
+        /// Tries to format the value of the enum member into the provided span of characters.
+        /// </summary>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
         /// <param name="format">The output format to use.</param>
-        /// <returns>A string representation of the enum member.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="format"/> is <c>null</c>.</exception>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
         /// <exception cref="FormatException"><paramref name="format"/> is an invalid value.</exception>
-        [Obsolete("Use AsString instead")]
-        public string Format(string format)
-        {
-            Preconditions.NotNull(format, nameof(format));
-
-            return Member.AsString(format);
-        }
+        public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => format.Length == 0 ? TryFormat(destination, out charsWritten) : Member.TryFormat(destination, out charsWritten, format);
 
         /// <summary>
-        /// Converts the enum member to its string representation using the specified <paramref name="formats"/>.
+        /// Tries to format the value of the enum member into the provided span of characters.
         /// </summary>
+        /// <param name="destination">When this method returns, value formatted as a span of characters.</param>
+        /// <param name="charsWritten">When this method returns, the number of characters that were written in <paramref name="destination"/>.</param>
         /// <param name="formats">The output formats to use.</param>
-        /// <returns>A string representation of the enum member.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="formats"/> is <c>null</c>.</exception>
+        /// <returns><c>true</c> if the formatting was successful; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentException"><paramref name="formats"/> contains an invalid value.</exception>
-        [Obsolete("Use AsString instead")]
-        public string? Format(params EnumFormat[] formats)
-        {
-            Preconditions.NotNull(formats, nameof(formats));
-
-            return AsString(formats);
-        }
+        public bool TryFormat(Span<char> destination, out int charsWritten, params EnumFormat[]? formats) => formats?.Length > 0 ? Member.TryFormat(destination, out charsWritten, ValueCollection.Create(formats)) : TryFormat(destination, out charsWritten);
+#endif
 
         /// <summary>
         /// Retrieves the enum member's underlying integral value.
@@ -319,7 +319,7 @@ namespace EnumsNET
         /// </summary>
         /// <param name="other">The other <see cref="EnumMember{TEnum}"/>.</param>
         /// <returns>Indication whether the specified <see cref="EnumMember{TEnum}"/> is equal to the current <see cref="EnumMember{TEnum}"/>.</returns>
-        public bool Equals(EnumMember<TEnum> other) => ReferenceEquals(this, other);
+        public bool Equals(EnumMember<TEnum>? other) => ReferenceEquals(this, other);
 
         private protected override object GetValue() => Value!;
 

@@ -60,13 +60,13 @@ namespace EnumsNET
         public int Count => _items.Length;
 
         public T Current => (uint)_index >= (uint)_items.Length
-            ? default
+            ? default!
             : _index switch
         {
             0 => _item1,
             1 => _item2,
             2 => _item3,
-            _ => _items![_index]
+            _ => _items[_index]
         };
 
         public ValueCollection(T item1)

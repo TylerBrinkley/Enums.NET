@@ -26,6 +26,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnumsNET.Utilities;
 
 namespace EnumsNET
 {
@@ -34,6 +35,8 @@ namespace EnumsNET
     /// </summary>
     public sealed class AttributeCollection : IList<Attribute>, IReadOnlyList<Attribute>
     {
+        internal static readonly AttributeCollection Empty = new AttributeCollection(ArrayHelper.Empty<Attribute>());
+
         private readonly Attribute[] _attributes;
 
         /// <summary>

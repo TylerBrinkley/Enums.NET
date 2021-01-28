@@ -57,51 +57,131 @@ namespace EnumsNET.Tests
         [Test]
         public void FormatFlags_ReturnsValidString_WhenUsingValidValue()
         {
-            Assert.AreEqual("Black", FlagEnums.FormatFlags(ColorFlagEnum.Black));
-            Assert.AreEqual("Red", FlagEnums.FormatFlags(ColorFlagEnum.Red));
-            Assert.AreEqual("Green", FlagEnums.FormatFlags(ColorFlagEnum.Green));
-            Assert.AreEqual("Blue", FlagEnums.FormatFlags(ColorFlagEnum.Blue));
-            Assert.AreEqual("Red, Green", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green));
-            Assert.AreEqual("Red, Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue));
-            Assert.AreEqual("Green, Blue", FlagEnums.FormatFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue));
-            Assert.AreEqual("Red, Green, Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue));
-            Assert.AreEqual("UltraViolet", FlagEnums.FormatFlags(ColorFlagEnum.UltraViolet));
-            Assert.AreEqual("All", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet));
+            AssertTryFormatFlags(ColorFlagEnum.Black, "Black");
+            AssertTryFormatFlags(ColorFlagEnum.Red, "Red");
+            AssertTryFormatFlags(ColorFlagEnum.Green, "Green");
+            AssertTryFormatFlags(ColorFlagEnum.Blue, "Blue");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green, "Red, Green");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue, "Red, Blue");
+            AssertTryFormatFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue, "Green, Blue");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, "Red, Green, Blue");
+            AssertTryFormatFlags(ColorFlagEnum.UltraViolet, "UltraViolet");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, "All");
+
+            void AssertTryFormatFlags(ColorFlagEnum value, string expected)
+            {
+                Assert.AreEqual(expected, FlagEnums.FormatFlags(value));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(FlagEnums.TryFormatFlags(value, dest, out var charsWritten));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(FlagEnums.TryFormatFlags(value, dest, out charsWritten));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]
         public void FormatFlags_ReturnsValidString_WhenUsingValidValueWithCustomDelimiter()
         {
-            Assert.AreEqual("Black", FlagEnums.FormatFlags(ColorFlagEnum.Black, " | "));
-            Assert.AreEqual("Red", FlagEnums.FormatFlags(ColorFlagEnum.Red, " | "));
-            Assert.AreEqual("Green", FlagEnums.FormatFlags(ColorFlagEnum.Green, " | "));
-            Assert.AreEqual("Blue", FlagEnums.FormatFlags(ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("Red | Green", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green, " | "));
-            Assert.AreEqual("Red | Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("Green | Blue", FlagEnums.FormatFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("Red | Green | Blue", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, " | "));
-            Assert.AreEqual("UltraViolet", FlagEnums.FormatFlags(ColorFlagEnum.UltraViolet, " | "));
-            Assert.AreEqual("All", FlagEnums.FormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, " | "));
+            AssertTryFormatFlags(ColorFlagEnum.Black, " | ", "Black");
+            AssertTryFormatFlags(ColorFlagEnum.Red, " | ", "Red");
+            AssertTryFormatFlags(ColorFlagEnum.Green, " | ", "Green");
+            AssertTryFormatFlags(ColorFlagEnum.Blue, " | ", "Blue");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green, " | ", "Red | Green");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Blue, " | ", "Red | Blue");
+            AssertTryFormatFlags(ColorFlagEnum.Green | ColorFlagEnum.Blue, " | ", "Green | Blue");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue, " | ", "Red | Green | Blue");
+            AssertTryFormatFlags(ColorFlagEnum.UltraViolet, " | ", "UltraViolet");
+            AssertTryFormatFlags(ColorFlagEnum.Red | ColorFlagEnum.Green | ColorFlagEnum.Blue | ColorFlagEnum.UltraViolet, " | ", "All");
+
+            void AssertTryFormatFlags(ColorFlagEnum value, string delimiter, string expected)
+            {
+                Assert.AreEqual(expected, FlagEnums.FormatFlags(value, delimiter));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(FlagEnums.TryFormatFlags(value, dest, out var charsWritten, delimiter));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(FlagEnums.TryFormatFlags(value, dest, out charsWritten, delimiter));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]
         public void FormatFlags_ReturnsValidString_WhenUsingInvalidValue()
         {
-            Assert.AreEqual("16", FlagEnums.FormatFlags((ColorFlagEnum)16));
+            AssertTryFormatFlags((ColorFlagEnum)16, "16");
+
+            void AssertTryFormatFlags(ColorFlagEnum value, string expected)
+            {
+                Assert.AreEqual(expected, FlagEnums.FormatFlags(value));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(FlagEnums.TryFormatFlags(value, dest, out var charsWritten));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(FlagEnums.TryFormatFlags(value, dest, out charsWritten));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]
         public void FormatFlags_UsesDefaultDelimiter_WhenUsingValidValueWithNullDelimiter()
         {
             var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
-            Assert.AreEqual(FlagEnums.FormatFlags(value), FlagEnums.FormatFlags(value, (string)null));
+            AssertTryFormatFlags(value, FlagEnums.FormatFlags(value));
+
+            void AssertTryFormatFlags(ColorFlagEnum value, string expected)
+            {
+                Assert.AreEqual(expected, FlagEnums.FormatFlags(value, null));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(FlagEnums.TryFormatFlags(value, dest, out var charsWritten, (string)null));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(FlagEnums.TryFormatFlags(value, dest, out charsWritten, (string)null));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]
         public void FormatFlags_UsesDefaultDelimiter_WhenUsingValidValueWithEmptyDelimiter()
         {
             var value = ColorFlagEnum.Red | ColorFlagEnum.Green;
-            Assert.AreEqual(FlagEnums.FormatFlags(value), FlagEnums.FormatFlags(value, string.Empty));
+            AssertTryFormatFlags(value, FlagEnums.FormatFlags(value));
+
+            void AssertTryFormatFlags(ColorFlagEnum value, string expected)
+            {
+                Assert.AreEqual(expected, FlagEnums.FormatFlags(value, string.Empty));
+#if SPAN
+                var dest = new char[expected.Length];
+                Assert.True(FlagEnums.TryFormatFlags(value, dest, out var charsWritten, string.Empty));
+                Assert.AreEqual(expected.Length, charsWritten);
+                Assert.AreEqual(expected, new string(dest));
+
+                dest = new char[expected.Length - 1];
+                Assert.False(FlagEnums.TryFormatFlags(value, dest, out charsWritten, string.Empty));
+                Assert.AreEqual(0, charsWritten);
+                CollectionAssert.AreEqual(new char[dest.Length], dest);
+#endif
+            }
         }
 
         [Test]

@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net461;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>net461;netcoreapp3.1;net5.0</TargetFrameworks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEnum" Version="1.5.3" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />

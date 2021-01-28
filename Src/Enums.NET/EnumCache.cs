@@ -40,7 +40,7 @@ using System.Threading;
 using EnumsNET.Numerics;
 using EnumsNET.Utilities;
 
-#if SPAN
+#if SPAN_PARSE
 using ParseType = System.ReadOnlySpan<char>;
 #else
 using ParseType = System.String;
@@ -57,6 +57,7 @@ namespace EnumsNET
             return value.Length > 0 && (((firstChar = value[0]) - (uint)'0') <= 9U || firstChar == '-' || firstChar == '+');
         }
 
+        public readonly Type EnumType;
         public readonly Type UnderlyingType;
         public readonly TypeCode TypeCode;
         public readonly bool IsFlagEnum;
@@ -66,8 +67,11 @@ namespace EnumsNET
         private IReadOnlyList<EnumMember>? _members;
         private EnumComparer? _enumComparer;
 
-        protected EnumCache(Type underlyingType, bool isFlagEnum, bool hasDuplicateValues)
+        internal EnumCache? Next;
+
+        protected EnumCache(Type enumType, Type underlyingType, bool isFlagEnum, bool hasDuplicateValues)
         {
+            EnumType = enumType;
             UnderlyingType = underlyingType;
             TypeCode = underlyingType.GetTypeCode();
             IsFlagEnum = isFlagEnum;
@@ -220,43 +224,61 @@ namespace EnumsNET
         public abstract uint ToUInt32(object value);
         public abstract ulong ToUInt64(ref byte value);
         public abstract ulong ToUInt64(object value);
-        public abstract bool TryParse(
 #if SPAN
+        public abstract bool TryFormat(ref byte value, Span<char> destination, out int charsWritten);
+        public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten);
+        public abstract bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
+        public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
+        public abstract bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
+        public abstract bool TryFormat(object value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats);
+        public abstract bool TryFormatFlags(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
+        public abstract bool TryFormatFlags(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryWriteNonNullableStringToSpan(string str, Span<char> destination, out int charsWritten)
+        {
+            var success = str.AsSpan().TryCopyTo(destination);
+            charsWritten = success ? str.Length : 0;
+            return success;
+        }
+#endif
+        public abstract bool TryParse(
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, ref byte result, ValueCollection<EnumFormat> formats);
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, out object? result, ValueCollection<EnumFormat> formats);
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, ref byte result);
         public abstract bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, out object? result);
         public abstract bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
 #endif
             value, bool ignoreCase, string? delimiter, ref byte result, ValueCollection<EnumFormat> formats);
         public abstract bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -282,7 +304,6 @@ namespace EnumsNET
         internal readonly IEnumBridge<TUnderlying, TUnderlyingOperations> EnumBridge;
         private readonly bool _isContiguous;
         private readonly object? _customValidator;
-        private protected readonly string _enumTypeName;
         private readonly TUnderlying _allFlags;
         private protected readonly TUnderlying _maxDefined;
         private protected readonly TUnderlying _minDefined;
@@ -292,9 +313,8 @@ namespace EnumsNET
         private EnumMemberParser?[] _enumMemberParsers = ArrayHelper.Empty<EnumMemberParser>();
 
         protected EnumCache(Type enumType, IEnumBridge<TUnderlying, TUnderlyingOperations> enumBridge, bool isFlagEnum, EnumMemberInternal<TUnderlying, TUnderlyingOperations>[] members, EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[] buckets, TUnderlying allFlags, int distinctCount, bool isContiguous, object? customValidator)
-            : base(typeof(TUnderlying), isFlagEnum, distinctCount != members.Length)
+            : base(enumType, typeof(TUnderlying), isFlagEnum, distinctCount != members.Length)
         {
-            _enumTypeName = enumType.Name;
             EnumBridge = enumBridge;
             _customValidator = customValidator;
             _members = members;
@@ -441,7 +461,7 @@ namespace EnumsNET
                 TypeCode.Int64 => ToObject((long)value),
                 TypeCode.UInt64 => ToObject((ulong)value),
                 TypeCode.String => ParseInternal((string)value, false),
-                _ => throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String."),
+                _ => throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String."),
             };
         }
 
@@ -491,7 +511,7 @@ namespace EnumsNET
                     Validate(result, nameof(value), validation);
                     return result;
             }
-            throw new ArgumentException($"value is not type {_enumTypeName}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String.");
+            throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String.");
         }
 
         public TUnderlying ToObject(long value)
@@ -718,19 +738,19 @@ namespace EnumsNET
         {
             if (!IsValid(value, validation))
             {
-                throw new ArgumentException($"invalid value of {AsString(value)} for {_enumTypeName}", paramName);
+                throw new ArgumentException($"invalid value of {AsString(value)} for {EnumType}", paramName);
             }
         }
 
         public sealed override string AsString(ref byte value, string format) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, format);
 
-        public sealed override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
-
-        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, formats);
-
         public sealed override string AsString(object value, string format) => AsStringInternal(ToObject(value), null, format);
 
+        public sealed override string? AsString(ref byte value, EnumFormat format) => AsString(UnsafeUtility.As<byte, TUnderlying>(ref value), format);
+
         public sealed override string? AsString(object value, EnumFormat format) => AsString(ToObject(value), format);
+
+        public sealed override string? AsString(ref byte value, ValueCollection<EnumFormat> formats) => AsStringInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, formats);
 
         public sealed override string? AsString(object value, ValueCollection<EnumFormat> formats) => AsStringInternal(ToObject(value), null, formats);
 
@@ -817,6 +837,105 @@ namespace EnumsNET
             }
             return null;
         }
+
+#if SPAN
+        public sealed override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => TryFormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, destination, out charsWritten, format);
+
+        public sealed override bool TryFormat(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format) => TryFormatInternal(ToObject(value), null, destination, out charsWritten, format);
+
+        internal bool TryFormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format)
+        {
+            if (format.Length == 1)
+            {
+                switch (format[0])
+                {
+                    case 'G':
+                    case 'g':
+                        member ??= GetMember(value);
+                        if (IsFlagEnum)
+                        {
+                            return TryFormatFlagsInternal(value, member, destination, out charsWritten, default, Enums.DefaultFormats);
+                        }
+                        if (member != null)
+                        {
+                            return TryWriteNonNullableStringToSpan(member.Name, destination, out charsWritten);
+                        }
+                        return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+                    case 'F':
+                    case 'f':
+                        return TryFormatFlagsInternal(value, member ?? GetMember(value), destination, out charsWritten, default, Enums.DefaultFormats);
+                    case 'D':
+                    case 'd':
+                        return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+                    case 'X':
+                    case 'x':
+                        return default(TUnderlyingOperations).TryToHexadecimalString(value, destination, out charsWritten);
+                }
+            }
+            throw new FormatException("format string can be only \"G\", \"g\", \"X\", \"x\", \"F\", \"f\", \"D\" or \"d\".");
+        }
+
+        public sealed override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats) => TryFormatInternal(UnsafeUtility.As<byte, TUnderlying>(ref value), null, destination, out charsWritten, formats);
+
+        public sealed override bool TryFormat(object value, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats) => TryFormatInternal(ToObject(value), null, destination, out charsWritten, formats);
+
+        internal bool TryFormatInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, ValueCollection<EnumFormat> formats)
+        {
+            var isInitialized = member != null;
+            foreach (var format in formats)
+            {
+                var success = TryFormatInternal(value, ref isInitialized, ref member, destination, out charsWritten, format);
+                if (success != null)
+                {
+                    return success.GetValueOrDefault();
+                }
+            }
+            charsWritten = 0;
+            return true;
+        }
+
+        private bool? TryFormatInternal(TUnderlying value, ref bool isInitialized, ref EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, EnumFormat format)
+        {
+            switch (format)
+            {
+                case EnumFormat.DecimalValue:
+                    return default(TUnderlyingOperations).TryToDecimalString(value, destination, out charsWritten);
+                case EnumFormat.HexadecimalValue:
+                    return default(TUnderlyingOperations).TryToHexadecimalString(value, destination, out charsWritten);
+                case EnumFormat.UnderlyingValue:
+                    return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+                case EnumFormat.Name:
+                    var name = TryInitializeMember(value, ref isInitialized, ref member)?.Name;
+                    return TryWriteStringToSpan(name, destination, out charsWritten);
+                case EnumFormat.Description:
+                    var description = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DescriptionAttribute>()?.Description;
+                    return TryWriteStringToSpan(description, destination, out charsWritten);
+                case EnumFormat.EnumMemberValue:
+                    var enumMemberValue = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<EnumMemberAttribute>()?.Value;
+                    return TryWriteStringToSpan(enumMemberValue, destination, out charsWritten);
+                case EnumFormat.DisplayName:
+                    var displayName = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName();
+                    return TryWriteStringToSpan(displayName, destination, out charsWritten);
+                default:
+                    var v = Enums.CustomEnumMemberFormat(TryInitializeMember(value, ref isInitialized, ref member)?.EnumMember, format.Validate(nameof(format)));
+                    return TryWriteStringToSpan(v, destination, out charsWritten);
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool? TryWriteStringToSpan(string? str, Span<char> destination, out int charsWritten)
+        {
+            if (str == null)
+            {
+                charsWritten = 0;
+                return null;
+            }
+            else
+            {
+                return TryWriteNonNullableStringToSpan(str, destination, out charsWritten);
+            }
+        }
+#endif
 
         public sealed override object GetUnderlyingValue(object value) => ToObject(value);
 
@@ -941,11 +1060,11 @@ namespace EnumsNET
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
-            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+            throw new ArgumentException($"string was not recognized as being a member of {EnumType}", nameof(value));
         }
 
         public bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1099,6 +1218,94 @@ namespace EnumsNET
 
             return sb.ToString();
         }
+
+#if SPAN
+        public sealed override bool TryFormatFlags(ref byte value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats) => TryFormatFlags(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten, delimiter, formats);
+
+        public sealed override bool TryFormatFlags(object value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats) => TryFormatFlags(ToObject(value), destination, out charsWritten, delimiter, formats);
+
+        private bool TryFormatFlags(TUnderlying value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats) => TryFormatFlagsInternal(value, GetMember(value), destination, out charsWritten, delimiter, formats);
+
+        internal bool TryFormatFlagsInternal(TUnderlying value, EnumMemberInternal<TUnderlying, TUnderlyingOperations>? member, Span<char> destination, out int charsWritten, ReadOnlySpan<char> delimiter, ValueCollection<EnumFormat> formats)
+        {
+            if (member != null || value.Equals(default) || !IsValidFlagCombination(value))
+            {
+                return TryFormatInternal(value, member, destination, out charsWritten, formats);
+            }
+
+            if (delimiter.Length == 0)
+            {
+                delimiter = FlagEnums.DefaultDelimiter;
+            }
+
+            Span<char> temp = stackalloc char[Math.Min(destination.Length, 256)];
+            var length = Iterate(delimiter, temp, destination.Length);
+
+            if (length >= 0)
+            {
+                if (length <= temp.Length)
+                {
+                    temp[0..length].CopyTo(destination);
+                }
+                else
+                {
+                    var l = Iterate(delimiter, destination, destination.Length);
+                    Debug.Assert(length == l);
+                }
+                charsWritten = length;
+                return true;
+            }
+
+            charsWritten = 0;
+            return false;
+
+            int Iterate(ReadOnlySpan<char> delimiter, Span<char> dest, int maxLength)
+            {
+                var original = dest;
+                var length = 0;
+                TUnderlyingOperations operations = default;
+                var isLessThanZero = operations.LessThan(value, default);
+                for (var currentValue = operations.One; isLessThanZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
+                {
+                    if (HasAnyFlags(value, currentValue))
+                    {
+                        if (length > 0)
+                        {
+                            if (length + delimiter.Length > maxLength)
+                            {
+                                length = -1;
+                                break;
+                            }
+                            if (dest.Length < delimiter.Length)
+                            {
+                                dest = original;
+                            }
+                            delimiter.CopyTo(dest);
+                            dest = dest[delimiter.Length..];
+                            length += delimiter.Length;
+                        }
+                        if (TryFormatInternal(currentValue, null, dest, out var cw, formats))
+                        {
+                            dest = dest[cw..];
+                            length += cw;
+                        }
+                        else
+                        {
+                            dest = original;
+                            if (!TryFormatInternal(currentValue, null, dest, out cw, formats) || length + cw > maxLength)
+                            {
+                                length = -1;
+                                break;
+                            }
+                            dest = dest[cw..];
+                            length += cw;
+                        }
+                    }
+                }
+                return length;
+            }
+        }
+#endif
 
         public sealed override IReadOnlyList<object> GetFlags(object value) => GetFlags(ToObject(value)).GetNonGenericContainer();
 
@@ -1300,7 +1507,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1317,7 +1524,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParseFlags(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1333,7 +1540,7 @@ namespace EnumsNET
             return false;
         }
 
-#if SPAN
+#if SPAN_PARSE
         public bool TryParseFlags(ReadOnlySpan<char> value, bool ignoreCase, string? delimiter, out TUnderlying result, ValueCollection<EnumFormat> formats)
         {
             ReadOnlySpan<char> effectiveDelimiter;
@@ -1498,14 +1705,14 @@ namespace EnumsNET
                 var entries = _entries;
                 if (ignoreCase)
                 {
-#if SPAN
+#if SPAN_PARSE
                     var hashCode = string.GetHashCode(formattedValue, StringComparison.OrdinalIgnoreCase);
 #else
                     var hashCode = StringComparer.OrdinalIgnoreCase.GetHashCode(formattedValue);
 #endif
                     for (var i = _ordinalIgnoreCaseBuckets[hashCode & (_ordinalIgnoreCaseBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalIgnoreCaseNext)
                     {
-#if SPAN
+#if SPAN_PARSE
                         if (formattedValue.Equals(entries[i].FormattedValue, StringComparison.OrdinalIgnoreCase))
 #else
                         if (string.Equals(entries[i].FormattedValue, formattedValue, StringComparison.OrdinalIgnoreCase))
@@ -1518,14 +1725,14 @@ namespace EnumsNET
                 }
                 else
                 {
-#if SPAN
+#if SPAN_PARSE
                     var hashCode = string.GetHashCode(formattedValue, StringComparison.Ordinal);
 #else
                     var hashCode = formattedValue.GetHashCode();
 #endif
                     for (var i = _ordinalBuckets[hashCode & (_ordinalBuckets.Length - 1)] - 1; i >= 0; i = entries[i].OrdinalNext)
                     {
-#if SPAN
+#if SPAN_PARSE
                         if (formattedValue.Equals(entries[i].FormattedValue, StringComparison.Ordinal))
 #else
                         if (entries[i].FormattedValue == formattedValue)
@@ -1575,7 +1782,7 @@ namespace EnumsNET
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
-            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+            throw new ArgumentException($"string was not recognized as being a member of {EnumType}", nameof(value));
         }
 
         public sealed override void Parse(ParseType value, bool ignoreCase, ref byte result)
@@ -1599,11 +1806,11 @@ namespace EnumsNET
             {
                 throw new OverflowException("value is outside the underlying type's value range");
             }
-            throw new ArgumentException($"string was not recognized as being a member of {_enumTypeName}", nameof(value));
+            throw new ArgumentException($"string was not recognized as being a member of {EnumType}", nameof(value));
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1620,7 +1827,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1637,7 +1844,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1654,7 +1861,7 @@ namespace EnumsNET
         }
 
         public sealed override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1717,6 +1924,22 @@ namespace EnumsNET
             return member != null ? member.Name : value.ToString()!;
         }
 
+#if SPAN
+        public override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten) => TryFormat(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten);
+
+        public override bool TryFormat(object value, Span<char> destination, out int charsWritten) => TryFormat(ToObject(value), destination, out charsWritten);
+
+        public bool TryFormat(TUnderlying value, Span<char> destination, out int charsWritten)
+        {
+            var member = GetMember(value);
+            if (member != null)
+            {
+                return TryWriteNonNullableStringToSpan(member.Name, destination, out charsWritten);
+            }
+            return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+        }
+#endif
+
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
@@ -1769,6 +1992,22 @@ namespace EnumsNET
             return member != null ? member.Name : value.ToString()!;
         }
 
+#if SPAN
+        public override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten) => TryFormat(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten);
+
+        public override bool TryFormat(object value, Span<char> destination, out int charsWritten) => TryFormat(ToObject(value), destination, out charsWritten);
+
+        public bool TryFormat(TUnderlying value, Span<char> destination, out int charsWritten)
+        {
+            var member = GetMember(value);
+            if (member != null)
+            {
+                return TryWriteNonNullableStringToSpan(member.Name, destination, out charsWritten);
+            }
+            return default(TUnderlyingOperations).TryFormat(value, destination, out charsWritten);
+        }
+#endif
+
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
@@ -1796,6 +2035,14 @@ namespace EnumsNET
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public new string AsString(TUnderlying value) => FormatFlagsInternal(value, GetMember(value), null, Enums.DefaultFormats)!;
 
+#if SPAN
+        public override bool TryFormat(ref byte value, Span<char> destination, out int charsWritten) => TryFormat(UnsafeUtility.As<byte, TUnderlying>(ref value), destination, out charsWritten);
+
+        public override bool TryFormat(object value, Span<char> destination, out int charsWritten) => TryFormat(ToObject(value), destination, out charsWritten);
+
+        public bool TryFormat(TUnderlying value, Span<char> destination, out int charsWritten) => TryFormatFlagsInternal(value, GetMember(value), destination, out charsWritten, default, Enums.DefaultFormats);
+#endif
+
         public override bool IsDefined(ref byte value) => IsDefined(UnsafeUtility.As<byte, TUnderlying>(ref value));
 
         public override bool IsDefined(object value) => IsDefined(ToObject(value));
@@ -1817,7 +2064,7 @@ namespace EnumsNET
         public override object Parse(ParseType value, bool ignoreCase) => EnumBridge.ToObjectUnchecked(ParseFlagsInternal(value, ignoreCase, null, Enums.DefaultFormats));
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1834,7 +2081,7 @@ namespace EnumsNET
         }
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1851,7 +2098,7 @@ namespace EnumsNET
         }
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?
@@ -1868,7 +2115,7 @@ namespace EnumsNET
         }
 
         public override bool TryParse(
-#if SPAN
+#if SPAN_PARSE
             ReadOnlySpan<char>
 #else
             string?

@@ -3,7 +3,7 @@ using BenchmarkDotNet.Jobs;
 
 namespace EnumsNET.PerfTestConsole
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
     public class InRangeBenchmarks
     {
         [Benchmark]
