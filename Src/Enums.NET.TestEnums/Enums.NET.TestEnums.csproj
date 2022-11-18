@@ -7,6 +7,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
     <Folder Include="Properties\" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator></Generator>
     </EmbeddedResource>

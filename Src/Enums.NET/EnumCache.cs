@@ -1326,7 +1326,7 @@ namespace EnumsNET
             TUnderlyingOperations operations = default;
             var validValue = operations.And(value, _allFlags);
             var checkForZero = operations.LessThan(validValue, default) || operations.LessThan(operations.LeftShift(validValue, 1), validValue);
-            for (var currentValue = operations.One; checkForZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
+            for (var currentValue = operations.One; checkForZero ? !currentValue.Equals(default) : !operations.LessThan(validValue, currentValue); currentValue = operations.LeftShift(currentValue, 1))
             {
                 if (HasAnyFlags(validValue, currentValue))
                 {
