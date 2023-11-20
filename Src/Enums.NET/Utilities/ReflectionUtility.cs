@@ -27,6 +27,8 @@ using System;
 using System.Runtime.CompilerServices;
 #if !TYPE_REFLECTION || !GET_TYPE_CODE
 using System.Collections.Generic;
+using System.Linq;
+
 #endif
 #if !TYPE_REFLECTION
 using System.Reflection;
@@ -37,7 +39,7 @@ namespace EnumsNET
     internal static class ReflectionUtility
     {
 #if !TYPE_REFLECTION
-        public static IEnumerable<Attribute> GetCustomAttributes(this Type type, bool inherit) => type.GetTypeInfo().GetCustomAttributes(inherit);
+        public static IEnumerable<Attribute> GetCustomAttributes(this Type type, bool inherit) => type.GetTypeInfo().GetCustomAttributes(inherit).Cast<Attribute>();
 
         public static IEnumerable<Type> GetInterfaces(this Type type) => type.GetTypeInfo().ImplementedInterfaces;
 

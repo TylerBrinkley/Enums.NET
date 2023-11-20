@@ -137,7 +137,7 @@ namespace EnumsNET
 #if TYPE_REFLECTION
                         Attribute.GetCustomAttributes(field, false);
 #else
-                        field.GetCustomAttributes(false).ToArray();
+                        field.GetCustomAttributes(false).Cast<Attribute>().ToArray();
 #endif
                     var attributes = attributesArray.Length == 0 ? AttributeCollection.Empty : new AttributeCollection(attributesArray);
 
