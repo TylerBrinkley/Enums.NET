@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net46;net45;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>net46;net45;net6.0;net8.0</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests.TestEnums</RootNamespace>
   </PropertyGroup>
 
