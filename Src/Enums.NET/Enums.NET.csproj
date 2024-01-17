@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFrameworks>net45;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.1</FileVersion>
-    <VersionPrefix>4.0.1</VersionPrefix>
+    <FileVersion>4.0.2</FileVersion>
+    <VersionPrefix>4.0.2</VersionPrefix>
     <VersionSufix></VersionSufix>
-    <PackageVersion>4.0.1</PackageVersion>
+    <PackageVersion>4.0.2</PackageVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
     <Description>Enums.NET is a high-performance type-safe .NET enum utility library</Description>

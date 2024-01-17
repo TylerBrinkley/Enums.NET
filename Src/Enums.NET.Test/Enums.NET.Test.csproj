@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45</TargetFrameworks>
+    <TargetFrameworks>net7;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -26,7 +26,7 @@
     <Reference Include="..\SpecialtyEnums\netstandard1.0\SpecialtyEnums.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' OR '$(TargetFramework)' == 'netcoreapp2.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7' OR '$(TargetFramework)' == 'netcoreapp2.0'">
     <Reference Include="..\SpecialtyEnums\netcoreapp2.0\SpecialtyEnums.dll" />
   </ItemGroup>
   
@@ -38,7 +38,7 @@
     <AssemblyTitle>Enums.NET Test .NET 4.5</AssemblyTitle>
     <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7'">
     <AssemblyTitle>Enums.NET Test .NET Core App 3.0</AssemblyTitle>
     <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS;SPAN</DefineConstants>
   </PropertyGroup>

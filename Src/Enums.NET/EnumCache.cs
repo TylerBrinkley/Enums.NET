@@ -1203,10 +1203,11 @@ namespace EnumsNET
 
             var sb = new StringBuilder();
             TUnderlyingOperations operations = default;
-            var isLessThanZero = operations.LessThan(value, default);
-            for (var currentValue = operations.One; isLessThanZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
+            var validValue = operations.And(value, _allFlags);
+            var checkForZero = operations.LessThan(validValue, default) || operations.LessThan(operations.LeftShift(validValue, 1), validValue);
+            for (var currentValue = operations.One; checkForZero ? !currentValue.Equals(default) : !operations.LessThan(validValue, currentValue); currentValue = operations.LeftShift(currentValue, 1))
             {
-                if (HasAnyFlags(value, currentValue))
+                if (HasAnyFlags(validValue, currentValue))
                 {
                     if (sb.Length > 0)
                     {
@@ -1264,8 +1265,9 @@ namespace EnumsNET
                 var original = dest;
                 var length = 0;
                 TUnderlyingOperations operations = default;
-                var isLessThanZero = operations.LessThan(value, default);
-                for (var currentValue = operations.One; isLessThanZero ? !currentValue.Equals(default) : !operations.LessThan(value, currentValue); currentValue = operations.LeftShift(currentValue, 1))
+                var validValue = operations.And(value, _allFlags);
+                var checkForZero = operations.LessThan(validValue, default) || operations.LessThan(operations.LeftShift(validValue, 1), validValue);
+                for (var currentValue = operations.One; checkForZero ? !currentValue.Equals(default) : !operations.LessThan(validValue, currentValue); currentValue = operations.LeftShift(currentValue, 1))
                 {
                     if (HasAnyFlags(value, currentValue))
                     {
