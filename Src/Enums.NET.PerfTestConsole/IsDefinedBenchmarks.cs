@@ -27,134 +27,133 @@ using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
-namespace EnumsNET.Tests.Benchmarks
+namespace EnumsNET.Tests.Benchmarks;
+
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class IsDefinedBenchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class IsDefinedBenchmarks
+    private readonly DayOfWeek[] _values;
+    private readonly DayOfWeek[] _undefinedValues;
+    private readonly Type _enumType;
+
+    public IsDefinedBenchmarks()
     {
-        private readonly DayOfWeek[] _values;
-        private readonly DayOfWeek[] _undefinedValues;
-        private readonly Type _enumType;
-
-        public IsDefinedBenchmarks()
+        _enumType = typeof(DayOfWeek);
+        _values = (DayOfWeek[])Enum.GetValues(_enumType);
+        _undefinedValues = new DayOfWeek[7];
+        for (var i = 1; i <= _undefinedValues.Length; ++i)
         {
-            _enumType = typeof(DayOfWeek);
-            _values = (DayOfWeek[])Enum.GetValues(_enumType);
-            _undefinedValues = new DayOfWeek[7];
-            for (var i = 1; i <= _undefinedValues.Length; ++i)
-            {
-                _undefinedValues[i - 1] = DayOfWeek.Saturday + i;
-            }
+            _undefinedValues[i - 1] = DayOfWeek.Saturday + i;
         }
+    }
 
-        [Benchmark(Baseline = true)]
-        public bool Enum_IsDefined_True()
+    [Benchmark(Baseline = true)]
+    public bool Enum_IsDefined_True()
+    {
+        var result = false;
+        foreach (var value in _values)
         {
-            var result = false;
-            foreach (var value in _values)
-            {
-                result |= Enum.IsDefined(_enumType, value);
-            }
-            return result;
+            result |= Enum.IsDefined(_enumType, value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool Enum_IsDefined_False()
+    [Benchmark]
+    public bool Enum_IsDefined_False()
+    {
+        var result = false;
+        foreach (var value in _undefinedValues)
         {
-            var result = false;
-            foreach (var value in _undefinedValues)
-            {
-                result |= Enum.IsDefined(_enumType, value);
-            }
-            return result;
+            result |= Enum.IsDefined(_enumType, value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool NonGenericEnums_IsDefined_True()
+    [Benchmark]
+    public bool NonGenericEnums_IsDefined_True()
+    {
+        var result = false;
+        foreach (var value in _values)
         {
-            var result = false;
-            foreach (var value in _values)
-            {
-                result |= Enums.IsDefined(_enumType, value);
-            }
-            return result;
+            result |= Enums.IsDefined(_enumType, value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool NonGenericEnums_IsDefined_False()
+    [Benchmark]
+    public bool NonGenericEnums_IsDefined_False()
+    {
+        var result = false;
+        foreach (var value in _undefinedValues)
         {
-            var result = false;
-            foreach (var value in _undefinedValues)
-            {
-                result |= Enums.IsDefined(_enumType, value);
-            }
-            return result;
+            result |= Enums.IsDefined(_enumType, value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool Enums_IsDefined_True()
+    [Benchmark]
+    public bool Enums_IsDefined_True()
+    {
+        var result = false;
+        foreach (var value in _values)
         {
-            var result = false;
-            foreach (var value in _values)
-            {
-                result |= value.IsDefined();
-            }
-            return result;
+            result |= value.IsDefined();
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool Enums_IsDefined_False()
+    [Benchmark]
+    public bool Enums_IsDefined_False()
+    {
+        var result = false;
+        foreach (var value in _undefinedValues)
         {
-            var result = false;
-            foreach (var value in _undefinedValues)
-            {
-                result |= value.IsDefined();
-            }
-            return result;
+            result |= value.IsDefined();
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool FastEnum_IsDefined_True()
+    [Benchmark]
+    public bool FastEnum_IsDefined_True()
+    {
+        var result = false;
+        foreach (var value in _values)
         {
-            var result = false;
-            foreach (var value in _values)
-            {
-                result |= FastEnumUtility.FastEnum.IsDefined(value);
-            }
-            return result;
+            result |= FastEnumUtility.FastEnum.IsDefined(value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool FastEnum_IsDefined_False()
+    [Benchmark]
+    public bool FastEnum_IsDefined_False()
+    {
+        var result = false;
+        foreach (var value in _undefinedValues)
         {
-            var result = false;
-            foreach (var value in _undefinedValues)
-            {
-                result |= FastEnumUtility.FastEnum.IsDefined(value);
-            }
-            return result;
+            result |= FastEnumUtility.FastEnum.IsDefined(value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool Enums_IsValid_True()
+    [Benchmark]
+    public bool Enums_IsValid_True()
+    {
+        var result = false;
+        foreach (var value in _values)
         {
-            var result = false;
-            foreach (var value in _values)
-            {
-                result |= value.IsValid();
-            }
-            return result;
+            result |= value.IsValid();
         }
+        return result;
+    }
 
-        [Benchmark]
-        public bool Enums_IsValid_False()
+    [Benchmark]
+    public bool Enums_IsValid_False()
+    {
+        var result = false;
+        foreach (var value in _undefinedValues)
         {
-            var result = false;
-            foreach (var value in _undefinedValues)
-            {
-                result |= value.IsValid();
-            }
-            return result;
+            result |= value.IsValid();
         }
+        return result;
     }
 }

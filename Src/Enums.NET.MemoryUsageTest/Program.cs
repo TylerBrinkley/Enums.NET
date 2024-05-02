@@ -1,30 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using EnumsNET;
+using EnumsNET.MemoryUsageTest;
+
+var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
+var methodInfo = typeof(Enums).GetMethod("GetUnderlyingType", []);
+var genericMethods = enumTypes.Select(enumType => methodInfo.MakeGenericMethod(enumType)).ToList();
+using (new OperationTimer("All Available Enums Caching Performance"))
+{
+    foreach (var genericMethod in genericMethods)
+    //foreach (var enumType in enumTypes)
+    {
+        genericMethod.Invoke(null, null);
+        //Enums.GetUnderlyingType(enumType);
+    }
+}
+Console.WriteLine(enumTypes.Count);
+Console.ReadLine();
 
 namespace EnumsNET.MemoryUsageTest
 {
-    static class Program
-    {
-        static void Main()
-        {
-            var enumTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes()).Where(type => type.IsEnum && !type.IsGenericType).ToList();
-            var methodInfo = typeof(Enums).GetMethod("GetUnderlyingType", Array.Empty<Type>());
-            var genericMethods = enumTypes.Select(enumType => methodInfo.MakeGenericMethod(enumType)).ToList();
-            using (new OperationTimer("All Available Enums Caching Performance"))
-            {
-                foreach (var genericMethod in genericMethods)
-                //foreach (var enumType in enumTypes)
-                {
-                    genericMethod.Invoke(null, null);
-                    //Enums.GetUnderlyingType(enumType);
-                }
-            }
-            Console.WriteLine(enumTypes.Count);
-            Console.ReadLine();
-        }
-    }
-
     // This class is useful for doing operation performance timing
     internal sealed class OperationTimer : IDisposable
     {

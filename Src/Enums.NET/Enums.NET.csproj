@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;netstandard1.1;netstandard1.0</TargetFrameworks>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.2</FileVersion>
-    <VersionPrefix>4.0.2</VersionPrefix>
+    <TargetFrameworks>net461;net7;netcoreapp3.0;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0</FileVersion>
+    <VersionPrefix>5.0.0</VersionPrefix>
     <VersionSufix></VersionSufix>
-    <PackageVersion>4.0.2</PackageVersion>
+    <PackageVersion>5.0.0</PackageVersion>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Authors>Tyler Brinkley</Authors>
     <Description>Enums.NET is a high-performance type-safe .NET enum utility library</Description>
@@ -23,59 +23,47 @@
     <SignAssembly>False</SignAssembly>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyFile>C:\Development\Releases\enumsnet.snk</AssemblyOriginatorKeyFile>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0' AND $(TargetFramework) != 'net7'">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1' OR '$(TargetFramework)' == 'netstandard1.0'">
-    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard1.1'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <AssemblyTitle>Enums.NET .NET 4.5</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+    <AssemblyTitle>Enums.NET .NET 4.6.1</AssemblyTitle>
+    <DefineConstants></DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7'">
+    <AssemblyTitle>Enums.NET .NET 7</AssemblyTitle>
+    <DefineConstants>NULLABLE_ATTRIBUTES;SPAN;SPAN_PARSE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AssemblyTitle>Enums.NET .NET Core 3.0</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN;SPAN_PARSE</DefineConstants>
+    <DefineConstants>NULLABLE_ATTRIBUTES;SPAN;SPAN_PARSE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <AssemblyTitle>Enums.NET .NET Standard 2.1</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION;NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
+    <DefineConstants>NULLABLE_ATTRIBUTES;SPAN</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <AssemblyTitle>Enums.NET .NET Standard 2.0</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-    <AssemblyTitle>Enums.NET .NET Standard 1.3</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;ARRAY_EMPTY</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
-    <AssemblyTitle>Enums.NET .NET Standard 1.1</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.0'">
-    <AssemblyTitle>Enums.NET .NET Standard 1.0</AssemblyTitle>
     <DefineConstants></DefineConstants>
   </PropertyGroup>
 </Project>

@@ -26,17 +26,16 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace EnumsNET
+namespace EnumsNET;
+
+internal static class Preconditions
 {
-    internal static class Preconditions
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NotNull(object? value, string paramName)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void NotNull(object? value, string paramName)
+        if (value == null)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(paramName);
-            }
+            throw new ArgumentNullException(paramName);
         }
     }
 }

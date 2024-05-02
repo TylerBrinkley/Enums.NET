@@ -1,6 +1,5 @@
-﻿namespace EnumsNET.Tests.TestEnums
+﻿namespace EnumsNET.Tests.TestEnums;
+
+public enum Int64Enum : long
 {
-    public enum Int64Enum : long
-    {
-    }
 }

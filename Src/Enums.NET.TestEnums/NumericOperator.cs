@@ -16,51 +16,50 @@
 using System;
 using System.ComponentModel;
 
-namespace EnumsNET.Tests.TestEnums
+namespace EnumsNET.Tests.TestEnums;
+
+// Duplicate example
+public enum NumericOperator
 {
-    // Duplicate example
-    public enum NumericOperator
-    {
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        Equals = 0,
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        NotEquals,
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        GreaterThan,
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        LessThan,
-        [PrimaryEnumMember]
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        [Description("Greater than or equal")]
-        GreaterThanOrEquals,
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        [Description("Not less than")]
-        NotLessThan = GreaterThanOrEquals,
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        LessThanOrEquals,
-        [PrimaryEnumMember]
-        [NumericOperatorType(NumericOperatorType.OneNumber)]
-        NotGreaterThan = LessThanOrEquals,
-        [NumericOperatorType(NumericOperatorType.TwoNumbers)]
-        Between,
-        [NumericOperatorType(NumericOperatorType.TwoNumbers)]
-        NotBetween
-    }
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    Equals = 0,
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    NotEquals,
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    GreaterThan,
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    LessThan,
+    [PrimaryEnumMember]
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    [Description("Greater than or equal")]
+    GreaterThanOrEquals,
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    [Description("Not less than")]
+    NotLessThan = GreaterThanOrEquals,
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    LessThanOrEquals,
+    [PrimaryEnumMember]
+    [NumericOperatorType(NumericOperatorType.OneNumber)]
+    NotGreaterThan = LessThanOrEquals,
+    [NumericOperatorType(NumericOperatorType.TwoNumbers)]
+    Between,
+    [NumericOperatorType(NumericOperatorType.TwoNumbers)]
+    NotBetween
+}
 
-    public enum NumericOperatorType
-    {
-        OneNumber = 0,
-        TwoNumbers
-    }
+public enum NumericOperatorType
+{
+    OneNumber = 0,
+    TwoNumbers
+}
 
-    [AttributeUsage(AttributeTargets.Field)]
-    public class NumericOperatorTypeAttribute : Attribute
-    {
-        public NumericOperatorType Type { get; }
+[AttributeUsage(AttributeTargets.Field)]
+public class NumericOperatorTypeAttribute : Attribute
+{
+    public NumericOperatorType Type { get; }
 
-        public NumericOperatorTypeAttribute(NumericOperatorType type)
-        {
-            Type = type;
-        }
+    public NumericOperatorTypeAttribute(NumericOperatorType type)
+    {
+        Type = type;
     }
 }

@@ -1,57 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net7;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0;net46;net45</TargetFrameworks>
+    <TargetFrameworks>net8;net48</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NUnit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="xunit" Version="2.8.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <ProjectReference Include="..\Enums.NET.TestEnums\Enums.NET.TestEnums.csproj" />
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="..\SpecialtyEnums\net45\SpecialtyEnums.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1' OR '$(TargetFramework)' == 'netcoreapp1.0'">
-    <Reference Include="..\SpecialtyEnums\netstandard1.0\SpecialtyEnums.dll" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7' OR '$(TargetFramework)' == 'netcoreapp2.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8'">
     <Reference Include="..\SpecialtyEnums\netcoreapp2.0\SpecialtyEnums.dll" />
   </ItemGroup>
   
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
-    <AssemblyTitle>Enums.NET Test .NET 4.6</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+    <AssemblyTitle>Enums.NET Test .NET 4.8</AssemblyTitle>
+    <DefineConstants>BENCHMARKS</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <AssemblyTitle>Enums.NET Test .NET 4.5</AssemblyTitle>
-    <DefineConstants>DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net7'">
-    <AssemblyTitle>Enums.NET Test .NET Core App 3.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS;SPAN</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <AssemblyTitle>Enums.NET Test .NET Core App 2.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;GET_TYPE_CODE;TYPE_REFLECTION;BENCHMARKS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
-    <AssemblyTitle>Enums.NET Test .NET Core App 1.1</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE;BENCHMARKS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
-    <AssemblyTitle>Enums.NET Test .NET Core App 1.0</AssemblyTitle>
-    <DefineConstants>NETSTANDARD;DISPLAY_ATTRIBUTE;ICONVERTIBLE</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8'">
+    <AssemblyTitle>Enums.NET Test .NET 8</AssemblyTitle>
+    <DefineConstants>NETSTANDARD;BENCHMARKS;SPAN</DefineConstants>
   </PropertyGroup>
 </Project>

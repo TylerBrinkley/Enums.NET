@@ -27,106 +27,105 @@ using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
-namespace EnumsNET.Tests.Benchmarks
+namespace EnumsNET.Tests.Benchmarks;
+
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class ToStringBenchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class ToStringBenchmarks
+    private readonly DayOfWeek[] _values;
+    private readonly Type _enumType;
+
+    public ToStringBenchmarks()
     {
-        private readonly DayOfWeek[] _values;
-        private readonly Type _enumType;
+        _enumType = typeof(DayOfWeek);
+        _values = (DayOfWeek[])Enum.GetValues(_enumType);
+    }
 
-        public ToStringBenchmarks()
+    [Benchmark(Baseline = true)]
+    public string Enum_ToString_Name()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            _enumType = typeof(DayOfWeek);
-            _values = (DayOfWeek[])Enum.GetValues(_enumType);
+            result = value.ToString();
         }
+        return result;
+    }
 
-        [Benchmark(Baseline = true)]
-        public string Enum_ToString_Name()
+    [Benchmark]
+    public string NonGenericEnums_AsString_Name()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.ToString();
-            }
-            return result;
+            result = Enums.AsString(_enumType, value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public string NonGenericEnums_AsString_Name()
+    [Benchmark]
+    public string Enums_AsString_Name()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = Enums.AsString(_enumType, value);
-            }
-            return result;
+            result = value.AsString();
         }
+        return result;
+    }
 
-        [Benchmark]
-        public string Enums_AsString_Name()
+    [Benchmark]
+    public string Enums_GetName()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.AsString();
-            }
-            return result;
+            result = value.GetName();
         }
+        return result;
+    }
 
-        [Benchmark]
-        public string Enums_GetName()
+    [Benchmark]
+    public string FastEnum_GetName()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.GetName();
-            }
-            return result;
+            result = FastEnumUtility.FastEnum.GetName(value);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public string FastEnum_GetName()
+    [Benchmark]
+    public string Enum_ToString_Decimal()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = FastEnumUtility.FastEnum.GetName(value);
-            }
-            return result;
+            result = value.ToString("D");
         }
+        return result;
+    }
 
-        [Benchmark]
-        public string Enum_ToString_Decimal()
+    [Benchmark]
+    public string NonGenericEnums_AsString_Decimal()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.ToString("D");
-            }
-            return result;
+            result = Enums.AsString(_enumType, value, EnumFormat.DecimalValue);
         }
+        return result;
+    }
 
-        [Benchmark]
-        public string NonGenericEnums_AsString_Decimal()
+    [Benchmark]
+    public string Enums_AsString_Decimal()
+    {
+        string result = null;
+        foreach (var value in _values)
         {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = Enums.AsString(_enumType, value, EnumFormat.DecimalValue);
-            }
-            return result;
+            result = value.AsString(EnumFormat.DecimalValue);
         }
-
-        [Benchmark]
-        public string Enums_AsString_Decimal()
-        {
-            string result = null;
-            foreach (var value in _values)
-            {
-                result = value.AsString(EnumFormat.DecimalValue);
-            }
-            return result;
-        }
+        return result;
     }
 }
