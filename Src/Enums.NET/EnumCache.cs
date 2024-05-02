@@ -411,7 +411,6 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
 
         return Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type) switch
         {
-            TypeCode.Boolean => ToObject(Convert.ToByte((bool)value)),
             TypeCode.Char => ToObject((char)value),
             TypeCode.SByte => ToObject((sbyte)value),
             TypeCode.Byte => ToObject((byte)value),
@@ -422,7 +421,7 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
             TypeCode.Int64 => ToObject((long)value),
             TypeCode.UInt64 => ToObject((ulong)value),
             TypeCode.String => ParseInternal((string)value, false),
-            _ => throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String."),
+            _ => throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Char, or String."),
         };
     }
 
@@ -447,8 +446,6 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
 
         switch (Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type))
         {
-            case TypeCode.Boolean:
-                return ToObjectInternal(Convert.ToByte((bool)value), validation);
             case TypeCode.Char:
                 return ToObjectInternal((char)value, validation);
             case TypeCode.SByte:
@@ -472,7 +469,7 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
                 Validate(result, nameof(value), validation);
                 return result;
         }
-        throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Boolean, Char, or String.");
+        throw new ArgumentException($"value is not type {EnumType}, SByte, Int16, Int32, Int64, Byte, UInt16, UInt32, UInt64, Char, or String.");
     }
 
     public TUnderlying ToObject(long value)
@@ -610,8 +607,6 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
 
             switch (Type.GetTypeCode(Nullable.GetUnderlyingType(type) ?? type))
             {
-                case TypeCode.Boolean:
-                    return TryToObject(Convert.ToByte((bool)value), out result, validation);
                 case TypeCode.Char:
                     return TryToObject((char)value, out result, validation);
                 case TypeCode.SByte:

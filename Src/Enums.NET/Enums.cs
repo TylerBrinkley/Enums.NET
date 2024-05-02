@@ -102,19 +102,6 @@ public static class Enums
             var buckets = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>?[size];
             var members = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>[fields.Length];
 
-            // This is necessary due to a .NET reflection bug with retrieving Boolean Enum values
-            Dictionary<string, TUnderlying>? fieldDictionary = null;
-            if (typeof(TUnderlying) == typeof(bool))
-            {
-                fieldDictionary = [];
-                var values = (TUnderlying[])Enum.GetValues(enumType);
-                var names = Enum.GetNames(enumType);
-                for (var j = 0; j < names.Length; ++j)
-                {
-                    fieldDictionary.Add(names[j], values[j]);
-                }
-            }
-
             TUnderlyingOperations operations = default;
             var distinctCount = 0;
             TUnderlying allFlags = default;
@@ -122,7 +109,7 @@ public static class Enums
             {
                 var field = fields[i];
                 var name = field.Name;
-                var value = fieldDictionary != null ? fieldDictionary[name] : (TUnderlying)field.GetValue(null)!;
+                var value = (TUnderlying)field.GetValue(null)!;
                 var attributesArray = Attribute.GetCustomAttributes(field, false);
                 var attributes = attributesArray.Length == 0 ? AttributeCollection.Empty : new AttributeCollection(attributesArray);
 
