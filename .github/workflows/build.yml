@@ -17,9 +17,9 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
       working-directory: ./Src
-    - name: Test .NET 4.5
-      run: dotnet test -f net45 --no-restore --verbosity normal
+    - name: Test .NET 4.8
+      run: dotnet test -f net48 --no-restore --verbosity normal
       working-directory: ./Src
-    - name: Test .NET 7
-      run: dotnet test -f net7 --no-restore --verbosity normal
+    - name: Test .NET 8
+      run: dotnet test -f net8 --no-restore --verbosity normal
       working-directory: ./Src
