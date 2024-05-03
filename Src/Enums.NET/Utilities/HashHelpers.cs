@@ -2,24 +2,23 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace EnumsNET.Utilities
+namespace EnumsNET.Utilities;
+
+internal static partial class HashHelpers
 {
-    internal static partial class HashHelpers
+    public static int PowerOf2(int v)
     {
-        public static int PowerOf2(int v)
+        if ((v & (v - 1)) == 0 && v >= 1)
         {
-            if ((v & (v - 1)) == 0 && v >= 1)
-            {
-                return v;
-            }
-
-            var i = 4;
-            while (i < v)
-            {
-                i <<= 1;
-            }
-
-            return i;
+            return v;
         }
+
+        var i = 4;
+        while (i < v)
+        {
+            i <<= 1;
+        }
+
+        return i;
     }
 }

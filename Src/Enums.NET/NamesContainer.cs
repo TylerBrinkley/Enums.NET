@@ -29,38 +29,37 @@ using System.Diagnostics;
 using System.Linq;
 using EnumsNET.Utilities;
 
-namespace EnumsNET
+namespace EnumsNET;
+
+internal sealed class NamesContainer : IReadOnlyList<string>
 {
-    internal sealed class NamesContainer : IReadOnlyList<string>
+    private readonly IEnumerable<EnumMemberInternal> _members;
+    private string[]? _namesArray;
+
+    public int Count { get; }
+
+    public string this[int index] => (_namesArray ??= ArrayHelper.ToArray(this, Count))[index];
+
+    public NamesContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached)
     {
-        private readonly IEnumerable<EnumMemberInternal> _members;
-        private string[]? _namesArray;
-
-        public int Count { get; }
-
-        public string this[int index] => (_namesArray ??= ArrayHelper.ToArray(this, Count))[index];
-
-        public NamesContainer(IEnumerable<EnumMemberInternal> members, int count, bool cached)
+        Debug.Assert(count == members.Count());
+        _members = members;
+        Count = count;
+        if (cached)
         {
-            Debug.Assert(count == members.Count());
-            _members = members;
-            Count = count;
-            if (cached)
-            {
-                _namesArray = ArrayHelper.ToArray(this, count);
-            }
+            _namesArray = ArrayHelper.ToArray(this, count);
         }
-
-        public IEnumerator<string> GetEnumerator() => _namesArray != null ? ((IEnumerable<string>)_namesArray).GetEnumerator() : Enumerate();
-
-        private IEnumerator<string> Enumerate()
-        {
-            foreach (var member in _members)
-            {
-                yield return member.Name;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
+    public IEnumerator<string> GetEnumerator() => _namesArray != null ? ((IEnumerable<string>)_namesArray).GetEnumerator() : Enumerate();
+
+    private IEnumerator<string> Enumerate()
+    {
+        foreach (var member in _members)
+        {
+            yield return member.Name;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

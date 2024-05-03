@@ -27,40 +27,39 @@ using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
-namespace EnumsNET.Tests.Benchmarks
+namespace EnumsNET.Tests.Benchmarks;
+
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class GetHashCodeBenchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class GetHashCodeBenchmarks
+    private readonly DayOfWeek[] _values;
+    private readonly Type _enumType;
+
+    public GetHashCodeBenchmarks()
     {
-        private readonly DayOfWeek[] _values;
-        private readonly Type _enumType;
+        _enumType = typeof(DayOfWeek);
+        _values = (DayOfWeek[])Enum.GetValues(_enumType);
+    }
 
-        public GetHashCodeBenchmarks()
+    [Benchmark(Baseline = true)]
+    public int Enum_GetHashCode()
+    {
+        var result = 0;
+        foreach (var value in _values)
         {
-            _enumType = typeof(DayOfWeek);
-            _values = (DayOfWeek[])Enum.GetValues(_enumType);
+            result = value.GetHashCode();
         }
+        return result;
+    }
 
-        [Benchmark(Baseline = true)]
-        public int Enum_GetHashCode()
+    [Benchmark]
+    public int Enums_GetHashCode()
+    {
+        var result = 0;
+        foreach (var value in _values)
         {
-            var result = 0;
-            foreach (var value in _values)
-            {
-                result = value.GetHashCode();
-            }
-            return result;
+            result = Enums.GetHashCode(value);
         }
-
-        [Benchmark]
-        public int Enums_GetHashCode()
-        {
-            var result = 0;
-            foreach (var value in _values)
-            {
-                result = Enums.GetHashCode(value);
-            }
-            return result;
-        }
+        return result;
     }
 }

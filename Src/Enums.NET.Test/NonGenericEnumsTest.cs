@@ -1,30 +1,30 @@
-﻿using EnumsNET.Tests.TestEnums;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using EnumsNET.Tests.TestEnums;
+using Xunit;
 
-namespace EnumsNET.Tests
+namespace EnumsNET.Tests;
+
+public class NonGenericEnumsTest
 {
-    [TestFixture]
-    public class NonGenericEnumsTest
+    [Fact]
+    public void NonGenericEnumsGetUnderlyingType()
     {
-        [Test]
-        public void NonGenericEnumsGetUnderlyingType()
-        {
-            Assert.AreEqual(typeof(short), Enums.GetUnderlyingType(typeof(DateFilterOperator)));
-            Assert.AreEqual(typeof(ulong), Enums.GetUnderlyingType(typeof(ContiguousUInt64Enum)));
-            Assert.AreEqual(typeof(long), Enums.GetUnderlyingType(typeof(NonContiguousEnum)));
-        }
+        Assert.Equal(typeof(short), Enums.GetUnderlyingType(typeof(DateFilterOperator)));
+        Assert.Equal(typeof(ulong), Enums.GetUnderlyingType(typeof(ContiguousUInt64Enum)));
+        Assert.Equal(typeof(long), Enums.GetUnderlyingType(typeof(NonContiguousEnum)));
+    }
 
-        [Test]
-        public void NonGenericEnumsNullableTest()
-        {
-            Assert.AreEqual("Today", Enums.GetName(typeof(DateFilterOperator), (DateFilterOperator?)DateFilterOperator.Today));
-            Assert.AreEqual("Today", Enums.GetName(typeof(DateFilterOperator), DateFilterOperator.Today));
-        }
+    [Fact]
+    public void NonGenericEnumsNullableTest()
+    {
+        Assert.Equal("Today", Enums.GetName(typeof(DateFilterOperator), (DateFilterOperator?)DateFilterOperator.Today));
+        Assert.Equal("Today", Enums.GetName(typeof(DateFilterOperator), DateFilterOperator.Today));
+    }
 
-        [Test]
-        public void GetFlags_ReturnsValidValues_WhenUsingValidValue()
-        {
-            CollectionAssert.AreEqual(new[] { ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet }, Enums.GetMember(typeof(ColorFlagEnum), ColorFlagEnum.All).GetFlags());
-        }
+    [Fact]
+    public void GetFlags_ReturnsValidValues_WhenUsingValidValue()
+    {
+        Assert.Equal([ColorFlagEnum.Red, ColorFlagEnum.Green, ColorFlagEnum.Blue, ColorFlagEnum.UltraViolet], Enums.GetMember(typeof(ColorFlagEnum), ColorFlagEnum.All).GetFlags().Cast<ColorFlagEnum>());
     }
 }

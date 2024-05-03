@@ -3,23 +3,19 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Enums.NET.svg?logo=nuget)](https://www.nuget.org/packages/Enums.NET/)
 [![Build status](https://img.shields.io/azure-devops/build/tydude4christ/Public/2.svg?logo=azuredevops)](https://dev.azure.com/tydude4christ/Public/_build?definitionId=2)
 
+## v5.0 Changes
+Removed `Boolean` enum support and dropped support for net45 and bumped it to net461 due to updating dependencies. Also dropped support for netstandard 1.x tfms for similar reasons. Added a net7 target which utilizes the built-in generic number interfaces. Also added an `EnumValidatorAttribute` base class since generic attributes are now supported.
+
 ## v4.0 Changes
 Removed `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes which were deprecated in v3.0 and also removed all other deprecated methods in an effort to slim the library size down. It is recommended if upgrading from 2.x and below to update to 3.x first and follow the warnings to migrate any code that's using deprecated methods and classes. Also, a dependency on the `System.Runtime.CompilerServices.Unsafe` package was added for the .NET 4.5 target in order to remove a build dependency on `Fody`.
 
-## v3.0 Changes
-One of the major changes for v3.0 is the deprecation of the `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes whose methods have been added to the `Enums` and `FlagEnums` classes to better match `System.Enum` and provide better discoverability. To help you migrate your code to using the new methods I have created the C# roslyn analyzer [`Enums.NET.Analyzer`](https://www.nuget.org/packages/Enums.NET.Analyzer/) which provides a code fix to migrate your usages of the non-generic and unsafe methods to the new methods.
-
 # Enums.NET
-Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is compatible with .NET Framework 4.5+ and .NET Standard 1.0+.
+Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is compatible with .NET Framework 4.6.1+ and .NET Standard 2.0+.
 
 ## What's wrong with `System.Enum`
-1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
-   * Requires the enum type to be explicitly specified as an argument and requires invocation using static method syntax such as `Enum.IsDefined(typeof(ConsoleColor), value)` instead of what should be `value.IsDefined()`.
-   * Requires casting/unboxing for methods with an enum return value, eg. `ToObject`, `Parse`, and `GetValues`.
-   * Requires boxing for methods with enum input parameters losing type-safety, eg. `IsDefined` and `GetName`.
-2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe, is inefficient, and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
-3. Most of its methods use reflection on each call without any sort of caching causing poor performance.
-4. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enum members with the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
+1. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe~, is inefficient,~ and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
+2. Most of its methods use reflection on each call without any sort of caching causing poor performance.
+3. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enum members with the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
 
 Enums.NET solves all of these issues and more.
 
@@ -29,15 +25,14 @@ Enums.NET solves all of these issues and more.
 using System;
 using System.Linq;
 using EnumsNET;
-using NUnit.Framework;
+using Xunit;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
-[TestFixture]
 class EnumsNETDemo
 {
     // Enum definitions at bottom
 
-    [Test]
+    [Fact]
     public void Enumerate()
     {
         var count = 0;
@@ -49,7 +44,7 @@ class EnumsNETDemo
             AttributeCollection attributes = member.Attributes;
             ++count;
         }
-        Assert.AreEqual(8, count);
+        Assert.Equal(8, count);
 
         count = 0;
         // Retrieves distinct values in increasing value order
@@ -59,100 +54,100 @@ class EnumsNETDemo
             AttributeCollection attributes = value.GetAttributes();
             ++count;
         }
-        Assert.AreEqual(6, count);
+        Assert.Equal(6, count);
     }
 
-    [Test]
+    [Fact]
     public void FlagEnumOperations()
     {
         // HasAllFlags
-        Assert.IsTrue((DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday).HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-        Assert.IsFalse(DaysOfWeek.Monday.HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.True((DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday).HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.False(DaysOfWeek.Monday.HasAllFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
 
         // HasAnyFlags
-        Assert.IsTrue(DaysOfWeek.Monday.HasAnyFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-        Assert.IsFalse((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Friday));
+        Assert.True(DaysOfWeek.Monday.HasAnyFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.False((DaysOfWeek.Monday | DaysOfWeek.Wednesday).HasAnyFlags(DaysOfWeek.Friday));
 
         // CombineFlags ~ bitwise OR
-        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
-        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday, FlagEnums.CombineFlags(DaysOfWeek.Monday, DaysOfWeek.Wednesday, DaysOfWeek.Friday));
+        Assert.Equal(DaysOfWeek.Monday | DaysOfWeek.Wednesday, DaysOfWeek.Monday.CombineFlags(DaysOfWeek.Wednesday));
+        Assert.Equal(DaysOfWeek.Monday | DaysOfWeek.Wednesday | DaysOfWeek.Friday, FlagEnums.CombineFlags(DaysOfWeek.Monday, DaysOfWeek.Wednesday, DaysOfWeek.Friday));
 
         // CommonFlags ~ bitwise AND
-        Assert.AreEqual(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
-        Assert.AreEqual(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
+        Assert.Equal(DaysOfWeek.Monday, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.Equal(DaysOfWeek.None, DaysOfWeek.Monday.CommonFlags(DaysOfWeek.Wednesday));
 
         // RemoveFlags
-        Assert.AreEqual(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday));
-        Assert.AreEqual(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
+        Assert.Equal(DaysOfWeek.Wednesday, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday));
+        Assert.Equal(DaysOfWeek.None, (DaysOfWeek.Monday | DaysOfWeek.Wednesday).RemoveFlags(DaysOfWeek.Monday | DaysOfWeek.Wednesday));
 
         // GetFlags, splits out the individual flags in increasing significance bit order
         var flags = DaysOfWeek.Weekend.GetFlags();
-        Assert.AreEqual(2, flags.Count);
-        Assert.AreEqual(DaysOfWeek.Sunday, flags[0]);
-        Assert.AreEqual(DaysOfWeek.Saturday, flags[1]);
+        Assert.Equal(2, flags.Count);
+        Assert.Equal(DaysOfWeek.Sunday, flags[0]);
+        Assert.Equal(DaysOfWeek.Saturday, flags[1]);
     }
 
-    [Test]
-    public new void ToString()
+    [Fact]
+    public void AsString()
     {
         // AsString, equivalent to ToString
-        Assert.AreEqual("Equals", NumericOperator.Equals.AsString());
-        Assert.AreEqual("-1", ((NumericOperator)(-1)).AsString());
+        Assert.Equal("Equals", NumericOperator.Equals.AsString());
+        Assert.Equal("-1", ((NumericOperator)(-1)).AsString());
 
         // GetName
-        Assert.AreEqual("Equals", NumericOperator.Equals.GetName());
-        Assert.IsNull(((NumericOperator)(-1)).GetName());
+        Assert.Equal("Equals", NumericOperator.Equals.GetName());
+        Assert.Null(((NumericOperator)(-1)).GetName());
 
         // Get description
-        Assert.AreEqual("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
-        Assert.IsNull(NumericOperator.LessThan.AsString(EnumFormat.Description));
+        Assert.Equal("Is", NumericOperator.Equals.AsString(EnumFormat.Description));
+        Assert.Null(NumericOperator.LessThan.AsString(EnumFormat.Description));
 
         // Get description if applied, otherwise the name
-        Assert.AreEqual("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
+        Assert.Equal("LessThan", NumericOperator.LessThan.AsString(EnumFormat.Description, EnumFormat.Name));
     }
 
-    [Test]
+    [Fact]
     public void Validate()
     {
         // Standard Enums, checks is defined
-        Assert.IsTrue(NumericOperator.LessThan.IsValid());
-        Assert.IsFalse(((NumericOperator)20).IsValid());
+        Assert.True(NumericOperator.LessThan.IsValid());
+        Assert.False(((NumericOperator)20).IsValid());
 
         // Flag Enums, checks is valid flag combination or is defined
-        Assert.IsTrue((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
-        Assert.IsFalse((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
+        Assert.True((DaysOfWeek.Sunday | DaysOfWeek.Wednesday).IsValid());
+        Assert.False((DaysOfWeek.Sunday | DaysOfWeek.Wednesday | ((DaysOfWeek)(-1))).IsValid());
 
         // Custom validation through IEnumValidatorAttribute<TEnum>
-        Assert.IsTrue(DayType.Weekday.IsValid());
-        Assert.IsTrue((DayType.Weekday | DayType.Holiday).IsValid());
-        Assert.IsFalse((DayType.Weekday | DayType.Weekend).IsValid());
+        Assert.True(DayType.Weekday.IsValid());
+        Assert.True((DayType.Weekday | DayType.Holiday).IsValid());
+        Assert.False((DayType.Weekday | DayType.Weekend).IsValid());
     }
 
-    [Test]
+    [Fact]
     public void CustomEnumFormat()
     {
         EnumFormat symbolFormat = Enums.RegisterCustomEnumFormat(member => member.Attributes.Get<SymbolAttribute>()?.Symbol);
-        Assert.AreEqual(">", NumericOperator.GreaterThan.AsString(symbolFormat));
-        Assert.AreEqual(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", ignoreCase: false, symbolFormat));
+        Assert.Equal(">", NumericOperator.GreaterThan.AsString(symbolFormat));
+        Assert.Equal(NumericOperator.LessThan, Enums.Parse<NumericOperator>("<", ignoreCase: false, symbolFormat));
     }
 
-    [Test]
+    [Fact]
     public void Attributes()
     {
-        Assert.AreEqual("!=", NumericOperator.NotEquals.GetAttributes().Get<SymbolAttribute>().Symbol);
-        Assert.IsTrue(Enums.GetMember<NumericOperator>("GreaterThanOrEquals").Attributes.Has<PrimaryEnumMemberAttribute>());
-        Assert.IsFalse(NumericOperator.LessThan.GetAttributes().Has<DescriptionAttribute>());
+        Assert.Equal("!=", NumericOperator.NotEquals.GetAttributes().Get<SymbolAttribute>().Symbol);
+        Assert.True(Enums.GetMember<NumericOperator>("GreaterThanOrEquals").Attributes.Has<PrimaryEnumMemberAttribute>());
+        Assert.False(NumericOperator.LessThan.GetAttributes().Has<DescriptionAttribute>());
     }
 
-    [Test]
+    [Fact]
     public void Parsing()
     {
-        Assert.AreEqual(NumericOperator.GreaterThan, Enums.Parse<NumericOperator>("GreaterThan"));
-        Assert.AreEqual(NumericOperator.NotEquals, Enums.Parse<NumericOperator>("1"));
-        Assert.AreEqual(NumericOperator.Equals, Enums.Parse<NumericOperator>("Is", ignoreCase: false, EnumFormat.Description));
+        Assert.Equal(NumericOperator.GreaterThan, Enums.Parse<NumericOperator>("GreaterThan"));
+        Assert.Equal(NumericOperator.NotEquals, Enums.Parse<NumericOperator>("1"));
+        Assert.Equal(NumericOperator.Equals, Enums.Parse<NumericOperator>("Is", ignoreCase: false, EnumFormat.Description));
 
-        Assert.AreEqual(DaysOfWeek.Monday | DaysOfWeek.Wednesday, Enums.Parse<DaysOfWeek>("Monday, Wednesday"));
-        Assert.AreEqual(DaysOfWeek.Tuesday | DaysOfWeek.Thursday, FlagEnums.ParseFlags<DaysOfWeek>("Tuesday | Thursday", ignoreCase: false, delimiter: "|"));
+        Assert.Equal(DaysOfWeek.Monday | DaysOfWeek.Wednesday, Enums.Parse<DaysOfWeek>("Monday, Wednesday"));
+        Assert.Equal(DaysOfWeek.Tuesday | DaysOfWeek.Thursday, FlagEnums.ParseFlags<DaysOfWeek>("Tuesday | Thursday", ignoreCase: false, delimiter: "|"));
     }
 
     enum NumericOperator
@@ -208,10 +203,9 @@ class EnumsNETDemo
         Holiday = 4
     }
 
-    [AttributeUsage(AttributeTargets.Enum)]
-    class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
+    class DayTypeValidatorAttribute : EnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
+        public override bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
     }
 }
 ```

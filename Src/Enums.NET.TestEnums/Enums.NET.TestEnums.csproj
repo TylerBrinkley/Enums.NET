@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net46;net45;netcoreapp2.0;netcoreapp1.1;netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>net48;net8</TargetFrameworks>
     <RootNamespace>EnumsNET.Tests.TestEnums</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Enums.NET\Enums.NET.csproj" />
     <Folder Include="Properties\" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net45" Version="1.0.3">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -16,23 +17,7 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net45'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'">
-    <DefineConstants>DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <DefineConstants>DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>DISPLAY_ATTRIBUTE;TYPE_REFLECTION</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.1'">
-    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp1.0'">
-    <DefineConstants>DISPLAY_ATTRIBUTE</DefineConstants>
-  </PropertyGroup>
 </Project>

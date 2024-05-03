@@ -29,377 +29,376 @@ using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
-namespace EnumsNET.Tests.Benchmarks
+namespace EnumsNET.Tests.Benchmarks;
+
+internal abstract class Parser
 {
-    internal abstract class Parser
-    {
-        public abstract void Parse(string value);
-    }
+    public abstract void Parse(string value);
+}
 
-    internal sealed class EnumParser<TEnum> : Parser
-        where TEnum : struct
+internal sealed class EnumParser<TEnum> : Parser
+    where TEnum : struct
+{
+    public override void Parse(string value)
     {
-        public override void Parse(string value)
-        {
-#if NET461
-            Enum.TryParse<TEnum>(value, out _);
+#if NET48
+        Enum.TryParse<TEnum>(value, out _);
 #else
-            Enum.Parse<TEnum>(value);
+        Enum.Parse<TEnum>(value);
 #endif
+    }
+}
+
+internal sealed class Parser<TEnum> : Parser
+    where TEnum : struct, Enum
+{
+    public override void Parse(string value) => Enums.Parse<TEnum>(value);
+}
+
+internal sealed class FastEnumParser<TEnum> : Parser
+    where TEnum : struct, Enum
+{
+    public override void Parse(string value) => FastEnumUtility.FastEnum.Parse<TEnum>(value);
+}
+
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class ParseNamesBenchmarks
+{
+    private class EnumData
+    {
+        public Type Type { get; set; }
+
+        public string[] Names { get; set; }
+
+        public Parser EnumGenericParser { get; set; }
+
+        public Parser GenericParser { get; set; }
+
+        public Parser FastEnumParser { get; set; }
+    }
+
+    private readonly EnumData[] _enumDatas;
+
+    public ParseNamesBenchmarks()
+    {
+        var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType && type.GetCustomAttribute<FlagsAttribute>() == null).ToList();
+        _enumDatas = new EnumData[enumTypes.Count];
+        for (var i = 0; i < _enumDatas.Length; ++i)
+        {
+            var enumType = enumTypes[i];
+            var names = Enum.GetNames(enumType);
+            var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
+            var enumParser = (Parser)Activator.CreateInstance(typeof(EnumParser<>).MakeGenericType(enumType));
+            var fastEnumParser = (Parser)Activator.CreateInstance(typeof(FastEnumParser<>).MakeGenericType(enumType));
+            _enumDatas[i] = new EnumData { Type = enumType, Names = names, EnumGenericParser = enumParser, GenericParser = parser, FastEnumParser = fastEnumParser };
+            if (names.Length > 0)
+            {
+                Enums.Parse(enumType, names[0]); // Warmup
+                parser.Parse(names[0]); // Warmup
+                enumParser.Parse(names[0]); // Warmup
+                fastEnumParser.Parse(names[0]); // Warmup
+            }
         }
     }
 
-    internal sealed class Parser<TEnum> : Parser
-        where TEnum : struct, Enum
+    [Benchmark(Baseline = true)]
+    public object Enum_NonGeneric_Parse_Names()
     {
-        public override void Parse(string value) => Enums.Parse<TEnum>(value);
+        object result = null;
+        foreach (var enumData in _enumDatas)
+        {
+            var enumType = enumData.Type;
+            foreach (var value in enumData.Names)
+            {
+                result = Enum.Parse(enumType, value);
+            }
+        }
+        return result;
     }
 
-    internal sealed class FastEnumParser<TEnum> : Parser
-        where TEnum : struct, Enum
+    [Benchmark]
+    public object Enums_NonGeneric_Parse_Names()
     {
-        public override void Parse(string value) => FastEnumUtility.FastEnum.Parse<TEnum>(value);
+        object result = null;
+        foreach (var enumData in _enumDatas)
+        {
+            var enumType = enumData.Type;
+            foreach (var value in enumData.Names)
+            {
+                result = Enums.Parse(enumType, value);
+            }
+        }
+        return result;
     }
 
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class ParseNamesBenchmarks
+    [Benchmark]
+    public int Enum_Parse_Names()
     {
-        private class EnumData
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            public Type Type { get; set; }
-
-            public string[] Names { get; set; }
-
-            public Parser EnumGenericParser { get; set; }
-
-            public Parser GenericParser { get; set; }
-
-            public Parser FastEnumParser { get; set; }
-        }
-
-        private readonly EnumData[] _enumDatas;
-
-        public ParseNamesBenchmarks()
-        {
-            var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType && type.GetCustomAttribute<FlagsAttribute>() == null).ToList();
-            _enumDatas = new EnumData[enumTypes.Count];
-            for (var i = 0; i < _enumDatas.Length; ++i)
+            var genericParser = enumData.EnumGenericParser;
+            foreach (var value in enumData.Names)
             {
-                var enumType = enumTypes[i];
-                var names = Enum.GetNames(enumType);
-                var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
-                var enumParser = (Parser)Activator.CreateInstance(typeof(EnumParser<>).MakeGenericType(enumType));
-                var fastEnumParser = (Parser)Activator.CreateInstance(typeof(FastEnumParser<>).MakeGenericType(enumType));
-                _enumDatas[i] = new EnumData { Type = enumType, Names = names, EnumGenericParser = enumParser, GenericParser = parser, FastEnumParser = fastEnumParser };
-                if (names.Length > 0)
-                {
-                    Enums.Parse(enumType, names[0]); // Warmup
-                    parser.Parse(names[0]); // Warmup
-                    enumParser.Parse(names[0]); // Warmup
-                    fastEnumParser.Parse(names[0]); // Warmup
-                }
+                genericParser.Parse(value);
+                ++i;
             }
         }
+        return i;
+    }
 
-        [Benchmark(Baseline = true)]
-        public object Enum_NonGeneric_Parse_Names()
+    [Benchmark]
+    public int Enums_Parse_Names()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            object result = null;
-            foreach (var enumData in _enumDatas)
+            var genericParser = enumData.GenericParser;
+            foreach (var value in enumData.Names)
             {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.Names)
-                {
-                    result = Enum.Parse(enumType, value);
-                }
+                genericParser.Parse(value);
+                ++i;
             }
-            return result;
         }
+        return i;
+    }
 
-        [Benchmark]
-        public object Enums_NonGeneric_Parse_Names()
+    [Benchmark]
+    public int FastEnum_Parse_Names()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            object result = null;
-            foreach (var enumData in _enumDatas)
+            var fastEnumParser = enumData.FastEnumParser;
+            foreach (var value in enumData.Names)
             {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.Names)
-                {
-                    result = Enums.Parse(enumType, value);
-                }
+                fastEnumParser.Parse(value);
+                ++i;
             }
-            return result;
         }
+        return i;
+    }
+}
 
-        [Benchmark]
-        public int Enum_Parse_Names()
-        {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
-            {
-                var genericParser = enumData.EnumGenericParser;
-                foreach (var value in enumData.Names)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
-            }
-            return i;
-        }
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class ParseValuesBenchmarks
+{
+    private class EnumData
+    {
+        public Type Type { get; set; }
 
-        [Benchmark]
-        public int Enums_Parse_Names()
-        {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
-            {
-                var genericParser = enumData.GenericParser;
-                foreach (var value in enumData.Names)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
-            }
-            return i;
-        }
+        public string[] NumericValues { get; set; }
 
-        [Benchmark]
-        public int FastEnum_Parse_Names()
+        public Parser EnumGenericParser { get; set; }
+
+        public Parser GenericParser { get; set; }
+
+        public Parser FastEnumParser { get; set; }
+    }
+
+    private readonly EnumData[] _enumDatas;
+
+    public ParseValuesBenchmarks()
+    {
+        var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType && type.GetCustomAttribute<FlagsAttribute>() == null).ToList();
+        _enumDatas = new EnumData[enumTypes.Count];
+        for (var i = 0; i < _enumDatas.Length; ++i)
         {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
+            var enumType = enumTypes[i];
+            var values = Enum.GetValues(enumType);
+            var numericValues = new string[values.Length];
+            for (var j = 0; j < values.Length; ++j)
             {
-                var fastEnumParser = enumData.FastEnumParser;
-                foreach (var value in enumData.Names)
-                {
-                    fastEnumParser.Parse(value);
-                    ++i;
-                }
+                numericValues[j] = Enum.Format(enumType, values.GetValue(j), "D");
             }
-            return i;
+            var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
+            var enumParser = (Parser)Activator.CreateInstance(typeof(EnumParser<>).MakeGenericType(enumType));
+            var fastEnumParser = (Parser)Activator.CreateInstance(typeof(FastEnumParser<>).MakeGenericType(enumType));
+            _enumDatas[i] = new EnumData { Type = enumType, NumericValues = numericValues, EnumGenericParser = enumParser, GenericParser = parser, FastEnumParser = fastEnumParser };
+            if (numericValues.Length > 0)
+            {
+                Enums.Parse(enumType, numericValues[0]); // Warmup
+                parser.Parse(numericValues[0]); // Warmup
+                enumParser.Parse(numericValues[0]); // Warmup
+                fastEnumParser.Parse(numericValues[0]); // Warmup
+            }
         }
     }
 
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class ParseValuesBenchmarks
+    [Benchmark]
+    public object Enum_NonGeneric_Parse_Decimals()
     {
-        private class EnumData
+        object result = null;
+        foreach (var enumData in _enumDatas)
         {
-            public Type Type { get; set; }
-
-            public string[] NumericValues { get; set; }
-
-            public Parser EnumGenericParser { get; set; }
-
-            public Parser GenericParser { get; set; }
-
-            public Parser FastEnumParser { get; set; }
-        }
-
-        private readonly EnumData[] _enumDatas;
-
-        public ParseValuesBenchmarks()
-        {
-            var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType && type.GetCustomAttribute<FlagsAttribute>() == null).ToList();
-            _enumDatas = new EnumData[enumTypes.Count];
-            for (var i = 0; i < _enumDatas.Length; ++i)
+            var enumType = enumData.Type;
+            foreach (var value in enumData.NumericValues)
             {
-                var enumType = enumTypes[i];
-                var values = Enum.GetValues(enumType);
-                var numericValues = new string[values.Length];
-                for (var j = 0; j < values.Length; ++j)
-                {
-                    numericValues[j] = Enum.Format(enumType, values.GetValue(j), "D");
-                }
-                var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
-                var enumParser = (Parser)Activator.CreateInstance(typeof(EnumParser<>).MakeGenericType(enumType));
-                var fastEnumParser = (Parser)Activator.CreateInstance(typeof(FastEnumParser<>).MakeGenericType(enumType));
-                _enumDatas[i] = new EnumData { Type = enumType, NumericValues = numericValues, EnumGenericParser = enumParser, GenericParser = parser, FastEnumParser = fastEnumParser };
-                if (numericValues.Length > 0)
-                {
-                    Enums.Parse(enumType, numericValues[0]); // Warmup
-                    parser.Parse(numericValues[0]); // Warmup
-                    enumParser.Parse(numericValues[0]); // Warmup
-                    fastEnumParser.Parse(numericValues[0]); // Warmup
-                }
+                result = Enum.Parse(enumType, value);
             }
         }
+        return result;
+    }
 
-        [Benchmark]
-        public object Enum_NonGeneric_Parse_Decimals()
+    [Benchmark]
+    public object Enums_NonGeneric_Parse_Decimals()
+    {
+        object result = null;
+        foreach (var enumData in _enumDatas)
         {
-            object result = null;
-            foreach (var enumData in _enumDatas)
+            var enumType = enumData.Type;
+            foreach (var value in enumData.NumericValues)
             {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.NumericValues)
-                {
-                    result = Enum.Parse(enumType, value);
-                }
+                result = Enums.Parse(enumType, value);
             }
-            return result;
         }
+        return result;
+    }
 
-        [Benchmark]
-        public object Enums_NonGeneric_Parse_Decimals()
+    [Benchmark]
+    public int Enum_Parse_Decimals()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            object result = null;
-            foreach (var enumData in _enumDatas)
+            var genericParser = enumData.EnumGenericParser;
+            foreach (var value in enumData.NumericValues)
             {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.NumericValues)
-                {
-                    result = Enums.Parse(enumType, value);
-                }
+                genericParser.Parse(value);
+                ++i;
             }
-            return result;
         }
+        return i;
+    }
 
-        [Benchmark]
-        public int Enum_Parse_Decimals()
+    [Benchmark]
+    public int Enums_Parse_Decimals()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
+            var genericParser = enumData.GenericParser;
+            foreach (var value in enumData.NumericValues)
             {
-                var genericParser = enumData.EnumGenericParser;
-                foreach (var value in enumData.NumericValues)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
+                genericParser.Parse(value);
+                ++i;
             }
-            return i;
         }
+        return i;
+    }
 
-        [Benchmark]
-        public int Enums_Parse_Decimals()
+    [Benchmark]
+    public int FastEnum_Parse_Decimals()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
+            var fastEnumParser = enumData.FastEnumParser;
+            foreach (var value in enumData.NumericValues)
             {
-                var genericParser = enumData.GenericParser;
-                foreach (var value in enumData.NumericValues)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
+                fastEnumParser.Parse(value);
+                ++i;
             }
-            return i;
         }
+        return i;
+    }
+}
 
-        [Benchmark]
-        public int FastEnum_Parse_Decimals()
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class ParseFlagsBenchmarks
+{
+    private class EnumData
+    {
+        public Type Type { get; set; }
+
+        public string[] Names { get; set; }
+
+        public Parser EnumGenericParser { get; set; }
+
+        public Parser GenericParser { get; set; }
+    }
+
+    private readonly EnumData[] _enumDatas;
+
+    public ParseFlagsBenchmarks()
+    {
+        var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType && type.GetCustomAttribute<FlagsAttribute>() != null).ToList();
+        _enumDatas = new EnumData[enumTypes.Count];
+        for (var i = 0; i < _enumDatas.Length; ++i)
         {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
+            var enumType = enumTypes[i];
+            var names = Enum.GetNames(enumType);
+            var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
+            var enumParser = (Parser)Activator.CreateInstance(typeof(EnumParser<>).MakeGenericType(enumType));
+            _enumDatas[i] = new EnumData { Type = enumType, Names = names, EnumGenericParser = enumParser, GenericParser = parser };
+            if (names.Length > 0)
             {
-                var fastEnumParser = enumData.FastEnumParser;
-                foreach (var value in enumData.NumericValues)
-                {
-                    fastEnumParser.Parse(value);
-                    ++i;
-                }
+                Enums.Parse(enumType, names[0]); // Warmup
+                parser.Parse(names[0]); // Warmup
+                enumParser.Parse(names[0]); // Warmup
             }
-            return i;
         }
     }
 
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class ParseFlagsBenchmarks
+    [Benchmark(Baseline = true)]
+    public object Enum_NonGeneric_ParseFlags_Names()
     {
-        private class EnumData
+        object result = null;
+        foreach (var enumData in _enumDatas)
         {
-            public Type Type { get; set; }
-
-            public string[] Names { get; set; }
-
-            public Parser EnumGenericParser { get; set; }
-
-            public Parser GenericParser { get; set; }
-        }
-
-        private readonly EnumData[] _enumDatas;
-
-        public ParseFlagsBenchmarks()
-        {
-            var enumTypes = typeof(string).GetTypeInfo().Assembly.GetTypes().Where(type => type.GetTypeInfo().IsEnum && !type.GetTypeInfo().IsGenericType && type.GetCustomAttribute<FlagsAttribute>() != null).ToList();
-            _enumDatas = new EnumData[enumTypes.Count];
-            for (var i = 0; i < _enumDatas.Length; ++i)
+            var enumType = enumData.Type;
+            foreach (var value in enumData.Names)
             {
-                var enumType = enumTypes[i];
-                var names = Enum.GetNames(enumType);
-                var parser = (Parser)Activator.CreateInstance(typeof(Parser<>).MakeGenericType(enumType));
-                var enumParser = (Parser)Activator.CreateInstance(typeof(EnumParser<>).MakeGenericType(enumType));
-                _enumDatas[i] = new EnumData { Type = enumType, Names = names, EnumGenericParser = enumParser, GenericParser = parser };
-                if (names.Length > 0)
-                {
-                    Enums.Parse(enumType, names[0]); // Warmup
-                    parser.Parse(names[0]); // Warmup
-                    enumParser.Parse(names[0]); // Warmup
-                }
+                result = Enum.Parse(enumType, value);
             }
         }
+        return result;
+    }
 
-        [Benchmark(Baseline = true)]
-        public object Enum_NonGeneric_ParseFlags_Names()
+    [Benchmark]
+    public object Enums_NonGeneric_ParseFlags_Names()
+    {
+        object result = null;
+        foreach (var enumData in _enumDatas)
         {
-            object result = null;
-            foreach (var enumData in _enumDatas)
+            var enumType = enumData.Type;
+            foreach (var value in enumData.Names)
             {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.Names)
-                {
-                    result = Enum.Parse(enumType, value);
-                }
+                result = Enums.Parse(enumType, value);
             }
-            return result;
         }
+        return result;
+    }
 
-        [Benchmark]
-        public object Enums_NonGeneric_ParseFlags_Names()
+    [Benchmark]
+    public int Enum_ParseFlags_Names()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            object result = null;
-            foreach (var enumData in _enumDatas)
+            var genericParser = enumData.EnumGenericParser;
+            foreach (var value in enumData.Names)
             {
-                var enumType = enumData.Type;
-                foreach (var value in enumData.Names)
-                {
-                    result = Enums.Parse(enumType, value);
-                }
+                genericParser.Parse(value);
+                ++i;
             }
-            return result;
         }
+        return i;
+    }
 
-        [Benchmark]
-        public int Enum_ParseFlags_Names()
+    [Benchmark]
+    public int Enums_ParseFlags_Names()
+    {
+        var i = 0;
+        foreach (var enumData in _enumDatas)
         {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
+            var genericParser = enumData.GenericParser;
+            foreach (var value in enumData.Names)
             {
-                var genericParser = enumData.EnumGenericParser;
-                foreach (var value in enumData.Names)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
+                genericParser.Parse(value);
+                ++i;
             }
-            return i;
         }
-
-        [Benchmark]
-        public int Enums_ParseFlags_Names()
-        {
-            var i = 0;
-            foreach (var enumData in _enumDatas)
-            {
-                var genericParser = enumData.GenericParser;
-                foreach (var value in enumData.Names)
-                {
-                    genericParser.Parse(value);
-                    ++i;
-                }
-            }
-            return i;
-        }
+        return i;
     }
 }

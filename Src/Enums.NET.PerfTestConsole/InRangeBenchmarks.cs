@@ -1,57 +1,56 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
-namespace EnumsNET.PerfTestConsole
+namespace EnumsNET.PerfTestConsole;
+
+[SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.Net80)]
+public class InRangeBenchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net48), SimpleJob(RuntimeMoniker.NetCoreApp50)]
-    public class InRangeBenchmarks
+    [Benchmark]
+    [Arguments(-2, 5)]
+    public bool Int32_InRange1(int minValue, int maxValue)
     {
-        [Benchmark]
-        [Arguments(-2, 5)]
-        public bool Int32_InRange1(int minValue, int maxValue)
+        var result = true;
+        for (var i = -8; i <= 7; ++i)
         {
-            var result = true;
-            for (var i = -8; i <= 7; ++i)
-            {
-                result &= minValue <= i && maxValue >= i;
-            }
-            return result;
+            result &= minValue <= i && maxValue >= i;
         }
+        return result;
+    }
 
-        [Benchmark]
-        [Arguments(-2, 5)]
-        public bool Int32_InRange2(int minValue, int maxValue)
+    [Benchmark]
+    [Arguments(-2, 5)]
+    public bool Int32_InRange2(int minValue, int maxValue)
+    {
+        var result = true;
+        for (var i = -8; i <= 7; ++i)
         {
-            var result = true;
-            for (var i = -8; i <= 7; ++i)
-            {
-                result &= (uint)(i - minValue) <= (uint)(maxValue - minValue);
-            }
-            return result;
+            result &= (uint)(i - minValue) <= (uint)(maxValue - minValue);
         }
+        return result;
+    }
 
-        [Benchmark]
-        [Arguments(-2, 5)]
-        public bool Int32_InRange3(int minValue, int maxValue)
+    [Benchmark]
+    [Arguments(-2, 5)]
+    public bool Int32_InRange3(int minValue, int maxValue)
+    {
+        var result = true;
+        for (var i = -8; i <= 7; ++i)
         {
-            var result = true;
-            for (var i = -8; i <= 7; ++i)
-            {
-                result &= minValue <= i & maxValue >= i;
-            }
-            return result;
+            result &= minValue <= i & maxValue >= i;
         }
+        return result;
+    }
 
-        [Benchmark]
-        [Arguments(-2, 7)]
-        public bool Int32_InRange4(int minValue, int maxMinusMin)
+    [Benchmark]
+    [Arguments(-2, 7)]
+    public bool Int32_InRange4(int minValue, int maxMinusMin)
+    {
+        var result = true;
+        for (var i = -8; i <= 7; ++i)
         {
-            var result = true;
-            for (var i = -8; i <= 7; ++i)
-            {
-                result &= (uint)(i - minValue) <= (uint)maxMinusMin;
-            }
-            return result;
+            result &= (uint)(i - minValue) <= (uint)maxMinusMin;
         }
+        return result;
     }
 }

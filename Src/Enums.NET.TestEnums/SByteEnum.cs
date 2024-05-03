@@ -1,6 +1,5 @@
-﻿namespace EnumsNET.Tests.TestEnums
+﻿namespace EnumsNET.Tests.TestEnums;
+
+public enum SByteEnum : sbyte
 {
-    public enum SByteEnum : sbyte
-    {
-    }
 }
