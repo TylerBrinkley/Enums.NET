@@ -4,7 +4,7 @@
 [![Build status](https://img.shields.io/azure-devops/build/tydude4christ/Public/2.svg?logo=azuredevops)](https://dev.azure.com/tydude4christ/Public/_build?definitionId=2)
 
 ## v5.0 Changes
-Removed `Boolean` enum support and dropped support for net45 and bumped it to net461 due to updating dependencies. Also dropped support for netstandard 1.x tfms for similar reasons. Added a net7 target which utilizes the built-in generic number interfaces. Also added an EnumValidatorAttribute base class since generic attributes are now supported.
+Removed `Boolean` enum support and dropped support for net45 and bumped it to net461 due to updating dependencies. Also dropped support for netstandard 1.x tfms for similar reasons. Added a net7 target which utilizes the built-in generic number interfaces. Also added an `EnumValidatorAttribute` base class since generic attributes are now supported.
 
 ## v4.0 Changes
 Removed `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes which were deprecated in v3.0 and also removed all other deprecated methods in an effort to slim the library size down. It is recommended if upgrading from 2.x and below to update to 3.x first and follow the warnings to migrate any code that's using deprecated methods and classes. Also, a dependency on the `System.Runtime.CompilerServices.Unsafe` package was added for the .NET 4.5 target in order to remove a build dependency on `Fody`.
