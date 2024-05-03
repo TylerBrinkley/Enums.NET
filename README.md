@@ -13,13 +13,9 @@ Removed `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlag
 Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is compatible with .NET Framework 4.6.1+ and .NET Standard 2.0+.
 
 ## What's wrong with `System.Enum`
-~1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
-   * Requires the enum type to be explicitly specified as an argument and requires invocation using static method syntax such as `Enum.IsDefined(typeof(ConsoleColor), value)` instead of what should be `value.IsDefined()`.
-   * Requires casting/unboxing for methods with an enum return value, eg. `ToObject`, `Parse`, and `GetValues`.
-   * Requires boxing for methods with enum input parameters losing type-safety, eg. `IsDefined` and `GetName`.~
-2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe~, is inefficient,~ and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
-3. Most of its methods use reflection on each call without any sort of caching causing poor performance.
-4. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enum members with the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
+1. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe~, is inefficient,~ and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
+2. Most of its methods use reflection on each call without any sort of caching causing poor performance.
+3. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enum members with the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
 
 Enums.NET solves all of these issues and more.
 
