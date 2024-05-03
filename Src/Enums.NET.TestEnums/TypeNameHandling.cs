@@ -12,7 +12,7 @@ public enum TypeNameHandling
     Auto = 4
 }
 
-public class TypeNameHandlingValidatorAttribute : Attribute, IEnumValidatorAttribute<TypeNameHandling>
+public sealed class TypeNameHandlingValidatorAttribute : EnumValidatorAttribute<TypeNameHandling>
 {
-    public bool IsValid(TypeNameHandling value) => value >= TypeNameHandling.None && value <= TypeNameHandling.Auto;
+    public override bool IsValid(TypeNameHandling value) => value is >= TypeNameHandling.None and <= TypeNameHandling.Auto;
 }

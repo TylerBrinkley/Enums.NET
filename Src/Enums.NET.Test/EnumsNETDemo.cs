@@ -179,9 +179,8 @@ public class EnumsNETDemo
         Holiday = 4
     }
 
-    [AttributeUsage(AttributeTargets.Enum)]
-    class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
+    class DayTypeValidatorAttribute : EnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
+        public override bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
     }
 }

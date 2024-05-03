@@ -3,21 +3,21 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Enums.NET.svg?logo=nuget)](https://www.nuget.org/packages/Enums.NET/)
 [![Build status](https://img.shields.io/azure-devops/build/tydude4christ/Public/2.svg?logo=azuredevops)](https://dev.azure.com/tydude4christ/Public/_build?definitionId=2)
 
+## v5.0 Changes
+Removed `Boolean` enum support and dropped support for net45 and bumped it to net461 due to updating dependencies. Also dropped support for netstandard 1.x tfms for similar reasons. Added a net7 target which utilizes the built-in generic number interfaces. Also added an EnumValidatorAttribute base class since generic attributes are now supported.
+
 ## v4.0 Changes
 Removed `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes which were deprecated in v3.0 and also removed all other deprecated methods in an effort to slim the library size down. It is recommended if upgrading from 2.x and below to update to 3.x first and follow the warnings to migrate any code that's using deprecated methods and classes. Also, a dependency on the `System.Runtime.CompilerServices.Unsafe` package was added for the .NET 4.5 target in order to remove a build dependency on `Fody`.
 
-## v3.0 Changes
-One of the major changes for v3.0 is the deprecation of the `NonGenericEnums`, `NonGenericFlagEnums`, `UnsafeEnums`, and `UnsafeFlagEnums` classes whose methods have been added to the `Enums` and `FlagEnums` classes to better match `System.Enum` and provide better discoverability. To help you migrate your code to using the new methods I have created the C# roslyn analyzer [`Enums.NET.Analyzer`](https://www.nuget.org/packages/Enums.NET.Analyzer/) which provides a code fix to migrate your usages of the non-generic and unsafe methods to the new methods.
-
 # Enums.NET
-Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is compatible with .NET Framework 4.5+ and .NET Standard 1.0+.
+Enums.NET is a high-performance type-safe .NET enum utility library which provides many operations as convenient extension methods. It is compatible with .NET Framework 4.6.1+ and .NET Standard 2.0+.
 
 ## What's wrong with `System.Enum`
-1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
+~1. Nearly all of `Enum`'s static methods are non-generic leading to the following issues.
    * Requires the enum type to be explicitly specified as an argument and requires invocation using static method syntax such as `Enum.IsDefined(typeof(ConsoleColor), value)` instead of what should be `value.IsDefined()`.
    * Requires casting/unboxing for methods with an enum return value, eg. `ToObject`, `Parse`, and `GetValues`.
-   * Requires boxing for methods with enum input parameters losing type-safety, eg. `IsDefined` and `GetName`.
-2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe, is inefficient, and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
+   * Requires boxing for methods with enum input parameters losing type-safety, eg. `IsDefined` and `GetName`.~
+2. Support for flag enums is limited to just the `HasFlag` method which isn't type-safe~, is inefficient,~ and is ambiguous as to whether it determines if the value has all or any of the specified flags. It's all by the way.
 3. Most of its methods use reflection on each call without any sort of caching causing poor performance.
 4. The pattern to associate extra data with an enum member using `Attribute`s is not supported and instead requires users to manually retrieve the `Attribute`s via reflection. This pattern is commonly used on enum members with the `DescriptionAttribute`, `EnumMemberAttribute`, and `DisplayAttribute`.
 
@@ -207,10 +207,9 @@ class EnumsNETDemo
         Holiday = 4
     }
 
-    [AttributeUsage(AttributeTargets.Enum)]
-    class DayTypeValidatorAttribute : Attribute, IEnumValidatorAttribute<DayType>
+    class DayTypeValidatorAttribute : EnumValidatorAttribute<DayType>
     {
-        public bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
+        public override bool IsValid(DayType value) => value.GetFlagCount(DayType.Weekday | DayType.Weekend) == 1 && FlagEnums.IsValidFlagCombination(value);
     }
 }
 ```
