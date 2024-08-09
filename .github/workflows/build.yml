@@ -10,16 +10,30 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+
     - name: Install dependencies
       run: dotnet restore
       working-directory: ./Src
+
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -p:ContinuousIntegrationBuild=true
       working-directory: ./Src
+
     - name: Test .NET 4.8
-      run: dotnet test -f net48 --no-restore --verbosity normal
+      run: dotnet test -f net48 --configuration Release --no-restore --no-build --verbosity normal
       working-directory: ./Src
+
     - name: Test .NET 8
-      run: dotnet test -f net8 --no-restore --verbosity normal
+      run: dotnet test -f net8 --configuration Release --no-restore --no-build --verbosity normal
       working-directory: ./Src
+
+    - name: Pack
+      run: dotnet pack --configuration Release --no-restore --no-build -o "../artifacts"
+      working-directory: ./Src
+
+    - name: Publish
+      uses: actions/upload-artifact@v4
+      with:
+        name: packages
+        path: 'artifacts/*.*nupkg'
