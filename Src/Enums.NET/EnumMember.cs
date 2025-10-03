@@ -51,6 +51,11 @@ public abstract class EnumMember : IComparable<EnumMember>, IEquatable<EnumMembe
     /// </summary>
     public AttributeCollection Attributes => Member.Attributes;
 
+    /// <summary>
+    /// The enum member's definition index.
+    /// </summary>
+    public int DefinitionIndex => Member.DefinitionIndex;
+
     private protected EnumMember(EnumMemberInternal member)
     {
         Member = member;

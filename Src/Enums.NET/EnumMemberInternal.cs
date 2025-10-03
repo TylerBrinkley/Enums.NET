@@ -38,6 +38,7 @@ internal abstract class EnumMemberInternal : IComparable<EnumMemberInternal>
 {
     public readonly string Name;
     public readonly AttributeCollection Attributes;
+    public readonly int DefinitionIndex;
     private EnumMember? _enumMember;
 
     public EnumMember EnumMember
@@ -51,10 +52,11 @@ internal abstract class EnumMemberInternal : IComparable<EnumMemberInternal>
 
     private protected abstract EnumMember CreateEnumMember();
 
-    protected EnumMemberInternal(string name, AttributeCollection attributes)
+    protected EnumMemberInternal(string name, AttributeCollection attributes, int definitionIndex)
     {
         Name = name;
         Attributes = attributes;
+        DefinitionIndex = definitionIndex;
     }
 
     public abstract void GetValue(ref byte result);
@@ -110,9 +112,9 @@ internal sealed class EnumMemberInternal<TUnderlying, TUnderlyingOperations> : E
     private protected override EnumMember CreateEnumMember() => EnumCache.EnumBridge.CreateEnumMember(this);
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable. Gets set soon after creation but cannot be set at creation as EnumCache is not created yet
-    public EnumMemberInternal(TUnderlying value, string name, AttributeCollection attributes)
+    public EnumMemberInternal(TUnderlying value, string name, AttributeCollection attributes, int definitionIndex)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        : base(name, attributes)
+        : base(name, attributes, definitionIndex)
     {
         Value = value;
     }

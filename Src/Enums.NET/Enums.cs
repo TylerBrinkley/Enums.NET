@@ -113,7 +113,7 @@ public static class Enums
                 var attributesArray = Attribute.GetCustomAttributes(field, false);
                 var attributes = attributesArray.Length == 0 ? AttributeCollection.Empty : new AttributeCollection(attributesArray);
 
-                var member = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>(value, name, attributes);
+                var member = new EnumMemberInternal<TUnderlying, TUnderlyingOperations>(value, name, attributes, i);
                 var index = i;
                 var isPrimary = attributes.Has<PrimaryEnumMemberAttribute>();
 #if NET7_0_OR_GREATER

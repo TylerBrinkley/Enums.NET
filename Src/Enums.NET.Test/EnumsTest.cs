@@ -138,6 +138,8 @@ public class EnumsTest
 
         Assert.Equal([DisplayAttributeEnum.Up, DisplayAttributeEnum.Down, DisplayAttributeEnum.Left, DisplayAttributeEnum.Right], GetValues<DisplayAttributeEnum>());
         Assert.Equal([DisplayAttributeEnum.Left, DisplayAttributeEnum.Up, DisplayAttributeEnum.Down, DisplayAttributeEnum.Right], GetValues<DisplayAttributeEnum>(EnumMemberSelection.DisplayOrder));
+        Assert.Equal([DefinitionOrderEnum.First, DefinitionOrderEnum.Fourth, DefinitionOrderEnum.Third, DefinitionOrderEnum.Second], GetValues<DefinitionOrderEnum>());
+        Assert.Equal([DefinitionOrderEnum.First, DefinitionOrderEnum.Second, DefinitionOrderEnum.Third, DefinitionOrderEnum.Fourth], GetValues<DefinitionOrderEnum>(EnumMemberSelection.DefinitionOrder));
     }
 
     [Fact]
