@@ -339,13 +339,19 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
 
     public sealed override int GetMemberCount(EnumMemberSelection selection)
     {
-        return selection switch
+        if (selection is EnumMemberSelection.All or EnumMemberSelection.DisplayOrder or EnumMemberSelection.DefinitionOrder)
         {
-            EnumMemberSelection.All or EnumMemberSelection.DisplayOrder => _members.Length,
-            EnumMemberSelection.Flags or EnumMemberSelection.Flags | EnumMemberSelection.Distinct or EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder or EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder | EnumMemberSelection.Distinct => GetFlagCount(),
-            EnumMemberSelection.Distinct or EnumMemberSelection.Distinct | EnumMemberSelection.DisplayOrder => _distinctCount,
-            _ => throw new ArgumentException($"invalid value of {selection.AsString()} for EnumMemberSelection", nameof(selection)),
-        };
+            return _members.Length;
+        }
+        if (selection.HasAnyFlags(EnumMemberSelection.Flags))
+        {
+            return GetFlagCount();
+        }
+        if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
+        {
+            return _distinctCount;
+        }
+        throw new ArgumentException($"invalid value of {selection.AsString()} for EnumMemberSelection", nameof(selection));
     }
 
     protected sealed override IReadOnlyList<EnumMember> GetMembersInternal(EnumMemberSelection selection, bool cached) => EnumBridge.CreateMembersContainer(GetMembersInternal(selection), GetMemberCount(selection), cached);
@@ -356,16 +362,28 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
 
     private IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> GetMembersInternal(EnumMemberSelection selection)
     {
-        IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members = selection switch
+        IEnumerable<EnumMemberInternal<TUnderlying, TUnderlyingOperations>> members;
+        if (selection is EnumMemberSelection.All or EnumMemberSelection.DisplayOrder or EnumMemberSelection.DefinitionOrder)
         {
-            EnumMemberSelection.All or EnumMemberSelection.DisplayOrder => _members,
-            EnumMemberSelection.Flags or EnumMemberSelection.Flags | EnumMemberSelection.Distinct or EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder or EnumMemberSelection.Flags | EnumMemberSelection.DisplayOrder | EnumMemberSelection.Distinct => EnumerateFlagMembers(_allFlags),
-            EnumMemberSelection.Distinct or EnumMemberSelection.Distinct | EnumMemberSelection.DisplayOrder => _hasDuplicateValues ? _members.Distinct() : _members,
-            _ => throw new ArgumentException($"invalid value of {selection.AsString()} for EnumMemberSelection", nameof(selection)),
-        };
+            members = _members;
+        }
+        else if (selection.HasAnyFlags(EnumMemberSelection.Flags))
+        {
+            members = EnumerateFlagMembers(_allFlags);
+        }
+        else if (selection.HasAnyFlags(EnumMemberSelection.Distinct))
+        {
+            members = _hasDuplicateValues ? _members.Distinct() : _members;
+        }
+        else
+        {
+            throw new ArgumentException($"invalid value of {selection.AsString()} for EnumMemberSelection", nameof(selection));
+        }
         return selection.HasAnyFlags(EnumMemberSelection.DisplayOrder)
             ? members.OrderBy(m => m.Attributes.Get<DisplayAttribute>()?.GetOrder() ?? int.MaxValue)
-            : members;
+            : selection.HasAnyFlags(EnumMemberSelection.DefinitionOrder)
+                ? members.OrderBy(m => m.DefinitionIndex)
+                : members;
     }
     #endregion
 

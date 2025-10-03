@@ -49,5 +49,9 @@ public enum EnumMemberSelection
     /// <summary>
     /// Include enum members in display order using <see cref="DisplayAttribute.Order"/>.
     /// </summary>
-    DisplayOrder = 4
+    DisplayOrder = 4,
+    /// <summary>
+    /// Include enum members in definition order as opposed to by value.
+    /// </summary>
+    DefinitionOrder = 8
 }
