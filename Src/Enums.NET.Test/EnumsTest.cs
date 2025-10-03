@@ -761,6 +761,11 @@ public class EnumsTest
         AssertTryFormat(DisplayAttributeEnum.Left, "Izquierda", EnumFormat.DisplayName);
         AssertTryFormat(DisplayAttributeEnum.Right, "Derecho", EnumFormat.DisplayName);
 
+        AssertTryFormat(CardinalDirection.North, "N", EnumFormat.DisplayDescription);
+        AssertTryFormat(CardinalDirection.South, "S", EnumFormat.DisplayDescription);
+        AssertTryFormat(CardinalDirection.East, "E", EnumFormat.DisplayDescription);
+        AssertTryFormat(CardinalDirection.West, "W", EnumFormat.DisplayDescription);
+
         AssertTryFormat(ToObject<CharEnum>('a'), "a", EnumFormat.UnderlyingValue);
         AssertTryFormat(ToObject<CharEnum>('a'), ((ushort)'a').ToString(), EnumFormat.DecimalValue);
         AssertTryFormat(ToObject<CharEnum>('a'), ((ushort)'a').ToString("X4"), EnumFormat.HexadecimalValue);

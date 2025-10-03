@@ -63,7 +63,11 @@ public enum EnumFormat
     /// <summary>
     /// Enum is represented by its <see cref="DisplayAttribute.Name"/>.
     /// </summary>
-    DisplayName = 6
+    DisplayName = 6,
+    /// <summary>
+    /// Enum is represented by its <see cref="DisplayAttribute.Description"/>.
+    /// </summary>
+    DisplayDescription = 7
 }
 
 [AttributeUsage(AttributeTargets.Enum)]
