@@ -745,6 +745,7 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
         EnumFormat.Description => GetMember(value)?.Attributes.Get<DescriptionAttribute>()?.Description,
         EnumFormat.EnumMemberValue => GetMember(value)?.Attributes.Get<EnumMemberAttribute>()?.Value,
         EnumFormat.DisplayName => GetMember(value)?.Attributes.Get<DisplayAttribute>()?.GetName(),
+        EnumFormat.DisplayDescription => GetMember(value)?.Attributes.Get<DisplayAttribute>()?.GetDescription(),
         _ => Enums.CustomEnumMemberFormat(GetMember(value)?.EnumMember, format.Validate(nameof(format)))
     };
 
@@ -780,6 +781,7 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
         EnumFormat.Description => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DescriptionAttribute>()?.Description,
         EnumFormat.EnumMemberValue => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<EnumMemberAttribute>()?.Value,
         EnumFormat.DisplayName => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName(),
+        EnumFormat.DisplayDescription => TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetDescription(),
         _ => Enums.CustomEnumMemberFormat(TryInitializeMember(value, ref isInitialized, ref member)?.EnumMember, format.Validate(nameof(format)))
     };
 
@@ -886,6 +888,9 @@ internal abstract class EnumCache<TUnderlying, TUnderlyingOperations> : EnumCach
             case EnumFormat.DisplayName:
                 var displayName = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetName();
                 return TryWriteStringToSpan(displayName, destination, out charsWritten);
+            case EnumFormat.DisplayDescription:
+                var displayDescription = TryInitializeMember(value, ref isInitialized, ref member)?.Attributes.Get<DisplayAttribute>()?.GetDescription();
+                return TryWriteStringToSpan(displayDescription, destination, out charsWritten);
             default:
                 var v = Enums.CustomEnumMemberFormat(TryInitializeMember(value, ref isInitialized, ref member)?.EnumMember, format.Validate(nameof(format)));
                 return TryWriteStringToSpan(v, destination, out charsWritten);

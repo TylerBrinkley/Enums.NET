@@ -190,7 +190,7 @@ public static class Enums
     }
 
     #region Custom EnumFormat
-    private const int s_startingCustomEnumFormatValue = (int)EnumFormat.DisplayName + 1;
+    private const int s_startingCustomEnumFormatValue = (int)EnumFormat.DisplayDescription + 1;
 
     private static Func<EnumMember, string?>[] s_customEnumMemberFormatters = [];
 
